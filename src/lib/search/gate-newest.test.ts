@@ -95,6 +95,60 @@ const CHATTER = [
   "Sorry, can you repeat that?",
 ];
 
+/**
+ * Social framing wrapped around a real question. Every one of these was silenced
+ * as chatter while the chatter list was tested as a substring: "how are you"
+ * matched inside "how are you handling retries", and a "thanks for that" prefix
+ * killed the question behind it. The gate is the first layer, so nothing
+ * downstream could recover any of them.
+ */
+const BLENDED = [
+  "How are you handling retries on the ingest worker?",
+  "How are you storing the uploaded document?",
+  "What's up with the retry logic in the ingest worker?",
+  "Thanks for that — why is the extraction done in a container lambda?",
+  "Thank you — how does the retry logic work?",
+  "Sorry, what does the ingest worker do?",
+  "Good morning — where is upload handled?",
+  "We good on the schema migration?",
+  "All good with the deploy pipeline?",
+  "Hi there — how does the Excel export work?",
+];
+
+test("a politeness prefix does not silence the question behind it", () => {
+  for (const line of BLENDED) {
+    const decision = ask(line, [], cold);
+    assert.notEqual(decision.verdict, "chatter", `should not read as chatter: ${line}`);
+    assert.ok(decision.question, `should ask something: ${line}`);
+  }
+});
+
+test("the question kept is the ask, not the greeting in front of it", () => {
+  const decision = ask("Thanks for that — why is the extraction done in a container lambda?", [], cold);
+  assert.equal(decision.verdict, "question");
+  assert.doesNotMatch(decision.question ?? "", /thanks/i);
+  assert.match(decision.question ?? "", /extraction/i);
+});
+
+test("social framing on its own is still chatter", () => {
+  const framing = [
+    "How are you?",
+    "How are you doing?",
+    "What's up?",
+    "Thanks for that.",
+    "Thank you for the walkthrough.",
+    "Good morning everyone.",
+    "Hi there.",
+    "Nice to meet you all.",
+    "Sorry, what?",
+    "We good?",
+    "All good on time?",
+  ];
+  for (const line of framing) {
+    assert.equal(ask(line, [], cold).verdict, "chatter", `should read as chatter: ${line}`);
+  }
+});
+
 test("sequence A: chatter after an answered question stays silent", () => {
   const asked = "How does document upload work?";
   const first = ask(asked, [], cold);

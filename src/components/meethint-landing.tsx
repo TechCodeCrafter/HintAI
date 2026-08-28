@@ -20,14 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
-
-/**
- * Where the waitlist form posts. Empty means the page keeps the address on this
- * device only — the form still works and still confirms, so the page can ship
- * before a list provider is chosen. Set it to a Formspree/Buttondown/own
- * endpoint and every submission is POSTed as `{ email }`.
- */
-const WAITLIST_ENDPOINT = "";
+import { joinWaitlist } from "@/lib/waitlist";
 
 /**
  * One turn of the meeting the demo card replays.
@@ -382,14 +375,10 @@ function WaitlistForm({ id }: { id: string }) {
     if (!valid || state === "sending") return;
     setState("sending");
     try {
-      if (WAITLIST_ENDPOINT) {
-        const response = await fetch(WAITLIST_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ email: email.trim() }),
-        });
-        if (!response.ok) throw new Error(String(response.status));
-      }
+      // "You're on the list" is only shown once the row is actually stored.
+      // Confirming before that is how a waitlist quietly loses every signup.
+      const result = await joinWaitlist({ data: { email: email.trim(), source: id } });
+      if (!result.ok) throw new Error(result.reason);
       window.localStorage.setItem("meethint.waitlist", email.trim());
       setState("done");
     } catch {

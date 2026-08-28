@@ -9,10 +9,11 @@ const ARTIFACT =
   /\[(?:BLANK_AUDIO|INAUDIBLE|MUSIC|NOISE|SILENCE|PAUSE|NOSPEECH)\]|<\|[^|>]+\|>|\bBLANK_AUDIO\b|\bINAUDIBLE\b/gi;
 
 /**
- * Meeting logistics. These are rejected before anything else, because they are
- * grammatical questions that must never cost the room a Card.
+ * Talk about the call itself. Matched anywhere in the utterance, because none of
+ * these can appear inside a question about the material: nobody asks "where is
+ * upload handled, and can you see my screen?".
  */
-const CHATTER = new RegExp(
+const LOGISTICS = new RegExp(
   [
     "can you hear me",
     "can you all hear",
@@ -21,27 +22,14 @@ const CHATTER = new RegExp(
     "(?:is|are) (?:everyone|everybody) (?:here|on|with us)",
     "are you there",
     "you still there",
-    "how are you",
-    "how'?s it going",
-    "what'?s up",
-    "nice to (?:meet|see) you",
-    "good (?:morning|afternoon|evening)",
-    "hello there",
-    "hi there",
-    "thank you",
-    "thanks for",
     "next slide",
     "(?:should|shall|can|could) we (?:move on|move along|continue|proceed|jump ahead|skip ahead|get started|start|begin|wrap up|take a break)",
     "let'?s (?:move on|get started|start|begin|wrap up|take that offline)",
-    "are we good",
-    "we good",
-    "all good",
     "any (?:other )?questions",
     "(?:take|taking) (?:that|this|it) offline",
     "you'?re (?:on mute|muted)",
     "(?:i think )?you'?re muted",
     "(?:can you|could you) (?:repeat|say that again|say it again)",
-    "sorry,? (?:what|say that)",
     "who else (?:are we|is) (?:waiting|joining)",
     "(?:can|could) you speak up",
     "is my (?:audio|mic|video) (?:ok|okay|working|coming through)",
@@ -50,6 +38,69 @@ const CHATTER = new RegExp(
   ].join("|"),
   "i",
 );
+
+/**
+ * Social framing: greetings, thanks, "how are you".
+ *
+ * These may only match a whole clause, never a substring, and the distinction is
+ * load-bearing. "How are you handling retries on the ingest worker?" contains
+ * "how are you"; "thanks for that — why is the extraction in a container
+ * lambda?" opens with "thanks for". Tested as substrings — which is what this
+ * used to do — they silence one of the most ordinary shapes in an engineering
+ * meeting, upstream of every layer that could otherwise recover it.
+ *
+ * Tails are bounded so a greeting cannot swallow the sentence behind it when the
+ * transcript arrives without punctuation to split on.
+ */
+const FILLER = new RegExp(
+  `^(?:${[
+    "how are you(?: doing| today)?",
+    "how'?s it going",
+    "what'?s up",
+    "what'?s new",
+    "sorry",
+    "sorry,? (?:what|say that)(?: again)?",
+    "thanks",
+    "thank you",
+    "thanks for\\b[^?]{0,20}",
+    "thank you for\\b[^?]{0,20}",
+    "good (?:morning|afternoon|evening)(?: (?:everyone|all|team|folks))?",
+    "(?:hello|hi|hey)(?: (?:there|everyone|all|team|folks))?",
+    "nice to (?:meet|see) you(?: (?:all|too|again))?",
+    // The tail is enumerated on purpose: "are we good on time?" is chatter,
+    // "are we good on the schema migration?" is a question about the material.
+    "(?:are )?we good(?: (?:on|for) (?:time|schedule|now))?",
+    "all good(?: (?:on|for) (?:time|schedule|now))?",
+  ].join("|")})[\\s,!.?]*$`,
+  "i",
+);
+
+/** True when this stretch of speech is chatter rather than something asked. */
+function isChatter(text: string): boolean {
+  return LOGISTICS.test(text) || FILLER.test(text);
+}
+
+/**
+ * Clause boundaries a speaker audibly pauses at. Over-splitting is safe: only
+ * clauses that are entirely filler are dropped, and what is left is rejoined.
+ */
+function clauses(text: string): string[] {
+  return text
+    .split(/(?<=[.?!])\s+|\s*[—–]\s*|\s+-\s+|,\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Removes social clauses and returns what the room was actually asked. Empty
+ * means the whole utterance was framing.
+ */
+function stripFiller(text: string): string {
+  const parts = clauses(text);
+  const kept = parts.filter((part) => !FILLER.test(part));
+  if (kept.length === parts.length) return text;
+  return kept.join(" ").replace(/\s+/g, " ").trim();
+}
 
 /** Generic technical vocabulary that earns retrieval even if the pack is small. */
 const TECH =
@@ -108,7 +159,7 @@ export function cleanCaption(text: string): string {
 export function looksLikeQuestion(text: string): boolean {
   const t = cleanCaption(text);
   if (t.length < 10) return false;
-  if (CHATTER.test(t)) return false;
+  if (isChatter(t)) return false;
   if (/[?]/.test(t)) return true;
   if (LEAD.test(t)) return true;
   return /\b(architecture|structured|overview|how (is|does) (this|the))\b/i.test(t);
@@ -258,7 +309,13 @@ export function gateNewest(
   if (!text) return silent("empty");
   // Checked before anything else: chatter is often a grammatical question, and
   // an open thread must not turn "can you hear me?" into a retrieval.
-  if (CHATTER.test(text)) return silent("chatter");
+  if (isChatter(text)) return silent("chatter");
+  // Social framing comes off clause by clause instead of silencing the line, so
+  // a question survives the politeness in front of it. `base.candidate` keeps
+  // the raw utterance: the diagnostic record shows what was said, not what was
+  // gated on.
+  const spoken = stripFiller(text);
+  if (!spoken) return silent("chatter");
 
   // The most recent utterance that was itself a question is the only thing
   // allowed to lend meaning to a terse or referential follow-up.
@@ -279,15 +336,15 @@ export function gateNewest(
     };
   };
 
-  if (TERSE.test(text)) {
+  if (TERSE.test(spoken)) {
     if (!gate.threadOpen || !prior) return silent("orphan-follow-up");
     if (!thread) return silent("orphan-follow-up");
-    return follow(resolveReference(normalizeSpokenQuestion(text).canonical, thread));
+    return follow(resolveReference(normalizeSpokenQuestion(spoken).canonical, thread));
   }
 
-  if (!isLiveQuestion(text, gate)) return silent("not-a-question");
+  if (!isLiveQuestion(spoken, gate)) return silent("not-a-question");
 
-  const asked = extractQuestion(text);
+  const asked = extractQuestion(spoken);
   const canonical = normalizeSpokenQuestion(asked).canonical;
   const reference = referenceIn(canonical);
   // A question earns its own trigger; context only resolves what it points at.

@@ -58,7 +58,14 @@ test("non-.sql entries are dropped (readdir also yields the auth/ directory)", (
 
 test("the auth schema ships outside the globbed directory", () => {
   const migrationsDir = join(projectRoot(), "migrations");
-  assert.deepEqual(pendingMigrations(readdirSync(migrationsDir), []), []);
+  const plan = pendingMigrations(readdirSync(migrationsDir), []);
+  // The app's own migrations belong in this plan. What must never appear is the
+  // `auth` directory entry: readdir yields it alongside the .sql files, and
+  // treating it as a migration is what would drag the Better Auth schema in.
+  assert.equal(
+    plan.some((entry) => entry.name === "auth"),
+    false,
+  );
   assert.ok(readdirSync(join(migrationsDir, "auth")).includes("0001_auth.sql"));
 });
 
