@@ -1,0 +1,14 @@
+{
+  "comment": "The narration, in the order it is spoken. `at` is the second it starts and must line up with a beat in SCENES (Demo.tsx). Edit the words here, then run `npm run voice`.",
+  "lines": [
+    { "at": 0.4, "text": "Someone asks about a service you shipped last spring." },
+    { "at": 4.8, "text": "You know it exists. You don't remember the number." },
+    { "at": 8.0, "text": "And the room is waiting." },
+    { "at": 11.4, "text": "This is MeetHint. It listens, and searches what you brought." },
+    { "at": 15.6, "text": "So when the question comes, you get the fact, and the file and line it came from." },
+    { "at": 23.4, "text": "A repo. A contract. A deck. Any room, same engine." },
+    { "at": 32.4, "text": "And when your material doesn't cover it, MeetHint says nothing." },
+    { "at": 36.2, "text": "No guessing. That's the whole point." },
+    { "at": 39.0, "text": "MeetHint. Join the private beta, at meethint dot A I." }
+  ]
+}

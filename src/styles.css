@@ -1,0 +1,666 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces. The base is near-black so the violet washes read as light in the
+     room rather than as a coloured background. */
+  --color-bg: #07090c;
+  --color-surface: #0d1116;
+  --color-subtle: #12171e;
+  --color-ink: #07090c;
+
+  /* Text, brightest to dimmest. `body` carries paragraphs and anything a person
+     reads at length; `secondary` sits below it for supporting lines, and
+     `faintest` is decorative only — it does not clear AA for body copy. */
+  --color-fg: #e8edf2;
+  --color-body: #aeb9c4;
+  --color-secondary: #8b98a5;
+  --color-muted: #7d8a97;
+  --color-faint: #5d6a77;
+  --color-faintest: #45505c;
+  /* Kept as an alias: scrollbar and rule colours were written against it. */
+  --color-gutter: #45505c;
+
+  /* One accent, taken from the mark. Everything interactive or retrieved uses
+     it; the alternates below are for exploring, not for shipping alongside. */
+  --color-accent: #8b7bf5;
+  --color-accent-soft: #8b7bf51f;
+  --color-ice: #7fd4e8;
+  --color-steel: #8fb6c4;
+  --color-ember: #e8a06d;
+
+  --color-line: #ffffff14;
+  --color-hairline: #ffffff0f;
+  --color-input: #0000004d;
+  --color-code: #00000061;
+  --color-pick: #8b7bf51f;
+
+  --color-ok: #8b7bf5;
+  --color-bad: #e07a7a;
+  --color-warn: #c4a574;
+
+  /* Syntax stays cooler than the UI accent so highlighted code does not
+     compete with the accent for attention. */
+  --color-kw: #b48ede;
+  --color-str: #9fd0a8;
+  --color-fn: #8fd8ea;
+  --color-num: #7fd4e8;
+  --color-const: #e8b86d;
+  --color-cmt: #5d6a77;
+
+  --color-brand-blue: #2f6bf7;
+  --color-brand-violet: #8a4ff0;
+  --color-brand-signal: #dfe4ff;
+
+  --font-sans: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-serif: "Newsreader", "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 14px;
+  --radius-xl: 14px;
+  --shadow-glow: 0 0 22px rgba(139, 123, 245, 0.3);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 400;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    min-height: 100dvh;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: rgba(139, 123, 245, 0.25);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  .live-dot {
+    animation: live-dot 1.4s ease-in-out infinite;
+  }
+}
+
+.syn-kw {
+  color: var(--color-kw);
+}
+
+.syn-str {
+  color: var(--color-str);
+}
+
+.syn-fn {
+  color: var(--color-fn);
+}
+
+.syn-num {
+  color: var(--color-num);
+}
+
+.syn-const {
+  color: var(--color-const);
+}
+
+.syn-cmt {
+  color: var(--color-cmt);
+  font-style: italic;
+}
+
+.cockpit-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  /* Violet from the top right, the logo's blue from the left. Two hues at very
+     low alpha give the near-black some depth without tinting it. */
+  background-image:
+    radial-gradient(1200px 600px at 70% -10%, rgba(139, 123, 245, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 0% 110%, rgba(47, 107, 247, 0.03), transparent 60%);
+}
+
+.brand-word {
+  letter-spacing: 0.28em;
+  font-weight: 500;
+}
+
+.ground-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--color-accent);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 16px rgba(139, 123, 245, 0.28);
+}
+
+.ground-mark-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--color-accent);
+  box-shadow: 0 0 10px rgba(139, 123, 245, 0.7);
+}
+
+.ground-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008));
+}
+
+.ground-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-weight: 500;
+}
+
+.ground-head-left {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ground-hint {
+  flex-shrink: 0;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.ground-transcript {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--color-fg);
+}
+
+.live-caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.85em;
+  margin-left: 0.2em;
+  vertical-align: -0.1em;
+  background: var(--color-accent);
+  animation: live-dot 1.1s ease-in-out infinite;
+}
+
+.hear-meter {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--color-subtle);
+}
+
+.hear-meter-fill {
+  height: 100%;
+  background: var(--color-accent);
+  transition: width 80ms linear;
+}
+
+.ground-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--color-input);
+  color: var(--color-fg);
+  outline: none;
+}
+
+.ground-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(139, 123, 245, 0.1);
+}
+
+.ground-question {
+  min-height: 5rem;
+  resize: none;
+  border-radius: 8px;
+  padding: 0.7rem 0.85rem;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.file-row:hover {
+  background: rgba(139, 123, 245, 0.04);
+  color: var(--color-fg);
+}
+
+.file-row[data-active="true"] {
+  background: var(--color-pick);
+  box-shadow: inset 2px 0 0 var(--color-accent);
+  color: var(--color-fg);
+}
+
+.ground-code {
+  background: var(--color-code);
+  border-radius: 8px;
+}
+
+.ground-code-name {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0.55rem 0.85rem 0.35rem;
+  color: var(--color-accent);
+  background: var(--color-code);
+}
+
+.ground-chip {
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.45rem 0.85rem;
+  color: var(--color-muted);
+  text-align: left;
+}
+
+.ground-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-fg);
+  background: rgba(139, 123, 245, 0.07);
+}
+
+.cockpit-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding: 24px 28px;
+  overflow: hidden;
+}
+
+.cockpit-grid[data-mode="overlay"] {
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+}
+
+.cockpit-pane {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  animation: pane-rise 0.45s ease both;
+}
+
+.cockpit-pane[data-pane="repo"] {
+  animation-delay: 0.05s;
+}
+
+.cockpit-pane[data-pane="room"] {
+  animation-delay: 0.12s;
+}
+
+.cockpit-pane[data-pane="card"] {
+  animation-delay: 0.19s;
+}
+
+.cockpit-actions {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.cockpit-actions svg {
+  width: 13px;
+  height: 13px;
+}
+
+.cockpit-shell,
+.cockpit-pane,
+.cockpit-pane * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gutter) transparent;
+}
+
+.cockpit-shell::-webkit-scrollbar,
+.cockpit-pane::-webkit-scrollbar,
+.cockpit-pane *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cockpit-shell::-webkit-scrollbar-thumb,
+.cockpit-pane::-webkit-scrollbar-thumb,
+.cockpit-pane *::-webkit-scrollbar-thumb {
+  background: var(--color-gutter);
+  border-radius: 99px;
+}
+
+@keyframes pane-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .cockpit-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .cockpit-grid,
+  .cockpit-grid[data-mode="overlay"] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .cockpit-pane {
+    display: none;
+    height: 100%;
+    min-height: 0;
+    animation: none;
+  }
+
+  .cockpit-pane[data-active="true"] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cockpit-pane[data-active="true"] > * {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .cockpit-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   MeetHint landing. Same tokens as the product: ink, accent, mono for chrome and
+   Newsreader for anything a person would say out loud.
+
+   In the components layer on purpose: these set defaults — including colour —
+   that a Tailwind utility in the markup is allowed to override. Unlayered, they
+   would silently win, and `text-accent` on a label would do nothing.
+   --------------------------------------------------------------------------- */
+
+@layer components {
+  .mh-page {
+    font-size: 15px;
+    line-height: 1.6;
+    background-color: var(--color-bg);
+    background-image:
+      radial-gradient(1100px 560px at 72% -12%, rgba(139, 123, 245, 0.06), transparent 62%),
+      radial-gradient(820px 460px at -6% 108%, rgba(47, 107, 247, 0.03), transparent 60%);
+  }
+
+  .mh-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+
+  .mh-display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .mh-lede {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-body);
+  }
+
+  .mh-panel {
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+  }
+
+  /* The demo card gets one step more presence than the panels around it. */
+  .mh-card {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 24px 60px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  /* What a person said. Nothing MeetHint produces is set in this face. */
+  .mh-utterance {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+
+  /**
+   * Retrieved evidence stays monospaced and small: it reads as a citation the
+   * viewer glances at, not as a sentence handed over to be recited.
+   */
+  .mh-source {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /**
+   * The evidence area is reserved at full height. The card cycles through
+   * states of different lengths, and without this the hero would shuffle every
+   * few seconds as the copy changed under it.
+   */
+  .mh-answer {
+    min-height: 10.5rem;
+  }
+
+  .mh-swap {
+    animation: mh-swap 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .mh-type::after {
+    content: "";
+    display: inline-block;
+    width: 0.45em;
+    height: 0.95em;
+    margin-left: 0.12em;
+    vertical-align: -0.12em;
+    background: var(--color-accent);
+    animation: live-dot 1.1s ease-in-out infinite;
+  }
+
+  .mh-scan {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mh-scan::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(139, 123, 245, 0.16), transparent);
+    animation: mh-scan 1.1s linear infinite;
+  }
+
+  .mh-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.38rem 0.75rem;
+    font-size: 12px;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+
+  /* A dashed chip is a placeholder for something that doesn't exist yet, so its
+     edge is drawn a step stronger to read as deliberate rather than broken. */
+  .mh-chip.border-dashed {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .mh-tile {
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.015);
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .mh-tile:hover {
+    border-color: rgba(139, 123, 245, 0.35);
+    background: rgba(139, 123, 245, 0.04);
+    transform: translateY(-2px);
+  }
+
+  .mh-field {
+    min-height: 48px;
+    width: 100%;
+    min-width: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--color-input);
+    padding: 0 0.9rem;
+    color: var(--color-fg);
+    outline: none;
+  }
+
+  .mh-field::placeholder {
+    color: var(--color-faint);
+  }
+
+  .mh-field:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(139, 123, 245, 0.12);
+  }
+
+  .mh-cta {
+    min-height: 48px;
+    border-radius: 10px;
+    border: 1px solid var(--color-accent);
+    background: var(--color-accent);
+    padding: 0 1.15rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    white-space: nowrap;
+    transition:
+      box-shadow 180ms ease,
+      transform 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .mh-cta:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
+  }
+
+  .mh-cta:disabled {
+    opacity: 0.55;
+  }
+
+  .mh-rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
+
+  .mh-rise {
+    animation: pane-rise 0.5s ease both;
+  }
+}
+
+@keyframes mh-swap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mh-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 640px) {
+  .mh-utterance {
+    font-size: 1.125rem;
+  }
+}
+
+@keyframes live-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
