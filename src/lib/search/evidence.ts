@@ -1,5 +1,14 @@
 import { reconstructSourceText } from "../document/source-text.ts";
 import type { DocumentItemRange, NormalizedDocument } from "../document/types.ts";
+import {
+  type EvidenceSpan,
+  countLines,
+  inferSourceType,
+  verifyEvidenceSpan,
+} from "./evidence-span.ts";
+
+export type { EvidenceSpan } from "./evidence-span.ts";
+export { countLines, inferSourceType, verifyEvidenceSpan } from "./evidence-span.ts";
 
 /**
  * The canonical evidence model.
@@ -33,32 +42,9 @@ export type SourceType = "code" | "markdown" | "text" | "pdf" | "docx" | "pptx" 
  * into the source, lines are derived from those offsets so the two cannot
  * disagree, and `text` is exactly what that range holds.
  */
-export type TextEvidence = {
+export type TextEvidence = EvidenceSpan & {
   kind: "text";
-  /** Stable within a pack: source, offsets, and the version hash. */
-  id: string;
-  /** The file path. */
-  sourceId: string;
   sourceType: SourceType;
-  path: string;
-
-  /** 1-based and inclusive, counted in the source document, not the chunk. */
-  startLine: number;
-  endLine: number;
-
-  /** Half-open, in the source document. `text` is exactly this range. */
-  startOffset: number;
-  endOffset: number;
-
-  symbol?: string;
-
-  /** Verbatim source. Never normalized, never re-wrapped, never trimmed of syntax. */
-  text: string;
-  /** The same evidence rendered for speech. This is what may be said. */
-  normalizedText: string;
-
-  /** Of the whole source document, so an edit anywhere invalidates the evidence. */
-  contentHash: string;
 };
 
 /**
@@ -135,20 +121,17 @@ export function hashText(text: string): string {
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
 
-/** 1-based line of an offset. */
+/** 1-based line of an offset, counted from newlines in the source. */
 export function lineAt(content: string, offset: number): number {
-  const upto = content.slice(0, Math.max(0, Math.min(offset, content.length)));
-  return upto.split("\n").length;
+  return countLines(content, offset) + 1;
 }
 
 export function sourceTypeOf(path: string): SourceType {
-  if (/\.(md|mdx|rst)$/i.test(path)) return "markdown";
-  if (/\.(txt|log)$/i.test(path)) return "text";
-  if (/\.pdf$/i.test(path)) return "pdf";
   if (/\.docx?$/i.test(path)) return "docx";
   if (/\.pptx?$/i.test(path)) return "pptx";
   if (/\.xlsx?$/i.test(path)) return "xlsx";
-  return "code";
+  const inferred = inferSourceType(path);
+  return inferred === "document" ? "pdf" : inferred;
 }
 
 /**
@@ -165,12 +148,12 @@ export function textEvidence(args: {
   sourceType?: SourceType;
 }): TextEvidence | null {
   const { path, content, normalizedText } = args;
-  const start = Math.max(0, Math.min(args.start, content.length));
-  const end = Math.max(start, Math.min(args.end, content.length));
-  if (end <= start) return null;
+  if (args.start < 0 || args.end > content.length || args.start >= args.end) return null;
+  const start = args.start;
+  const end = args.end;
   const text = content.slice(start, end);
   const contentHash = hashText(content);
-  return {
+  const evidence: TextEvidence = {
     kind: "text",
     id: `${path}@${start}-${end}#${contentHash}`,
     sourceId: path,
@@ -185,6 +168,8 @@ export function textEvidence(args: {
     normalizedText,
     contentHash,
   };
+  if (!verifyEvidenceSpan(evidence, { content, contentHash }).ok) return null;
+  return evidence;
 }
 
 /** The commit fields this model needs, as any pack records them. */
@@ -243,8 +228,7 @@ export type SourceLookup = {
  */
 export function textIsCurrent(evidence: TextEvidence, content: string | undefined): boolean {
   if (content === undefined) return false;
-  if (evidence.contentHash !== hashText(content)) return false;
-  return content.slice(evidence.startOffset, evidence.endOffset) === evidence.text;
+  return verifyEvidenceSpan(evidence, { content, contentHash: hashText(content) }).ok;
 }
 
 /**
@@ -304,10 +288,14 @@ export function establishesAuthorship(evidence: Evidence): boolean {
  * is derived or formatted — if a word is not in one of these fields, it is not
  * in the evidence.
  */
-function verifiableText(evidence: Evidence): string {
-  if (evidence.kind === "text") return evidence.text;
-  if (evidence.kind === "document") return evidence.supportText;
-  return [evidence.message, evidence.author ?? "", evidence.pr ?? "", evidence.sha].join("\n");
+function verifiableText(evidence: Evidence | EvidenceSpan): string {
+  if ("kind" in evidence) {
+    if (evidence.kind === "document") return evidence.supportText;
+    if (evidence.kind === "commit") {
+      return [evidence.message, evidence.author ?? "", evidence.pr ?? "", evidence.sha].join("\n");
+    }
+  }
+  return evidence.text;
 }
 
 /**
@@ -377,7 +365,7 @@ function contentTokens(say: string): string[] {
  */
 export function verifyClaim(
   say: string,
-  evidence: Evidence[],
+  evidence: Array<Evidence | EvidenceSpan>,
   structural: string[] = [],
 ): SupportCheck {
   const corpus = [...evidence.map(verifiableText), ...structural].join("\n").toLowerCase();

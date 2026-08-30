@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { plain } from "./prose.ts";
+import { plain, proseOf, proseSpanInSource } from "./prose.ts";
 
 test("a leading underscore identifier is spoken as written", () => {
   assert.equal(plain("Consumes _bg_index events."), "Consumes _bg_index events.");
@@ -49,6 +49,20 @@ test("prose mixed with inline code normalizes both", () => {
 
 test("links are spoken as their text", () => {
   assert.equal(plain("See [the runbook](docs/ops.md) first."), "See the runbook first.");
+});
+
+test("markdown prose spans address the raw file, not stripped text", () => {
+  const content = [
+    "# Exporter retries",
+    "",
+    "The exporter attempts are capped at three because the payment gateway stalls.",
+  ].join("\n");
+  const prose = proseOf({ path: "docs/adr/0007-exporter-retries.md", content });
+  assert.ok(prose?.description);
+  assert.ok(proseSpanInSource(content, prose.description));
+  const slice = content.slice(prose.description.start, prose.description.end);
+  assert.match(slice, /capped at three/);
+  assert.notEqual(prose.description.start, 0, "the heading must not steal the citation");
 });
 
 test("every identifier in a normalized line is still findable in the source", () => {
