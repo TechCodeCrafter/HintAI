@@ -1,0 +1,7 @@
+#!/bin/sh
+# Runs last, immediately before the commit object is written, so it catches the
+# attribution trailer no matter which stage added it.
+#
+# Enabled with: git config core.hooksPath .githooks
+set -eu
+exec node "$(git rev-parse --show-toplevel)/scripts/strip-cursor-trailer.mjs" "$1"
