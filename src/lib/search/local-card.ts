@@ -13,9 +13,11 @@ import {
   commitEvidence,
   establishesAuthorship,
   evidenceIsCurrent,
+  hashText,
   textEvidence,
   verifyClaim,
 } from "./evidence.ts";
+import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
 import { isArchitectureQuery } from "./question.ts";
 import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
@@ -139,16 +141,24 @@ function claimsFor(hit: FileHit, pack: RepoPack, query: string): Claim[] {
     }
     // Located against the file, never against the chunk: a citation is only
     // meaningful in the coordinates of the document the room will open.
-    const span = file
-      ? textEvidence({
-          path: file.path,
-          content: file.content,
-          start: base + claim.start,
-          end: base + claim.end,
-          normalizedText: claim.say,
-        })
-      : null;
+    if (!file) return note("NO_EVIDENCE_SPAN", fallbackLine);
+    const fileStart = base + claim.start;
+    const fileEnd = base + claim.end;
+    const span = textEvidence({
+      path: file.path,
+      content: file.content,
+      start: fileStart,
+      end: fileEnd,
+      normalizedText: claim.say,
+    });
     if (!span) return note("NO_EVIDENCE_SPAN", fallbackLine);
+    const verified = verifyEvidenceSpan(span, {
+      content: file.content,
+      contentHash: hashText(file.content),
+    });
+    if (!verified.ok) {
+      return note(verified.reason === "STALE" ? "STALE_EVIDENCE" : "NO_EVIDENCE_SPAN", span.startLine);
+    }
     out.push({ say: claim.say, generic: claim.generic, span, head: origin === "head" });
   };
 
@@ -539,6 +549,33 @@ function admitEvidence(
   // Each kind is checked against its own source: a file against the file as
   // loaded, a commit against the message history still records. Neither is
   // exempt, and neither is checked against the other's.
+  for (const item of evidence) {
+    if (item.kind !== "text") continue;
+    const source = pack.files.find((file) => file.path === item.path);
+    if (!source) {
+      noteAttempt({
+        query, path: item.path, line: item.startLine, origin: "span",
+        candidate: say, generic: false, relevance: 0, score: 0,
+        accepted: false, reject: "NO_EVIDENCE_SPAN",
+      });
+      closeDecision(query, false);
+      return { ok: false, reason: "No evidence I could point at for that." };
+    }
+    const verified = verifyEvidenceSpan(item, {
+      content: source.content,
+      contentHash: hashText(source.content),
+    });
+    if (!verified.ok) {
+      noteAttempt({
+        query, path: item.path, line: item.startLine, origin: "span",
+        candidate: say, generic: false, relevance: 0, score: 0,
+        accepted: false, reject: verified.reason === "STALE" ? "STALE_EVIDENCE" : "NO_EVIDENCE_SPAN",
+      });
+      closeDecision(query, false);
+      return { ok: false, reason: "That material changed since I read it." };
+    }
+  }
+
   const stale = evidence.find((item) => !evidenceIsCurrent(item, sourcesOf(pack, context)));
   if (stale) {
     noteAttempt({
@@ -591,6 +628,7 @@ function sourcesOf(pack: RepoPack, context?: LocalCardContext) {
 function citationsFor(evidence: Evidence[], provenance: FileHit): Citation[] | null {
   const cites: Citation[] = evidence.map((item) => {
     if (item.kind === "text") {
+      // Lines come from the verified EvidenceSpan, never the retrieved chunk.
       return {
         kind: "file" as const,
         path: item.path,

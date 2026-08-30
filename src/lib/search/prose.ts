@@ -178,8 +178,11 @@ function docBlock(source: Source): Mapped {
 
 /**
  * A piece of prose, and the exact range of the source it was read from.
- * `raw` is what the file contains; `text` is that same evidence rendered for
- * speech. Only `raw` is ever used to prove support.
+ * `raw` is the derived extract (comment markers may already be gone);
+ * `start`/`end` are half-open offsets into the **raw source** passed to
+ * `proseOf`, threaded through `Mapped` — never into `plain()` output.
+ * `text` is that same evidence rendered for speech. Only the source slice
+ * is ever used to prove location.
  */
 export type ProseSpan = {
   raw: string;
@@ -188,9 +191,15 @@ export type ProseSpan = {
   end: number;
 };
 
+/** True when the span's offsets are a real half-open range of `content`. */
+export function proseSpanInSource(content: string, span: ProseSpan): boolean {
+  if (span.start < 0 || span.end > content.length || span.start >= span.end) return false;
+  return content.slice(span.start, span.end).length === span.end - span.start;
+}
+
 function proseSpan(unit: Mapped, render: (raw: string) => string = plain): ProseSpan | null {
   const range = rangeOf(unit);
-  if (!range) return null;
+  if (!range || range.start >= range.end) return null;
   const text = render(unit.text);
   if (!text) return null;
   return { raw: unit.text, text, start: range.start, end: range.end };

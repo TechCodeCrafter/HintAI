@@ -37,6 +37,7 @@ const GROUPS = [
       "src/lib/search/prose.test.ts",
       "src/lib/search/card.test.ts",
       "src/lib/search/evidence.test.ts",
+      "src/lib/search/__tests__/evidence-span.test.ts",
       "src/lib/search/text-map.test.ts",
       "src/lib/search/__tests__/document-safety.test.ts",
       "src/lib/search/__tests__/document-card.test.ts",
