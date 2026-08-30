@@ -1,0 +1,94 @@
+[
+  {
+    "file": "nist-800-145.pdf",
+    "marked": 0,
+    "candidates": []
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "marked": 70,
+    "candidates": [
+      {
+        "text": "NIST SP 800-207 ZERO TRUST ARCHITECTURE",
+        "pages": 56,
+        "share": 0.9491525423728814,
+        "y": [
+          746.58,
+          746.58,
+          746.58,
+          746.58
+        ]
+      },
+      {
+        "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207",
+        "pages": 19,
+        "share": 0.3220338983050847,
+        "y": [
+          559.26,
+          559.26,
+          559.26,
+          559.26
+        ]
+      },
+      {
+        "text": "This publication is available free of charge from:",
+        "pages": 3,
+        "share": 0.05084745762711865,
+        "y": [
+          376.56054000000006,
+          351.36240000000004,
+          454.19448
+        ]
+      }
+    ]
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "marked": 169,
+    "candidates": [
+      {
+        "text": "NIST SP 800-63B DIGITAL IDENTITY GUIDELINES:",
+        "pages": 76,
+        "share": 0.95,
+        "y": [
+          746.64,
+          746.64,
+          746.64,
+          746.64
+        ]
+      },
+      {
+        "text": "AUTHENTICATION & LIFECYCLE MANAGEMENT",
+        "pages": 76,
+        "share": 0.95,
+        "y": [
+          735.12,
+          735.12,
+          735.12,
+          735.12
+        ]
+      },
+      {
+        "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-63b",
+        "pages": 27,
+        "share": 0.3375,
+        "y": [
+          564.48,
+          564.48,
+          564.48,
+          564.48
+        ]
+      },
+      {
+        "text": "This publication is available free of charge from:",
+        "pages": 3,
+        "share": 0.0375,
+        "y": [
+          260.9232,
+          284.4,
+          439.44096
+        ]
+      }
+    ]
+  }
+]

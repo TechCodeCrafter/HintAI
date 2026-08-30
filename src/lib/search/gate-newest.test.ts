@@ -63,7 +63,7 @@ function threadOn(question: string, claim: string, path: string, subject: string
     subject,
     card: {
       say: claim,
-      citations: [{ path, line: 1, label: `${path}:1` }],
+      citations: [{ kind: "file", path, line: 1, label: `${path}:1` }],
       query: question,
       latencyMs: 0,
       source: "local",

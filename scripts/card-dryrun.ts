@@ -9,6 +9,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import type { RepoPack } from "../src/lib/repo/types.ts";
 import { localCard } from "../src/lib/search/local-card.ts";
+import { citationText, citedSource } from "../src/lib/search/cite.ts";
 import { buildChunks, retrieve } from "../src/lib/search/retrieve.ts";
 
 // This script quotes every test query, so it would rank as its own answer.
@@ -163,20 +164,19 @@ for (const suite of SUITES) {
     );
     if (!card.say) {
       console.log(`   SILENT — ${card.reason ?? "no reason given"}`);
-      if (card.citations[0]) console.log(`   would cite: ${card.citations[0].path}`);
+      if (card.citations[0]) console.log(`   would cite: ${citationText(card.citations[0])}`);
       continue;
     }
     console.log(`   SAY   ${card.say}`);
     for (const cite of card.citations) {
-      console.log(`   CITE  ${cite.path}:${cite.line}${cite.label ? `  [${cite.label}]` : ""}`);
+      console.log(`   CITE  ${citationText(cite)}${cite.label ? `  [${cite.label}]` : ""}`);
     }
-    // Prove the claim is in the cited file.
-    const first = card.citations[0];
-    const file = suite.pack.files.find((f) => f.path === first?.path);
+    // Prove the claim is in what it cited, whichever kind that is.
+    const cited = card.citations.map((c) => citedSource(c, suite.pack)).join("\n").toLowerCase();
     const words = card.say.replace(/[.,:;—]/g, " ").split(/\s+/).filter((w) => w.length > 4);
-    const missing = words.filter((w) => !file?.content.toLowerCase().includes(w.toLowerCase()));
+    const missing = words.filter((w) => !cited.includes(w.toLowerCase()));
     console.log(
-      `   CHECK ${missing.length === 0 ? "every content word appears in the cited file" : `NOT IN FILE: ${missing.join(", ")}`}`,
+      `   CHECK ${missing.length === 0 ? "every content word appears in the cited material" : `NOT IN EVIDENCE: ${missing.join(", ")}`}`,
     );
     const sentences = card.say.split(/(?<=[.!?])\s+/).filter(Boolean).length;
     console.log(`   SHAPE ${card.say.length} chars, ${sentences} sentence(s)`);

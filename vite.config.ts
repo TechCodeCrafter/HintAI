@@ -158,6 +158,7 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   resolve: { tsconfigPaths: true },
   optimizeDeps: {
+    include: ["pdfjs-dist"],
     exclude: ["@huggingface/transformers", "onnxruntime-web"],
   },
   ssr: {

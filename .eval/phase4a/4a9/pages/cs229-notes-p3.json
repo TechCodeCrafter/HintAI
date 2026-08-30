@@ -1,0 +1,3065 @@
+{
+  "file": "cs229-notes.pdf",
+  "page": 3,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "skipped",
+    "earliestSkip": "dense-grid",
+    "whyNotTwoColumn": [
+      "dense-grid detector fired first",
+      "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 117.5:29, 175.4:6, 216.6:12, 270.7:28, 321.4:24, 376.5:35, 417.8:4, 464.8:7)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 8,
+    "clusters": [
+      {
+        "x": 117.45,
+        "items": 29,
+        "meanWidth": 171.03,
+        "yMin": 90.2,
+        "yMax": 654.25
+      },
+      {
+        "x": 175.43,
+        "items": 6,
+        "meanWidth": 91.02,
+        "yMin": 90.2,
+        "yMax": 556.26
+      },
+      {
+        "x": 216.58,
+        "items": 12,
+        "meanWidth": 38.26,
+        "yMin": 178.03,
+        "yMax": 541.42
+      },
+      {
+        "x": 270.69,
+        "items": 28,
+        "meanWidth": 25.93,
+        "yMin": 126.84,
+        "yMax": 560.6
+      },
+      {
+        "x": 321.41,
+        "items": 24,
+        "meanWidth": 5.69,
+        "yMin": 138.88,
+        "yMax": 541.42
+      },
+      {
+        "x": 376.46,
+        "items": 35,
+        "meanWidth": 22.91,
+        "yMin": 90.2,
+        "yMax": 556.26
+      },
+      {
+        "x": 417.8,
+        "items": 4,
+        "meanWidth": 44.28,
+        "yMin": 88.41,
+        "yMax": 418.1
+      },
+      {
+        "x": 464.83,
+        "items": 7,
+        "meanWidth": 7.77,
+        "yMin": 431.19,
+        "yMax": 691.11
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 117.45,
+      "items": 29,
+      "meanWidth": 171.03,
+      "yMin": 90.2,
+      "yMax": 654.25
+    },
+    {
+      "x": 175.43,
+      "items": 6,
+      "meanWidth": 91.02,
+      "yMin": 90.2,
+      "yMax": 556.26
+    },
+    {
+      "x": 216.58,
+      "items": 12,
+      "meanWidth": 38.26,
+      "yMin": 178.03,
+      "yMax": 541.42
+    },
+    {
+      "x": 270.69,
+      "items": 28,
+      "meanWidth": 25.93,
+      "yMin": 126.84,
+      "yMax": 560.6
+    },
+    {
+      "x": 321.41,
+      "items": 24,
+      "meanWidth": 5.69,
+      "yMin": 138.88,
+      "yMax": 541.42
+    },
+    {
+      "x": 376.46,
+      "items": 35,
+      "meanWidth": 22.91,
+      "yMin": 90.2,
+      "yMax": 556.26
+    },
+    {
+      "x": 417.8,
+      "items": 4,
+      "meanWidth": 44.28,
+      "yMin": 88.41,
+      "yMax": 418.1
+    },
+    {
+      "x": 464.83,
+      "items": 7,
+      "meanWidth": 7.77,
+      "yMin": 431.19,
+      "yMax": 691.11
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 35,
+    "clusters": [
+      {
+        "x": 114.24,
+        "items": 20,
+        "share": 0.571
+      },
+      {
+        "x": 187.29,
+        "items": 6,
+        "share": 0.171
+      },
+      {
+        "x": 371.15,
+        "items": 4,
+        "share": 0.114
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.7428571428571429
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        117.45,
+        175.43
+      ],
+      "gap": 57.980000000000004
+    },
+    {
+      "between": [
+        175.43,
+        216.58
+      ],
+      "gap": 41.150000000000006
+    },
+    {
+      "between": [
+        216.58,
+        270.69
+      ],
+      "gap": 54.109999999999985
+    },
+    {
+      "between": [
+        270.69,
+        321.41
+      ],
+      "gap": 50.72000000000003
+    },
+    {
+      "between": [
+        321.41,
+        376.46
+      ],
+      "gap": 55.049999999999955
+    },
+    {
+      "between": [
+        376.46,
+        417.8
+      ],
+      "gap": 41.34000000000003
+    },
+    {
+      "between": [
+        417.8,
+        464.83
+      ],
+      "gap": 47.02999999999997
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "3",
+      "x": 493.54,
+      "y": 691.11,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "",
+      "x": 110.85,
+      "y": 654.25,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "Part I",
+      "x": 110.85,
+      "y": 654.25,
+      "width": 51.22,
+      "height": 17.22,
+      "right": 162.08,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 110.85,
+      "y": 624.36,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "Linear Regression",
+      "x": 110.85,
+      "y": 624.36,
+      "width": 217.72,
+      "height": 24.79,
+      "right": 328.57,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 110.85,
+      "y": 594.47,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "To make our housing example more interesting, let’s consider a slightly richer",
+      "x": 110.85,
+      "y": 594.47,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "dataset in which we also know the number of bedrooms in each house:",
+      "x": 110.85,
+      "y": 580.02,
+      "width": 360.87,
+      "height": 11.96,
+      "right": 471.72,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "Living area (feet",
+      "x": 180.02,
+      "y": 556.26,
+      "width": 84.71,
+      "height": 11.96,
+      "right": 264.73,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "2",
+      "x": 264.73,
+      "y": 560.6,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 268.96,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": ")",
+      "x": 269.46,
+      "y": 556.26,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 274.01,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": " ",
+      "x": 274.01,
+      "y": 556.26,
+      "width": 11.96,
+      "height": 0,
+      "right": 285.97,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "#bedrooms",
+      "x": 285.97,
+      "y": 556.26,
+      "width": 59.24,
+      "height": 11.96,
+      "right": 345.21,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": " ",
+      "x": 345.21,
+      "y": 556.26,
+      "width": 11.96,
+      "height": 0,
+      "right": 357.17,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "Price (1000$s)",
+      "x": 357.17,
+      "y": 556.26,
+      "width": 73.06,
+      "height": 11.96,
+      "right": 430.23,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "2104",
+      "x": 215.31,
+      "y": 541.42,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 238.72,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": " ",
+      "x": 238.72,
+      "y": 541.42,
+      "width": 73.94,
+      "height": 0,
+      "right": 312.66,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": "3",
+      "x": 312.66,
+      "y": 541.42,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 318.52,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": " ",
+      "x": 318.52,
+      "y": 541.42,
+      "width": 66.4,
+      "height": 0,
+      "right": 384.92,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "400",
+      "x": 384.92,
+      "y": 541.42,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 402.48,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "1600",
+      "x": 215.31,
+      "y": 526.97,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 238.72,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": " ",
+      "x": 238.72,
+      "y": 526.97,
+      "width": 73.94,
+      "height": 0,
+      "right": 312.66,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "3",
+      "x": 312.66,
+      "y": 526.97,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 318.52,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": " ",
+      "x": 318.52,
+      "y": 526.97,
+      "width": 66.4,
+      "height": 0,
+      "right": 384.92,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "330",
+      "x": 384.92,
+      "y": 526.97,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 402.48,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "2400",
+      "x": 215.31,
+      "y": 512.53,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 238.72,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": " ",
+      "x": 238.72,
+      "y": 512.53,
+      "width": 73.94,
+      "height": 0,
+      "right": 312.66,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "3",
+      "x": 312.66,
+      "y": 512.53,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 318.52,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": " ",
+      "x": 318.52,
+      "y": 512.53,
+      "width": 66.4,
+      "height": 0,
+      "right": 384.92,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "369",
+      "x": 384.92,
+      "y": 512.53,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 402.48,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": "1416",
+      "x": 215.31,
+      "y": 498.08,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 238.72,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": " ",
+      "x": 238.72,
+      "y": 498.08,
+      "width": 73.94,
+      "height": 0,
+      "right": 312.66,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "2",
+      "x": 312.66,
+      "y": 498.08,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 318.52,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": " ",
+      "x": 318.52,
+      "y": 498.08,
+      "width": 66.4,
+      "height": 0,
+      "right": 384.92,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": "232",
+      "x": 384.92,
+      "y": 498.08,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 402.48,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": "3000",
+      "x": 215.31,
+      "y": 483.63,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 238.72,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": " ",
+      "x": 238.72,
+      "y": 483.63,
+      "width": 73.94,
+      "height": 0,
+      "right": 312.66,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": "4",
+      "x": 312.66,
+      "y": 483.63,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 318.52,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": " ",
+      "x": 318.52,
+      "y": 483.63,
+      "width": 66.4,
+      "height": 0,
+      "right": 384.92,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": "540",
+      "x": 384.92,
+      "y": 483.63,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 402.48,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": ".",
+      "x": 225.39,
+      "y": 472.16,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 228.64,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": ".",
+      "x": 225.39,
+      "y": 468.18,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 228.64,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": ".",
+      "x": 225.39,
+      "y": 464.19,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 228.64,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 228.64,
+      "y": 464.19,
+      "width": 85.32,
+      "height": 0,
+      "right": 313.96,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": ".",
+      "x": 313.96,
+      "y": 472.16,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 317.21,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": ".",
+      "x": 313.96,
+      "y": 468.18,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 317.21,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": ".",
+      "x": 313.96,
+      "y": 464.19,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 317.21,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 317.21,
+      "y": 464.19,
+      "width": 74.86,
+      "height": 0,
+      "right": 392.07,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": ".",
+      "x": 392.07,
+      "y": 472.16,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 395.32,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": ".",
+      "x": 392.07,
+      "y": 468.18,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 395.32,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": ".",
+      "x": 392.07,
+      "y": 464.19,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 395.32,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "Here, the",
+      "x": 128.41,
+      "y": 434.12,
+      "width": 47.31,
+      "height": 11.96,
+      "right": 175.72,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": " ",
+      "x": 175.72,
+      "y": 434.12,
+      "width": 4.03,
+      "height": 0,
+      "right": 179.75,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "x",
+      "x": 179.75,
+      "y": 434.12,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 186.4,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "’s are two-dimensional vectors in",
+      "x": 186.4,
+      "y": 434.12,
+      "width": 167.85,
+      "height": 11.96,
+      "right": 354.25,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": " ",
+      "x": 354.25,
+      "y": 434.12,
+      "width": 4.03,
+      "height": 0,
+      "right": 358.28,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "R",
+      "x": 358.28,
+      "y": 434.12,
+      "width": 8.63,
+      "height": 11.96,
+      "right": 366.91,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "2",
+      "x": 366.91,
+      "y": 438.46,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 371.15,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": ". For instance,",
+      "x": 371.65,
+      "y": 434.12,
+      "width": 74.88,
+      "height": 11.96,
+      "right": 446.53,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": " ",
+      "x": 446.53,
+      "y": 434.12,
+      "width": 4.06,
+      "height": 0,
+      "right": 450.59,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "x",
+      "x": 450.59,
+      "y": 434.12,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 457.24,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "(",
+      "x": 457.24,
+      "y": 440.23,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 460.53,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "i",
+      "x": 460.53,
+      "y": 440.23,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 463.42,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": ")",
+      "x": 463.42,
+      "y": 440.23,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 466.71,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "1",
+      "x": 457.24,
+      "y": 431.19,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 461.47,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": " ",
+      "x": 461.47,
+      "y": 431.19,
+      "width": 9.76,
+      "height": 0,
+      "right": 471.24,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "is the",
+      "x": 471.24,
+      "y": 434.12,
+      "width": 28.16,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "living area of the",
+      "x": 110.85,
+      "y": 418.1,
+      "width": 90.9,
+      "height": 11.96,
+      "right": 201.75,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": " ",
+      "x": 201.75,
+      "y": 418.1,
+      "width": 5.15,
+      "height": 0,
+      "right": 206.91,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "i",
+      "x": 206.91,
+      "y": 418.1,
+      "width": 3.99,
+      "height": 11.96,
+      "right": 210.9,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": "-th house in the training set, and",
+      "x": 210.9,
+      "y": 418.1,
+      "width": 177.69,
+      "height": 11.96,
+      "right": 388.59,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": " ",
+      "x": 388.59,
+      "y": 418.1,
+      "width": 5.16,
+      "height": 0,
+      "right": 393.75,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "x",
+      "x": 393.75,
+      "y": 418.1,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 400.4,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "(",
+      "x": 400.4,
+      "y": 424.21,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 403.69,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "i",
+      "x": 403.69,
+      "y": 424.21,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 406.57,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": ")",
+      "x": 406.57,
+      "y": 424.21,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 409.87,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": "2",
+      "x": 400.4,
+      "y": 415.17,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 404.63,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": " ",
+      "x": 404.63,
+      "y": 415.17,
+      "width": 10.89,
+      "height": 0,
+      "right": 415.52,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "is its number of",
+      "x": 415.52,
+      "y": 418.1,
+      "width": 83.88,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": "bedrooms. (In general, when designing a learning problem, it will be up to",
+      "x": 110.85,
+      "y": 403.66,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": "you to decide what features to choose, so if you are out in Portland gathering",
+      "x": 110.85,
+      "y": 389.21,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "housing data, you might also decide to include other features such as whether",
+      "x": 110.85,
+      "y": 374.77,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "each house has a fireplace, the number of bathrooms, and so on. We’ll say",
+      "x": 110.85,
+      "y": 360.32,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": "more about feature selection later, but for now let’s take the features as",
+      "x": 110.85,
+      "y": 345.87,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": "given.)",
+      "x": 110.85,
+      "y": 331.43,
+      "width": 34.47,
+      "height": 11.96,
+      "right": 145.33,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": "To perform supervised learning, we must decide how we’re going to rep-",
+      "x": 128.41,
+      "y": 316.98,
+      "width": 370.98,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "resent functions/hypotheses",
+      "x": 110.85,
+      "y": 302.54,
+      "width": 142.74,
+      "height": 11.96,
+      "right": 253.6,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": " ",
+      "x": 253.6,
+      "y": 302.54,
+      "width": 4.29,
+      "height": 0,
+      "right": 257.89,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "h",
+      "x": 257.89,
+      "y": 302.54,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 264.63,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": " ",
+      "x": 264.63,
+      "y": 302.54,
+      "width": 4.29,
+      "height": 0,
+      "right": 268.92,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "in a computer. As an initial choice, let’s say",
+      "x": 268.92,
+      "y": 302.54,
+      "width": 230.48,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": "we decide to approximate",
+      "x": 110.85,
+      "y": 288.09,
+      "width": 131.04,
+      "height": 11.96,
+      "right": 241.89,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": " ",
+      "x": 241.89,
+      "y": 288.09,
+      "width": 3.91,
+      "height": 0,
+      "right": 245.8,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": "y",
+      "x": 245.8,
+      "y": 288.09,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 251.51,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": " ",
+      "x": 251.51,
+      "y": 288.09,
+      "width": 4.33,
+      "height": 0,
+      "right": 255.84,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": "as a linear function of",
+      "x": 255.84,
+      "y": 288.09,
+      "width": 111.92,
+      "height": 11.96,
+      "right": 367.76,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": " ",
+      "x": 367.76,
+      "y": 288.09,
+      "width": 3.9,
+      "height": 0,
+      "right": 371.66,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": "x",
+      "x": 371.66,
+      "y": 288.09,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 378.31,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": ":",
+      "x": 378.31,
+      "y": 288.09,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 381.56,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 99,
+      "str": "",
+      "x": 242.58,
+      "y": 261.95,
+      "width": 0,
+      "height": 0,
+      "right": 246.58,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 100,
+      "str": "h",
+      "x": 242.58,
+      "y": 261.95,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 249.32,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 101,
+      "str": "θ",
+      "x": 249.32,
+      "y": 260.16,
+      "width": 3.95,
+      "height": 7.97,
+      "right": 253.27,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 102,
+      "str": "(",
+      "x": 254,
+      "y": 261.95,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 258.55,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 103,
+      "str": "x",
+      "x": 258.55,
+      "y": 261.95,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 265.21,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 104,
+      "str": ") =",
+      "x": 265.21,
+      "y": 261.95,
+      "width": 16.98,
+      "height": 11.96,
+      "right": 282.19,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 105,
+      "str": " ",
+      "x": 282.19,
+      "y": 261.95,
+      "width": 3.32,
+      "height": 0,
+      "right": 285.5,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 106,
+      "str": "θ",
+      "x": 285.5,
+      "y": 261.95,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 290.96,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 107,
+      "str": "0",
+      "x": 290.96,
+      "y": 260.16,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 295.19,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 108,
+      "str": " ",
+      "x": 295.19,
+      "y": 260.16,
+      "width": 3.15,
+      "height": 0,
+      "right": 298.35,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 109,
+      "str": "+",
+      "x": 298.35,
+      "y": 261.95,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 307.45,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 110,
+      "str": " ",
+      "x": 307.45,
+      "y": 261.95,
+      "width": 2.66,
+      "height": 0,
+      "right": 310.11,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 111,
+      "str": "θ",
+      "x": 310.11,
+      "y": 261.95,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 315.57,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 112,
+      "str": "1",
+      "x": 315.56,
+      "y": 260.16,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 319.8,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 113,
+      "str": "x",
+      "x": 320.3,
+      "y": 261.95,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 326.95,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 114,
+      "str": "1",
+      "x": 326.95,
+      "y": 260.16,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 331.18,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 115,
+      "str": " ",
+      "x": 331.18,
+      "y": 260.16,
+      "width": 3.15,
+      "height": 0,
+      "right": 334.34,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 116,
+      "str": "+",
+      "x": 334.34,
+      "y": 261.95,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 343.44,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 117,
+      "str": " ",
+      "x": 343.44,
+      "y": 261.95,
+      "width": 2.66,
+      "height": 0,
+      "right": 346.1,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 118,
+      "str": "θ",
+      "x": 346.1,
+      "y": 261.95,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 351.56,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 119,
+      "str": "2",
+      "x": 351.55,
+      "y": 260.16,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 355.79,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 120,
+      "str": "x",
+      "x": 356.29,
+      "y": 261.95,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 362.94,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 121,
+      "str": "2",
+      "x": 362.94,
+      "y": 260.16,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 367.17,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 122,
+      "str": "",
+      "x": 110.85,
+      "y": 235.81,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 123,
+      "str": "Here, the",
+      "x": 110.85,
+      "y": 235.81,
+      "width": 47.01,
+      "height": 11.96,
+      "right": 157.86,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 124,
+      "str": " ",
+      "x": 157.86,
+      "y": 235.81,
+      "width": 3.72,
+      "height": 0,
+      "right": 161.59,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 125,
+      "str": "θ",
+      "x": 161.59,
+      "y": 235.81,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 167.04,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 126,
+      "str": "i",
+      "x": 167.04,
+      "y": 234.02,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 169.93,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 127,
+      "str": "’s are the",
+      "x": 170.42,
+      "y": 235.81,
+      "width": 47.2,
+      "height": 11.96,
+      "right": 217.62,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 128,
+      "str": " ",
+      "x": 217.62,
+      "y": 235.81,
+      "width": 3.72,
+      "height": 0,
+      "right": 221.34,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 129,
+      "str": "parameters",
+      "x": 221.34,
+      "y": 235.81,
+      "width": 65.55,
+      "height": 11.96,
+      "right": 286.9,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 130,
+      "str": " ",
+      "x": 286.9,
+      "y": 235.81,
+      "width": 3.73,
+      "height": 0,
+      "right": 290.62,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 131,
+      "str": "(also called",
+      "x": 290.62,
+      "y": 235.81,
+      "width": 57.12,
+      "height": 11.96,
+      "right": 347.75,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 132,
+      "str": " ",
+      "x": 347.75,
+      "y": 235.81,
+      "width": 3.72,
+      "height": 0,
+      "right": 351.47,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 133,
+      "str": "weights",
+      "x": 351.47,
+      "y": 235.81,
+      "width": 43.57,
+      "height": 11.96,
+      "right": 395.04,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 134,
+      "str": ") parameterizing the",
+      "x": 395.04,
+      "y": 235.81,
+      "width": 104.35,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 135,
+      "str": "space of linear functions mapping from",
+      "x": 110.85,
+      "y": 221.36,
+      "width": 204.22,
+      "height": 11.96,
+      "right": 315.08,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 136,
+      "str": " ",
+      "x": 315.08,
+      "y": 221.36,
+      "width": 4.86,
+      "height": 0,
+      "right": 319.93,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 137,
+      "str": "X",
+      "x": 319.93,
+      "y": 221.36,
+      "width": 8.53,
+      "height": 11.96,
+      "right": 328.46,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 138,
+      "str": " ",
+      "x": 328.46,
+      "y": 221.36,
+      "width": 6.61,
+      "height": 0,
+      "right": 335.07,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 139,
+      "str": "to",
+      "x": 335.07,
+      "y": 221.36,
+      "width": 10.41,
+      "height": 11.96,
+      "right": 345.47,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 140,
+      "str": " ",
+      "x": 345.47,
+      "y": 221.36,
+      "width": 4.86,
+      "height": 0,
+      "right": 350.33,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 141,
+      "str": "Y",
+      "x": 350.33,
+      "y": 221.36,
+      "width": 7.99,
+      "height": 11.96,
+      "right": 358.32,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 142,
+      "str": ".",
+      "x": 359.3,
+      "y": 221.36,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 362.55,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 143,
+      "str": " ",
+      "x": 362.55,
+      "y": 221.36,
+      "width": 8.06,
+      "height": 0,
+      "right": 370.61,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 144,
+      "str": "When there is no risk of",
+      "x": 370.61,
+      "y": 221.36,
+      "width": 128.79,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 145,
+      "str": "confusion, we will drop the",
+      "x": 110.85,
+      "y": 206.92,
+      "width": 137.17,
+      "height": 11.96,
+      "right": 248.03,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 146,
+      "str": " ",
+      "x": 248.03,
+      "y": 206.92,
+      "width": 3.7,
+      "height": 0,
+      "right": 251.72,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 147,
+      "str": "θ",
+      "x": 251.72,
+      "y": 206.92,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 257.18,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 148,
+      "str": " ",
+      "x": 257.18,
+      "y": 206.92,
+      "width": 4.02,
+      "height": 0,
+      "right": 261.2,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 149,
+      "str": "subscript in",
+      "x": 261.2,
+      "y": 206.92,
+      "width": 59.75,
+      "height": 11.96,
+      "right": 320.96,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 150,
+      "str": " ",
+      "x": 320.96,
+      "y": 206.92,
+      "width": 3.7,
+      "height": 0,
+      "right": 324.66,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 151,
+      "str": "h",
+      "x": 324.66,
+      "y": 206.92,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 331.4,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 152,
+      "str": "θ",
+      "x": 331.4,
+      "y": 205.13,
+      "width": 3.95,
+      "height": 7.97,
+      "right": 335.35,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 153,
+      "str": "(",
+      "x": 336.08,
+      "y": 206.92,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 340.63,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 154,
+      "str": "x",
+      "x": 340.63,
+      "y": 206.92,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 347.29,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 155,
+      "str": "), and write it more simply as",
+      "x": 347.29,
+      "y": 206.92,
+      "width": 152.11,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 156,
+      "str": "",
+      "x": 110.85,
+      "y": 192.47,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 157,
+      "str": "h",
+      "x": 110.85,
+      "y": 192.47,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 117.59,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 158,
+      "str": "(",
+      "x": 117.59,
+      "y": 192.47,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 122.15,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 159,
+      "str": "x",
+      "x": 122.15,
+      "y": 192.47,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 128.8,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 160,
+      "str": "). To simplify our notation, we also introduce the convention of letting",
+      "x": 128.8,
+      "y": 192.47,
+      "width": 370.6,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 161,
+      "str": "",
+      "x": 110.85,
+      "y": 178.03,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 162,
+      "str": "x",
+      "x": 110.85,
+      "y": 178.03,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 117.51,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 163,
+      "str": "0",
+      "x": 117.51,
+      "y": 176.23,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 121.74,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 164,
+      "str": " ",
+      "x": 121.74,
+      "y": 176.23,
+      "width": 3.82,
+      "height": 0,
+      "right": 125.56,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 165,
+      "str": "= 1 (this is the",
+      "x": 125.56,
+      "y": 178.03,
+      "width": 77.59,
+      "height": 11.96,
+      "right": 203.15,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 166,
+      "str": " ",
+      "x": 203.15,
+      "y": 178.03,
+      "width": 3.9,
+      "height": 0,
+      "right": 207.05,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 167,
+      "str": "intercept term",
+      "x": 207.05,
+      "y": 178.03,
+      "width": 85.07,
+      "height": 11.96,
+      "right": 292.12,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 168,
+      "str": "), so that",
+      "x": 292.11,
+      "y": 178.03,
+      "width": 47.54,
+      "height": 11.96,
+      "right": 339.66,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 169,
+      "str": "",
+      "x": 247.92,
+      "y": 140.67,
+      "width": 0,
+      "height": 0,
+      "right": 251.92,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 170,
+      "str": "h",
+      "x": 247.92,
+      "y": 140.67,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 254.66,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 171,
+      "str": "(",
+      "x": 254.66,
+      "y": 140.67,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 259.21,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 172,
+      "str": "x",
+      "x": 259.21,
+      "y": 140.67,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 265.86,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 173,
+      "str": ") =",
+      "x": 265.87,
+      "y": 140.67,
+      "width": 16.98,
+      "height": 11.96,
+      "right": 282.85,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 174,
+      "str": "",
+      "x": 292.62,
+      "y": 155.62,
+      "width": 0,
+      "height": 0,
+      "right": 296.62,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 175,
+      "str": "d",
+      "x": 292.62,
+      "y": 155.62,
+      "width": 4.36,
+      "height": 7.97,
+      "right": 296.98,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 176,
+      "str": "∑",
+      "x": 286.16,
+      "y": 152.03,
+      "width": 17.27,
+      "height": 11.96,
+      "right": 303.43,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 177,
+      "str": "",
+      "x": 287.95,
+      "y": 126.84,
+      "width": 0,
+      "height": 0,
+      "right": 291.95,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 178,
+      "str": "i",
+      "x": 287.95,
+      "y": 126.84,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 290.83,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 179,
+      "str": "=0",
+      "x": 290.83,
+      "y": 126.84,
+      "width": 10.82,
+      "height": 7.97,
+      "right": 301.65,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 180,
+      "str": "",
+      "x": 305.43,
+      "y": 140.67,
+      "width": 0,
+      "height": 0,
+      "right": 309.43,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 181,
+      "str": "θ",
+      "x": 305.43,
+      "y": 140.67,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 310.88,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 182,
+      "str": "i",
+      "x": 310.88,
+      "y": 138.88,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 313.76,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 183,
+      "str": "x",
+      "x": 314.26,
+      "y": 140.67,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 320.91,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 184,
+      "str": "i",
+      "x": 320.91,
+      "y": 138.88,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 323.8,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 185,
+      "str": " ",
+      "x": 323.8,
+      "y": 138.88,
+      "width": 3.82,
+      "height": 0,
+      "right": 327.61,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 186,
+      "str": "=",
+      "x": 327.61,
+      "y": 140.67,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 336.72,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 187,
+      "str": " ",
+      "x": 336.72,
+      "y": 140.67,
+      "width": 3.32,
+      "height": 0,
+      "right": 340.04,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 188,
+      "str": "θ",
+      "x": 340.04,
+      "y": 140.67,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 345.5,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 189,
+      "str": "T",
+      "x": 345.82,
+      "y": 145.61,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 350.75,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 190,
+      "str": " ",
+      "x": 350.75,
+      "y": 145.61,
+      "width": 1.67,
+      "height": 0,
+      "right": 352.43,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 191,
+      "str": "x,",
+      "x": 352.43,
+      "y": 140.67,
+      "width": 9.9,
+      "height": 11.96,
+      "right": 362.33,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 192,
+      "str": "",
+      "x": 110.85,
+      "y": 104.65,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 193,
+      "str": "where on the right-hand side above we are viewing",
+      "x": 110.85,
+      "y": 104.65,
+      "width": 260.26,
+      "height": 11.96,
+      "right": 371.11,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 194,
+      "str": " ",
+      "x": 371.11,
+      "y": 104.65,
+      "width": 3.95,
+      "height": 0,
+      "right": 375.06,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 195,
+      "str": "θ",
+      "x": 375.06,
+      "y": 104.65,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 380.52,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 196,
+      "str": " ",
+      "x": 380.52,
+      "y": 104.65,
+      "width": 4.27,
+      "height": 0,
+      "right": 384.79,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 197,
+      "str": "and",
+      "x": 384.79,
+      "y": 104.65,
+      "width": 18.86,
+      "height": 11.96,
+      "right": 403.65,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 198,
+      "str": " ",
+      "x": 403.65,
+      "y": 104.65,
+      "width": 3.95,
+      "height": 0,
+      "right": 407.6,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 199,
+      "str": "x",
+      "x": 407.6,
+      "y": 104.65,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 414.25,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 200,
+      "str": " ",
+      "x": 414.25,
+      "y": 104.65,
+      "width": 3.95,
+      "height": 0,
+      "right": 418.2,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 201,
+      "str": "both as vectors,",
+      "x": 418.2,
+      "y": 104.65,
+      "width": 81.2,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 202,
+      "str": "and here",
+      "x": 110.85,
+      "y": 90.2,
+      "width": 44.22,
+      "height": 11.96,
+      "right": 155.07,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 203,
+      "str": " ",
+      "x": 155.07,
+      "y": 90.2,
+      "width": 3.91,
+      "height": 0,
+      "right": 158.98,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 204,
+      "str": "d",
+      "x": 158.98,
+      "y": 90.2,
+      "width": 6.08,
+      "height": 11.96,
+      "right": 165.06,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 205,
+      "str": " ",
+      "x": 165.06,
+      "y": 90.2,
+      "width": 3.9,
+      "height": 0,
+      "right": 168.96,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 206,
+      "str": "is the number of input variables (not counting",
+      "x": 168.96,
+      "y": 90.2,
+      "width": 236.85,
+      "height": 11.96,
+      "right": 405.81,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 207,
+      "str": " ",
+      "x": 405.81,
+      "y": 90.2,
+      "width": 3.9,
+      "height": 0,
+      "right": 409.72,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 208,
+      "str": "x",
+      "x": 409.72,
+      "y": 90.2,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 416.37,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 209,
+      "str": "0",
+      "x": 416.37,
+      "y": 88.41,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 420.6,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 210,
+      "str": ").",
+      "x": 421.1,
+      "y": 90.2,
+      "width": 7.8,
+      "height": 11.96,
+      "right": 428.91,
+      "visualLineId": 36,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 691.11,
+      "height": 11.96,
+      "text": "3",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 493.54
+    },
+    {
+      "lineId": 1,
+      "y": 654.25,
+      "height": 17.22,
+      "text": "Part I",
+      "itemIndexes": [
+        2
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 2,
+      "y": 624.36,
+      "height": 24.79,
+      "text": "Linear Regression",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 3,
+      "y": 594.47,
+      "height": 11.96,
+      "text": "To make our housing example more interesting, let’s consider a slightly richer",
+      "itemIndexes": [
+        6
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 4,
+      "y": 580.02,
+      "height": 11.96,
+      "text": "dataset in which we also know the number of bedrooms in each house:",
+      "itemIndexes": [
+        7
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 5,
+      "y": 556.88,
+      "height": 12,
+      "text": "Living area (feet 2 ) #bedrooms Price (1000$s)",
+      "itemIndexes": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "firstX": 180.02
+    },
+    {
+      "lineId": 6,
+      "y": 541.42,
+      "height": 12,
+      "text": "2104 3 400",
+      "itemIndexes": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "firstX": 215.31
+    },
+    {
+      "lineId": 7,
+      "y": 526.97,
+      "height": 12,
+      "text": "1600 3 330",
+      "itemIndexes": [
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "firstX": 215.31
+    },
+    {
+      "lineId": 8,
+      "y": 512.53,
+      "height": 12,
+      "text": "2400 3 369",
+      "itemIndexes": [
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "firstX": 215.31
+    },
+    {
+      "lineId": 9,
+      "y": 498.08,
+      "height": 12,
+      "text": "1416 2 232",
+      "itemIndexes": [
+        30,
+        31,
+        32,
+        33,
+        34
+      ],
+      "firstX": 215.31
+    },
+    {
+      "lineId": 10,
+      "y": 483.64,
+      "height": 12,
+      "text": "3000 4 540",
+      "itemIndexes": [
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "firstX": 215.31
+    },
+    {
+      "lineId": 11,
+      "y": 470.17,
+      "height": 11.96,
+      "text": ". . . . . .",
+      "itemIndexes": [
+        40,
+        41,
+        44,
+        45,
+        48,
+        49
+      ],
+      "firstX": 225.39
+    },
+    {
+      "lineId": 12,
+      "y": 464.19,
+      "height": 12,
+      "text": ". . .",
+      "itemIndexes": [
+        42,
+        43,
+        46,
+        47,
+        50
+      ],
+      "firstX": 225.39
+    },
+    {
+      "lineId": 13,
+      "y": 439.79,
+      "height": 7.97,
+      "text": "2 ( i )",
+      "itemIndexes": [
+        57,
+        61,
+        62,
+        63
+      ],
+      "firstX": 366.91
+    },
+    {
+      "lineId": 14,
+      "y": 433.63,
+      "height": 12,
+      "text": "Here, the x ’s are two-dimensional vectors in R . For instance, x 1 is the",
+      "itemIndexes": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        58,
+        59,
+        60,
+        64,
+        65,
+        66
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 15,
+      "y": 424.21,
+      "height": 7.97,
+      "text": "( i )",
+      "itemIndexes": [
+        73,
+        74,
+        75
+      ],
+      "firstX": 400.4
+    },
+    {
+      "lineId": 16,
+      "y": 417.45,
+      "height": 12,
+      "text": "living area of the i -th house in the training set, and x 2 is its number of",
+      "itemIndexes": [
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        76,
+        77,
+        78
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 17,
+      "y": 403.66,
+      "height": 11.96,
+      "text": "bedrooms. (In general, when designing a learning problem, it will be up to",
+      "itemIndexes": [
+        79
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 18,
+      "y": 389.21,
+      "height": 11.96,
+      "text": "you to decide what features to choose, so if you are out in Portland gathering",
+      "itemIndexes": [
+        80
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 19,
+      "y": 374.77,
+      "height": 11.96,
+      "text": "housing data, you might also decide to include other features such as whether",
+      "itemIndexes": [
+        81
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 20,
+      "y": 360.32,
+      "height": 11.96,
+      "text": "each house has a fireplace, the number of bathrooms, and so on. We’ll say",
+      "itemIndexes": [
+        82
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 21,
+      "y": 345.87,
+      "height": 11.96,
+      "text": "more about feature selection later, but for now let’s take the features as",
+      "itemIndexes": [
+        83
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 22,
+      "y": 331.43,
+      "height": 11.96,
+      "text": "given.)",
+      "itemIndexes": [
+        84
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 23,
+      "y": 316.98,
+      "height": 11.96,
+      "text": "To perform supervised learning, we must decide how we’re going to rep-",
+      "itemIndexes": [
+        85
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 24,
+      "y": 302.54,
+      "height": 12,
+      "text": "resent functions/hypotheses h in a computer. As an initial choice, let’s say",
+      "itemIndexes": [
+        86,
+        87,
+        88,
+        89,
+        90
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 25,
+      "y": 288.09,
+      "height": 12,
+      "text": "we decide to approximate y as a linear function of x :",
+      "itemIndexes": [
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 26,
+      "y": 261.3,
+      "height": 12,
+      "text": "h θ ( x ) = θ 0 + θ 1 x 1 + θ 2 x 2",
+      "itemIndexes": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121
+      ],
+      "firstX": 242.58
+    },
+    {
+      "lineId": 27,
+      "y": 235.66,
+      "height": 12,
+      "text": "Here, the θ i ’s are the parameters (also called weights ) parameterizing the",
+      "itemIndexes": [
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 28,
+      "y": 221.36,
+      "height": 12,
+      "text": "space of linear functions mapping from X to Y . When there is no risk of",
+      "itemIndexes": [
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 29,
+      "y": 206.76,
+      "height": 12,
+      "text": "confusion, we will drop the θ subscript in h θ ( x ), and write it more simply as",
+      "itemIndexes": [
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 30,
+      "y": 192.47,
+      "height": 11.96,
+      "text": "h ( x ). To simplify our notation, we also introduce the convention of letting",
+      "itemIndexes": [
+        157,
+        158,
+        159,
+        160
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 31,
+      "y": 177.51,
+      "height": 12,
+      "text": "x 0 = 1 (this is the intercept term ), so that",
+      "itemIndexes": [
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 32,
+      "y": 153.82,
+      "height": 11.96,
+      "text": "∑ d",
+      "itemIndexes": [
+        176,
+        175
+      ],
+      "firstX": 286.16
+    },
+    {
+      "lineId": 33,
+      "y": 140.97,
+      "height": 12,
+      "text": "h ( x ) = θ i x i = θ T x,",
+      "itemIndexes": [
+        170,
+        171,
+        172,
+        173,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191
+      ],
+      "firstX": 247.92
+    },
+    {
+      "lineId": 34,
+      "y": 126.84,
+      "height": 7.97,
+      "text": "i =0",
+      "itemIndexes": [
+        178,
+        179
+      ],
+      "firstX": 287.95
+    },
+    {
+      "lineId": 35,
+      "y": 104.65,
+      "height": 12,
+      "text": "where on the right-hand side above we are viewing θ and x both as vectors,",
+      "itemIndexes": [
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 36,
+      "y": 90,
+      "height": 12,
+      "text": "and here d is the number of input variables (not counting x 0 ).",
+      "itemIndexes": [
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210
+      ],
+      "firstX": 110.85
+    }
+  ]
+}

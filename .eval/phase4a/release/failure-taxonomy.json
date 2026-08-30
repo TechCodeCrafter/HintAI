@@ -1,0 +1,62 @@
+{
+  "phase": "4A.7",
+  "note": "Post-hoc categorization of the frozen blind run. Labels were not edited after seeing Cards. Implementation was not tuned.",
+  "counts": {
+    "answerableHit": 14,
+    "falseSilence": 27,
+    "unsupportedCorrectSilence": 17,
+    "unanswerableSpokeWrongIntent": 20,
+    "answerableWrongDocument": 21,
+    "answerableSameDocSpanMiss": 27,
+    "answerableSamePageSpanMiss": 17,
+    "retrievalTop1MissAmongAnswerable": 22
+  },
+  "layers": {
+    "retrievalMiss": "Top-1 path missed expected PDF on 22/89 answerable (Top-1 75%, Top-3 84%, Top-6 88%). Several lecture/policy questions ranked a different PDF.",
+    "layoutSkip": "cs229-notes.pdf: 27/28 pages skipped (uncertain math layout); only 2035 extracted chars. Lecture questions then retrieved other PDFs.",
+    "twoColumnUndetected": "attention.pdf (IEEE/NIPS two-column) recorded 0 two-column pages, 9 uncertain, 6 skipped. bert.pdf and resnet.pdf: 0 two-column, all uncertain.",
+    "isolatedLineChunkExplosion": "Uncertain pages index as isolated-lines. Production ingest refuses >200 chunks/PDF. Blind bench indexed uncapped chunks. Would-be ingest refusals: bert 781, cisa 945, lora 353, nist-800-207 1154, nist-800-63b 2080, omb 578, resnet 567, tracemonkey 726.",
+    "questionSubjectMismatch": "Casual/follow-up wording often retrieved a lexically similar but different document (hypothesis→TraceMonkey; ransomware→ZTA).",
+    "safeSupportRejection": "27 answerable silences. Many are lexical-engine false silence, not support-gate overreach on a retrieved gold span.",
+    "unsupportedSpoke": "20 lexically tempting unanswerable questions produced supported Cards (disclose/patent, GPU/Transformers, Satoshi email, Devlin name, home/dotgov). Evidence gate admitted them.",
+    "samePageStrictSpan": "17 same-page spoken Cards failed the pre-written span string (hyphenation, partial sentence). Not treated as label corrections. Not counted as hits.",
+    "tableFigure": "Dense tables (ResNet Table 1–5, BERT GLUE table, Bitcoin z/P table) were not used as answerable labels; unanswerable growth-rate/CAGR stayed in the attack set.",
+    "scanned": "scanned.pdf classified scanned; 0 extractable chars.",
+    "encrypted": "encrypted-sample.pdf and encrypted.pdf classified unreadable.",
+    "outsideLimits": "rfc9110 194 pages refused; nist-800-12 101 pages refused; irs-p15 59 pages / 303k chars refused."
+  },
+  "safetyCases": {
+    "stop": true,
+    "rule": "Section 28: unanswerable spoke Cards and wrong-document Cards are wrong-intent. Saved in card-run.json safetyFail. No implementation change.",
+    "examples": [
+      {
+        "id": "un-lora-salary",
+        "q": "What salary did the LoRA authors disclose?",
+        "say": "Disclose such patent claims to ITL.",
+        "cited": "nist-800-207.pdf · Page 6",
+        "whyAdmitted": "Lexical overlap on disclose; verifyClaim passed on the retrieved patent-notice sentence."
+      },
+      {
+        "id": "un-bert-phone",
+        "q": "What's Jacob Devlin's phone number?",
+        "say": "Jacob Devlin Ming-Wei Chang Kenton Lee Kristina Toutanova",
+        "cited": "bert.pdf · Page 1",
+        "whyAdmitted": "Name tokens matched; Card spoke the author line, not a phone number, but still a spoken Card on an unanswerable question."
+      },
+      {
+        "id": "cs229-hypothesis",
+        "q": "What does he call the function we learn?",
+        "say": "Mov edx, ebx(748) // load primes from the trace activation record ...",
+        "cited": "tracemonkey.pdf · Page 3",
+        "whyAdmitted": "cs229 pages skipped; retrieve landed on TraceMonkey; supported assembly listing spoken as the Hint."
+      },
+      {
+        "id": "cisa-what",
+        "q": "What is ransomware according to the guide?",
+        "say": "Different implementers may wish to weigh the above factors differently...",
+        "cited": "nist-800-207.pdf · Page 28",
+        "whyAdmitted": "guide/factors lexical pull to ZTA; wrong document."
+      }
+    ]
+  }
+}

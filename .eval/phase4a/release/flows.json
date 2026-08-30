@@ -1,0 +1,83 @@
+{
+  "phase": "4A.7",
+  "note": "Flows scored from the frozen blind Card run plus code/ingest QA. No product changes.",
+  "student": {
+    "context": ["cs229-notes.pdf", "attention.pdf", "bert.pdf", "resnet.pdf", "lora.pdf", "nist-800-145.pdf", "bitcoin.pdf"],
+    "questions": 20,
+    "ids": [
+      "cs229-houses", "cs229-hypothesis", "cs229-regression", "cs229-cost", "cs229-lms",
+      "cs229-followup-gd", "attn-arch", "attn-bleu-de", "attn-heads", "bert-stands",
+      "bert-glue", "bert-base", "resnet-what", "resnet-depth", "lora-what",
+      "nist145-def", "nist145-counts", "un-prof-grade", "un-gpu-buy", "un-bert-phone"
+    ],
+    "fromBlindRun": {
+      "usefulCards": 1,
+      "safeSilence": 2,
+      "wrongCards": 17,
+      "note": "cs229 is almost unindexed (27/28 pages skipped). Lecture follow-ups retrieved TraceMonkey/BERT/LoRA. Attack questions spoke (midterm→grade literacy; GPU vendor→BERT title; Devlin phone→author line)."
+    },
+    "verdict": "FAIL — not a usable study session on real lecture notes plus papers."
+  },
+  "meeting": {
+    "context": ["nist-800-207.pdf", "omb-m22-09.pdf", "cisa-ransomware.pdf", "nist-800-63b.pdf", "nist-800-145.pdf"],
+    "questions": 22,
+    "ids": [
+      "zta-what", "zta-assume", "zta-mfa", "omb-who", "omb-mfa", "omb-encrypt", "omb-passwords",
+      "cisa-what", "cisa-double", "cisa-backups", "cisa-smb", "63b-password", "63b-length",
+      "nist145-iaas", "un-cloud-cost", "un-omb-vendor", "un-zta-price", "un-ransom-pay",
+      "un-who-owns-zta", "un-isolation-vendor", "un-retry-fail", "un-passwords-lock"
+    ],
+    "fromBlindRun": {
+      "usefulCards": 4,
+      "safeSilence": 7,
+      "wrongCards": 11,
+      "note": "Policy PDFs speak often, including on unsupported vendor/budget/ransom-amount questions. ThreadContext is not evidence (unchanged 4A.4.1). Follow-ups still do not discount document evidence."
+    },
+    "verdict": "FAIL — wrong-intent Cards in a mixed policy Context."
+  },
+  "largeContext": {
+    "readyParseDocs": 12,
+    "uncappedChunks": 7616,
+    "productionCapPerPdf": 200,
+    "productionCapPerContext": 800,
+    "wouldSurviveIngestAlone": ["attention.pdf", "bitcoin.pdf", "cs229-notes.pdf", "nist-800-145.pdf"],
+    "wouldRefuseChunks": ["bert.pdf", "cisa-ransomware.pdf", "lora.pdf", "nist-800-207.pdf", "nist-800-63b.pdf", "omb-m22-09.pdf", "resnet.pdf", "tracemonkey.pdf"],
+    "note": "A realistic 5–10 PDF Context hits the 200-chunk/PDF refuse on typical academic and policy files because uncertain pages emit isolated-line chunks. Incremental Phase 3 behavior is unchanged for text sources; PDF activation would refuse most of this corpus before search.",
+    "verdict": "KEEP COMING SOON — practical Context cannot hold the real-world set."
+  },
+  "reload": {
+    "source": "Phase 4A.6 ingest QA (frozen) + store-ingest tests. Not re-tuned.",
+    "A_reloadMidParse": "resumePdfWork from canonical staged Blob — covered by 4A.6 tests.",
+    "B_replaceReload": "OLD snapshot remains searchable until candidate activation — covered.",
+    "C_reopenReady": "IndexedDB restore of chunks; Blobs lazy — covered.",
+    "D_corruptDerived": "rebuild from canonical Blob — covered.",
+    "verdict": "PASS (prior gate). No new defect found in this phase's code path."
+  },
+  "privacy": {
+    "craftCardOnDocumentCard": 0,
+    "shouldRefineFalseOnAllSpokenReleaseCards": true,
+    "documentChunksInRefinePayload": false,
+    "verdict": "PASS — no document-backed Card triggers craftCard."
+  },
+  "overlayRelay": {
+    "overlay": "Document citations remain non-interactive when overlay is true (cockpit.tsx opensPdf = isDocumentCitation && !overlay).",
+    "relay": "PDF Card/citation stay text-only; source contents do not enter ground.session (unchanged).",
+    "verdict": "PASS (code audit; no product change)."
+  },
+  "mobile": {
+    "note": "No new mobile browser pass in 4A.7 after the safety stop. 4A.6 ingest QA covered desktop add→Ready→Card→citation. Long names/citations were not re-tested on a 390 viewport in this phase.",
+    "verdict": "NOT RE-RUN — do not treat as a ship gate pass."
+  },
+  "console": {
+    "note": "Release harness is Node. Browser console health remains the 4A.6 ingest QA result (16/16) plus the known hidden-input hydration filter. Not expanded.",
+    "verdict": "UNCHANGED"
+  },
+  "firstWorker": {
+    "firstParseMs": { "attention.pdf": 515 },
+    "note": "First real two-column paper parse ~0.5s in Node. UI Reading→Ready feedback from 4A.6 is unchanged. No premature worker optimization."
+  },
+  "resources": {
+    "pdfjsDocumentOpenCountAfterBlindParse": "see card-run.json",
+    "note": "Warm search uses NormalizedDocument/chunks only. Viewer session loads Blobs lazily (4A.5). Uncapped bench opened each corpus PDF once during parse."
+  }
+}

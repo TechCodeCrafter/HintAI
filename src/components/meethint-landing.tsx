@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { joinWaitlist } from "@/lib/waitlist";
 
 /**
@@ -97,14 +98,14 @@ const BEATS: Beat[] = [
 ];
 
 const MATERIAL = [
-  { icon: FileText, label: "PDF" },
-  { icon: FileText, label: "DOCX" },
-  { icon: Presentation, label: "PPTX" },
-  { icon: FileSpreadsheet, label: "Sheets" },
-  { icon: FileCode2, label: "Markdown" },
-  { icon: FileCode2, label: "Code" },
-  { icon: FolderOpen, label: "Whole folder" },
-  { icon: GitBranch, label: "Repository" },
+  { icon: FileText, label: "PDF", soon: true },
+  { icon: FileText, label: "DOCX", soon: true },
+  { icon: Presentation, label: "PPTX", soon: true },
+  { icon: FileSpreadsheet, label: "Sheets", soon: true },
+  { icon: FileCode2, label: "Markdown", soon: false },
+  { icon: FileCode2, label: "Code", soon: false },
+  { icon: FolderOpen, label: "Whole folder", soon: false },
+  { icon: GitBranch, label: "Repository", soon: false },
 ];
 
 /** Ordered by how cold the material usually is, not by how flashy the demo is. */
@@ -203,7 +204,7 @@ function DemoCard() {
 
   return (
     <div className="mh-panel mh-card overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="live-dot inline-block size-2 shrink-0 rounded-full bg-accent shadow-glow" />
           <span className="mh-eyebrow text-accent">Listening</span>
@@ -234,7 +235,7 @@ function DemoCard() {
                   <p className="mh-eyebrow">From your material</p>
                   {beat.cold ? <p className="text-xs text-faint">{beat.cold}</p> : null}
                 </div>
-                <ul className="mh-source divide-y divide-white/[0.05]">
+                <ul className="mh-source divide-y divide-line">
                   {beat.sources.map((source) => {
                     const Icon = SOURCE_ICON[source.kind];
                     return (
@@ -276,13 +277,13 @@ function DemoCard() {
         )}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-white/[0.06] px-4 py-2.5">
+      <div className="flex items-center gap-2 border-t border-line px-4 py-2.5">
         {BEATS.map((item, i) => (
           <span
             key={`${item.session}-${item.asked}`}
             aria-hidden
             className={`h-0.5 flex-1 rounded-full transition-colors duration-300 ${
-              i === index ? "bg-accent" : "bg-white/10"
+              i === index ? "bg-accent" : "bg-gutter"
             }`}
           />
         ))}
@@ -452,10 +453,13 @@ export function MeetHintLanding() {
             <MeetHintMark className="size-7" />
             <span className="brand-word text-sm">MEETHINT</span>
           </div>
-          <span className="mh-chip">
-            <span className="live-dot inline-block size-1.5 rounded-full bg-accent" />
-            Coming soon
-          </span>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <a href="/app" className="mh-chip hover:text-fg">
+              Try MeetHint
+              <ArrowRight aria-hidden className="size-3.5 text-accent" />
+            </a>
+          </div>
         </header>
 
         <main>
@@ -475,8 +479,15 @@ export function MeetHintLanding() {
                 They asked about checkout recovery. You last touched that service in March. MeetHint
                 finds the note, the PR, and the line — while they're still talking.
               </p>
-              <div className="max-w-lg pt-1">
+              <div className="max-w-lg space-y-3 pt-1">
                 <WaitlistForm id="hero-email" />
+                <p className="text-sm text-muted">
+                  Or{" "}
+                  <a href="/app" className="text-accent underline-offset-4 hover:underline">
+                    open the app
+                  </a>{" "}
+                  and try it on a local folder.
+                </p>
               </div>
               <p className="flex items-center gap-2 text-xs text-faint">
                 <ShieldCheck aria-hidden className="size-3.5" />
@@ -542,9 +553,10 @@ export function MeetHintLanding() {
             <SectionLabel>Bring anything</SectionLabel>
             <div className="flex flex-wrap gap-2">
               {MATERIAL.map((item) => (
-                <span key={item.label} className="mh-chip">
+                <span key={item.label} className={`mh-chip${item.soon ? " border-dashed" : ""}`}>
                   <item.icon aria-hidden className="size-3.5 text-accent" />
                   {item.label}
+                  {item.soon ? <span className="text-faint">Coming soon</span> : null}
                 </span>
               ))}
               <span className="mh-chip border-dashed">Google Docs, Notion, Confluence — later</span>
@@ -599,9 +611,11 @@ export function MeetHintLanding() {
           </section>
         </main>
 
-        <footer className="flex flex-col gap-2 border-t border-white/[0.06] py-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
-          <span>meethint.ai — coming soon</span>
-          <span>Private beta · indexed on your machine</span>
+        <footer className="flex flex-col gap-2 border-t border-line py-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
+          <span>meethint.ai — indexed on your machine</span>
+          <a href="/app" className="hover:text-fg">
+            Open app
+          </a>
         </footer>
       </div>
     </div>

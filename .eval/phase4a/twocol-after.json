@@ -1,0 +1,11 @@
+{
+  "readingOrder": "two-column",
+  "columnBreakOffset": 77,
+  "text": "Two-phase locking requires waits on conflicting writes before the lock point.\nSnapshot isolation allows write skew unless extra ch added.",
+  "left": "Two-phase locking requires waits on conflicting writes before the lock point.",
+  "right": "Snapshot isolation allows write skew unless extra ch added.",
+  "chunks": [
+    "Two-phase locking requires waits on conflicting writes before the lock point.",
+    "Snapshot isolation allows write skew unless extra ch added."
+  ]
+}

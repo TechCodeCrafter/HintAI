@@ -5,7 +5,24 @@
  * itself and normalizes it for speech. It never infers sequence, causality or
  * behavior that is not written down. If the evidence does not state what
  * something does, the answer is silence, not a composed guess.
+ *
+ * Every result carries the range it was read from. Extraction rewrites the text
+ * on its way to being spoken — unindenting, rejoining wrapped lines, dropping
+ * comment markers — so the offsets are threaded through those transforms rather
+ * than recovered afterwards by searching for the sentence, which cannot
+ * distinguish two identical sentences and fails outright once the text has been
+ * normalized away from what the file contains.
  */
+import {
+  type Mapped,
+  joinMapped,
+  linesOf,
+  mappedSlice,
+  rangeOf,
+  splitMapped,
+  stripLeading,
+  trimMapped,
+} from "./text-map.ts";
 
 /** A line that explains what the thing does, rather than merely naming it. */
 const DESCRIBES =
@@ -85,15 +102,15 @@ export function plain(text: string): string {
     .replace(LABEL, "")
     .replace(/\s+/g, " ")
     .trim();
-  return spoken.replace(/\u0000(\d+)\u0000/g, (_all, i: string) => code[Number(i)]);
+  const mark = "\u0000";
+  return spoken.replace(new RegExp(`${mark}(\\d+)${mark}`, "g"), (_all, i: string) => code[Number(i)]);
 }
 
 /** One sentence per entry, so a dense paragraph never lands whole on the Card. */
-function sentencesIn(line: string): string[] {
-  return line
-    .split(/(?<=[.!?])\s+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
+function sentencesIn(unit: Mapped): Mapped[] {
+  return splitMapped(unit, /(?<=[.!?])\s+/)
+    .map(trimMapped)
+    .filter((piece) => piece.text.length > 0);
 }
 
 /**
@@ -101,27 +118,27 @@ function sentencesIn(line: string): string[] {
  * reading line-by-line would cut a claim mid-clause — "…using openpyxl and".
  * Headings, bullets and list lead-ins stay separate units.
  */
-function paragraphs(block: string): string[] {
-  const out: string[] = [];
-  let buffer: string[] = [];
+function paragraphs(block: Mapped): Mapped[] {
+  const out: Mapped[] = [];
+  let buffer: Mapped[] = [];
   const flush = () => {
-    if (buffer.length) out.push(buffer.join(" "));
+    if (buffer.length) out.push(joinMapped(buffer, " "));
     buffer = [];
   };
-  for (const raw of block.split("\n")) {
-    const line = raw.trim();
-    if (!line) {
+  for (const raw of linesOf(block)) {
+    const line = trimMapped(raw);
+    if (!line.text) {
       flush();
       continue;
     }
-    if (BULLET.test(line) || line.endsWith(":") || isHeading(line)) {
+    if (BULLET.test(line.text) || line.text.endsWith(":") || isHeading(line.text)) {
       flush();
       out.push(line);
       continue;
     }
     // Only a lowercase start continues a wrapped sentence. A new capital means
     // a new comment line, and joining them would read as a run-on.
-    if (buffer.length && !/^[a-z(]/.test(line)) flush();
+    if (buffer.length && !/^[a-z(]/.test(line.text)) flush();
     buffer.push(line);
   }
   flush();
@@ -131,27 +148,61 @@ function paragraphs(block: string): string[] {
 type Source = { path: string; content: string };
 
 /** The prose a file carries about itself: docstring, block comment, or markdown. */
-function docBlock(source: Source): string {
-  if (/\.(md|mdx|rst|txt)$/i.test(source.path)) return source.content.slice(0, 4000);
-  const py = source.content.match(/(?:"""|''')([\s\S]*?)(?:"""|''')/)?.[1];
-  if (py) return py;
-  const js = source.content.match(/\/\*\*?([\s\S]*?)\*\//)?.[1];
-  if (js) return js.replace(/^\s*\*+/gm, "");
-  return source.content
-    .split("\n")
+function docBlock(source: Source): Mapped {
+  const content = source.content;
+  if (/\.(md|mdx|rst|txt)$/i.test(source.path)) return mappedSlice(content, 0, 4000);
+
+  const py = /(?:"""|''')([\s\S]*?)(?:"""|''')/.exec(content);
+  if (py?.[1]) {
+    const start = py.index + 3;
+    return mappedSlice(content, start, start + py[1].length);
+  }
+
+  const js = /\/\*\*?([\s\S]*?)\*\//.exec(content);
+  if (js?.[1]) {
+    const start = js.index + (js[0].startsWith("/**") ? 3 : 2);
+    const body = mappedSlice(content, start, start + js[1].length);
+    // Per line, so stripping the leading asterisks keeps every offset exact.
+    return joinMapped(
+      linesOf(body).map((line) => stripLeading(line, /\s*\*+/)),
+      "\n",
+    );
+  }
+
+  const commented = linesOf(mappedSlice(content))
     .slice(0, 24)
-    .filter((l) => /^\s*(#|\/\/)/.test(l))
-    .map((l) => l.replace(/^\s*(#|\/\/)+\s?/, ""))
-    .join("\n");
+    .filter((line) => /^\s*(#|\/\/)/.test(line.text))
+    .map((line) => stripLeading(line, /\s*(?:#|\/\/)+\s?/));
+  return joinMapped(commented, "\n");
+}
+
+/**
+ * A piece of prose, and the exact range of the source it was read from.
+ * `raw` is what the file contains; `text` is that same evidence rendered for
+ * speech. Only `raw` is ever used to prove support.
+ */
+export type ProseSpan = {
+  raw: string;
+  text: string;
+  start: number;
+  end: number;
+};
+
+function proseSpan(unit: Mapped, render: (raw: string) => string = plain): ProseSpan | null {
+  const range = rangeOf(unit);
+  if (!range) return null;
+  const text = render(unit.text);
+  if (!text) return null;
+  return { raw: unit.text, text, start: range.start, end: range.end };
 }
 
 export type Prose = {
   /** The first written sentence that states behavior. */
-  description: string;
+  description: ProseSpan | null;
   /** Bulleted capabilities beneath it, in the file's own words. */
-  capabilities: string[];
+  capabilities: ProseSpan[];
   /** The line introducing those bullets, e.g. "This API provides endpoints for". */
-  listLead: string | null;
+  listLead: ProseSpan | null;
 };
 
 /**
@@ -160,37 +211,52 @@ export type Prose = {
  */
 export function proseOf(source: Source): Prose | null {
   const block = docBlock(source);
-  if (!block.trim()) return null;
-  const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (!block.text.trim()) return null;
+  const lines = linesOf(block)
+    .map(trimMapped)
+    .filter((line) => line.text.length > 0);
 
-  const description = paragraphs(block)
-    .filter((line) => !isHeading(line) && !BULLET.test(line) && !line.endsWith(":"))
+  const descriptive = paragraphs(block)
+    .filter((unit) => !isHeading(unit.text) && !BULLET.test(unit.text) && !unit.text.endsWith(":"))
     .flatMap(sentencesIn)
-    .find(isDescriptive);
+    .find((sentence) => isDescriptive(sentence.text));
+
+  // Never truncate: a sentence too long to say is dropped, not clipped.
+  const candidate = descriptive ? proseSpan(descriptive) : null;
+  const description = candidate && candidate.text.length <= 240 ? candidate : null;
 
   const capabilities = lines
-    .filter((l) => BULLET.test(l))
-    .map((l) => plain(l.replace(BULLET, "")).replace(/[.,;]$/, "").trim())
+    .filter((line) => BULLET.test(line.text))
+    .map((line) =>
+      proseSpan(stripLeading(line, BULLET), (raw) => {
+        const spoken = plain(raw).replace(/[.,;]$/, "").trim();
+        return /^[A-Z][a-z]/.test(spoken) ? `${spoken[0].toLowerCase()}${spoken.slice(1)}` : spoken;
+      }),
+    )
+    .filter((span): span is ProseSpan => span !== null)
     // A capability is a short phrase. Separators mean it is a nested list.
-    .filter((l) => l.length > 2 && l.length < 60 && !/[·—|:]/.test(l))
-    .map((l) => (/^[A-Z][a-z]/.test(l) ? `${l[0].toLowerCase()}${l.slice(1)}` : l))
+    .filter((span) => span.text.length > 2 && span.text.length < 60 && !/[·—|:]/.test(span.text))
     .slice(0, 6);
 
   // The line directly above the first bullet, when it introduces the list.
-  const firstBullet = lines.findIndex((l) => BULLET.test(l));
-  let listLead: string | null = null;
+  const firstBullet = lines.findIndex((line) => BULLET.test(line.text));
+  let listLead: ProseSpan | null = null;
   if (firstBullet > 0) {
     const above = lines[firstBullet - 1];
-    if (above.endsWith(":") && !isHeading(above)) {
-      listLead = plain(above.replace(/:$/, ""));
+    if (above.text.endsWith(":") && !isHeading(above.text)) {
+      listLead = proseSpan(trimMapped(sliceColon(above)), plain);
     }
   }
 
-  // Never truncate: a sentence too long to say is dropped, not clipped.
-  const spoken = description ? plain(description) : "";
-  const usable = spoken.length <= 240 ? spoken : "";
-  if (!usable && capabilities.length < 2) return null;
-  return { description: usable, capabilities, listLead };
+  if (!description && capabilities.length < 2) return null;
+  return { description, capabilities, listLead };
+}
+
+/** Drops the trailing colon from a list lead-in, keeping its coordinates. */
+function sliceColon(line: Mapped): Mapped {
+  return line.text.endsWith(":")
+    ? { text: line.text.slice(0, -1), at: line.at.slice(0, -1) }
+    : line;
 }
 
 const COUNT_WORDS = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];

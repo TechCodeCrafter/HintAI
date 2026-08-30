@@ -1,0 +1,614 @@
+{
+  "phase": "4A.8",
+  "source": "Hand review of frozen .eval/phase4a/release/card-run.json. Labels were not edited.",
+  "accounting": {
+    "questions": 126,
+    "answerable": 89,
+    "answerableSilences": 27,
+    "answerableSpoke": 62,
+    "answerableHits": 14,
+    "answerableWrong": 48,
+    "unanswerable": 37,
+    "unanswerableSpoke": 20,
+    "wrongIntentFrozen": 68,
+    "reconciled": true,
+    "evalSpanNearHitsLoggedSeparately": 8,
+    "genuineRelevanceFailures": 60,
+    "note": "8 of 48 answerable-wrong Cards would be accepted by a human as answering the question; the frozen gate failed a pre-written span string. Labels were not changed. Those 8 are layer I-eval-span."
+  },
+  "layerCounts": {
+    "A-source-reference": 13,
+    "B-subject": 10,
+    "C-predicate-relation": 14,
+    "D-answer-type": 8,
+    "E-shared-vocabulary": 9,
+    "F-enumeration": 2,
+    "G-thread-reference": 2,
+    "H-parser-damage": 2,
+    "I-eval-span": 8,
+    "J-other": 0
+  },
+  "layerPctOf68": {
+    "A-source-reference": "13/68 (19.1%)",
+    "B-subject": "10/68 (14.7%)",
+    "C-predicate-relation": "14/68 (20.6%)",
+    "D-answer-type": "8/68 (11.8%)",
+    "E-shared-vocabulary": "9/68 (13.2%)",
+    "F-enumeration": "2/68 (2.9%)",
+    "G-thread-reference": "2/68 (2.9%)",
+    "H-parser-damage": "2/68 (2.9%)",
+    "I-eval-span": "8/68 (11.8%)",
+    "J-other": "0/68 (0%)"
+  },
+  "tracksAmong68": {
+    "SOURCE_PARSER_FAILURE": 9,
+    "RETRIEVAL_FAILURE": 0,
+    "ADMISSION_FAILURE": 59
+  },
+  "answerable48kinds": {
+    "A-top1-wrong-extract": 24,
+    "B-top2-6-wrong-higher-admitted": 11,
+    "C-not-in-top6": 0,
+    "D-parser-chunking": 9,
+    "E-source-label": 4,
+    "F-other": 0
+  },
+  "top6": {
+    "expectedDocumentInTop6Among48": 43,
+    "expectedDocumentMissingAmong48": 5,
+    "expectedPageInTop6Among48": 25,
+    "idsMissingExpectedDocument": [
+      "cs229-hypothesis",
+      "cs229-lms",
+      "cs229-batch",
+      "cs229-normal",
+      "cs229-followup-gd"
+    ]
+  },
+  "cases": [
+    {
+      "id": "cs229-hypothesis",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "After 4A.9 restores the lecture page: subject+source (he/the lecture) must not admit TraceMonkey. Today gold page 2 is skipped."
+    },
+    {
+      "id": "cs229-regression",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "WHEN/definition: leftover 'just like the regression' does not state the continuous-target criterion."
+    },
+    {
+      "id": "cs229-classification",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "WHEN/definition: section opener is not the discrete-y criterion."
+    },
+    {
+      "id": "cs229-cost",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "hypothesis as content subject must not admit BERT hypothesis-premise."
+    },
+    {
+      "id": "cs229-lms",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "LMS expansion ≠ LM/LMs. Expansion/acronym contract."
+    },
+    {
+      "id": "cs229-batch",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "batch gradient descent ≠ a LoRA bibliography line about SGD."
+    },
+    {
+      "id": "cs229-normal",
+      "bucket": "answerable-wrong",
+      "layer": "G-thread-reference",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "again + closed form/theta should resolve to the lecture document, then silence if that page is unreadable."
+    },
+    {
+      "id": "cs229-followup-gd",
+      "bucket": "answerable-wrong",
+      "layer": "G-thread-reference",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "And the other way… is a thread continuation. Unresolved lecture source → silence."
+    },
+    {
+      "id": "cisa-what",
+      "bucket": "answerable-wrong",
+      "layer": "A-source-reference",
+      "kind48": "E-source-label",
+      "track": "ADMISSION_FAILURE",
+      "gate": "sourceSelector 'the guide' (one CISA guide in Context) must reject nist-800-207."
+    },
+    {
+      "id": "cisa-double",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "what-do-they-call / naming relation: claim must introduce the term (double extortion), not one clause of the description."
+    },
+    {
+      "id": "cisa-parts",
+      "bucket": "answerable-wrong",
+      "layer": "A-source-reference",
+      "kind48": "E-source-label",
+      "track": "ADMISSION_FAILURE",
+      "gate": "the guide + enumeration of two resources. CISA#3 was Top-1. OMB 'guide' sentence must be source-rejected."
+    },
+    {
+      "id": "cisa-backups",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "recommend + backups. 'some kind' of authentication is the wrong relation."
+    },
+    {
+      "id": "attn-arch",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. Spoken Card names the Transformer. Frozen span wanted 'based solely on attention mechanisms'. Do not retune labels."
+    },
+    {
+      "id": "attn-bleu-de",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. 28.4 BLEU English- is the right fact; hyphenation cut 'German'."
+    },
+    {
+      "id": "attn-encoder-n",
+      "bucket": "answerable-wrong",
+      "layer": "B-subject",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "encoder + quantity N=6. TraceMonkey 'identical type maps' does not establish encoder. Gold attention#3 was Top-1 and silent."
+    },
+    {
+      "id": "attn-dmodel",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "dimension/produce vs layer cardinality. Need d_model=512, not 'two sub-layers'."
+    },
+    {
+      "id": "attn-why-scale",
+      "bucket": "answerable-wrong",
+      "layer": "B-subject",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "dot products ≠ DotGov. Gold attention#4 was Top-1. WHY still needs rationale about scaling."
+    },
+    {
+      "id": "attn-dropout",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "D-parser-chunking",
+      "track": "SOURCE_PARSER_FAILURE",
+      "gate": "dropout rate ≠ training-step duration. Page 8 likely skipped/unindexed."
+    },
+    {
+      "id": "bert-stands",
+      "bucket": "answerable-wrong",
+      "layer": "H-parser-damage",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "Smashed two-column join. Presentation/unusable extract → silence even on the right page."
+    },
+    {
+      "id": "bert-glue",
+      "bucket": "answerable-wrong",
+      "layer": "D-answer-type",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "quantity: 'pushing the GLUE score to' without 80.5% is not a quantity answer."
+    },
+    {
+      "id": "bert-base",
+      "bucket": "answerable-wrong",
+      "layer": "B-subject",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "BERT BASE sizes ≠ Attention 'base models' training schedule. Gold bert#3 was Top-1."
+    },
+    {
+      "id": "bert-nsp",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "HOW generated (50% next / 50% random) ≠ the task name alone."
+    },
+    {
+      "id": "resnet-depth",
+      "bucket": "answerable-wrong",
+      "layer": "D-answer-type",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "how-deep / 152 layers. 'extremely deep' is not the quantity."
+    },
+    {
+      "id": "resnet-error",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. Spoken Card has 3.57% ensemble error. Frozen span match failed on adjacent words."
+    },
+    {
+      "id": "lora-what",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "freeze target is pre-trained weights, not MLP modules in the ablation."
+    },
+    {
+      "id": "lora-reduce",
+      "bucket": "answerable-wrong",
+      "layer": "D-answer-type",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "how-much vs GPT-3 175B needs 10,000× (or 10,000 times), not a generic reduce-parameters sentence."
+    },
+    {
+      "id": "lora-rank",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "how-small / rank value (one or two), not 'smaller low-rank matrices'."
+    },
+    {
+      "id": "btc-header",
+      "bucket": "answerable-wrong",
+      "layer": "B-subject",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "block header size ≠ 'big models'. Gold bitcoin#4 was Top-1."
+    },
+    {
+      "id": "btc-rate",
+      "bucket": "answerable-wrong",
+      "layer": "B-subject",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "block generation interval. 'Suppose we are given' is LoRA setup, not Bitcoin."
+    },
+    {
+      "id": "btc-majority",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "network secure (honest CPU majority) ≠ HWAM secure configuration."
+    },
+    {
+      "id": "btc-steps",
+      "bucket": "answerable-wrong",
+      "layer": "F-enumeration",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "first step of a listed procedure. List header without members is not the enumeration."
+    },
+    {
+      "id": "tm-what",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. Trace-based compilation technique is the right claim."
+    },
+    {
+      "id": "tm-name",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY / hyphen cut Trace-Monkey. Right page, right naming sentence."
+    },
+    {
+      "id": "tm-loops",
+      "bucket": "answerable-wrong",
+      "layer": "H-parser-damage",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "Smashed column join. Unusable WHY extract → silence."
+    },
+    {
+      "id": "tm-nested",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "HOW/solve must include the method (nested trace trees), not 'by recording'."
+    },
+    {
+      "id": "tm-base",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "which interpreter = SpiderMonkey, not LIR stores the interpreter would do."
+    },
+    {
+      "id": "nist145-def",
+      "bucket": "answerable-wrong",
+      "layer": "A-source-reference",
+      "kind48": "E-source-label",
+      "track": "ADMISSION_FAILURE",
+      "gate": "NIST + define cloud computing. Multiple NIST PDFs → require 800-145 or silence if ambiguous. 800-63b 'define' is wrong source."
+    },
+    {
+      "id": "nist145-counts",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. Five / three / four is the labeled fact."
+    },
+    {
+      "id": "nist145-hybrid",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. Hybrid-cloud definition sentence is the labeled fact."
+    },
+    {
+      "id": "zta-mfa",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "authentication they expect (MFA) ≠ users will expect Government services."
+    },
+    {
+      "id": "omb-pillars",
+      "bucket": "answerable-wrong",
+      "layer": "F-enumeration",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "five pillars must enumerate Identity, Devices, Networks, Applications and Workloads, Data."
+    },
+    {
+      "id": "omb-encrypt",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "encrypt set is DNS requests and HTTP. HTTP-only is the wrong (incomplete) relation set."
+    },
+    {
+      "id": "63b-withdrawn",
+      "bucket": "answerable-wrong",
+      "layer": "A-source-reference",
+      "kind48": "E-source-label",
+      "track": "ADMISSION_FAILURE",
+      "gate": "SP 800-63B source selector. Bitcoin 'what happened' must be rejected. Gold 63b#1 was rank 2."
+    },
+    {
+      "id": "63b-aal1",
+      "bucket": "answerable-wrong",
+      "layer": "I-eval-span",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "EVAL ONLY. AAL1 provides some assurance… is the definition; cited page 13 vs labeled 16."
+    },
+    {
+      "id": "63b-password",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "memorized secret commonly called (password/PIN). Gold 63b#24 was Top-1 and silent; 'called' matched TraceMonkey."
+    },
+    {
+      "id": "63b-complexity",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "impose complexity rules ≠ impose significant cost."
+    },
+    {
+      "id": "63b-aal3",
+      "bucket": "answerable-wrong",
+      "layer": "E-shared-vocabulary",
+      "kind48": "B-top2-6-wrong-higher-admitted",
+      "track": "ADMISSION_FAILURE",
+      "gate": "satisfy AAL3 ≠ satisfy proof-of-work. Gold 63b#18 was Top-1."
+    },
+    {
+      "id": "63b-pii",
+      "bucket": "answerable-wrong",
+      "layer": "C-predicate-relation",
+      "kind48": "A-top1-wrong-extract",
+      "track": "ADMISSION_FAILURE",
+      "gate": "what AAL agencies select (AAL2) ≠ restating the PII-online condition."
+    },
+    {
+      "id": "un-growth",
+      "bucket": "unanswerable-spoke",
+      "layer": "D-answer-type",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "quantity/rate required. '48th Annual Meeting' is not an annual growth rate. Silence."
+    },
+    {
+      "id": "un-gpu-buy",
+      "bucket": "unanswerable-spoke",
+      "layer": "B-subject",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "GPU vendor recommendation not established by a BERT title. Also recommendation+enumeration. Silence."
+    },
+    {
+      "id": "un-lora-salary",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "LoRA authors + salary quantity. nist-800-207 'Disclose … patent' is the wrong source and wrong relation. Silence."
+    },
+    {
+      "id": "un-prof-grade",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "the professor / lecture. 800-63B literacy-grade is the wrong source. Silence."
+    },
+    {
+      "id": "un-omb-vendor",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "OMB + SSO vendor mandate. CISA Windows 'mandate' is the wrong source. Silence."
+    },
+    {
+      "id": "un-zta-price",
+      "bucket": "unanswerable-spoke",
+      "layer": "D-answer-type",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "budget quantity. 'previous rollout' has no amount. Silence."
+    },
+    {
+      "id": "un-63b-vendor",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "800-63B + password-manager requirement. 800-207 managers is the wrong source. Silence."
+    },
+    {
+      "id": "un-tm-firefox-share",
+      "bucket": "unanswerable-spoke",
+      "layer": "D-answer-type",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "market-share quantity. Firefox embedding sentence has no share. Silence."
+    },
+    {
+      "id": "un-hybrid-sla",
+      "bucket": "unanswerable-spoke",
+      "layer": "C-predicate-relation",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "SLA/require vs hybrid-cloud definition. Subject matches, relation does not. Silence."
+    },
+    {
+      "id": "un-ransom-pay",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "CISA + how-much pay. CISA#21 was Top-1 (and itself not a dollar amount). cs229 'what we say' must not win. Silence."
+    },
+    {
+      "id": "un-theta0-secret",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "the lecture + secret API key. OMB production servers is the wrong source. Silence."
+    },
+    {
+      "id": "un-isolation-vendor",
+      "bucket": "unanswerable-spoke",
+      "layer": "B-subject",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "database isolation vendor ≠ environmental isolation. Silence."
+    },
+    {
+      "id": "un-scan-text",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "scanned PDF is a typed source. File is scanned/empty. Unresolved or empty source → silence. Must not answer from cs229."
+    },
+    {
+      "id": "un-enc-secret",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "encrypted PDF password. File is unreadable. Must not answer from OMB encrypted DNS. Silence."
+    },
+    {
+      "id": "un-irs-ssn",
+      "bucket": "unanswerable-spoke",
+      "layer": "A-source-reference",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "Publication 15 is refused. Must not answer from TraceMonkey 'sample program'. Silence."
+    },
+    {
+      "id": "un-personal",
+      "bucket": "unanswerable-spoke",
+      "layer": "D-answer-type",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "person/location: home address ≠ DotGov home page. Silence."
+    },
+    {
+      "id": "un-bert-phone",
+      "bucket": "unanswerable-spoke",
+      "layer": "D-answer-type",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "phone-number identifier. Author line is not a phone number. Silence."
+    },
+    {
+      "id": "un-satoshi-kyc",
+      "bucket": "unanswerable-spoke",
+      "layer": "B-subject",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "KYC vendor not established by the author-email line. Silence."
+    },
+    {
+      "id": "un-figure-secret",
+      "bucket": "unanswerable-spoke",
+      "layer": "B-subject",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "unpublished / hidden in Figure 1 ≠ Figure 5 MNLI accuracy. Silence."
+    },
+    {
+      "id": "un-retry-fail",
+      "bucket": "unanswerable-spoke",
+      "layer": "B-subject",
+      "kind48": null,
+      "track": "ADMISSION_FAILURE",
+      "gate": "customer passwords + retry-fail. TraceMonkey VM-fail is the wrong subject. Shape=failure currently admits any fail verb. Silence."
+    }
+  ]
+}

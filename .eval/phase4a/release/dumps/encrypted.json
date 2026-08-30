@@ -1,0 +1,9 @@
+{
+  "file": "encrypted.pdf",
+  "bytes": 647,
+  "pages": null,
+  "extractablePages": 0,
+  "rawChars": 0,
+  "encrypted": true,
+  "error": "No password given"
+}

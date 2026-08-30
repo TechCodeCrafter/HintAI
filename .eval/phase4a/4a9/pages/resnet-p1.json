@@ -1,0 +1,2857 @@
+{
+  "file": "resnet.pdf",
+  "page": 1,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 52.1:40, 130.8:6, 192.3:6, 274.3:6, 312.6:42, 356.2:5, 394.9:5, 432.3:7, 493.1:15, 537.3:2)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 489.6 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 10,
+    "substantialClusterCount": 10,
+    "clusters": [
+      {
+        "x": 52.13,
+        "items": 40,
+        "meanWidth": 203.15,
+        "yMin": 81,
+        "yMax": 538.22
+      },
+      {
+        "x": 130.84,
+        "items": 6,
+        "meanWidth": 124.3,
+        "yMin": 394.76,
+        "yMax": 675.07
+      },
+      {
+        "x": 192.31,
+        "items": 6,
+        "meanWidth": 69.02,
+        "yMin": 298.69,
+        "yMax": 630.54
+      },
+      {
+        "x": 274.32,
+        "items": 6,
+        "meanWidth": 23.42,
+        "yMin": 51.11,
+        "yMax": 613.81
+      },
+      {
+        "x": 312.63,
+        "items": 42,
+        "meanWidth": 159.22,
+        "yMin": 81,
+        "yMax": 630.54
+      },
+      {
+        "x": 356.22,
+        "items": 5,
+        "meanWidth": 82.93,
+        "yMin": 214.47,
+        "yMax": 497.32
+      },
+      {
+        "x": 394.87,
+        "items": 5,
+        "meanWidth": 29.78,
+        "yMin": 238.38,
+        "yMax": 523.48
+      },
+      {
+        "x": 432.26,
+        "items": 7,
+        "meanWidth": 12.54,
+        "yMin": 497.32,
+        "yMax": 630.54
+      },
+      {
+        "x": 493.12,
+        "items": 15,
+        "meanWidth": 28.34,
+        "yMin": 140.78,
+        "yMax": 546.3
+      },
+      {
+        "x": 537.33,
+        "items": 2,
+        "meanWidth": 4.43,
+        "yMin": 407.72,
+        "yMax": 497.32
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 52.13,
+      "items": 40,
+      "meanWidth": 203.15,
+      "yMin": 81,
+      "yMax": 538.22
+    },
+    {
+      "x": 130.84,
+      "items": 6,
+      "meanWidth": 124.3,
+      "yMin": 394.76,
+      "yMax": 675.07
+    },
+    {
+      "x": 192.31,
+      "items": 6,
+      "meanWidth": 69.02,
+      "yMin": 298.69,
+      "yMax": 630.54
+    },
+    {
+      "x": 274.32,
+      "items": 6,
+      "meanWidth": 23.42,
+      "yMin": 51.11,
+      "yMax": 613.81
+    },
+    {
+      "x": 312.63,
+      "items": 42,
+      "meanWidth": 159.22,
+      "yMin": 81,
+      "yMax": 630.54
+    },
+    {
+      "x": 356.22,
+      "items": 5,
+      "meanWidth": 82.93,
+      "yMin": 214.47,
+      "yMax": 497.32
+    },
+    {
+      "x": 394.87,
+      "items": 5,
+      "meanWidth": 29.78,
+      "yMin": 238.38,
+      "yMax": 523.48
+    },
+    {
+      "x": 432.26,
+      "items": 7,
+      "meanWidth": 12.54,
+      "yMin": 497.32,
+      "yMax": 630.54
+    },
+    {
+      "x": 493.12,
+      "items": 15,
+      "meanWidth": 28.34,
+      "yMin": 140.78,
+      "yMax": 546.3
+    },
+    {
+      "x": 537.33,
+      "items": 2,
+      "meanWidth": 4.43,
+      "yMin": 407.72,
+      "yMax": 497.32
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 85,
+    "clusters": [
+      {
+        "x": 52.06,
+        "items": 36,
+        "share": 0.424
+      },
+      {
+        "x": 310.55,
+        "items": 33,
+        "share": 0.388
+      }
+    ],
+    "twoDominant": true,
+    "overlap": 457.22,
+    "topShare": 0.8117647058823529
+  },
+  "ySpanOverlap": 457.22,
+  "gutterCandidates": [
+    {
+      "between": [
+        52.13,
+        130.84
+      ],
+      "gap": 78.71000000000001
+    },
+    {
+      "between": [
+        130.84,
+        192.31
+      ],
+      "gap": 61.47
+    },
+    {
+      "between": [
+        192.31,
+        274.32
+      ],
+      "gap": 82.00999999999999
+    },
+    {
+      "between": [
+        274.32,
+        312.63
+      ],
+      "gap": 38.31
+    },
+    {
+      "between": [
+        312.63,
+        356.22
+      ],
+      "gap": 43.59000000000003
+    },
+    {
+      "between": [
+        356.22,
+        394.87
+      ],
+      "gap": 38.64999999999998
+    },
+    {
+      "between": [
+        394.87,
+        432.26
+      ],
+      "gap": 37.389999999999986
+    },
+    {
+      "between": [
+        432.26,
+        493.12
+      ],
+      "gap": 60.860000000000014
+    },
+    {
+      "between": [
+        493.12,
+        537.33
+      ],
+      "gap": 44.210000000000036
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Deep Residual Learning for Image Recognition",
+      "x": 153.45,
+      "y": 675.07,
+      "width": 288.33,
+      "height": 14.35,
+      "right": 441.78,
+      "visualLineId": 0,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 1,
+      "str": "",
+      "x": 136.39,
+      "y": 630.54,
+      "width": 0,
+      "height": 0,
+      "right": 140.39,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 2,
+      "str": "Kaiming He",
+      "x": 136.39,
+      "y": 630.54,
+      "width": 58.77,
+      "height": 11.96,
+      "right": 195.16,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 3,
+      "str": " ",
+      "x": 195.16,
+      "y": 630.54,
+      "width": 26.9,
+      "height": 0,
+      "right": 222.06,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 4,
+      "str": "Xiangyu Zhang",
+      "x": 222.06,
+      "y": 630.54,
+      "width": 74.71,
+      "height": 11.96,
+      "right": 296.77,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 5,
+      "str": " ",
+      "x": 296.77,
+      "y": 630.54,
+      "width": 26.9,
+      "height": 0,
+      "right": 323.67,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 6,
+      "str": "Shaoqing Ren",
+      "x": 323.67,
+      "y": 630.54,
+      "width": 67.42,
+      "height": 11.96,
+      "right": 391.08,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 7,
+      "str": " ",
+      "x": 391.08,
+      "y": 630.54,
+      "width": 26.9,
+      "height": 0,
+      "right": 417.98,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 8,
+      "str": "Jian Sun",
+      "x": 417.98,
+      "y": 630.54,
+      "width": 40.85,
+      "height": 11.96,
+      "right": 458.83,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 9,
+      "str": "Microsoft Research",
+      "x": 249.14,
+      "y": 613.81,
+      "width": 93.96,
+      "height": 11.96,
+      "right": 343.1,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 10,
+      "str": "",
+      "x": 195.49,
+      "y": 599.46,
+      "width": 0,
+      "height": 0,
+      "right": 199.49,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 11,
+      "str": "{",
+      "x": 195.49,
+      "y": 599.46,
+      "width": 4.98,
+      "height": 9.96,
+      "right": 200.47,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 12,
+      "str": "kahe, v-xiangz, v-shren, jiansun",
+      "x": 200.47,
+      "y": 599.46,
+      "width": 127.27,
+      "height": 9.96,
+      "right": 327.74,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 13,
+      "str": "}",
+      "x": 327.74,
+      "y": 599.46,
+      "width": 4.98,
+      "height": 9.96,
+      "right": 332.73,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 14,
+      "str": "@microsoft.com",
+      "x": 332.73,
+      "y": 599.46,
+      "width": 67.01,
+      "height": 9.96,
+      "right": 399.73,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 15,
+      "str": "",
+      "x": 146,
+      "y": 557.58,
+      "width": 0,
+      "height": 0,
+      "right": 150,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 16,
+      "str": "Abstract",
+      "x": 146,
+      "y": 557.58,
+      "width": 44.49,
+      "height": 11.96,
+      "right": 190.48,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 17,
+      "str": "",
+      "x": 62.07,
+      "y": 538.22,
+      "width": 0,
+      "height": 0,
+      "right": 66.07,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 18,
+      "str": "Deeper neural networks are more difficult to train. We",
+      "x": 62.07,
+      "y": 538.22,
+      "width": 224.3,
+      "height": 9.96,
+      "right": 286.36,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 19,
+      "str": "present a residual learning framework to ease the training",
+      "x": 50.11,
+      "y": 526.27,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 20,
+      "str": "of networks that are substantially deeper than those used",
+      "x": 50.11,
+      "y": 514.31,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 21,
+      "str": "previously.",
+      "x": 50.11,
+      "y": 502.36,
+      "width": 42.93,
+      "height": 9.96,
+      "right": 93.04,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 22,
+      "str": " ",
+      "x": 93.04,
+      "y": 502.36,
+      "width": 6.7,
+      "height": 0,
+      "right": 99.75,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 23,
+      "str": "We explicitly reformulate the layers as learn-",
+      "x": 99.75,
+      "y": 502.36,
+      "width": 186.62,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 24,
+      "str": "ing residual functions with reference to the layer inputs, in-",
+      "x": 50.11,
+      "y": 490.4,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 12,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 25,
+      "str": "stead of learning unreferenced functions. We provide com-",
+      "x": 50.11,
+      "y": 478.45,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 13,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 26,
+      "str": "prehensive empirical evidence showing that these residual",
+      "x": 50.11,
+      "y": 466.49,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 27,
+      "str": "networks are easier to optimize, and can gain accuracy from",
+      "x": 50.11,
+      "y": 454.54,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 15,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 28,
+      "str": "considerably increased depth. On the ImageNet dataset we",
+      "x": 50.11,
+      "y": 442.58,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 17,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 29,
+      "str": "evaluate residual nets with a depth of up to 152 layers—8",
+      "x": 50.11,
+      "y": 430.62,
+      "width": 228.5,
+      "height": 9.96,
+      "right": 278.61,
+      "visualLineId": 18,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 30,
+      "str": "×",
+      "x": 278.61,
+      "y": 430.62,
+      "width": 7.75,
+      "height": 9.96,
+      "right": 286.36,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 31,
+      "str": "",
+      "x": 50.11,
+      "y": 418.67,
+      "width": 0,
+      "height": 0,
+      "right": 54.11,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 32,
+      "str": "deeper than VGG nets [41] but still having lower complex-",
+      "x": 50.11,
+      "y": 418.67,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 33,
+      "str": "ity. An ensemble of these residual nets achieves 3.57% error",
+      "x": 50.11,
+      "y": 406.71,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 20,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 34,
+      "str": "on the ImageNet",
+      "x": 50.11,
+      "y": 394.76,
+      "width": 64.58,
+      "height": 9.96,
+      "right": 114.69,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 35,
+      "str": " ",
+      "x": 114.69,
+      "y": 394.76,
+      "width": 2.13,
+      "height": 0,
+      "right": 116.82,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 36,
+      "str": "test",
+      "x": 116.82,
+      "y": 394.76,
+      "width": 13.84,
+      "height": 9.96,
+      "right": 130.66,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 37,
+      "str": " ",
+      "x": 130.66,
+      "y": 394.76,
+      "width": 1.95,
+      "height": 0,
+      "right": 132.61,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 38,
+      "str": "set. This result won the 1st place on the",
+      "x": 132.61,
+      "y": 394.76,
+      "width": 153.75,
+      "height": 9.96,
+      "right": 286.36,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 39,
+      "str": "ILSVRC 2015 classification task. We also present analysis",
+      "x": 50.11,
+      "y": 382.81,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 22,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 40,
+      "str": "on CIFAR-10 with 100 and 1000 layers.",
+      "x": 50.11,
+      "y": 370.85,
+      "width": 158.98,
+      "height": 9.96,
+      "right": 209.1,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 41,
+      "str": "The depth of representations is of central importance",
+      "x": 62.07,
+      "y": 358.47,
+      "width": 224.3,
+      "height": 9.96,
+      "right": 286.36,
+      "visualLineId": 24,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 42,
+      "str": "for many visual recognition tasks.",
+      "x": 50.11,
+      "y": 346.51,
+      "width": 140.69,
+      "height": 9.96,
+      "right": 190.8,
+      "visualLineId": 25,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 190.8,
+      "y": 346.51,
+      "width": 7.47,
+      "height": 0,
+      "right": 198.28,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 44,
+      "str": "Solely due to our ex-",
+      "x": 198.28,
+      "y": 346.51,
+      "width": 88.09,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 45,
+      "str": "tremely deep representations, we obtain a 28% relative im-",
+      "x": 50.11,
+      "y": 334.56,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 26,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 46,
+      "str": "provement on the COCO object detection dataset.",
+      "x": 50.11,
+      "y": 322.6,
+      "width": 207.56,
+      "height": 9.96,
+      "right": 257.67,
+      "visualLineId": 27,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 257.67,
+      "y": 322.6,
+      "width": 7.67,
+      "height": 0,
+      "right": 265.34,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 48,
+      "str": "Deep",
+      "x": 265.34,
+      "y": 322.6,
+      "width": 21.02,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 49,
+      "str": "residual nets are foundations of our submissions to ILSVRC",
+      "x": 50.11,
+      "y": 310.65,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 50,
+      "str": "& COCO 2015 competitions",
+      "x": 50.11,
+      "y": 298.69,
+      "width": 116.67,
+      "height": 9.96,
+      "right": 166.78,
+      "visualLineId": 29,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 51,
+      "str": "1",
+      "x": 166.78,
+      "y": 302.31,
+      "width": 3.49,
+      "height": 6.97,
+      "right": 170.27,
+      "visualLineId": 29,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 52,
+      "str": ", where we also won the 1st",
+      "x": 170.77,
+      "y": 298.69,
+      "width": 115.6,
+      "height": 9.96,
+      "right": 286.36,
+      "visualLineId": 29,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 53,
+      "str": "places on the tasks of ImageNet detection, ImageNet local-",
+      "x": 50.11,
+      "y": 286.74,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 30,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 54,
+      "str": "ization, COCO detection, and COCO segmentation.",
+      "x": 50.11,
+      "y": 274.78,
+      "width": 206.6,
+      "height": 9.96,
+      "right": 256.72,
+      "visualLineId": 31,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 55,
+      "str": "",
+      "x": 50.11,
+      "y": 247.6,
+      "width": 0,
+      "height": 0,
+      "right": 54.11,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 56,
+      "str": "1. Introduction",
+      "x": 50.11,
+      "y": 247.6,
+      "width": 76.84,
+      "height": 11.96,
+      "right": 126.95,
+      "visualLineId": 33,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 57,
+      "str": "",
+      "x": 62.07,
+      "y": 228.24,
+      "width": 0,
+      "height": 0,
+      "right": 66.07,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 58,
+      "str": "Deep convolutional neural networks [22, 21] have led",
+      "x": 62.07,
+      "y": 228.24,
+      "width": 224.3,
+      "height": 9.96,
+      "right": 286.36,
+      "visualLineId": 34,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 59,
+      "str": "to a series of breakthroughs for image classification [21,",
+      "x": 50.11,
+      "y": 216.29,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 36,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 60,
+      "str": "50, 40].",
+      "x": 50.11,
+      "y": 204.33,
+      "width": 31.73,
+      "height": 9.96,
+      "right": 81.84,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 61,
+      "str": " ",
+      "x": 81.84,
+      "y": 204.33,
+      "width": 6.15,
+      "height": 0,
+      "right": 87.99,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 62,
+      "str": "Deep networks naturally integrate low/mid/high-",
+      "x": 87.99,
+      "y": 204.33,
+      "width": 198.38,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 63,
+      "str": "level features [50] and classifiers in an end-to-end multi-",
+      "x": 50.11,
+      "y": 192.38,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 38,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 64,
+      "str": "layer fashion, and the “levels” of features can be enriched",
+      "x": 50.11,
+      "y": 180.42,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 65,
+      "str": "by the number of stacked layers (depth). Recent evidence",
+      "x": 50.11,
+      "y": 168.47,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 40,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 66,
+      "str": "[41, 44] reveals that network depth is of crucial importance,",
+      "x": 50.11,
+      "y": 156.51,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 41,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 67,
+      "str": "and the leading results [41, 44, 13, 16] on the challenging",
+      "x": 50.11,
+      "y": 144.56,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 42,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 68,
+      "str": "ImageNet dataset [36] all exploit “very deep” [41] models,",
+      "x": 50.11,
+      "y": 132.6,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 69,
+      "str": "with a depth of sixteen [41] to thirty [16]. Many other non-",
+      "x": 50.11,
+      "y": 120.65,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 44,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 70,
+      "str": "trivial visual recognition tasks [8, 12, 7, 32, 27] have also",
+      "x": 50.11,
+      "y": 108.69,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 286.37,
+      "visualLineId": 45,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 71,
+      "str": "",
+      "x": 60.97,
+      "y": 91.78,
+      "width": 0,
+      "height": 0,
+      "right": 64.97,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 72,
+      "str": "1",
+      "x": 60.97,
+      "y": 91.78,
+      "width": 2.99,
+      "height": 5.98,
+      "right": 63.96,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 73,
+      "str": "http://image-net.org/challenges/LSVRC/2015/",
+      "x": 64.46,
+      "y": 88.97,
+      "width": 195.85,
+      "height": 7.57,
+      "right": 260.31,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 74,
+      "str": " ",
+      "x": 260.31,
+      "y": 88.97,
+      "width": 15.12,
+      "height": 0,
+      "right": 275.43,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 75,
+      "str": "and",
+      "x": 275.43,
+      "y": 88.97,
+      "width": 10.93,
+      "height": 7.57,
+      "right": 286.36,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 76,
+      "str": "",
+      "x": 50.11,
+      "y": 81,
+      "width": 0,
+      "height": 0,
+      "right": 54.11,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 77,
+      "str": "http://mscoco.org/dataset/#detections-challenge2015",
+      "x": 50.11,
+      "y": 81,
+      "width": 232.19,
+      "height": 7.57,
+      "right": 282.3,
+      "visualLineId": 47,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 78,
+      "str": ".",
+      "x": 282.3,
+      "y": 81,
+      "width": 1.89,
+      "height": 7.57,
+      "right": 284.19,
+      "visualLineId": 47,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 79,
+      "str": "0",
+      "x": 319.34,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 321.01,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 80,
+      "str": " ",
+      "x": 321.01,
+      "y": 497.32,
+      "width": 4.26,
+      "height": 0,
+      "right": 325.26,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 81,
+      "str": "1",
+      "x": 335.22,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 336.89,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 82,
+      "str": " ",
+      "x": 336.89,
+      "y": 497.32,
+      "width": 4.28,
+      "height": 0,
+      "right": 341.18,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 83,
+      "str": "2",
+      "x": 351.2,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 352.87,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 84,
+      "str": " ",
+      "x": 352.87,
+      "y": 497.32,
+      "width": 4.26,
+      "height": 0,
+      "right": 357.12,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 85,
+      "str": "3",
+      "x": 367.08,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 368.75,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 86,
+      "str": " ",
+      "x": 368.75,
+      "y": 497.32,
+      "width": 4.28,
+      "height": 0,
+      "right": 373.04,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 87,
+      "str": "4",
+      "x": 383.06,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 384.73,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 88,
+      "str": " ",
+      "x": 384.73,
+      "y": 497.32,
+      "width": 4.28,
+      "height": 0,
+      "right": 389.01,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 89,
+      "str": "5",
+      "x": 399.03,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 400.7,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 90,
+      "str": " ",
+      "x": 400.7,
+      "y": 497.32,
+      "width": 4.26,
+      "height": 0,
+      "right": 404.96,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 91,
+      "str": "6",
+      "x": 414.92,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 416.59,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 92,
+      "str": "0",
+      "x": 317.05,
+      "y": 499.52,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 318.72,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 93,
+      "str": "10",
+      "x": 316.26,
+      "y": 532.08,
+      "width": 3.34,
+      "height": 3.34,
+      "right": 319.6,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 94,
+      "str": "20",
+      "x": 316.26,
+      "y": 564.56,
+      "width": 3.34,
+      "height": 3.34,
+      "right": 319.6,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 95,
+      "str": "iter. (1e4)",
+      "x": 357.87,
+      "y": 491.36,
+      "width": 26.06,
+      "height": 6.55,
+      "right": 383.92,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 96,
+      "str": "training error (%)",
+      "x": 313.98,
+      "y": 509.88,
+      "width": 46.6,
+      "height": 6.55,
+      "right": 360.58,
+      "visualLineId": 10,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 97,
+      "str": "",
+      "x": 441.16,
+      "y": 497.32,
+      "width": 0,
+      "height": 0,
+      "right": 445.16,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 98,
+      "str": "0",
+      "x": 441.16,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 442.83,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 99,
+      "str": " ",
+      "x": 442.83,
+      "y": 497.32,
+      "width": 4.26,
+      "height": 0,
+      "right": 447.09,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 100,
+      "str": "1",
+      "x": 457.05,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 458.72,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 101,
+      "str": " ",
+      "x": 458.72,
+      "y": 497.32,
+      "width": 4.28,
+      "height": 0,
+      "right": 463,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 102,
+      "str": "2",
+      "x": 473.02,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 474.69,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 103,
+      "str": " ",
+      "x": 474.69,
+      "y": 497.32,
+      "width": 4.26,
+      "height": 0,
+      "right": 478.95,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 104,
+      "str": "3",
+      "x": 488.91,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 490.58,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 105,
+      "str": " ",
+      "x": 490.58,
+      "y": 497.32,
+      "width": 4.28,
+      "height": 0,
+      "right": 494.86,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 106,
+      "str": "4",
+      "x": 504.88,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 506.55,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 107,
+      "str": " ",
+      "x": 506.55,
+      "y": 497.32,
+      "width": 4.28,
+      "height": 0,
+      "right": 510.84,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 108,
+      "str": "5",
+      "x": 520.86,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 522.53,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 109,
+      "str": " ",
+      "x": 522.53,
+      "y": 497.32,
+      "width": 4.26,
+      "height": 0,
+      "right": 526.79,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 110,
+      "str": "6",
+      "x": 536.75,
+      "y": 497.32,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 538.42,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 111,
+      "str": "0",
+      "x": 439.76,
+      "y": 499.52,
+      "width": 1.67,
+      "height": 3.34,
+      "right": 441.43,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 112,
+      "str": "10",
+      "x": 438.09,
+      "y": 532.08,
+      "width": 3.34,
+      "height": 3.34,
+      "right": 441.43,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 113,
+      "str": "20",
+      "x": 438.09,
+      "y": 564.56,
+      "width": 3.34,
+      "height": 3.34,
+      "right": 441.43,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 114,
+      "str": "iter. (1e4)",
+      "x": 479.69,
+      "y": 491.36,
+      "width": 26.06,
+      "height": 6.55,
+      "right": 505.75,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 115,
+      "str": "test error (%)",
+      "x": 435.81,
+      "y": 515.49,
+      "width": 35.21,
+      "height": 6.55,
+      "right": 471.02,
+      "visualLineId": 9,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 116,
+      "str": "",
+      "x": 400.26,
+      "y": 523.48,
+      "width": 0,
+      "height": 0,
+      "right": 404.26,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 117,
+      "str": "56-layer",
+      "x": 400.26,
+      "y": 523.48,
+      "width": 21.93,
+      "height": 6.58,
+      "right": 422.19,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 118,
+      "str": "20-layer",
+      "x": 400.26,
+      "y": 508.03,
+      "width": 21.93,
+      "height": 6.58,
+      "right": 422.19,
+      "visualLineId": 10,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 119,
+      "str": "56-layer",
+      "x": 521.65,
+      "y": 546.3,
+      "width": 21.93,
+      "height": 6.58,
+      "right": 543.58,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 120,
+      "str": "20-layer",
+      "x": 521.65,
+      "y": 534.36,
+      "width": 21.93,
+      "height": 6.58,
+      "right": 543.58,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 121,
+      "str": "",
+      "x": 308.86,
+      "y": 480.31,
+      "width": 0,
+      "height": 0,
+      "right": 312.86,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 122,
+      "str": "Figure 1. Training error (left) and test error (right) on CIFAR-10",
+      "x": 308.86,
+      "y": 480.31,
+      "width": 236.25,
+      "height": 8.97,
+      "right": 545.11,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 123,
+      "str": "with 20-layer and 56-layer “plain” networks. The deeper network",
+      "x": 308.86,
+      "y": 469.35,
+      "width": 236.25,
+      "height": 8.97,
+      "right": 545.11,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 124,
+      "str": "has higher training error, and thus test error. Similar phenomena",
+      "x": 308.86,
+      "y": 458.39,
+      "width": 236.25,
+      "height": 8.97,
+      "right": 545.11,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 125,
+      "str": "on ImageNet is presented in Fig. 4.",
+      "x": 308.86,
+      "y": 447.43,
+      "width": 126.01,
+      "height": 8.97,
+      "right": 434.88,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 126,
+      "str": "",
+      "x": 308.86,
+      "y": 421.64,
+      "width": 0,
+      "height": 0,
+      "right": 312.86,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 127,
+      "str": "greatly benefited from very deep models.",
+      "x": 308.86,
+      "y": 421.64,
+      "width": 163.65,
+      "height": 9.96,
+      "right": 472.51,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 128,
+      "str": "Driven by the significance of depth, a question arises:",
+      "x": 320.82,
+      "y": 407.72,
+      "width": 213.91,
+      "height": 9.96,
+      "right": 534.72,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 129,
+      "str": " ",
+      "x": 534.72,
+      "y": 407.72,
+      "width": 3.2,
+      "height": 0,
+      "right": 537.92,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 130,
+      "str": "Is",
+      "x": 537.92,
+      "y": 407.72,
+      "width": 7.19,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 131,
+      "str": "learning better networks as easy as stacking more layers?",
+      "x": 308.86,
+      "y": 395.76,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 21,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 132,
+      "str": "",
+      "x": 308.86,
+      "y": 383.81,
+      "width": 0,
+      "height": 0,
+      "right": 312.86,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 133,
+      "str": "An obstacle to answering this question was the notorious",
+      "x": 308.86,
+      "y": 383.81,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 134,
+      "str": "problem of vanishing/exploding gradients [1, 9], which",
+      "x": 308.86,
+      "y": 371.85,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 135,
+      "str": "hamper convergence from the beginning.",
+      "x": 308.86,
+      "y": 359.9,
+      "width": 170.22,
+      "height": 9.96,
+      "right": 479.08,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 136,
+      "str": " ",
+      "x": 479.08,
+      "y": 359.9,
+      "width": 8.37,
+      "height": 0,
+      "right": 487.45,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 137,
+      "str": "This problem,",
+      "x": 487.45,
+      "y": 359.9,
+      "width": 57.66,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 138,
+      "str": "however, has been largely addressed by normalized initial-",
+      "x": 308.86,
+      "y": 347.94,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 139,
+      "str": "ization [23, 9, 37, 13] and intermediate normalization layers",
+      "x": 308.86,
+      "y": 335.99,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 26,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 140,
+      "str": "[16], which enable networks with tens of layers to start con-",
+      "x": 308.86,
+      "y": 324.03,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 141,
+      "str": "verging for stochastic gradient descent (SGD) with back-",
+      "x": 308.86,
+      "y": 312.08,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 28,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 142,
+      "str": "propagation [22].",
+      "x": 308.86,
+      "y": 300.12,
+      "width": 69.12,
+      "height": 9.96,
+      "right": 377.98,
+      "visualLineId": 29,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 143,
+      "str": "When deeper networks are able to start converging, a",
+      "x": 320.82,
+      "y": 286.2,
+      "width": 224.3,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 30,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 144,
+      "str": "",
+      "x": 308.86,
+      "y": 274.25,
+      "width": 0,
+      "height": 0,
+      "right": 312.86,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 145,
+      "str": "degradation",
+      "x": 308.86,
+      "y": 274.25,
+      "width": 48.16,
+      "height": 9.96,
+      "right": 357.02,
+      "visualLineId": 31,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 146,
+      "str": " ",
+      "x": 357.02,
+      "y": 274.25,
+      "width": 3.37,
+      "height": 0,
+      "right": 360.39,
+      "visualLineId": 31,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 147,
+      "str": "problem has been exposed: with the network",
+      "x": 360.39,
+      "y": 274.25,
+      "width": 184.72,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 31,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 148,
+      "str": "depth increasing, accuracy gets saturated (which might be",
+      "x": 308.86,
+      "y": 262.29,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 149,
+      "str": "unsurprising) and then degrades rapidly.",
+      "x": 308.86,
+      "y": 250.34,
+      "width": 169.2,
+      "height": 9.96,
+      "right": 478.07,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 150,
+      "str": " ",
+      "x": 478.07,
+      "y": 250.34,
+      "width": 10.02,
+      "height": 0,
+      "right": 488.09,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 151,
+      "str": "Unexpectedly,",
+      "x": 488.09,
+      "y": 250.34,
+      "width": 57.03,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 152,
+      "str": "such degradation is",
+      "x": 308.86,
+      "y": 238.38,
+      "width": 79.16,
+      "height": 9.96,
+      "right": 388.02,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 153,
+      "str": " ",
+      "x": 388.02,
+      "y": 238.38,
+      "width": 3.69,
+      "height": 0,
+      "right": 391.72,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 154,
+      "str": "not caused by overfitting",
+      "x": 391.72,
+      "y": 238.38,
+      "width": 101.73,
+      "height": 9.96,
+      "right": 493.45,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 155,
+      "str": ", and adding",
+      "x": 493.44,
+      "y": 238.38,
+      "width": 51.67,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 156,
+      "str": "more layers to a suitably deep model leads to",
+      "x": 308.86,
+      "y": 226.43,
+      "width": 182.14,
+      "height": 9.96,
+      "right": 491,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 157,
+      "str": " ",
+      "x": 491,
+      "y": 226.43,
+      "width": 2.78,
+      "height": 0,
+      "right": 493.78,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 158,
+      "str": "higher train-",
+      "x": 493.78,
+      "y": 226.43,
+      "width": 51.34,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 159,
+      "str": "ing error",
+      "x": 308.86,
+      "y": 214.47,
+      "width": 35.7,
+      "height": 9.96,
+      "right": 344.56,
+      "visualLineId": 36,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 160,
+      "str": ", as reported in [11, 42] and thoroughly verified by",
+      "x": 344.55,
+      "y": 214.47,
+      "width": 200.56,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 36,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 161,
+      "str": "our experiments. Fig. 1 shows a typical example.",
+      "x": 308.86,
+      "y": 202.52,
+      "width": 195.41,
+      "height": 9.96,
+      "right": 504.27,
+      "visualLineId": 37,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 162,
+      "str": "The degradation (of training accuracy) indicates that not",
+      "x": 320.82,
+      "y": 188.6,
+      "width": 224.3,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 38,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 163,
+      "str": "all systems are similarly easy to optimize. Let us consider a",
+      "x": 308.86,
+      "y": 176.64,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 39,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 164,
+      "str": "shallower architecture and its deeper counterpart that adds",
+      "x": 308.86,
+      "y": 164.69,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 40,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 165,
+      "str": "more layers onto it. There exists a solution",
+      "x": 308.86,
+      "y": 152.73,
+      "width": 171.75,
+      "height": 9.96,
+      "right": 480.61,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 166,
+      "str": " ",
+      "x": 480.61,
+      "y": 152.73,
+      "width": 2.64,
+      "height": 0,
+      "right": 483.25,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 167,
+      "str": "by construction",
+      "x": 483.25,
+      "y": 152.73,
+      "width": 61.87,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 168,
+      "str": "",
+      "x": 308.86,
+      "y": 140.78,
+      "width": 0,
+      "height": 0,
+      "right": 312.86,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 169,
+      "str": "to the deeper model: the added layers are",
+      "x": 308.86,
+      "y": 140.78,
+      "width": 164.04,
+      "height": 9.96,
+      "right": 472.91,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 170,
+      "str": " ",
+      "x": 472.91,
+      "y": 140.78,
+      "width": 2.48,
+      "height": 0,
+      "right": 475.38,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 171,
+      "str": "identity",
+      "x": 475.38,
+      "y": 140.78,
+      "width": 29.89,
+      "height": 9.96,
+      "right": 505.27,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 172,
+      "str": " ",
+      "x": 505.27,
+      "y": 140.78,
+      "width": 2.48,
+      "height": 0,
+      "right": 507.75,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 173,
+      "str": "mapping,",
+      "x": 507.75,
+      "y": 140.78,
+      "width": 37.36,
+      "height": 9.96,
+      "right": 545.11,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 174,
+      "str": "and the other layers are copied from the learned shallower",
+      "x": 308.86,
+      "y": 128.82,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 175,
+      "str": "model. The existence of this constructed solution indicates",
+      "x": 308.86,
+      "y": 116.86,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 176,
+      "str": "that a deeper model should produce no higher training error",
+      "x": 308.86,
+      "y": 104.91,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 177,
+      "str": "than its shallower counterpart. But experiments show that",
+      "x": 308.86,
+      "y": 92.95,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 178,
+      "str": "our current solvers on hand are unable to find solutions that",
+      "x": 308.86,
+      "y": 81,
+      "width": 236.25,
+      "height": 9.96,
+      "right": 545.12,
+      "visualLineId": 47,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 179,
+      "str": "1",
+      "x": 295.12,
+      "y": 51.11,
+      "width": 4.98,
+      "height": 9.96,
+      "right": 300.1,
+      "visualLineId": 48,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 180,
+      "str": "",
+      "x": 32,
+      "y": 232,
+      "width": 0,
+      "height": 0,
+      "right": 36,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 181,
+      "str": "arXiv:1512.03385v1 [cs.CV] 10 Dec 2015",
+      "x": 32,
+      "y": 232,
+      "width": 351.06,
+      "height": 20,
+      "right": 383.06,
+      "visualLineId": 34,
+      "inferredColumn": 0
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 675.07,
+      "height": 14.35,
+      "text": "Deep Residual Learning for Image Recognition",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 153.45
+    },
+    {
+      "lineId": 1,
+      "y": 630.54,
+      "height": 12,
+      "text": "Kaiming He Xiangyu Zhang Shaoqing Ren Jian Sun",
+      "itemIndexes": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "firstX": 136.39
+    },
+    {
+      "lineId": 2,
+      "y": 613.81,
+      "height": 11.96,
+      "text": "Microsoft Research",
+      "itemIndexes": [
+        9
+      ],
+      "firstX": 249.14
+    },
+    {
+      "lineId": 3,
+      "y": 599.46,
+      "height": 9.96,
+      "text": "{ kahe, v-xiangz, v-shren, jiansun } @microsoft.com",
+      "itemIndexes": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "firstX": 195.49
+    },
+    {
+      "lineId": 4,
+      "y": 564.56,
+      "height": 3.34,
+      "text": "20 20",
+      "itemIndexes": [
+        94,
+        113
+      ],
+      "firstX": 316.26
+    },
+    {
+      "lineId": 5,
+      "y": 557.58,
+      "height": 11.96,
+      "text": "Abstract",
+      "itemIndexes": [
+        16
+      ],
+      "firstX": 146
+    },
+    {
+      "lineId": 6,
+      "y": 546.3,
+      "height": 6.58,
+      "text": "56-layer",
+      "itemIndexes": [
+        119
+      ],
+      "firstX": 521.65
+    },
+    {
+      "lineId": 7,
+      "y": 534.19,
+      "height": 9.96,
+      "text": "Deeper neural networks are more difficult to train. We 10 10 20-layer",
+      "itemIndexes": [
+        18,
+        93,
+        112,
+        120
+      ],
+      "firstX": 62.07
+    },
+    {
+      "lineId": 8,
+      "y": 524.87,
+      "height": 9.96,
+      "text": "present a residual learning framework to ease the training 56-layer",
+      "itemIndexes": [
+        19,
+        117
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 9,
+      "y": 514.9,
+      "height": 9.96,
+      "text": "of networks that are substantially deeper than those used test error (%)",
+      "itemIndexes": [
+        20,
+        115
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 10,
+      "y": 508.95,
+      "height": 6.58,
+      "text": "training error (%) 20-layer",
+      "itemIndexes": [
+        96,
+        118
+      ],
+      "firstX": 313.98
+    },
+    {
+      "lineId": 11,
+      "y": 497.95,
+      "height": 12,
+      "text": "previously. We explicitly reformulate the layers as learn- 0 0 1 2 3 4 5 6 0 0 1 2 3 4 5 6",
+      "itemIndexes": [
+        21,
+        22,
+        23,
+        92,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        111,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 12,
+      "y": 491.04,
+      "height": 9.96,
+      "text": "ing residual functions with reference to the layer inputs, in- iter. (1e4) iter. (1e4)",
+      "itemIndexes": [
+        24,
+        95,
+        114
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 13,
+      "y": 479.38,
+      "height": 9.96,
+      "text": "stead of learning unreferenced functions. We provide com- Figure 1. Training error (left) and test error (right) on CIFAR-10",
+      "itemIndexes": [
+        25,
+        122
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 14,
+      "y": 467.92,
+      "height": 9.96,
+      "text": "prehensive empirical evidence showing that these residual with 20-layer and 56-layer “plain” networks. The deeper network",
+      "itemIndexes": [
+        26,
+        123
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 15,
+      "y": 456.46,
+      "height": 9.96,
+      "text": "networks are easier to optimize, and can gain accuracy from has higher training error, and thus test error. Similar phenomena",
+      "itemIndexes": [
+        27,
+        124
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 16,
+      "y": 447.43,
+      "height": 8.97,
+      "text": "on ImageNet is presented in Fig. 4.",
+      "itemIndexes": [
+        125
+      ],
+      "firstX": 308.86
+    },
+    {
+      "lineId": 17,
+      "y": 442.58,
+      "height": 9.96,
+      "text": "considerably increased depth. On the ImageNet dataset we",
+      "itemIndexes": [
+        28
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 18,
+      "y": 430.62,
+      "height": 9.96,
+      "text": "evaluate residual nets with a depth of up to 152 layers—8 ×",
+      "itemIndexes": [
+        29,
+        30
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 19,
+      "y": 420.15,
+      "height": 9.96,
+      "text": "deeper than VGG nets [41] but still having lower complex- greatly benefited from very deep models.",
+      "itemIndexes": [
+        32,
+        127
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 20,
+      "y": 407.47,
+      "height": 12,
+      "text": "ity. An ensemble of these residual nets achieves 3.57% error Driven by the significance of depth, a question arises: Is",
+      "itemIndexes": [
+        33,
+        128,
+        129,
+        130
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 21,
+      "y": 394.93,
+      "height": 12,
+      "text": "on the ImageNet test set. This result won the 1st place on the learning better networks as easy as stacking more layers?",
+      "itemIndexes": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        131
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 22,
+      "y": 383.31,
+      "height": 9.96,
+      "text": "ILSVRC 2015 classification task. We also present analysis An obstacle to answering this question was the notorious",
+      "itemIndexes": [
+        39,
+        133
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 23,
+      "y": 371.35,
+      "height": 9.96,
+      "text": "on CIFAR-10 with 100 and 1000 layers. problem of vanishing/exploding gradients [1, 9], which",
+      "itemIndexes": [
+        40,
+        134
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 24,
+      "y": 359.54,
+      "height": 12,
+      "text": "The depth of representations is of central importance hamper convergence from the beginning. This problem,",
+      "itemIndexes": [
+        41,
+        135,
+        136,
+        137
+      ],
+      "firstX": 62.07
+    },
+    {
+      "lineId": 25,
+      "y": 346.87,
+      "height": 12,
+      "text": "for many visual recognition tasks. Solely due to our ex- however, has been largely addressed by normalized initial-",
+      "itemIndexes": [
+        42,
+        43,
+        44,
+        138
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 26,
+      "y": 335.27,
+      "height": 9.96,
+      "text": "tremely deep representations, we obtain a 28% relative im- ization [23, 9, 37, 13] and intermediate normalization layers",
+      "itemIndexes": [
+        45,
+        139
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 27,
+      "y": 322.96,
+      "height": 12,
+      "text": "provement on the COCO object detection dataset. Deep [16], which enable networks with tens of layers to start con-",
+      "itemIndexes": [
+        46,
+        47,
+        48,
+        140
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 28,
+      "y": 311.36,
+      "height": 9.96,
+      "text": "residual nets are foundations of our submissions to ILSVRC verging for stochastic gradient descent (SGD) with back-",
+      "itemIndexes": [
+        49,
+        141
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 29,
+      "y": 299.95,
+      "height": 9.96,
+      "text": "& COCO 2015 competitions 1 , where we also won the 1st propagation [22].",
+      "itemIndexes": [
+        50,
+        51,
+        52,
+        142
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 30,
+      "y": 286.47,
+      "height": 9.96,
+      "text": "places on the tasks of ImageNet detection, ImageNet local- When deeper networks are able to start converging, a",
+      "itemIndexes": [
+        53,
+        143
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 31,
+      "y": 274.38,
+      "height": 12,
+      "text": "ization, COCO detection, and COCO segmentation. degradation problem has been exposed: with the network",
+      "itemIndexes": [
+        54,
+        145,
+        146,
+        147
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 32,
+      "y": 262.29,
+      "height": 9.96,
+      "text": "depth increasing, accuracy gets saturated (which might be",
+      "itemIndexes": [
+        148
+      ],
+      "firstX": 308.86
+    },
+    {
+      "lineId": 33,
+      "y": 249.65,
+      "height": 12,
+      "text": "1. Introduction unsurprising) and then degrades rapidly. Unexpectedly,",
+      "itemIndexes": [
+        56,
+        149,
+        150,
+        151
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 34,
+      "y": 235.63,
+      "height": 20,
+      "text": "arXiv:1512.03385v1 [cs.CV] 10 Dec 2015 Deep convolutional neural networks [22, 21] have led such degradation is not caused by overfitting , and adding",
+      "itemIndexes": [
+        181,
+        58,
+        152,
+        153,
+        154,
+        155
+      ],
+      "firstX": 32
+    },
+    {
+      "lineId": 35,
+      "y": 226.43,
+      "height": 12,
+      "text": "more layers to a suitably deep model leads to higher train-",
+      "itemIndexes": [
+        156,
+        157,
+        158
+      ],
+      "firstX": 308.86
+    },
+    {
+      "lineId": 36,
+      "y": 215.08,
+      "height": 9.96,
+      "text": "to a series of breakthroughs for image classification [21, ing error , as reported in [11, 42] and thoroughly verified by",
+      "itemIndexes": [
+        59,
+        159,
+        160
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 37,
+      "y": 203.88,
+      "height": 12,
+      "text": "50, 40]. Deep networks naturally integrate low/mid/high- our experiments. Fig. 1 shows a typical example.",
+      "itemIndexes": [
+        60,
+        61,
+        62,
+        161
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 38,
+      "y": 190.49,
+      "height": 9.96,
+      "text": "level features [50] and classifiers in an end-to-end multi- The degradation (of training accuracy) indicates that not",
+      "itemIndexes": [
+        63,
+        162
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 39,
+      "y": 178.53,
+      "height": 9.96,
+      "text": "layer fashion, and the “levels” of features can be enriched all systems are similarly easy to optimize. Let us consider a",
+      "itemIndexes": [
+        64,
+        163
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 40,
+      "y": 166.58,
+      "height": 9.96,
+      "text": "by the number of stacked layers (depth). Recent evidence shallower architecture and its deeper counterpart that adds",
+      "itemIndexes": [
+        65,
+        164
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 41,
+      "y": 153.68,
+      "height": 12,
+      "text": "[41, 44] reveals that network depth is of crucial importance, more layers onto it. There exists a solution by construction",
+      "itemIndexes": [
+        66,
+        165,
+        166,
+        167
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 42,
+      "y": 141.41,
+      "height": 12,
+      "text": "and the leading results [41, 44, 13, 16] on the challenging to the deeper model: the added layers are identity mapping,",
+      "itemIndexes": [
+        67,
+        169,
+        170,
+        171,
+        172,
+        173
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 43,
+      "y": 130.71,
+      "height": 9.96,
+      "text": "ImageNet dataset [36] all exploit “very deep” [41] models, and the other layers are copied from the learned shallower",
+      "itemIndexes": [
+        68,
+        174
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 44,
+      "y": 118.75,
+      "height": 9.96,
+      "text": "with a depth of sixteen [41] to thirty [16]. Many other non- model. The existence of this constructed solution indicates",
+      "itemIndexes": [
+        69,
+        175
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 45,
+      "y": 106.8,
+      "height": 9.96,
+      "text": "trivial visual recognition tasks [8, 12, 7, 32, 27] have also that a deeper model should produce no higher training error",
+      "itemIndexes": [
+        70,
+        176
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 46,
+      "y": 90.33,
+      "height": 12,
+      "text": "1 http://image-net.org/challenges/LSVRC/2015/ and than its shallower counterpart. But experiments show that",
+      "itemIndexes": [
+        72,
+        73,
+        74,
+        75,
+        177
+      ],
+      "firstX": 60.97
+    },
+    {
+      "lineId": 47,
+      "y": 81,
+      "height": 9.96,
+      "text": "http://mscoco.org/dataset/#detections-challenge2015 . our current solvers on hand are unable to find solutions that",
+      "itemIndexes": [
+        77,
+        78,
+        178
+      ],
+      "firstX": 50.11
+    },
+    {
+      "lineId": 48,
+      "y": 51.11,
+      "height": 9.96,
+      "text": "1",
+      "itemIndexes": [
+        179
+      ],
+      "firstX": 295.12
+    }
+  ]
+}

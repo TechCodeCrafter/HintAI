@@ -1,0 +1,2721 @@
+{
+  "file": "bert.pdf",
+  "page": 1,
+  "pageWidth": 595.276,
+  "pageHeight": 841.89,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 32.0:1, 86.6:48, 165.6:12, 228.2:5, 308.2:42, 378.8:8, 450.4:9, 499.0:5)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 275.3 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 7,
+    "clusters": [
+      {
+        "x": 32,
+        "items": 1,
+        "meanWidth": 353.3,
+        "yMin": 232,
+        "yMax": 232
+      },
+      {
+        "x": 86.56,
+        "items": 48,
+        "meanWidth": 159.31,
+        "yMin": 78.92,
+        "yMax": 760.2
+      },
+      {
+        "x": 165.6,
+        "items": 12,
+        "meanWidth": 49.01,
+        "yMin": 393.12,
+        "yMax": 608.39
+      },
+      {
+        "x": 228.23,
+        "items": 5,
+        "meanWidth": 84.64,
+        "yMin": 492.87,
+        "yMax": 744.26
+      },
+      {
+        "x": 308.18,
+        "items": 42,
+        "meanWidth": 187.84,
+        "yMin": 78.92,
+        "yMax": 701.88
+      },
+      {
+        "x": 378.76,
+        "items": 8,
+        "meanWidth": 46.08,
+        "yMin": 173.77,
+        "yMax": 701.88
+      },
+      {
+        "x": 450.39,
+        "items": 9,
+        "meanWidth": 37.15,
+        "yMin": 173.77,
+        "yMax": 581.29
+      },
+      {
+        "x": 499.05,
+        "items": 5,
+        "meanWidth": 22.12,
+        "yMin": 119.57,
+        "yMax": 581.29
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 32,
+      "items": 1,
+      "meanWidth": 353.3,
+      "yMin": 232,
+      "yMax": 232
+    },
+    {
+      "x": 86.56,
+      "items": 48,
+      "meanWidth": 159.31,
+      "yMin": 78.92,
+      "yMax": 760.2
+    },
+    {
+      "x": 165.6,
+      "items": 12,
+      "meanWidth": 49.01,
+      "yMin": 393.12,
+      "yMax": 608.39
+    },
+    {
+      "x": 228.23,
+      "items": 5,
+      "meanWidth": 84.64,
+      "yMin": 492.87,
+      "yMax": 744.26
+    },
+    {
+      "x": 308.18,
+      "items": 42,
+      "meanWidth": 187.84,
+      "yMin": 78.92,
+      "yMax": 701.88
+    },
+    {
+      "x": 378.76,
+      "items": 8,
+      "meanWidth": 46.08,
+      "yMin": 173.77,
+      "yMax": 701.88
+    },
+    {
+      "x": 450.39,
+      "items": 9,
+      "meanWidth": 37.15,
+      "yMin": 173.77,
+      "yMax": 581.29
+    },
+    {
+      "x": 499.05,
+      "items": 5,
+      "meanWidth": 22.12,
+      "yMin": 119.57,
+      "yMax": 581.29
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 87,
+    "clusters": [
+      {
+        "x": 308.07,
+        "items": 39,
+        "share": 0.448
+      },
+      {
+        "x": 84.98,
+        "items": 38,
+        "share": 0.437
+      },
+      {
+        "x": 202.55,
+        "items": 4,
+        "share": 0.046
+      }
+    ],
+    "twoDominant": true,
+    "overlap": 622.96,
+    "topShare": 0.8850574712643678
+  },
+  "ySpanOverlap": 622.96,
+  "gutterCandidates": [
+    {
+      "between": [
+        32,
+        86.56
+      ],
+      "gap": 54.56
+    },
+    {
+      "between": [
+        86.56,
+        165.6
+      ],
+      "gap": 79.03999999999999
+    },
+    {
+      "between": [
+        165.6,
+        228.23
+      ],
+      "gap": 62.629999999999995
+    },
+    {
+      "between": [
+        228.23,
+        308.18
+      ],
+      "gap": 79.95000000000002
+    },
+    {
+      "between": [
+        308.18,
+        378.76
+      ],
+      "gap": 70.57999999999998
+    },
+    {
+      "between": [
+        378.76,
+        450.39
+      ],
+      "gap": 71.63
+    },
+    {
+      "between": [
+        450.39,
+        499.05
+      ],
+      "gap": 48.660000000000025
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "BERT: Pre-training of Deep Bidirectional Transformers for",
+      "x": 116.52,
+      "y": 760.2,
+      "width": 364.51,
+      "height": 14.35,
+      "right": 481.03,
+      "visualLineId": 0,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 1,
+      "str": "Language Understanding",
+      "x": 220.85,
+      "y": 744.26,
+      "width": 155.84,
+      "height": 14.35,
+      "right": 376.69,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 2,
+      "str": "",
+      "x": 121.82,
+      "y": 701.88,
+      "width": 0,
+      "height": 0,
+      "right": 125.82,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 3,
+      "str": "Jacob Devlin",
+      "x": 121.82,
+      "y": 701.88,
+      "width": 65.73,
+      "height": 11.96,
+      "right": 187.55,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 4,
+      "str": " ",
+      "x": 187.55,
+      "y": 701.88,
+      "width": 14.94,
+      "height": 0,
+      "right": 202.49,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 5,
+      "str": "Ming-Wei Chang",
+      "x": 202.49,
+      "y": 701.88,
+      "width": 87.89,
+      "height": 11.96,
+      "right": 290.39,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 6,
+      "str": " ",
+      "x": 290.39,
+      "y": 701.88,
+      "width": 14.94,
+      "height": 0,
+      "right": 305.33,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 7,
+      "str": "Kenton Lee",
+      "x": 305.33,
+      "y": 701.88,
+      "width": 59.14,
+      "height": 11.96,
+      "right": 364.47,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 8,
+      "str": " ",
+      "x": 364.47,
+      "y": 701.88,
+      "width": 14.94,
+      "height": 0,
+      "right": 379.42,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 9,
+      "str": "Kristina Toutanova",
+      "x": 379.42,
+      "y": 701.88,
+      "width": 99.3,
+      "height": 11.96,
+      "right": 478.72,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 10,
+      "str": "",
+      "x": 249.8,
+      "y": 687.93,
+      "width": 0,
+      "height": 0,
+      "right": 253.8,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 11,
+      "str": "Google AI Language",
+      "x": 249.8,
+      "y": 687.93,
+      "width": 100.93,
+      "height": 11.96,
+      "right": 350.73,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 12,
+      "str": "",
+      "x": 107.79,
+      "y": 673.99,
+      "width": 0,
+      "height": 0,
+      "right": 111.79,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 13,
+      "str": "{",
+      "x": 107.79,
+      "y": 673.99,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 113.77,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 14,
+      "str": "jacobdevlin,mingweichang,kentonl,kristout",
+      "x": 113.77,
+      "y": 673.99,
+      "width": 294.1,
+      "height": 11.96,
+      "right": 407.86,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 15,
+      "str": "}",
+      "x": 407.86,
+      "y": 673.99,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 413.84,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 16,
+      "str": "@google.com",
+      "x": 413.84,
+      "y": 673.99,
+      "width": 78.9,
+      "height": 11.96,
+      "right": 492.74,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 17,
+      "str": "",
+      "x": 158.89,
+      "y": 608.39,
+      "width": 0,
+      "height": 0,
+      "right": 162.89,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 18,
+      "str": "Abstract",
+      "x": 158.89,
+      "y": 608.39,
+      "width": 44.49,
+      "height": 11.96,
+      "right": 203.38,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 19,
+      "str": "",
+      "x": 89.01,
+      "y": 588.51,
+      "width": 0,
+      "height": 0,
+      "right": 93.01,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 20,
+      "str": "We",
+      "x": 89.01,
+      "y": 588.51,
+      "width": 13.03,
+      "height": 9.96,
+      "right": 102.04,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 21,
+      "str": " ",
+      "x": 102.04,
+      "y": 588.51,
+      "width": 6.52,
+      "height": 0,
+      "right": 108.55,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 22,
+      "str": "introduce",
+      "x": 108.55,
+      "y": 588.51,
+      "width": 37.63,
+      "height": 9.96,
+      "right": 146.18,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 23,
+      "str": " ",
+      "x": 146.18,
+      "y": 588.51,
+      "width": 6.53,
+      "height": 0,
+      "right": 152.71,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 24,
+      "str": "a",
+      "x": 152.71,
+      "y": 588.51,
+      "width": 4.42,
+      "height": 9.96,
+      "right": 157.13,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 25,
+      "str": " ",
+      "x": 157.13,
+      "y": 588.51,
+      "width": 6.52,
+      "height": 0,
+      "right": 163.65,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 26,
+      "str": "new",
+      "x": 163.65,
+      "y": 588.51,
+      "width": 16.35,
+      "height": 9.96,
+      "right": 180,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 27,
+      "str": " ",
+      "x": 180,
+      "y": 588.51,
+      "width": 6.53,
+      "height": 0,
+      "right": 186.52,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 28,
+      "str": "language",
+      "x": 186.52,
+      "y": 588.51,
+      "width": 35.96,
+      "height": 9.96,
+      "right": 222.49,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 29,
+      "str": " ",
+      "x": 222.49,
+      "y": 588.51,
+      "width": 6.52,
+      "height": 0,
+      "right": 229,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 30,
+      "str": "representa-",
+      "x": 229,
+      "y": 588.51,
+      "width": 44.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 31,
+      "str": "tion model called",
+      "x": 89.01,
+      "y": 576.56,
+      "width": 74.18,
+      "height": 9.96,
+      "right": 163.19,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 32,
+      "str": " ",
+      "x": 163.19,
+      "y": 576.56,
+      "width": 5,
+      "height": 0,
+      "right": 168.19,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 33,
+      "str": "BERT",
+      "x": 168.19,
+      "y": 576.56,
+      "width": 26.73,
+      "height": 9.96,
+      "right": 194.92,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 34,
+      "str": ", which stands for",
+      "x": 194.92,
+      "y": 576.56,
+      "width": 78.35,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 35,
+      "str": "",
+      "x": 89.01,
+      "y": 564.6,
+      "width": 0,
+      "height": 0,
+      "right": 93.01,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 36,
+      "str": "B",
+      "x": 89.01,
+      "y": 564.6,
+      "width": 6.65,
+      "height": 9.96,
+      "right": 95.65,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 37,
+      "str": "idirectional",
+      "x": 95.65,
+      "y": 564.6,
+      "width": 45.38,
+      "height": 9.96,
+      "right": 141.03,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 38,
+      "str": " ",
+      "x": 141.03,
+      "y": 564.6,
+      "width": 4.97,
+      "height": 0,
+      "right": 146,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 39,
+      "str": "E",
+      "x": 146,
+      "y": 564.6,
+      "width": 6.65,
+      "height": 9.96,
+      "right": 152.65,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 40,
+      "str": "ncoder",
+      "x": 152.65,
+      "y": 564.6,
+      "width": 27.11,
+      "height": 9.96,
+      "right": 179.76,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 41,
+      "str": " ",
+      "x": 179.76,
+      "y": 564.6,
+      "width": 4.97,
+      "height": 0,
+      "right": 184.73,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 42,
+      "str": "R",
+      "x": 184.73,
+      "y": 564.6,
+      "width": 7.19,
+      "height": 9.96,
+      "right": 191.92,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 43,
+      "str": "epresentations from",
+      "x": 191.92,
+      "y": 564.6,
+      "width": 81.33,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 44,
+      "str": "",
+      "x": 89.01,
+      "y": 552.65,
+      "width": 0,
+      "height": 0,
+      "right": 93.01,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 45,
+      "str": "T",
+      "x": 89.01,
+      "y": 552.65,
+      "width": 6.65,
+      "height": 9.96,
+      "right": 95.65,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 46,
+      "str": "ransformers.",
+      "x": 95.65,
+      "y": 552.65,
+      "width": 50.07,
+      "height": 9.96,
+      "right": 145.73,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 145.73,
+      "y": 552.65,
+      "width": 6.03,
+      "height": 0,
+      "right": 151.75,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 48,
+      "str": "Unlike recent language repre-",
+      "x": 151.75,
+      "y": 552.65,
+      "width": 121.5,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 49,
+      "str": "sentation models (Peters et al., 2018a; Rad-",
+      "x": 89.01,
+      "y": 540.69,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 50,
+      "str": "ford et al., 2018), BERT is designed to pre-",
+      "x": 89.01,
+      "y": 528.74,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 12,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 51,
+      "str": "train deep bidirectional representations from",
+      "x": 89.01,
+      "y": 516.78,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 13,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 52,
+      "str": "unlabeled text by jointly conditioning on both",
+      "x": 89.01,
+      "y": 504.83,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 53,
+      "str": "left and right context in all layers.",
+      "x": 89.01,
+      "y": 492.87,
+      "width": 142.8,
+      "height": 9.96,
+      "right": 231.81,
+      "visualLineId": 15,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 54,
+      "str": " ",
+      "x": 231.81,
+      "y": 492.87,
+      "width": 7.18,
+      "height": 0,
+      "right": 238.99,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 55,
+      "str": "As a re-",
+      "x": 238.99,
+      "y": 492.87,
+      "width": 34.26,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 56,
+      "str": "sult, the pre-trained BERT model can be fine-",
+      "x": 89.01,
+      "y": 480.92,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 17,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 57,
+      "str": "tuned with just one additional output layer",
+      "x": 89.01,
+      "y": 468.96,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 18,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 58,
+      "str": "to create state-of-the-art models for a wide",
+      "x": 89.01,
+      "y": 457.01,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 59,
+      "str": "range of tasks, such as question answering and",
+      "x": 89.01,
+      "y": 445.05,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 20,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 60,
+      "str": "language inference, without substantial task-",
+      "x": 89.01,
+      "y": 433.1,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 61,
+      "str": "specific architecture modifications.",
+      "x": 89.01,
+      "y": 421.14,
+      "width": 139.18,
+      "height": 9.96,
+      "right": 228.19,
+      "visualLineId": 22,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 62,
+      "str": "BERT is conceptually simple and empirically",
+      "x": 89.01,
+      "y": 405.07,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 63,
+      "str": "powerful.",
+      "x": 89.01,
+      "y": 393.12,
+      "width": 38.21,
+      "height": 9.96,
+      "right": 127.21,
+      "visualLineId": 24,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 64,
+      "str": " ",
+      "x": 127.21,
+      "y": 393.12,
+      "width": 8.03,
+      "height": 0,
+      "right": 135.24,
+      "visualLineId": 24,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 65,
+      "str": "It obtains new state-of-the-art re-",
+      "x": 135.24,
+      "y": 393.12,
+      "width": 138.01,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 24,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 66,
+      "str": "sults on eleven natural language processing",
+      "x": 89.01,
+      "y": 381.16,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 25,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 67,
+      "str": "tasks, including pushing the GLUE score to",
+      "x": 89.01,
+      "y": 369.21,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 26,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 68,
+      "str": "80.5% (7.7% point absolute improvement),",
+      "x": 89.01,
+      "y": 357.25,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 69,
+      "str": "MultiNLI accuracy to 86.7% (4.6% absolute",
+      "x": 89.01,
+      "y": 345.3,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 30,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 70,
+      "str": "improvement), SQuAD v1.1 question answer-",
+      "x": 89.01,
+      "y": 333.34,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 31,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 71,
+      "str": "ing Test F1 to 93.2 (1.5 point absolute im-",
+      "x": 89.01,
+      "y": 321.39,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 72,
+      "str": "provement) and SQuAD v2.0 Test F1 to 83.1",
+      "x": 89.01,
+      "y": 309.43,
+      "width": 184.25,
+      "height": 9.96,
+      "right": 273.26,
+      "visualLineId": 33,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 73,
+      "str": "(5.1 point absolute improvement).",
+      "x": 89.01,
+      "y": 297.48,
+      "width": 135.57,
+      "height": 9.96,
+      "right": 224.58,
+      "visualLineId": 34,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 74,
+      "str": "",
+      "x": 72,
+      "y": 275.61,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 75,
+      "str": "1",
+      "x": 72,
+      "y": 275.61,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 77.98,
+      "visualLineId": 36,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 76,
+      "str": " ",
+      "x": 77.98,
+      "y": 275.61,
+      "width": 11.96,
+      "height": 0,
+      "right": 89.93,
+      "visualLineId": 36,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 77,
+      "str": "Introduction",
+      "x": 89.93,
+      "y": 275.61,
+      "width": 64.88,
+      "height": 11.96,
+      "right": 154.81,
+      "visualLineId": 36,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 78,
+      "str": "",
+      "x": 72,
+      "y": 255.06,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 79,
+      "str": "Language model pre-training has been shown to",
+      "x": 72,
+      "y": 255.06,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 38,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 80,
+      "str": "be effective for improving many natural language",
+      "x": 72,
+      "y": 241.51,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 81,
+      "str": "processing tasks (Dai and Le, 2015; Peters et al.,",
+      "x": 72,
+      "y": 227.96,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 40,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 82,
+      "str": "2018a; Radford et al., 2018; Howard and Ruder,",
+      "x": 72,
+      "y": 214.42,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 41,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 83,
+      "str": "2018). These include sentence-level tasks such as",
+      "x": 72,
+      "y": 200.87,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 42,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 84,
+      "str": "natural language inference (Bowman et al., 2015;",
+      "x": 72,
+      "y": 187.32,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 85,
+      "str": "Williams et al., 2018) and paraphrasing (Dolan",
+      "x": 72,
+      "y": 173.77,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 44,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 86,
+      "str": "and Brockett, 2005), which aim to predict the re-",
+      "x": 72,
+      "y": 160.22,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 45,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 87,
+      "str": "lationships between sentences by analyzing them",
+      "x": 72,
+      "y": 146.67,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 88,
+      "str": "holistically, as well as token-level tasks such as",
+      "x": 72,
+      "y": 133.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 47,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 89,
+      "str": "named entity recognition and question answering,",
+      "x": 72,
+      "y": 119.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 48,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 90,
+      "str": "where models are required to produce fine-grained",
+      "x": 72,
+      "y": 106.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 49,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 91,
+      "str": "output at the token level (Tjong Kim Sang and",
+      "x": 72,
+      "y": 92.47,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 92,
+      "str": "De Meulder, 2003; Rajpurkar et al., 2016).",
+      "x": 72,
+      "y": 78.92,
+      "width": 186.63,
+      "height": 10.91,
+      "right": 258.63,
+      "visualLineId": 51,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 93,
+      "str": "There are two existing strategies for apply-",
+      "x": 318.18,
+      "y": 608.39,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 94,
+      "str": "ing pre-trained language representations to down-",
+      "x": 307.28,
+      "y": 594.84,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 95,
+      "str": "stream tasks:",
+      "x": 307.28,
+      "y": 581.29,
+      "width": 57.55,
+      "height": 10.91,
+      "right": 364.82,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 96,
+      "str": " ",
+      "x": 364.82,
+      "y": 581.29,
+      "width": 5.16,
+      "height": 0,
+      "right": 369.98,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 97,
+      "str": "feature-based",
+      "x": 369.98,
+      "y": 581.29,
+      "width": 59.59,
+      "height": 10.91,
+      "right": 429.56,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 98,
+      "str": " ",
+      "x": 429.56,
+      "y": 581.29,
+      "width": 3.61,
+      "height": 0,
+      "right": 433.18,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 99,
+      "str": "and",
+      "x": 433.18,
+      "y": 581.29,
+      "width": 15.75,
+      "height": 10.91,
+      "right": 448.93,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 100,
+      "str": " ",
+      "x": 448.93,
+      "y": 581.29,
+      "width": 3.61,
+      "height": 0,
+      "right": 452.54,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 101,
+      "str": "fine-tuning",
+      "x": 452.54,
+      "y": 581.29,
+      "width": 47.27,
+      "height": 10.91,
+      "right": 499.81,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 102,
+      "str": ". The",
+      "x": 499.81,
+      "y": 581.29,
+      "width": 25.73,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 103,
+      "str": "feature-based approach, such as ELMo (Peters",
+      "x": 307.28,
+      "y": 567.74,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 9,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 104,
+      "str": "et al., 2018a), uses task-specific architectures that",
+      "x": 307.28,
+      "y": 554.19,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 10,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 105,
+      "str": "include the pre-trained representations as addi-",
+      "x": 307.28,
+      "y": 540.64,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 106,
+      "str": "tional features. The fine-tuning approach, such as",
+      "x": 307.28,
+      "y": 527.1,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 107,
+      "str": "the Generative Pre-trained Transformer (OpenAI",
+      "x": 307.28,
+      "y": 513.55,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 108,
+      "str": "GPT) (Radford et al., 2018), introduces minimal",
+      "x": 307.28,
+      "y": 500,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 109,
+      "str": "task-specific parameters,",
+      "x": 307.28,
+      "y": 486.45,
+      "width": 110.92,
+      "height": 10.91,
+      "right": 418.2,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 110,
+      "str": " ",
+      "x": 418.2,
+      "y": 486.45,
+      "width": 6.57,
+      "height": 0,
+      "right": 424.77,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 111,
+      "str": "and is trained on the",
+      "x": 424.77,
+      "y": 486.45,
+      "width": 100.78,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 112,
+      "str": "downstream tasks by simply fine-tuning",
+      "x": 307.28,
+      "y": 472.9,
+      "width": 180.58,
+      "height": 10.91,
+      "right": 487.85,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 113,
+      "str": " ",
+      "x": 487.85,
+      "y": 472.9,
+      "width": 4.3,
+      "height": 0,
+      "right": 492.16,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 114,
+      "str": "all",
+      "x": 492.16,
+      "y": 472.9,
+      "width": 11.52,
+      "height": 10.91,
+      "right": 503.68,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 115,
+      "str": " ",
+      "x": 503.68,
+      "y": 472.9,
+      "width": 4.3,
+      "height": 0,
+      "right": 507.98,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 116,
+      "str": "pre-",
+      "x": 507.98,
+      "y": 472.9,
+      "width": 17.56,
+      "height": 10.91,
+      "right": 525.54,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 117,
+      "str": "trained parameters. The two approaches share the",
+      "x": 307.28,
+      "y": 459.35,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 118,
+      "str": "same objective function during pre-training, where",
+      "x": 307.28,
+      "y": 445.8,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 119,
+      "str": "they use unidirectional language models to learn",
+      "x": 307.28,
+      "y": 432.25,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 21,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 120,
+      "str": "general language representations.",
+      "x": 307.28,
+      "y": 418.7,
+      "width": 145.71,
+      "height": 10.91,
+      "right": 452.99,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 121,
+      "str": "We argue that current techniques restrict the",
+      "x": 318.18,
+      "y": 404.63,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 122,
+      "str": "power of the pre-trained representations, espe-",
+      "x": 307.28,
+      "y": 391.08,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 123,
+      "str": "cially for the fine-tuning approaches.",
+      "x": 307.28,
+      "y": 377.53,
+      "width": 169.55,
+      "height": 10.91,
+      "right": 476.83,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 124,
+      "str": " ",
+      "x": 476.83,
+      "y": 377.53,
+      "width": 9.89,
+      "height": 0,
+      "right": 486.72,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 125,
+      "str": "The ma-",
+      "x": 486.72,
+      "y": 377.53,
+      "width": 38.83,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 126,
+      "str": "jor limitation is that standard language models are",
+      "x": 307.28,
+      "y": 363.98,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 127,
+      "str": "unidirectional, and this limits the choice of archi-",
+      "x": 307.28,
+      "y": 350.43,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 29,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 128,
+      "str": "tectures that can be used during pre-training. For",
+      "x": 307.28,
+      "y": 336.88,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 31,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 129,
+      "str": "example, in OpenAI GPT, the authors use a left-to-",
+      "x": 307.28,
+      "y": 323.33,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 130,
+      "str": "right architecture, where every token can only at-",
+      "x": 307.28,
+      "y": 309.78,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 131,
+      "str": "tend to previous tokens in the self-attention layers",
+      "x": 307.28,
+      "y": 296.24,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 132,
+      "str": "of the Transformer (Vaswani et al., 2017). Such re-",
+      "x": 307.28,
+      "y": 282.69,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 133,
+      "str": "strictions are sub-optimal for sentence-level tasks,",
+      "x": 307.28,
+      "y": 269.14,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 37,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 134,
+      "str": "and could be very harmful when applying fine-",
+      "x": 307.28,
+      "y": 255.59,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 38,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 135,
+      "str": "tuning based approaches to token-level tasks such",
+      "x": 307.28,
+      "y": 242.04,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 39,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 136,
+      "str": "as question answering, where it is crucial to incor-",
+      "x": 307.28,
+      "y": 228.49,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 40,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 137,
+      "str": "porate context from both directions.",
+      "x": 307.28,
+      "y": 214.94,
+      "width": 156.48,
+      "height": 10.91,
+      "right": 463.76,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 138,
+      "str": "In this paper, we improve the fine-tuning based",
+      "x": 318.18,
+      "y": 200.87,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 139,
+      "str": "approaches",
+      "x": 307.28,
+      "y": 187.32,
+      "width": 49.07,
+      "height": 10.91,
+      "right": 356.35,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 140,
+      "str": " ",
+      "x": 356.35,
+      "y": 187.32,
+      "width": 6.85,
+      "height": 0,
+      "right": 363.2,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 141,
+      "str": "by",
+      "x": 363.2,
+      "y": 187.32,
+      "width": 10.91,
+      "height": 10.91,
+      "right": 374.11,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 142,
+      "str": " ",
+      "x": 374.11,
+      "y": 187.32,
+      "width": 6.86,
+      "height": 0,
+      "right": 380.97,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 143,
+      "str": "proposing",
+      "x": 380.97,
+      "y": 187.32,
+      "width": 43.64,
+      "height": 10.91,
+      "right": 424.6,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 144,
+      "str": " ",
+      "x": 424.6,
+      "y": 187.32,
+      "width": 6.85,
+      "height": 0,
+      "right": 431.45,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 145,
+      "str": "BERT:",
+      "x": 431.45,
+      "y": 187.32,
+      "width": 30.26,
+      "height": 10.91,
+      "right": 461.72,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 146,
+      "str": " ",
+      "x": 461.72,
+      "y": 187.32,
+      "width": 6.86,
+      "height": 0,
+      "right": 468.58,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 147,
+      "str": "B",
+      "x": 468.58,
+      "y": 187.32,
+      "width": 7.28,
+      "height": 10.91,
+      "right": 475.85,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 148,
+      "str": "idirectional",
+      "x": 475.85,
+      "y": 187.32,
+      "width": 49.69,
+      "height": 10.91,
+      "right": 525.54,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 149,
+      "str": "",
+      "x": 307.28,
+      "y": 173.77,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 150,
+      "str": "E",
+      "x": 307.28,
+      "y": 173.77,
+      "width": 7.28,
+      "height": 10.91,
+      "right": 314.55,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 151,
+      "str": "ncoder",
+      "x": 314.55,
+      "y": 173.77,
+      "width": 29.68,
+      "height": 10.91,
+      "right": 344.24,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 152,
+      "str": " ",
+      "x": 344.24,
+      "y": 173.77,
+      "width": 9.24,
+      "height": 0,
+      "right": 353.47,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 153,
+      "str": "R",
+      "x": 353.47,
+      "y": 173.77,
+      "width": 7.88,
+      "height": 10.91,
+      "right": 361.35,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 154,
+      "str": "epresentations",
+      "x": 361.35,
+      "y": 173.77,
+      "width": 62.41,
+      "height": 10.91,
+      "right": 423.76,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 155,
+      "str": " ",
+      "x": 423.76,
+      "y": 173.77,
+      "width": 9.24,
+      "height": 0,
+      "right": 433,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 156,
+      "str": "from",
+      "x": 433,
+      "y": 173.77,
+      "width": 21.21,
+      "height": 10.91,
+      "right": 454.21,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 157,
+      "str": " ",
+      "x": 454.21,
+      "y": 173.77,
+      "width": 9.23,
+      "height": 0,
+      "right": 463.44,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 158,
+      "str": "T",
+      "x": 463.44,
+      "y": 173.77,
+      "width": 7.28,
+      "height": 10.91,
+      "right": 470.72,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 159,
+      "str": "ransformers.",
+      "x": 470.71,
+      "y": 173.77,
+      "width": 54.83,
+      "height": 10.91,
+      "right": 525.54,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 160,
+      "str": "BERT alleviates the previously mentioned unidi-",
+      "x": 307.28,
+      "y": 160.22,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 161,
+      "str": "rectionality constraint by using a “masked lan-",
+      "x": 307.28,
+      "y": 146.67,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 162,
+      "str": "guage model” (MLM) pre-training objective, in-",
+      "x": 307.28,
+      "y": 133.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 47,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 163,
+      "str": "spired by the Cloze task (Taylor, 1953).",
+      "x": 307.28,
+      "y": 119.57,
+      "width": 189.63,
+      "height": 10.91,
+      "right": 496.91,
+      "visualLineId": 48,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 164,
+      "str": " ",
+      "x": 496.91,
+      "y": 119.57,
+      "width": 11.67,
+      "height": 0,
+      "right": 508.58,
+      "visualLineId": 48,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 165,
+      "str": "The",
+      "x": 508.58,
+      "y": 119.57,
+      "width": 16.96,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 48,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 166,
+      "str": "masked language model randomly masks some of",
+      "x": 307.28,
+      "y": 106.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 49,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 167,
+      "str": "the tokens from the input, and the objective is to",
+      "x": 307.28,
+      "y": 92.47,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 168,
+      "str": "predict the original vocabulary id of the masked",
+      "x": 307.28,
+      "y": 78.92,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 51,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 169,
+      "str": "",
+      "x": 32,
+      "y": 232,
+      "width": 0,
+      "height": 0,
+      "right": 36,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 170,
+      "str": "arXiv:1810.04805v2 [cs.CL] 24 May 2019",
+      "x": 32,
+      "y": 232,
+      "width": 353.3,
+      "height": 20,
+      "right": 385.3,
+      "visualLineId": 40,
+      "inferredColumn": 0
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 760.2,
+      "height": 14.35,
+      "text": "BERT: Pre-training of Deep Bidirectional Transformers for",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 116.52
+    },
+    {
+      "lineId": 1,
+      "y": 744.26,
+      "height": 14.35,
+      "text": "Language Understanding",
+      "itemIndexes": [
+        1
+      ],
+      "firstX": 220.85
+    },
+    {
+      "lineId": 2,
+      "y": 701.88,
+      "height": 12,
+      "text": "Jacob Devlin Ming-Wei Chang Kenton Lee Kristina Toutanova",
+      "itemIndexes": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "firstX": 121.82
+    },
+    {
+      "lineId": 3,
+      "y": 687.93,
+      "height": 11.96,
+      "text": "Google AI Language",
+      "itemIndexes": [
+        11
+      ],
+      "firstX": 249.8
+    },
+    {
+      "lineId": 4,
+      "y": 673.99,
+      "height": 11.96,
+      "text": "{ jacobdevlin,mingweichang,kentonl,kristout } @google.com",
+      "itemIndexes": [
+        13,
+        14,
+        15,
+        16
+      ],
+      "firstX": 107.79
+    },
+    {
+      "lineId": 5,
+      "y": 608.39,
+      "height": 11.96,
+      "text": "Abstract There are two existing strategies for apply-",
+      "itemIndexes": [
+        18,
+        93
+      ],
+      "firstX": 158.89
+    },
+    {
+      "lineId": 6,
+      "y": 594.84,
+      "height": 10.91,
+      "text": "ing pre-trained language representations to down-",
+      "itemIndexes": [
+        94
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 7,
+      "y": 588.52,
+      "height": 12,
+      "text": "We introduce a new language representa-",
+      "itemIndexes": [
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 8,
+      "y": 579.71,
+      "height": 12,
+      "text": "tion model called BERT , which stands for stream tasks: feature-based and fine-tuning . The",
+      "itemIndexes": [
+        31,
+        32,
+        33,
+        34,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 9,
+      "y": 564.95,
+      "height": 12,
+      "text": "B idirectional E ncoder R epresentations from feature-based approach, such as ELMo (Peters",
+      "itemIndexes": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        103
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 10,
+      "y": 552.96,
+      "height": 12,
+      "text": "T ransformers. Unlike recent language repre- et al., 2018a), uses task-specific architectures that",
+      "itemIndexes": [
+        45,
+        46,
+        47,
+        48,
+        104
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 11,
+      "y": 540.67,
+      "height": 10.91,
+      "text": "sentation models (Peters et al., 2018a; Rad- include the pre-trained representations as addi-",
+      "itemIndexes": [
+        49,
+        105
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 12,
+      "y": 527.92,
+      "height": 10.91,
+      "text": "ford et al., 2018), BERT is designed to pre- tional features. The fine-tuning approach, such as",
+      "itemIndexes": [
+        50,
+        106
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 13,
+      "y": 515.16,
+      "height": 10.91,
+      "text": "train deep bidirectional representations from the Generative Pre-trained Transformer (OpenAI",
+      "itemIndexes": [
+        51,
+        107
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 14,
+      "y": 502.41,
+      "height": 10.91,
+      "text": "unlabeled text by jointly conditioning on both GPT) (Radford et al., 2018), introduces minimal",
+      "itemIndexes": [
+        52,
+        108
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 15,
+      "y": 492.87,
+      "height": 12,
+      "text": "left and right context in all layers. As a re-",
+      "itemIndexes": [
+        53,
+        54,
+        55
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 16,
+      "y": 486.45,
+      "height": 12,
+      "text": "task-specific parameters, and is trained on the",
+      "itemIndexes": [
+        109,
+        110,
+        111
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 17,
+      "y": 480.92,
+      "height": 9.96,
+      "text": "sult, the pre-trained BERT model can be fine-",
+      "itemIndexes": [
+        56
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 18,
+      "y": 472.24,
+      "height": 12,
+      "text": "tuned with just one additional output layer downstream tasks by simply fine-tuning all pre-",
+      "itemIndexes": [
+        57,
+        112,
+        113,
+        114,
+        115,
+        116
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 19,
+      "y": 458.18,
+      "height": 10.91,
+      "text": "to create state-of-the-art models for a wide trained parameters. The two approaches share the",
+      "itemIndexes": [
+        58,
+        117
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 20,
+      "y": 445.43,
+      "height": 10.91,
+      "text": "range of tasks, such as question answering and same objective function during pre-training, where",
+      "itemIndexes": [
+        59,
+        118
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 21,
+      "y": 432.67,
+      "height": 10.91,
+      "text": "language inference, without substantial task- they use unidirectional language models to learn",
+      "itemIndexes": [
+        60,
+        119
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 22,
+      "y": 419.92,
+      "height": 10.91,
+      "text": "specific architecture modifications. general language representations.",
+      "itemIndexes": [
+        61,
+        120
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 23,
+      "y": 404.85,
+      "height": 10.91,
+      "text": "BERT is conceptually simple and empirically We argue that current techniques restrict the",
+      "itemIndexes": [
+        62,
+        121
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 24,
+      "y": 392.61,
+      "height": 12,
+      "text": "powerful. It obtains new state-of-the-art re- power of the pre-trained representations, espe-",
+      "itemIndexes": [
+        63,
+        64,
+        65,
+        122
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 25,
+      "y": 378.44,
+      "height": 12,
+      "text": "sults on eleven natural language processing cially for the fine-tuning approaches. The ma-",
+      "itemIndexes": [
+        66,
+        123,
+        124,
+        125
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 26,
+      "y": 369.21,
+      "height": 9.96,
+      "text": "tasks, including pushing the GLUE score to",
+      "itemIndexes": [
+        67
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 27,
+      "y": 363.98,
+      "height": 10.91,
+      "text": "jor limitation is that standard language models are",
+      "itemIndexes": [
+        126
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 28,
+      "y": 357.25,
+      "height": 9.96,
+      "text": "80.5% (7.7% point absolute improvement),",
+      "itemIndexes": [
+        68
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 29,
+      "y": 350.43,
+      "height": 10.91,
+      "text": "unidirectional, and this limits the choice of archi-",
+      "itemIndexes": [
+        127
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 30,
+      "y": 345.3,
+      "height": 9.96,
+      "text": "MultiNLI accuracy to 86.7% (4.6% absolute",
+      "itemIndexes": [
+        69
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 31,
+      "y": 335.11,
+      "height": 10.91,
+      "text": "improvement), SQuAD v1.1 question answer- tectures that can be used during pre-training. For",
+      "itemIndexes": [
+        70,
+        128
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 32,
+      "y": 322.36,
+      "height": 10.91,
+      "text": "ing Test F1 to 93.2 (1.5 point absolute im- example, in OpenAI GPT, the authors use a left-to-",
+      "itemIndexes": [
+        71,
+        129
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 33,
+      "y": 309.61,
+      "height": 10.91,
+      "text": "provement) and SQuAD v2.0 Test F1 to 83.1 right architecture, where every token can only at-",
+      "itemIndexes": [
+        72,
+        130
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 34,
+      "y": 296.86,
+      "height": 10.91,
+      "text": "(5.1 point absolute improvement). tend to previous tokens in the self-attention layers",
+      "itemIndexes": [
+        73,
+        131
+      ],
+      "firstX": 89.01
+    },
+    {
+      "lineId": 35,
+      "y": 282.69,
+      "height": 10.91,
+      "text": "of the Transformer (Vaswani et al., 2017). Such re-",
+      "itemIndexes": [
+        132
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 36,
+      "y": 275.61,
+      "height": 12,
+      "text": "1 Introduction",
+      "itemIndexes": [
+        75,
+        76,
+        77
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 37,
+      "y": 269.14,
+      "height": 10.91,
+      "text": "strictions are sub-optimal for sentence-level tasks,",
+      "itemIndexes": [
+        133
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 38,
+      "y": 255.33,
+      "height": 10.91,
+      "text": "Language model pre-training has been shown to and could be very harmful when applying fine-",
+      "itemIndexes": [
+        79,
+        134
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 39,
+      "y": 241.78,
+      "height": 10.91,
+      "text": "be effective for improving many natural language tuning based approaches to token-level tasks such",
+      "itemIndexes": [
+        80,
+        135
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 40,
+      "y": 229.48,
+      "height": 20,
+      "text": "arXiv:1810.04805v2 [cs.CL] 24 May 2019 processing tasks (Dai and Le, 2015; Peters et al., as question answering, where it is crucial to incor-",
+      "itemIndexes": [
+        170,
+        81,
+        136
+      ],
+      "firstX": 32
+    },
+    {
+      "lineId": 41,
+      "y": 214.68,
+      "height": 10.91,
+      "text": "2018a; Radford et al., 2018; Howard and Ruder, porate context from both directions.",
+      "itemIndexes": [
+        82,
+        137
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 42,
+      "y": 200.87,
+      "height": 10.91,
+      "text": "2018). These include sentence-level tasks such as In this paper, we improve the fine-tuning based",
+      "itemIndexes": [
+        83,
+        138
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 43,
+      "y": 187.32,
+      "height": 12,
+      "text": "natural language inference (Bowman et al., 2015; approaches by proposing BERT: B idirectional",
+      "itemIndexes": [
+        84,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 44,
+      "y": 173.77,
+      "height": 12,
+      "text": "Williams et al., 2018) and paraphrasing (Dolan E ncoder R epresentations from T ransformers.",
+      "itemIndexes": [
+        85,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 45,
+      "y": 160.22,
+      "height": 10.91,
+      "text": "and Brockett, 2005), which aim to predict the re- BERT alleviates the previously mentioned unidi-",
+      "itemIndexes": [
+        86,
+        160
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 46,
+      "y": 146.67,
+      "height": 10.91,
+      "text": "lationships between sentences by analyzing them rectionality constraint by using a “masked lan-",
+      "itemIndexes": [
+        87,
+        161
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 47,
+      "y": 133.12,
+      "height": 10.91,
+      "text": "holistically, as well as token-level tasks such as guage model” (MLM) pre-training objective, in-",
+      "itemIndexes": [
+        88,
+        162
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 48,
+      "y": 119.57,
+      "height": 12,
+      "text": "named entity recognition and question answering, spired by the Cloze task (Taylor, 1953). The",
+      "itemIndexes": [
+        89,
+        163,
+        164,
+        165
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 49,
+      "y": 106.02,
+      "height": 10.91,
+      "text": "where models are required to produce fine-grained masked language model randomly masks some of",
+      "itemIndexes": [
+        90,
+        166
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 50,
+      "y": 92.47,
+      "height": 10.91,
+      "text": "output at the token level (Tjong Kim Sang and the tokens from the input, and the objective is to",
+      "itemIndexes": [
+        91,
+        167
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 51,
+      "y": 78.92,
+      "height": 10.91,
+      "text": "De Meulder, 2003; Rajpurkar et al., 2016). predict the original vocabulary id of the masked",
+      "itemIndexes": [
+        92,
+        168
+      ],
+      "firstX": 72
+    }
+  ]
+}

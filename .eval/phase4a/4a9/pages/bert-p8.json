@@ -1,0 +1,3171 @@
+{
+  "file": "bert.pdf",
+  "page": 8,
+  "pageWidth": 595.276,
+  "pageHeight": 841.89,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 76.1:53, 143.1:12, 190.7:16, 254.0:14, 308.4:51, 411.5:3, 494.6:3)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 235.3 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 7,
+    "substantialClusterCount": 7,
+    "clusters": [
+      {
+        "x": 76.11,
+        "items": 53,
+        "meanWidth": 155.75,
+        "yMin": 78.92,
+        "yMax": 758.22
+      },
+      {
+        "x": 143.13,
+        "items": 12,
+        "meanWidth": 50.61,
+        "yMin": 119.57,
+        "yMax": 758.22
+      },
+      {
+        "x": 190.67,
+        "items": 16,
+        "meanWidth": 18.75,
+        "yMin": 469.3,
+        "yMax": 768.18
+      },
+      {
+        "x": 253.99,
+        "items": 14,
+        "meanWidth": 17.58,
+        "yMin": 509.95,
+        "yMax": 758.22
+      },
+      {
+        "x": 308.4,
+        "items": 51,
+        "meanWidth": 196.76,
+        "yMin": 78.92,
+        "yMax": 768.12
+      },
+      {
+        "x": 411.45,
+        "items": 3,
+        "meanWidth": 106.7,
+        "yMin": 146.67,
+        "yMax": 378.49
+      },
+      {
+        "x": 494.57,
+        "items": 3,
+        "meanWidth": 22.94,
+        "yMin": 241.34,
+        "yMax": 254.89
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 76.11,
+      "items": 53,
+      "meanWidth": 155.75,
+      "yMin": 78.92,
+      "yMax": 758.22
+    },
+    {
+      "x": 143.13,
+      "items": 12,
+      "meanWidth": 50.61,
+      "yMin": 119.57,
+      "yMax": 758.22
+    },
+    {
+      "x": 190.67,
+      "items": 16,
+      "meanWidth": 18.75,
+      "yMin": 469.3,
+      "yMax": 768.18
+    },
+    {
+      "x": 253.99,
+      "items": 14,
+      "meanWidth": 17.58,
+      "yMin": 509.95,
+      "yMax": 758.22
+    },
+    {
+      "x": 308.4,
+      "items": 51,
+      "meanWidth": 196.76,
+      "yMin": 78.92,
+      "yMax": 768.12
+    },
+    {
+      "x": 411.45,
+      "items": 3,
+      "meanWidth": 106.7,
+      "yMin": 146.67,
+      "yMax": 378.49
+    },
+    {
+      "x": 494.57,
+      "items": 3,
+      "meanWidth": 22.94,
+      "yMin": 241.34,
+      "yMax": 254.89
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 98,
+    "clusters": [
+      {
+        "x": 308.44,
+        "items": 49,
+        "share": 0.5
+      },
+      {
+        "x": 75.84,
+        "items": 42,
+        "share": 0.429
+      }
+    ],
+    "twoDominant": true,
+    "overlap": 633.97,
+    "topShare": 0.9285714285714286
+  },
+  "ySpanOverlap": 633.97,
+  "gutterCandidates": [
+    {
+      "between": [
+        76.11,
+        143.13
+      ],
+      "gap": 67.02
+    },
+    {
+      "between": [
+        143.13,
+        190.67
+      ],
+      "gap": 47.53999999999999
+    },
+    {
+      "between": [
+        190.67,
+        253.99
+      ],
+      "gap": 63.32000000000002
+    },
+    {
+      "between": [
+        253.99,
+        308.4
+      ],
+      "gap": 54.40999999999997
+    },
+    {
+      "between": [
+        308.4,
+        411.45
+      ],
+      "gap": 103.05000000000001
+    },
+    {
+      "between": [
+        411.45,
+        494.57
+      ],
+      "gap": 83.12
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Dev Set",
+      "x": 198.1,
+      "y": 768.18,
+      "width": 28.41,
+      "height": 8.97,
+      "right": 226.51,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 1,
+      "str": "Tasks",
+      "x": 72,
+      "y": 758.22,
+      "width": 20.2,
+      "height": 8.97,
+      "right": 92.2,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 2,
+      "str": " ",
+      "x": 92.2,
+      "y": 758.22,
+      "width": 43.56,
+      "height": 0,
+      "right": 135.76,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 3,
+      "str": "MNLI-m",
+      "x": 135.76,
+      "y": 758.22,
+      "width": 32.87,
+      "height": 8.97,
+      "right": 168.63,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 4,
+      "str": " ",
+      "x": 168.63,
+      "y": 758.22,
+      "width": 6.55,
+      "height": 0,
+      "right": 175.18,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 5,
+      "str": "QNLI",
+      "x": 175.18,
+      "y": 758.22,
+      "width": 21.41,
+      "height": 8.97,
+      "right": 196.59,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 6,
+      "str": " ",
+      "x": 196.59,
+      "y": 758.22,
+      "width": 6.55,
+      "height": 0,
+      "right": 203.13,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 7,
+      "str": "MRPC",
+      "x": 203.13,
+      "y": 758.22,
+      "width": 24.92,
+      "height": 8.97,
+      "right": 228.05,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 8,
+      "str": " ",
+      "x": 228.05,
+      "y": 758.22,
+      "width": 6.55,
+      "height": 0,
+      "right": 234.6,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 9,
+      "str": "SST-2",
+      "x": 234.6,
+      "y": 758.22,
+      "width": 22.09,
+      "height": 8.97,
+      "right": 256.69,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 10,
+      "str": " ",
+      "x": 256.69,
+      "y": 758.22,
+      "width": 6.55,
+      "height": 0,
+      "right": 263.24,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 11,
+      "str": "SQuAD",
+      "x": 263.24,
+      "y": 758.22,
+      "width": 28.89,
+      "height": 8.97,
+      "right": 292.13,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 12,
+      "str": "(Acc)",
+      "x": 141.99,
+      "y": 748.26,
+      "width": 20.41,
+      "height": 8.97,
+      "right": 162.4,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 13,
+      "str": " ",
+      "x": 162.4,
+      "y": 748.26,
+      "width": 13.28,
+      "height": 0,
+      "right": 175.68,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 14,
+      "str": "(Acc)",
+      "x": 175.68,
+      "y": 748.26,
+      "width": 20.41,
+      "height": 8.97,
+      "right": 196.09,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 15,
+      "str": " ",
+      "x": 196.09,
+      "y": 748.26,
+      "width": 9.3,
+      "height": 0,
+      "right": 205.38,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 16,
+      "str": "(Acc)",
+      "x": 205.38,
+      "y": 748.26,
+      "width": 20.41,
+      "height": 8.97,
+      "right": 225.79,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 17,
+      "str": " ",
+      "x": 225.79,
+      "y": 748.26,
+      "width": 9.65,
+      "height": 0,
+      "right": 235.44,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 18,
+      "str": "(Acc)",
+      "x": 235.44,
+      "y": 748.26,
+      "width": 20.41,
+      "height": 8.97,
+      "right": 255.85,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 19,
+      "str": " ",
+      "x": 255.85,
+      "y": 748.26,
+      "width": 14.11,
+      "height": 0,
+      "right": 269.96,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 20,
+      "str": "(F1)",
+      "x": 269.96,
+      "y": 748.26,
+      "width": 15.44,
+      "height": 8.97,
+      "right": 285.4,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 21,
+      "str": "BERT",
+      "x": 72,
+      "y": 732.82,
+      "width": 22.38,
+      "height": 8.97,
+      "right": 94.38,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 22,
+      "str": "BASE",
+      "x": 94.53,
+      "y": 731.82,
+      "width": 15.97,
+      "height": 5.98,
+      "right": 110.5,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 23,
+      "str": " ",
+      "x": 110.5,
+      "y": 731.82,
+      "width": 33.85,
+      "height": 0,
+      "right": 144.35,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 24,
+      "str": "84.4",
+      "x": 144.35,
+      "y": 732.82,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 160.04,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 25,
+      "str": " ",
+      "x": 160.04,
+      "y": 732.82,
+      "width": 18,
+      "height": 0,
+      "right": 178.04,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 26,
+      "str": "88.4",
+      "x": 178.04,
+      "y": 732.82,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 193.73,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 27,
+      "str": " ",
+      "x": 193.73,
+      "y": 732.82,
+      "width": 14.01,
+      "height": 0,
+      "right": 207.74,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 28,
+      "str": "86.7",
+      "x": 207.74,
+      "y": 732.82,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 223.43,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 29,
+      "str": " ",
+      "x": 223.43,
+      "y": 732.82,
+      "width": 14.36,
+      "height": 0,
+      "right": 237.8,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 30,
+      "str": "92.7",
+      "x": 237.8,
+      "y": 732.82,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 253.49,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 31,
+      "str": " ",
+      "x": 253.49,
+      "y": 732.82,
+      "width": 16.35,
+      "height": 0,
+      "right": 269.83,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 32,
+      "str": "88.5",
+      "x": 269.83,
+      "y": 732.82,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 285.52,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 33,
+      "str": "No NSP",
+      "x": 72,
+      "y": 722.85,
+      "width": 29.64,
+      "height": 8.97,
+      "right": 101.64,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 34,
+      "str": " ",
+      "x": 101.64,
+      "y": 722.85,
+      "width": 42.71,
+      "height": 0,
+      "right": 144.35,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 35,
+      "str": "83.9",
+      "x": 144.35,
+      "y": 722.85,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 160.04,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 36,
+      "str": " ",
+      "x": 160.04,
+      "y": 722.85,
+      "width": 18,
+      "height": 0,
+      "right": 178.04,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 37,
+      "str": "84.9",
+      "x": 178.04,
+      "y": 722.85,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 193.73,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 38,
+      "str": " ",
+      "x": 193.73,
+      "y": 722.85,
+      "width": 14.01,
+      "height": 0,
+      "right": 207.74,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 39,
+      "str": "86.5",
+      "x": 207.74,
+      "y": 722.85,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 223.43,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 40,
+      "str": " ",
+      "x": 223.43,
+      "y": 722.85,
+      "width": 14.36,
+      "height": 0,
+      "right": 237.8,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 41,
+      "str": "92.6",
+      "x": 237.8,
+      "y": 722.85,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 253.49,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 42,
+      "str": " ",
+      "x": 253.49,
+      "y": 722.85,
+      "width": 16.35,
+      "height": 0,
+      "right": 269.83,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 43,
+      "str": "87.9",
+      "x": 269.83,
+      "y": 722.85,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 285.53,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 44,
+      "str": "LTR & No NSP",
+      "x": 72,
+      "y": 712.89,
+      "width": 57.21,
+      "height": 8.97,
+      "right": 129.21,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 45,
+      "str": " ",
+      "x": 129.21,
+      "y": 712.89,
+      "width": 15.14,
+      "height": 0,
+      "right": 144.35,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 46,
+      "str": "82.1",
+      "x": 144.35,
+      "y": 712.89,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 160.04,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 160.04,
+      "y": 712.89,
+      "width": 18,
+      "height": 0,
+      "right": 178.04,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 48,
+      "str": "84.3",
+      "x": 178.04,
+      "y": 712.89,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 193.73,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 49,
+      "str": " ",
+      "x": 193.73,
+      "y": 712.89,
+      "width": 14.01,
+      "height": 0,
+      "right": 207.74,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 50,
+      "str": "77.5",
+      "x": 207.74,
+      "y": 712.89,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 223.43,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 51,
+      "str": " ",
+      "x": 223.43,
+      "y": 712.89,
+      "width": 14.36,
+      "height": 0,
+      "right": 237.8,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 52,
+      "str": "92.1",
+      "x": 237.8,
+      "y": 712.89,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 253.49,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 53,
+      "str": " ",
+      "x": 253.49,
+      "y": 712.89,
+      "width": 16.35,
+      "height": 0,
+      "right": 269.83,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 54,
+      "str": "77.8",
+      "x": 269.83,
+      "y": 712.89,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 285.53,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 55,
+      "str": "+ BiLSTM",
+      "x": 80.97,
+      "y": 702.93,
+      "width": 39.69,
+      "height": 8.97,
+      "right": 120.65,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 56,
+      "str": " ",
+      "x": 120.65,
+      "y": 702.93,
+      "width": 23.7,
+      "height": 0,
+      "right": 144.35,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 57,
+      "str": "82.1",
+      "x": 144.35,
+      "y": 702.93,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 160.04,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 58,
+      "str": " ",
+      "x": 160.04,
+      "y": 702.93,
+      "width": 18,
+      "height": 0,
+      "right": 178.04,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 59,
+      "str": "84.1",
+      "x": 178.04,
+      "y": 702.93,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 193.73,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 60,
+      "str": " ",
+      "x": 193.73,
+      "y": 702.93,
+      "width": 14.01,
+      "height": 0,
+      "right": 207.74,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 61,
+      "str": "75.7",
+      "x": 207.74,
+      "y": 702.93,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 223.43,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 62,
+      "str": " ",
+      "x": 223.43,
+      "y": 702.93,
+      "width": 14.36,
+      "height": 0,
+      "right": 237.8,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 63,
+      "str": "91.6",
+      "x": 237.8,
+      "y": 702.93,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 253.49,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 64,
+      "str": " ",
+      "x": 253.49,
+      "y": 702.93,
+      "width": 16.35,
+      "height": 0,
+      "right": 269.83,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 65,
+      "str": "84.9",
+      "x": 269.83,
+      "y": 702.93,
+      "width": 15.69,
+      "height": 8.97,
+      "right": 285.53,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 66,
+      "str": "",
+      "x": 72,
+      "y": 678.86,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 67,
+      "str": "Table 5: Ablation over the pre-training tasks using the",
+      "x": 72,
+      "y": 678.86,
+      "width": 218.27,
+      "height": 9.96,
+      "right": 290.27,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 68,
+      "str": "BERT",
+      "x": 72,
+      "y": 666.9,
+      "width": 24.87,
+      "height": 9.96,
+      "right": 96.87,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 69,
+      "str": "BASE",
+      "x": 97.04,
+      "y": 665.41,
+      "width": 18.63,
+      "height": 6.97,
+      "right": 115.67,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 70,
+      "str": " ",
+      "x": 115.67,
+      "y": 665.41,
+      "width": 3.77,
+      "height": 0,
+      "right": 119.43,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 71,
+      "str": "architecture. “No NSP” is trained without",
+      "x": 119.43,
+      "y": 666.9,
+      "width": 170.84,
+      "height": 9.96,
+      "right": 290.27,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 72,
+      "str": "the next sentence prediction task. “LTR & No NSP” is",
+      "x": 72,
+      "y": 654.95,
+      "width": 218.27,
+      "height": 9.96,
+      "right": 290.27,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 73,
+      "str": "trained as a left-to-right LM without the next sentence",
+      "x": 72,
+      "y": 642.99,
+      "width": 218.27,
+      "height": 9.96,
+      "right": 290.27,
+      "visualLineId": 12,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 74,
+      "str": "prediction, like OpenAI GPT. “+ BiLSTM” adds a ran-",
+      "x": 72,
+      "y": 631.04,
+      "width": 218.27,
+      "height": 9.96,
+      "right": 290.27,
+      "visualLineId": 13,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 75,
+      "str": "domly initialized BiLSTM on top of the “LTR + No",
+      "x": 72,
+      "y": 619.08,
+      "width": 218.27,
+      "height": 9.96,
+      "right": 290.27,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 76,
+      "str": "NSP” model during fine-tuning.",
+      "x": 72,
+      "y": 607.13,
+      "width": 127.3,
+      "height": 9.96,
+      "right": 199.3,
+      "visualLineId": 15,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 77,
+      "str": "",
+      "x": 72,
+      "y": 570.16,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 78,
+      "str": "ablation studies can be found in Appendix C.",
+      "x": 72,
+      "y": 570.16,
+      "width": 196.95,
+      "height": 10.91,
+      "right": 268.95,
+      "visualLineId": 17,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 79,
+      "str": "",
+      "x": 72,
+      "y": 543.45,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 80,
+      "str": "5.1",
+      "x": 72,
+      "y": 543.45,
+      "width": 13.64,
+      "height": 10.91,
+      "right": 85.64,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 81,
+      "str": " ",
+      "x": 85.64,
+      "y": 543.45,
+      "width": 10.91,
+      "height": 0,
+      "right": 96.55,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 82,
+      "str": "Effect of Pre-training Tasks",
+      "x": 96.55,
+      "y": 543.45,
+      "width": 128.78,
+      "height": 10.91,
+      "right": 225.33,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 83,
+      "str": "",
+      "x": 72,
+      "y": 523.5,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 84,
+      "str": "We demonstrate the importance of the deep bidi-",
+      "x": 72,
+      "y": 523.5,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 85,
+      "str": "rectionality",
+      "x": 72,
+      "y": 509.95,
+      "width": 49.69,
+      "height": 10.91,
+      "right": 121.69,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 86,
+      "str": " ",
+      "x": 121.69,
+      "y": 509.95,
+      "width": 7.1,
+      "height": 0,
+      "right": 128.79,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 87,
+      "str": "of",
+      "x": 128.79,
+      "y": 509.95,
+      "width": 9.09,
+      "height": 10.91,
+      "right": 137.88,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 88,
+      "str": " ",
+      "x": 137.88,
+      "y": 509.95,
+      "width": 7.11,
+      "height": 0,
+      "right": 144.99,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 89,
+      "str": "BERT",
+      "x": 144.99,
+      "y": 509.95,
+      "width": 27.23,
+      "height": 10.91,
+      "right": 172.22,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 90,
+      "str": " ",
+      "x": 172.22,
+      "y": 509.95,
+      "width": 7.1,
+      "height": 0,
+      "right": 179.32,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 91,
+      "str": "by",
+      "x": 179.32,
+      "y": 509.95,
+      "width": 10.91,
+      "height": 10.91,
+      "right": 190.23,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 92,
+      "str": " ",
+      "x": 190.23,
+      "y": 509.95,
+      "width": 7.1,
+      "height": 0,
+      "right": 197.33,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 93,
+      "str": "evaluating",
+      "x": 197.33,
+      "y": 509.95,
+      "width": 44.9,
+      "height": 10.91,
+      "right": 242.24,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 94,
+      "str": " ",
+      "x": 242.24,
+      "y": 509.95,
+      "width": 7.11,
+      "height": 0,
+      "right": 249.35,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 95,
+      "str": "two",
+      "x": 249.35,
+      "y": 509.95,
+      "width": 16.24,
+      "height": 10.91,
+      "right": 265.59,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 96,
+      "str": " ",
+      "x": 265.59,
+      "y": 509.95,
+      "width": 7.11,
+      "height": 0,
+      "right": 272.71,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 97,
+      "str": "pre-",
+      "x": 272.71,
+      "y": 509.95,
+      "width": 17.56,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 98,
+      "str": "training objectives using exactly the same pre-",
+      "x": 72,
+      "y": 496.4,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 25,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 99,
+      "str": "training data, fine-tuning scheme, and hyperpa-",
+      "x": 72,
+      "y": 482.85,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 27,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 100,
+      "str": "rameters as BERT",
+      "x": 72,
+      "y": 469.3,
+      "width": 79.33,
+      "height": 10.91,
+      "right": 151.33,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 101,
+      "str": "BASE",
+      "x": 151.53,
+      "y": 467.65,
+      "width": 21.29,
+      "height": 7.97,
+      "right": 172.82,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 102,
+      "str": ":",
+      "x": 173.51,
+      "y": 469.3,
+      "width": 3.03,
+      "height": 10.91,
+      "right": 176.55,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 103,
+      "str": "",
+      "x": 72,
+      "y": 447.25,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 104,
+      "str": "No NSP",
+      "x": 72,
+      "y": 447.25,
+      "width": 37.77,
+      "height": 10.91,
+      "right": 109.77,
+      "visualLineId": 30,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 105,
+      "str": ": A bidirectional model which is trained",
+      "x": 109.76,
+      "y": 447.25,
+      "width": 180.5,
+      "height": 10.91,
+      "right": 290.26,
+      "visualLineId": 30,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 106,
+      "str": "using the “masked LM” (MLM) but without the",
+      "x": 72,
+      "y": 433.7,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 31,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 107,
+      "str": "“next sentence prediction” (NSP) task.",
+      "x": 72,
+      "y": 420.15,
+      "width": 168.59,
+      "height": 10.91,
+      "right": 240.59,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 108,
+      "str": "",
+      "x": 72,
+      "y": 406.6,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 109,
+      "str": "LTR & No NSP",
+      "x": 72,
+      "y": 406.6,
+      "width": 71.23,
+      "height": 10.91,
+      "right": 143.23,
+      "visualLineId": 33,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 110,
+      "str": ": A left-context-only model which",
+      "x": 143.23,
+      "y": 406.6,
+      "width": 147.03,
+      "height": 10.91,
+      "right": 290.26,
+      "visualLineId": 33,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 111,
+      "str": "is trained using a standard Left-to-Right (LTR)",
+      "x": 72,
+      "y": 393.05,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 34,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 112,
+      "str": "LM, rather than an MLM. The left-only constraint",
+      "x": 72,
+      "y": 379.5,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 35,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 113,
+      "str": "was also applied at fine-tuning, because removing",
+      "x": 72,
+      "y": 365.95,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 36,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 114,
+      "str": "it introduced a pre-train/fine-tune mismatch that",
+      "x": 72,
+      "y": 352.4,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 115,
+      "str": "degraded downstream performance. Additionally,",
+      "x": 72,
+      "y": 338.86,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 38,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 116,
+      "str": "this model was pre-trained without the NSP task.",
+      "x": 72,
+      "y": 325.31,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 117,
+      "str": "This is directly comparable to OpenAI GPT, but",
+      "x": 72,
+      "y": 311.76,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 40,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 118,
+      "str": "using our larger training dataset, our input repre-",
+      "x": 72,
+      "y": 298.21,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 41,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 119,
+      "str": "sentation, and our fine-tuning scheme.",
+      "x": 72,
+      "y": 284.66,
+      "width": 166.65,
+      "height": 10.91,
+      "right": 238.65,
+      "visualLineId": 42,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 120,
+      "str": "We first examine the impact brought by the NSP",
+      "x": 82.91,
+      "y": 269.86,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 121,
+      "str": "task.",
+      "x": 72,
+      "y": 256.31,
+      "width": 20.3,
+      "height": 10.91,
+      "right": 92.3,
+      "visualLineId": 44,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 122,
+      "str": " ",
+      "x": 92.3,
+      "y": 256.31,
+      "width": 9.46,
+      "height": 0,
+      "right": 101.76,
+      "visualLineId": 44,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 123,
+      "str": "In Table 5, we show that removing NSP",
+      "x": 101.76,
+      "y": 256.31,
+      "width": 188.51,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 44,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 124,
+      "str": "hurts performance significantly on QNLI, MNLI,",
+      "x": 72,
+      "y": 242.76,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 45,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 125,
+      "str": "and SQuAD 1.1.",
+      "x": 72,
+      "y": 229.21,
+      "width": 76.17,
+      "height": 10.91,
+      "right": 148.17,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 126,
+      "str": " ",
+      "x": 148.17,
+      "y": 229.21,
+      "width": 8.55,
+      "height": 0,
+      "right": 156.72,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 127,
+      "str": "Next, we evaluate the impact",
+      "x": 156.72,
+      "y": 229.21,
+      "width": 133.55,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 128,
+      "str": "of training bidirectional representations by com-",
+      "x": 72,
+      "y": 215.66,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 47,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 129,
+      "str": "paring “No NSP” to “LTR & No NSP”. The LTR",
+      "x": 72,
+      "y": 202.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 48,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 130,
+      "str": "model performs worse than the MLM model on all",
+      "x": 72,
+      "y": 188.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 49,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 131,
+      "str": "tasks, with large drops on MRPC and SQuAD.",
+      "x": 72,
+      "y": 175.02,
+      "width": 203.74,
+      "height": 10.91,
+      "right": 275.74,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 132,
+      "str": "For SQuAD it is intuitively clear that a LTR",
+      "x": 82.91,
+      "y": 160.22,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 51,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 133,
+      "str": "model will perform poorly at token predictions,",
+      "x": 72,
+      "y": 146.67,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 52,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 134,
+      "str": "since the token-level hidden states have no right-",
+      "x": 72,
+      "y": 133.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 53,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 135,
+      "str": "side context.",
+      "x": 72,
+      "y": 119.57,
+      "width": 56.67,
+      "height": 10.91,
+      "right": 128.67,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 136,
+      "str": " ",
+      "x": 128.67,
+      "y": 119.57,
+      "width": 8.47,
+      "height": 0,
+      "right": 137.14,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 137,
+      "str": "In order to make a good faith at-",
+      "x": 137.14,
+      "y": 119.57,
+      "width": 153.13,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 138,
+      "str": "tempt at strengthening the LTR system, we added",
+      "x": 72,
+      "y": 106.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 55,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 139,
+      "str": "a randomly initialized BiLSTM on top. This does",
+      "x": 72,
+      "y": 92.47,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 56,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 140,
+      "str": "significantly improve results on SQuAD, but the",
+      "x": 72,
+      "y": 78.92,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 57,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 141,
+      "str": "results are still far worse than those of the pre-",
+      "x": 307.28,
+      "y": 768.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 142,
+      "str": "trained bidirectional models. The BiLSTM hurts",
+      "x": 307.28,
+      "y": 754.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 143,
+      "str": "performance on the GLUE tasks.",
+      "x": 307.28,
+      "y": 741.02,
+      "width": 143.9,
+      "height": 10.91,
+      "right": 451.18,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 144,
+      "str": "We recognize that it would also be possible to",
+      "x": 318.19,
+      "y": 725.99,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 145,
+      "str": "train separate LTR and RTL models and represent",
+      "x": 307.28,
+      "y": 712.44,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 146,
+      "str": "each token as the concatenation of the two mod-",
+      "x": 307.28,
+      "y": 698.89,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 147,
+      "str": "els, as ELMo does. However: (a) this is twice as",
+      "x": 307.28,
+      "y": 685.35,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 148,
+      "str": "expensive as a single bidirectional model; (b) this",
+      "x": 307.28,
+      "y": 671.8,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 10,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 149,
+      "str": "is non-intuitive for tasks like QA, since the RTL",
+      "x": 307.28,
+      "y": 658.25,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 150,
+      "str": "model would not be able to condition the answer",
+      "x": 307.28,
+      "y": 644.7,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 151,
+      "str": "on the question; (c) this it is strictly less powerful",
+      "x": 307.28,
+      "y": 631.15,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 152,
+      "str": "than a deep bidirectional model, since it can use",
+      "x": 307.28,
+      "y": 617.6,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 153,
+      "str": "both left and right context at every layer.",
+      "x": 307.28,
+      "y": 604.05,
+      "width": 176.95,
+      "height": 10.91,
+      "right": 484.22,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 154,
+      "str": "",
+      "x": 307.28,
+      "y": 576.53,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 155,
+      "str": "5.2",
+      "x": 307.28,
+      "y": 576.53,
+      "width": 13.64,
+      "height": 10.91,
+      "right": 320.91,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 156,
+      "str": " ",
+      "x": 320.91,
+      "y": 576.53,
+      "width": 10.91,
+      "height": 0,
+      "right": 331.82,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 157,
+      "str": "Effect of Model Size",
+      "x": 331.82,
+      "y": 576.53,
+      "width": 93.61,
+      "height": 10.91,
+      "right": 425.43,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 158,
+      "str": "",
+      "x": 307.28,
+      "y": 556.11,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 159,
+      "str": "In this section, we explore the effect of model size",
+      "x": 307.28,
+      "y": 556.11,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 160,
+      "str": "on fine-tuning task accuracy. We trained a number",
+      "x": 307.28,
+      "y": 542.56,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 161,
+      "str": "of BERT models with a differing number of layers,",
+      "x": 307.28,
+      "y": 529.01,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 162,
+      "str": "hidden units, and attention heads, while otherwise",
+      "x": 307.28,
+      "y": 515.46,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 163,
+      "str": "using the same hyperparameters and training pro-",
+      "x": 307.28,
+      "y": 501.91,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 164,
+      "str": "cedure as described previously.",
+      "x": 307.28,
+      "y": 488.37,
+      "width": 135.95,
+      "height": 10.91,
+      "right": 443.23,
+      "visualLineId": 26,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 165,
+      "str": "Results on selected GLUE tasks are shown in",
+      "x": 318.19,
+      "y": 473.33,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 28,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 166,
+      "str": "Table 6. In this table, we report the average Dev",
+      "x": 307.28,
+      "y": 459.78,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 29,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 167,
+      "str": "Set accuracy from 5 random restarts of fine-tuning.",
+      "x": 307.28,
+      "y": 446.24,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 30,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 168,
+      "str": "We can see that larger models lead to a strict ac-",
+      "x": 307.28,
+      "y": 432.69,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 31,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 169,
+      "str": "curacy improvement across all four datasets, even",
+      "x": 307.28,
+      "y": 419.14,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 170,
+      "str": "for MRPC which only has 3,600 labeled train-",
+      "x": 307.28,
+      "y": 405.59,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 171,
+      "str": "ing examples, and is substantially different from",
+      "x": 307.28,
+      "y": 392.04,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 172,
+      "str": "the pre-training tasks.",
+      "x": 307.28,
+      "y": 378.49,
+      "width": 97.13,
+      "height": 10.91,
+      "right": 404.41,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 173,
+      "str": " ",
+      "x": 404.41,
+      "y": 378.49,
+      "width": 6.84,
+      "height": 0,
+      "right": 411.25,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 174,
+      "str": "It is also perhaps surpris-",
+      "x": 411.25,
+      "y": 378.49,
+      "width": 114.29,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 175,
+      "str": "ing that we are able to achieve such significant",
+      "x": 307.28,
+      "y": 364.94,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 36,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 176,
+      "str": "improvements on top of models which are al-",
+      "x": 307.28,
+      "y": 351.39,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 37,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 177,
+      "str": "ready quite large relative to the existing literature.",
+      "x": 307.28,
+      "y": 337.84,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 38,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 178,
+      "str": "For example, the largest Transformer explored in",
+      "x": 307.28,
+      "y": 324.29,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 39,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 179,
+      "str": "Vaswani et al. (2017) is (L=6, H=1024, A=16)",
+      "x": 307.28,
+      "y": 310.74,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 40,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 180,
+      "str": "with 100M parameters for the encoder, and the",
+      "x": 307.28,
+      "y": 297.19,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 181,
+      "str": "largest Transformer we have found in the literature",
+      "x": 307.28,
+      "y": 283.65,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 182,
+      "str": "is (L=64, H=512, A=2) with 235M parameters",
+      "x": 307.28,
+      "y": 270.1,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 183,
+      "str": "(Al-Rfou et al., 2018).",
+      "x": 307.28,
+      "y": 256.55,
+      "width": 102.09,
+      "height": 10.91,
+      "right": 409.36,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 184,
+      "str": " ",
+      "x": 409.36,
+      "y": 256.55,
+      "width": 7.92,
+      "height": 0,
+      "right": 417.28,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 185,
+      "str": "By contrast, BERT",
+      "x": 417.28,
+      "y": 256.55,
+      "width": 86.07,
+      "height": 10.91,
+      "right": 503.36,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 186,
+      "str": "BASE",
+      "x": 503.56,
+      "y": 254.89,
+      "width": 21.29,
+      "height": 7.97,
+      "right": 524.85,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 187,
+      "str": "",
+      "x": 307.28,
+      "y": 243,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 188,
+      "str": "contains 110M parameters and BERT",
+      "x": 307.28,
+      "y": 243,
+      "width": 166.52,
+      "height": 10.91,
+      "right": 473.79,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 189,
+      "str": "LARGE",
+      "x": 473.99,
+      "y": 241.34,
+      "width": 28.16,
+      "height": 7.97,
+      "right": 502.15,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 190,
+      "str": " ",
+      "x": 502.15,
+      "y": 241.34,
+      "width": 4.01,
+      "height": 0,
+      "right": 506.16,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 191,
+      "str": "con-",
+      "x": 506.16,
+      "y": 243,
+      "width": 19.39,
+      "height": 10.91,
+      "right": 525.54,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 192,
+      "str": "tains 340M parameters.",
+      "x": 307.28,
+      "y": 229.45,
+      "width": 102.71,
+      "height": 10.91,
+      "right": 409.99,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 193,
+      "str": "It has long been known that increasing the",
+      "x": 318.18,
+      "y": 214.42,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 47,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 194,
+      "str": "model size will lead to continual improvements",
+      "x": 307.28,
+      "y": 200.87,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 48,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 195,
+      "str": "on large-scale tasks such as machine translation",
+      "x": 307.28,
+      "y": 187.32,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 49,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 196,
+      "str": "and language modeling, which is demonstrated",
+      "x": 307.28,
+      "y": 173.77,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 197,
+      "str": "by the LM perplexity of held-out training data",
+      "x": 307.28,
+      "y": 160.22,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 51,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 198,
+      "str": "shown in Table 6.",
+      "x": 307.28,
+      "y": 146.67,
+      "width": 86.09,
+      "height": 10.91,
+      "right": 393.37,
+      "visualLineId": 52,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 199,
+      "str": " ",
+      "x": 393.37,
+      "y": 146.67,
+      "width": 12.45,
+      "height": 0,
+      "right": 405.82,
+      "visualLineId": 52,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 200,
+      "str": "However, we believe that",
+      "x": 405.82,
+      "y": 146.67,
+      "width": 119.73,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 52,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 201,
+      "str": "this is the first work to demonstrate convinc-",
+      "x": 307.28,
+      "y": 133.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 53,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 202,
+      "str": "ingly that scaling to extreme model sizes also",
+      "x": 307.28,
+      "y": 119.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 54,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 203,
+      "str": "leads to large improvements on very small scale",
+      "x": 307.28,
+      "y": 106.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 55,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 204,
+      "str": "tasks, provided that the model has been suffi-",
+      "x": 307.28,
+      "y": 92.47,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 56,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 205,
+      "str": "ciently pre-trained. Peters et al. (2018b) presented",
+      "x": 307.28,
+      "y": 78.92,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 57,
+      "inferredColumn": 1
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 768.15,
+      "height": 10.91,
+      "text": "Dev Set results are still far worse than those of the pre-",
+      "itemIndexes": [
+        0,
+        141
+      ],
+      "firstX": 198.1
+    },
+    {
+      "lineId": 1,
+      "y": 757.92,
+      "height": 12,
+      "text": "Tasks MNLI-m QNLI MRPC SST-2 SQuAD trained bidirectional models. The BiLSTM hurts",
+      "itemIndexes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        142
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 2,
+      "y": 748.26,
+      "height": 12,
+      "text": "(Acc) (Acc) (Acc) (Acc) (F1)",
+      "itemIndexes": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "firstX": 141.99
+    },
+    {
+      "lineId": 3,
+      "y": 741.02,
+      "height": 10.91,
+      "text": "performance on the GLUE tasks.",
+      "itemIndexes": [
+        143
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 4,
+      "y": 732.65,
+      "height": 12,
+      "text": "BERT BASE 84.4 88.4 86.7 92.7 88.5",
+      "itemIndexes": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 5,
+      "y": 723.12,
+      "height": 12,
+      "text": "No NSP 83.9 84.9 86.5 92.6 87.9 We recognize that it would also be possible to",
+      "itemIndexes": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        144
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 6,
+      "y": 712.85,
+      "height": 12,
+      "text": "LTR & No NSP 82.1 84.3 77.5 92.1 77.8 train separate LTR and RTL models and represent",
+      "itemIndexes": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        145
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 7,
+      "y": 702.59,
+      "height": 12,
+      "text": "+ BiLSTM 82.1 84.1 75.7 91.6 84.9 each token as the concatenation of the two mod-",
+      "itemIndexes": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        146
+      ],
+      "firstX": 80.97
+    },
+    {
+      "lineId": 8,
+      "y": 685.35,
+      "height": 10.91,
+      "text": "els, as ELMo does. However: (a) this is twice as",
+      "itemIndexes": [
+        147
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 9,
+      "y": 678.86,
+      "height": 9.96,
+      "text": "Table 5: Ablation over the pre-training tasks using the",
+      "itemIndexes": [
+        67
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 10,
+      "y": 667.28,
+      "height": 12,
+      "text": "BERT BASE architecture. “No NSP” is trained without expensive as a single bidirectional model; (b) this",
+      "itemIndexes": [
+        68,
+        69,
+        70,
+        71,
+        148
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 11,
+      "y": 656.6,
+      "height": 10.91,
+      "text": "the next sentence prediction task. “LTR & No NSP” is is non-intuitive for tasks like QA, since the RTL",
+      "itemIndexes": [
+        72,
+        149
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 12,
+      "y": 643.85,
+      "height": 10.91,
+      "text": "trained as a left-to-right LM without the next sentence model would not be able to condition the answer",
+      "itemIndexes": [
+        73,
+        150
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 13,
+      "y": 631.09,
+      "height": 10.91,
+      "text": "prediction, like OpenAI GPT. “+ BiLSTM” adds a ran- on the question; (c) this it is strictly less powerful",
+      "itemIndexes": [
+        74,
+        151
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 14,
+      "y": 618.34,
+      "height": 10.91,
+      "text": "domly initialized BiLSTM on top of the “LTR + No than a deep bidirectional model, since it can use",
+      "itemIndexes": [
+        75,
+        152
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 15,
+      "y": 605.59,
+      "height": 10.91,
+      "text": "NSP” model during fine-tuning. both left and right context at every layer.",
+      "itemIndexes": [
+        76,
+        153
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 16,
+      "y": 576.53,
+      "height": 12,
+      "text": "5.2 Effect of Model Size",
+      "itemIndexes": [
+        155,
+        156,
+        157
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 17,
+      "y": 570.16,
+      "height": 10.91,
+      "text": "ablation studies can be found in Appendix C.",
+      "itemIndexes": [
+        78
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 18,
+      "y": 556.11,
+      "height": 10.91,
+      "text": "In this section, we explore the effect of model size",
+      "itemIndexes": [
+        159
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 19,
+      "y": 543.23,
+      "height": 12,
+      "text": "5.1 Effect of Pre-training Tasks on fine-tuning task accuracy. We trained a number",
+      "itemIndexes": [
+        80,
+        81,
+        82,
+        160
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 20,
+      "y": 529.01,
+      "height": 10.91,
+      "text": "of BERT models with a differing number of layers,",
+      "itemIndexes": [
+        161
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 21,
+      "y": 523.5,
+      "height": 10.91,
+      "text": "We demonstrate the importance of the deep bidi-",
+      "itemIndexes": [
+        84
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 22,
+      "y": 515.46,
+      "height": 10.91,
+      "text": "hidden units, and attention heads, while otherwise",
+      "itemIndexes": [
+        162
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 23,
+      "y": 509.95,
+      "height": 12,
+      "text": "rectionality of BERT by evaluating two pre-",
+      "itemIndexes": [
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 24,
+      "y": 501.91,
+      "height": 10.91,
+      "text": "using the same hyperparameters and training pro-",
+      "itemIndexes": [
+        163
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 25,
+      "y": 496.4,
+      "height": 10.91,
+      "text": "training objectives using exactly the same pre-",
+      "itemIndexes": [
+        98
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 26,
+      "y": 488.37,
+      "height": 10.91,
+      "text": "cedure as described previously.",
+      "itemIndexes": [
+        164
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 27,
+      "y": 482.85,
+      "height": 10.91,
+      "text": "training data, fine-tuning scheme, and hyperpa-",
+      "itemIndexes": [
+        99
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 28,
+      "y": 469.9,
+      "height": 10.91,
+      "text": "rameters as BERT BASE : Results on selected GLUE tasks are shown in",
+      "itemIndexes": [
+        100,
+        101,
+        102,
+        165
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 29,
+      "y": 459.78,
+      "height": 10.91,
+      "text": "Table 6. In this table, we report the average Dev",
+      "itemIndexes": [
+        166
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 30,
+      "y": 446.91,
+      "height": 10.91,
+      "text": "No NSP : A bidirectional model which is trained Set accuracy from 5 random restarts of fine-tuning.",
+      "itemIndexes": [
+        104,
+        105,
+        167
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 31,
+      "y": 433.19,
+      "height": 10.91,
+      "text": "using the “masked LM” (MLM) but without the We can see that larger models lead to a strict ac-",
+      "itemIndexes": [
+        106,
+        168
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 32,
+      "y": 419.64,
+      "height": 10.91,
+      "text": "“next sentence prediction” (NSP) task. curacy improvement across all four datasets, even",
+      "itemIndexes": [
+        107,
+        169
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 33,
+      "y": 406.26,
+      "height": 10.91,
+      "text": "LTR & No NSP : A left-context-only model which for MRPC which only has 3,600 labeled train-",
+      "itemIndexes": [
+        109,
+        110,
+        170
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 34,
+      "y": 392.54,
+      "height": 10.91,
+      "text": "is trained using a standard Left-to-Right (LTR) ing examples, and is substantially different from",
+      "itemIndexes": [
+        111,
+        171
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 35,
+      "y": 378.74,
+      "height": 12,
+      "text": "LM, rather than an MLM. The left-only constraint the pre-training tasks. It is also perhaps surpris-",
+      "itemIndexes": [
+        112,
+        172,
+        173,
+        174
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 36,
+      "y": 365.45,
+      "height": 10.91,
+      "text": "was also applied at fine-tuning, because removing ing that we are able to achieve such significant",
+      "itemIndexes": [
+        113,
+        175
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 37,
+      "y": 351.9,
+      "height": 10.91,
+      "text": "it introduced a pre-train/fine-tune mismatch that improvements on top of models which are al-",
+      "itemIndexes": [
+        114,
+        176
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 38,
+      "y": 338.35,
+      "height": 10.91,
+      "text": "degraded downstream performance. Additionally, ready quite large relative to the existing literature.",
+      "itemIndexes": [
+        115,
+        177
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 39,
+      "y": 324.8,
+      "height": 10.91,
+      "text": "this model was pre-trained without the NSP task. For example, the largest Transformer explored in",
+      "itemIndexes": [
+        116,
+        178
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 40,
+      "y": 311.25,
+      "height": 10.91,
+      "text": "This is directly comparable to OpenAI GPT, but Vaswani et al. (2017) is (L=6, H=1024, A=16)",
+      "itemIndexes": [
+        117,
+        179
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 41,
+      "y": 297.7,
+      "height": 10.91,
+      "text": "using our larger training dataset, our input repre- with 100M parameters for the encoder, and the",
+      "itemIndexes": [
+        118,
+        180
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 42,
+      "y": 284.15,
+      "height": 10.91,
+      "text": "sentation, and our fine-tuning scheme. largest Transformer we have found in the literature",
+      "itemIndexes": [
+        119,
+        181
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 43,
+      "y": 269.98,
+      "height": 10.91,
+      "text": "We first examine the impact brought by the NSP is (L=64, H=512, A=2) with 235M parameters",
+      "itemIndexes": [
+        120,
+        182
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 44,
+      "y": 256.21,
+      "height": 12,
+      "text": "task. In Table 5, we show that removing NSP (Al-Rfou et al., 2018). By contrast, BERT BASE",
+      "itemIndexes": [
+        121,
+        122,
+        123,
+        183,
+        184,
+        185,
+        186
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 45,
+      "y": 242.29,
+      "height": 12,
+      "text": "hurts performance significantly on QNLI, MNLI, contains 110M parameters and BERT LARGE con-",
+      "itemIndexes": [
+        124,
+        188,
+        189,
+        190,
+        191
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 46,
+      "y": 229.27,
+      "height": 12,
+      "text": "and SQuAD 1.1. Next, we evaluate the impact tains 340M parameters.",
+      "itemIndexes": [
+        125,
+        126,
+        127,
+        192
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 47,
+      "y": 215.04,
+      "height": 10.91,
+      "text": "of training bidirectional representations by com- It has long been known that increasing the",
+      "itemIndexes": [
+        128,
+        193
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 48,
+      "y": 201.49,
+      "height": 10.91,
+      "text": "paring “No NSP” to “LTR & No NSP”. The LTR model size will lead to continual improvements",
+      "itemIndexes": [
+        129,
+        194
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 49,
+      "y": 187.94,
+      "height": 10.91,
+      "text": "model performs worse than the MLM model on all on large-scale tasks such as machine translation",
+      "itemIndexes": [
+        130,
+        195
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 50,
+      "y": 174.39,
+      "height": 10.91,
+      "text": "tasks, with large drops on MRPC and SQuAD. and language modeling, which is demonstrated",
+      "itemIndexes": [
+        131,
+        196
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 51,
+      "y": 160.22,
+      "height": 10.91,
+      "text": "For SQuAD it is intuitively clear that a LTR by the LM perplexity of held-out training data",
+      "itemIndexes": [
+        132,
+        197
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 52,
+      "y": 146.67,
+      "height": 12,
+      "text": "model will perform poorly at token predictions, shown in Table 6. However, we believe that",
+      "itemIndexes": [
+        133,
+        198,
+        199,
+        200
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 53,
+      "y": 133.12,
+      "height": 10.91,
+      "text": "since the token-level hidden states have no right- this is the first work to demonstrate convinc-",
+      "itemIndexes": [
+        134,
+        201
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 54,
+      "y": 119.57,
+      "height": 12,
+      "text": "side context. In order to make a good faith at- ingly that scaling to extreme model sizes also",
+      "itemIndexes": [
+        135,
+        136,
+        137,
+        202
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 55,
+      "y": 106.02,
+      "height": 10.91,
+      "text": "tempt at strengthening the LTR system, we added leads to large improvements on very small scale",
+      "itemIndexes": [
+        138,
+        203
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 56,
+      "y": 92.47,
+      "height": 10.91,
+      "text": "a randomly initialized BiLSTM on top. This does tasks, provided that the model has been suffi-",
+      "itemIndexes": [
+        139,
+        204
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 57,
+      "y": 78.92,
+      "height": 10.91,
+      "text": "significantly improve results on SQuAD, but the ciently pre-trained. Peters et al. (2018b) presented",
+      "itemIndexes": [
+        140,
+        205
+      ],
+      "firstX": 72
+    }
+  ]
+}

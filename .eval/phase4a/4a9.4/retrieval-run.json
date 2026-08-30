@@ -1,0 +1,29 @@
+{
+  "phase": "4A.9.4",
+  "note": "Development Top-k is frozen-label path#page vs retrievePaths. Weights were not tuned.",
+  "development126": {
+    "comparedTo": "4A.9.2.2",
+    "before": {
+      "answerable": 89,
+      "top1": 41,
+      "top3": 46,
+      "top6": 49
+    },
+    "after": {
+      "answerable": 89,
+      "top1": 31,
+      "top3": 38,
+      "top6": 40
+    },
+    "top1": "31/89",
+    "top3": "38/89",
+    "top6": "40/89"
+  },
+  "controlled": {
+    "answerable": 6,
+    "top1": "5/6",
+    "top3": "5/6",
+    "top6": "6/6",
+    "unchangedVs4A92": true
+  }
+}

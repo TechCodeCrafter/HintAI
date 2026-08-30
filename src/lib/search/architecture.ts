@@ -1,15 +1,16 @@
-import type { Card, Hit, RepoFile, RepoPack } from "@/lib/repo/types";
+import type { Card, Citation, RepoFile, RepoPack } from "@/lib/repo/types";
 import { provenanceLabel } from "./cite.ts";
-import { capabilityList, countWord, listWords, proseOf } from "./prose.ts";
+import { textEvidence, verifyClaim } from "./evidence.ts";
+import { type ProseSpan, capabilityList, countWord, proseOf } from "./prose.ts";
 import { sayable } from "./say.ts";
 
-type Purpose = { path: string; description: string; capabilities: string[] };
+type Purpose = { file: RepoFile; description: ProseSpan; capabilities: ProseSpan[] };
 
 /** What this file says it does, if anything. A title is not a purpose. */
 function spokenLine(file: RepoFile): Purpose | null {
   const prose = proseOf(file);
   if (!prose?.description) return null;
-  return { path: file.path, description: prose.description, capabilities: prose.capabilities };
+  return { file, description: prose.description, capabilities: prose.capabilities };
 }
 
 function topDirs(pack: RepoPack): string[] {
@@ -135,26 +136,12 @@ function silent(query: string, latencyMs: number, reason: string): Card {
  * citation is a real loaded path. Retrieval still runs first and specific
  * answers still win, so this cannot outrank real evidence — see localCard.
  */
-export function architectureCard(
-  pack: RepoPack,
-  query: string,
-  latencyMs: number,
-  hits: Hit[] = [],
-): Card {
-  if (pack.id === "northstar-payments") {
-    // A written answer, so this one does need retrieval behind it.
-    if (hits.length === 0) return silent(query, latencyMs, "Nothing in this material answers that.");
-    return {
-      say: "Northstar is a settlement exporter plus edge auth — retries live in src/exporter, session cookies rotate in src/auth.",
-      citations: [
-        { path: "src/exporter/retry.ts", line: 1, sha: "a3f91c2", pr: "842", label: "src/exporter · PR #842" },
-        { path: "src/auth/flow.ts", line: 1, sha: "c81e04b", pr: "640", label: "src/auth · PR #640" },
-      ],
-      query,
-      latencyMs,
-      source: "local",
-    };
-  }
+export function architectureCard(pack: RepoPack, query: string, latencyMs: number): Card {
+  // Deliberately takes no hits. "How does this application work?" shares no
+  // vocabulary with the code it is about, so requiring a ranked hit would
+  // silence the one question this path exists to answer. What keeps it honest is
+  // the same thing that keeps every other claim honest: the sentence is
+  // extracted from a real file and verified against it below.
 
   // Purpose comes from a file, never from the directory tree.
   const purpose = purposeCandidates(pack).map(spokenLine).find(Boolean);
@@ -164,10 +151,12 @@ export function architectureCard(
 
   const framework = frameworkOf(pack);
   const kind = framework ? `${framework} service` : "service";
-  let say = `${pack.name} is a ${kind} — ${trimTail(purpose.description)}`;
+  let say = `${pack.name} is a ${kind} — ${trimTail(purpose.description.text)}`;
   // Bulleted capabilities only enrich a thin description; they never replace it.
-  if (purpose.capabilities.length >= 2 && purpose.description.length < 60) {
-    say += `: ${capabilityList(purpose.capabilities)}`;
+  const spoken = purpose.capabilities.slice(0, 4);
+  const listed = purpose.capabilities.length >= 2 && purpose.description.text.length < 60;
+  if (listed) {
+    say += `: ${capabilityList(purpose.capabilities.map((c) => c.text))}`;
   }
   say += ".";
 
@@ -180,21 +169,48 @@ export function architectureCard(
     say += ` Work is split across ${countWord(main.parts.length)} ${humanize(main.dir)}.`;
   }
 
-  const cites = [{ path: purpose.path, line: 1, ...provenance(pack, purpose.path) }];
-  const component = main?.parts[0] ? `${main.dir}/${main.parts[0]}` : null;
-  const rep = component ? pack.files.find((f) => f.path.startsWith(`${component}/`)) : undefined;
-  if (rep && rep.path !== purpose.path) {
-    cites.push({ path: rep.path, line: 1, ...provenance(pack, rep.path) });
-  } else {
-    const ranked = hits.find((h) => h.kind === "code" && h.path !== purpose.path);
-    if (ranked) {
-      cites.push({ path: ranked.path, line: ranked.startLine, ...provenance(pack, ranked.path) });
-    }
+  // The purpose sentence is the only part read from prose, so it is the only
+  // part that gets a span — and the citation quotes the line it occupies rather
+  // than the head of the file it happens to live in.
+  const used = listed ? [purpose.description, ...spoken] : [purpose.description];
+  const span = textEvidence({
+    path: purpose.file.path,
+    content: purpose.file.content,
+    start: Math.min(...used.map((p) => p.start)),
+    end: Math.max(...used.map((p) => p.end)),
+    normalizedText: say,
+  });
+  if (!span) return silent(query, latencyMs, "Nothing in this material says what it does.");
+
+  // The rest of the sentence is drawn from the file tree, not from prose. Those
+  // names are declared here so the support check can tell a directory this pack
+  // actually contains from a word the composer invented.
+  const structural = [pack.name, kind, framework ?? "", main ? humanize(main.dir) : "", ...(main?.parts ?? [])];
+  if (!verifyClaim(say, [span], structural).ok) {
+    return silent(query, latencyMs, "Nothing in this material says what it does.");
   }
+
+  // One citation, for the one thing that was read. A second chip naming a
+  // representative component used to be added here at line 1 — a coordinate
+  // nobody measured, pointing at a file that contains none of the spoken
+  // sentence. The structural half of the answer is derived from the file tree
+  // and declared as `structural` above; it has no line to cite, so it does not
+  // get one.
+  const cites: Citation[] = [
+    {
+      kind: "file",
+      path: purpose.file.path,
+      line: span.startLine,
+      endLine: span.endLine,
+      evidenceId: span.id,
+      ...provenance(pack, purpose.file.path),
+    },
+  ];
 
   return {
     say: sayable(say.slice(0, 300)),
-    citations: cites.slice(0, 2),
+    citations: cites,
+    evidence: [span],
     query,
     latencyMs,
     source: "local",

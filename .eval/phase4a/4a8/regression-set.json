@@ -1,0 +1,150 @@
+{
+  "phase": "4A.8",
+  "note": "Proposed deterministic regressions. Do not implement in this turn. After 4A.8.1 each case must SILENCE or cite the listed lower-ranked source. Do not use this 4A.7 set as the final ship gate.",
+  "cases": [
+    {
+      "id": "un-lora-salary",
+      "class": "explicit-wrong-document",
+      "assert": "SILENCE",
+      "why": "LoRA source selector + salary quantity. Patent-disclose sentence is supported and irrelevant."
+    },
+    {
+      "id": "un-scan-text",
+      "class": "explicit-wrong-document",
+      "assert": "SILENCE",
+      "why": "Typed scanned PDF is empty/unreadable. Must not answer from another file."
+    },
+    {
+      "id": "un-enc-secret",
+      "class": "explicit-wrong-document",
+      "assert": "SILENCE",
+      "why": "Encrypted PDF is unreadable. Must not answer from OMB encrypted DNS."
+    },
+    {
+      "id": "cisa-what",
+      "class": "explicit-wrong-document",
+      "assert": "correct lower-ranked source cisa-ransomware.pdf",
+      "why": "the guide resolves to the single CISA guide. ZTA 'according' sentence must lose."
+    },
+    {
+      "id": "un-growth",
+      "class": "lexically-tempting-unanswerable",
+      "assert": "SILENCE",
+      "why": "annual + rate ≠ 48th Annual Meeting."
+    },
+    {
+      "id": "un-figure-secret",
+      "class": "lexically-tempting-unanswerable",
+      "assert": "SILENCE",
+      "why": "unpublished / Figure 1 ≠ Figure 5 accuracy."
+    },
+    {
+      "id": "un-hybrid-sla",
+      "class": "wrong-predicate",
+      "assert": "SILENCE",
+      "why": "SLA/require is not satisfied by the hybrid-cloud definition."
+    },
+    {
+      "id": "cisa-backups",
+      "class": "wrong-predicate",
+      "assert": "correct lower-ranked source cisa-ransomware.pdf or SILENCE",
+      "why": "recommend + backups. 'some kind' of authentication is the wrong relation."
+    },
+    {
+      "id": "lora-what",
+      "class": "wrong-predicate",
+      "assert": "correct extract from lora.pdf p1 or SILENCE",
+      "why": "freeze pre-trained weights, not freeze MLP modules."
+    },
+    {
+      "id": "un-bert-phone",
+      "class": "wrong-answer-type",
+      "assert": "SILENCE",
+      "why": "phone number vs author line."
+    },
+    {
+      "id": "un-personal",
+      "class": "where-location",
+      "assert": "SILENCE",
+      "why": "home address vs DotGov home page."
+    },
+    {
+      "id": "un-zta-price",
+      "class": "wrong-answer-type",
+      "assert": "SILENCE",
+      "why": "budget quantity missing."
+    },
+    {
+      "id": "bert-glue",
+      "class": "wrong-answer-type",
+      "assert": "correct quantity 80.5% or SILENCE",
+      "why": "'pushing the GLUE score to' without the number."
+    },
+    {
+      "id": "cisa-parts",
+      "class": "list-enumeration",
+      "assert": "correct CISA Part 1 / Part 2 list or SILENCE",
+      "why": "two primary resources in the guide."
+    },
+    {
+      "id": "omb-pillars",
+      "class": "list-enumeration",
+      "assert": "enumerate the five pillars or SILENCE",
+      "why": "Category header is not the list."
+    },
+    {
+      "id": "btc-steps",
+      "class": "list-enumeration",
+      "assert": "first network step or SILENCE",
+      "why": "List header without members."
+    },
+    {
+      "id": "un-who-owns-btc",
+      "class": "who-ownership",
+      "assert": "SILENCE",
+      "why": "Already silent in 4A.7. Keep silent. Ownership language required."
+    },
+    {
+      "id": "un-who-owns-zta",
+      "class": "who-ownership",
+      "assert": "SILENCE",
+      "why": "Company ownership is not in the packet."
+    },
+    {
+      "id": "un-customer-pii-attn",
+      "class": "where-location",
+      "assert": "SILENCE",
+      "why": "Transformer paper does not store customer data. Keep silent if already silent; if a later run speaks, fail."
+    },
+    {
+      "id": "un-why-pay",
+      "class": "why-rationale",
+      "assert": "SILENCE",
+      "why": "CISA does not recommend paying. WHY must not invent a rationale from adjacent prose."
+    },
+    {
+      "id": "63b-aal3",
+      "class": "shared-vocabulary-cross-document",
+      "assert": "correct 63b Multi-Factor Cryptographic Device or SILENCE",
+      "why": "satisfy AAL3 ≠ satisfy proof-of-work. Gold was Top-1."
+    },
+    {
+      "id": "btc-header",
+      "class": "shared-vocabulary-cross-document",
+      "assert": "bitcoin.pdf 80 bytes or SILENCE",
+      "why": "block header ≠ big models. Gold was Top-1."
+    },
+    {
+      "id": "cs229-followup-gd",
+      "class": "thread-document-reference",
+      "assert": "SILENCE until lecture pages are readable, then normal equations",
+      "why": "And the other way… must stay on the lecture. Do not answer from LoRA."
+    },
+    {
+      "id": "cs229-normal",
+      "class": "thread-document-reference",
+      "assert": "SILENCE until lecture pages are readable",
+      "why": "again + closed form/theta. ResNet closed shortcut is wrong."
+    }
+  ]
+}

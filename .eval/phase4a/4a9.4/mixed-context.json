@@ -1,0 +1,24 @@
+{
+  "phase": "4A.9.4",
+  "codeQuestion": {
+    "q": "What does RETRIES mean in retry.ts?",
+    "topKind": "why",
+    "spoke": true,
+    "evidenceKind": "text",
+    "say": "Exporter attempts are capped at three because the payment gateway stalls instead of failing fast, so raising the cap only duplicates settlement files while the job still ends in the dead-letter queue."
+  },
+  "pdfQuestion": {
+    "q": "What does serializable isolation prevent?",
+    "topKind": "document",
+    "spoke": true,
+    "evidenceKind": "document",
+    "say": "Serializable isolation prevents lost outcomes when concurrent transactions write the same row."
+  },
+  "sharedVocabulary": {
+    "q": "What does isolation mean?",
+    "spoke": true,
+    "evidenceKind": "document",
+    "note": "Frozen QuestionContract still decides; no source-type bonus."
+  },
+  "pass": true
+}

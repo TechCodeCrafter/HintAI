@@ -1,0 +1,137 @@
+{
+  "phase": "4A.9",
+  "role": "diagnostic / design only — no parser implementation",
+  "generatedAt": "2026-08-30T20:52:12.027Z",
+  "pageClassTotals": {
+    "singleColumn": 70,
+    "twoColumn": 14,
+    "uncertain": 242,
+    "full": 84,
+    "isolated": 187,
+    "skipped": 55,
+    "readyDocs": 12,
+    "refusedDocs": 3,
+    "scannedDocs": 1,
+    "unreadableDocs": 2
+  },
+  "skipReasons": {
+    "dense-grid": 55
+  },
+  "chunkOrigins": {
+    "isolated line": 6017,
+    "paragraph split": 971,
+    "caption": 73,
+    "list-line": 439,
+    "header/footer leakage": 98,
+    "full-page block": 18
+  },
+  "totalChunks": 7616,
+  "documentsOver200": [
+    {
+      "file": "bert.pdf",
+      "chunks": 781
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "chunks": 945
+    },
+    {
+      "file": "lora.pdf",
+      "chunks": 353
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "chunks": 1154
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "chunks": 2080
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "chunks": 578
+    },
+    {
+      "file": "resnet.pdf",
+      "chunks": 567
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "chunks": 726
+    }
+  ],
+  "contextEstimate": {
+    "allReadyChunks": 7616,
+    "fiveLargest": [
+      {
+        "file": "nist-800-63b.pdf",
+        "chunks": 2080
+      },
+      {
+        "file": "nist-800-207.pdf",
+        "chunks": 1154
+      },
+      {
+        "file": "cisa-ransomware.pdf",
+        "chunks": 945
+      },
+      {
+        "file": "bert.pdf",
+        "chunks": 781
+      },
+      {
+        "file": "tracemonkey.pdf",
+        "chunks": 726
+      }
+    ],
+    "fiveLargestSum": 5686,
+    "projectedAllReady": 3623,
+    "projectedFiveLargest": [
+      {
+        "file": "nist-800-63b.pdf",
+        "currentChunks": 2080,
+        "projectedChunks": 842,
+        "reductionPct": 59.5,
+        "twoDominantProsePages": 9,
+        "isolatedPages": 70,
+        "skipped": 1
+      },
+      {
+        "file": "nist-800-207.pdf",
+        "currentChunks": 1154,
+        "projectedChunks": 492,
+        "reductionPct": 57.4,
+        "twoDominantProsePages": 1,
+        "isolatedPages": 26,
+        "skipped": 0
+      },
+      {
+        "file": "bert.pdf",
+        "currentChunks": 781,
+        "projectedChunks": 435,
+        "reductionPct": 44.3,
+        "twoDominantProsePages": 16,
+        "isolatedPages": 14,
+        "skipped": 2
+      },
+      {
+        "file": "cisa-ransomware.pdf",
+        "currentChunks": 945,
+        "projectedChunks": 309,
+        "reductionPct": 67.3,
+        "twoDominantProsePages": 7,
+        "isolatedPages": 30,
+        "skipped": 0
+      },
+      {
+        "file": "resnet.pdf",
+        "currentChunks": 567,
+        "projectedChunks": 296,
+        "reductionPct": 47.8,
+        "twoDominantProsePages": 11,
+        "isolatedPages": 10,
+        "skipped": 2
+      }
+    ]
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "origins": {
+    "isolated line": 6017,
+    "paragraph split": 971,
+    "caption": 73,
+    "list-line": 439,
+    "header/footer leakage": 98,
+    "full-page block": 18
+  },
+  "projections": [
+    {
+      "file": "attention.pdf",
+      "currentChunks": 158,
+      "projectedChunks": 129,
+      "reductionPct": 18.4,
+      "twoDominantProsePages": 0,
+      "isolatedPages": 3,
+      "skipped": 6
+    },
+    {
+      "file": "bert.pdf",
+      "currentChunks": 781,
+      "projectedChunks": 435,
+      "reductionPct": 44.3,
+      "twoDominantProsePages": 16,
+      "isolatedPages": 14,
+      "skipped": 2
+    },
+    {
+      "file": "bitcoin.pdf",
+      "currentChunks": 118,
+      "projectedChunks": 72,
+      "reductionPct": 39,
+      "twoDominantProsePages": 0,
+      "isolatedPages": 1,
+      "skipped": 1
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "currentChunks": 945,
+      "projectedChunks": 309,
+      "reductionPct": 67.3,
+      "twoDominantProsePages": 7,
+      "isolatedPages": 30,
+      "skipped": 0
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "currentChunks": 27,
+      "projectedChunks": 218,
+      "reductionPct": -707.4,
+      "twoDominantProsePages": 1,
+      "isolatedPages": 1,
+      "skipped": 27
+    },
+    {
+      "file": "lora.pdf",
+      "currentChunks": 353,
+      "projectedChunks": 254,
+      "reductionPct": 28,
+      "twoDominantProsePages": 6,
+      "isolatedPages": 2,
+      "skipped": 15
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "currentChunks": 129,
+      "projectedChunks": 49,
+      "reductionPct": 62,
+      "twoDominantProsePages": 0,
+      "isolatedPages": 5,
+      "skipped": 0
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "currentChunks": 1154,
+      "projectedChunks": 492,
+      "reductionPct": 57.4,
+      "twoDominantProsePages": 1,
+      "isolatedPages": 26,
+      "skipped": 0
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "currentChunks": 2080,
+      "projectedChunks": 842,
+      "reductionPct": 59.5,
+      "twoDominantProsePages": 9,
+      "isolatedPages": 70,
+      "skipped": 1
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "currentChunks": 578,
+      "projectedChunks": 270,
+      "reductionPct": 53.3,
+      "twoDominantProsePages": 2,
+      "isolatedPages": 13,
+      "skipped": 0
+    },
+    {
+      "file": "resnet.pdf",
+      "currentChunks": 567,
+      "projectedChunks": 296,
+      "reductionPct": 47.8,
+      "twoDominantProsePages": 11,
+      "isolatedPages": 10,
+      "skipped": 2
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "currentChunks": 726,
+      "projectedChunks": 257,
+      "reductionPct": 64.6,
+      "twoDominantProsePages": 13,
+      "isolatedPages": 12,
+      "skipped": 1
+    }
+  ],
+  "totalChunks": 7616,
+  "projectedTotal": 3623
+}

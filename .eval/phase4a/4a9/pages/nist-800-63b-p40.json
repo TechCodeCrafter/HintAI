@@ -1,0 +1,1622 @@
+{
+  "file": "nist-800-63b.pdf",
+  "page": 40,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 4 !== 2 (total clusters 8; sizes 20.9:1, 78.8:44, 174.7:1, 307.0:2, 350.3:4, 408.0:5, 465.6:1, 514.8:1)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 330.5 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 4,
+    "clusters": [
+      {
+        "x": 20.88,
+        "items": 1,
+        "meanWidth": 355.96,
+        "yMin": 564.48,
+        "yMax": 564.48
+      },
+      {
+        "x": 78.79,
+        "items": 44,
+        "meanWidth": 301.87,
+        "yMin": 78.96,
+        "yMax": 746.64
+      },
+      {
+        "x": 174.72,
+        "items": 1,
+        "meanWidth": 358.36,
+        "yMin": 308.16,
+        "yMax": 308.16
+      },
+      {
+        "x": 306.96,
+        "items": 2,
+        "meanWidth": 38.53,
+        "yMin": 50.4,
+        "yMax": 681.36
+      },
+      {
+        "x": 350.34,
+        "items": 4,
+        "meanWidth": 95.06,
+        "yMin": 132.48,
+        "yMax": 735.12
+      },
+      {
+        "x": 407.95,
+        "items": 5,
+        "meanWidth": 109.66,
+        "yMin": 132.48,
+        "yMax": 746.64
+      },
+      {
+        "x": 465.6,
+        "items": 1,
+        "meanWidth": 35.15,
+        "yMin": 321.84,
+        "yMax": 321.84
+      },
+      {
+        "x": 514.8,
+        "items": 1,
+        "meanWidth": 13.39,
+        "yMin": 482.64,
+        "yMax": 482.64
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 20.88,
+      "items": 1,
+      "meanWidth": 355.96,
+      "yMin": 564.48,
+      "yMax": 564.48
+    },
+    {
+      "x": 78.79,
+      "items": 44,
+      "meanWidth": 301.87,
+      "yMin": 78.96,
+      "yMax": 746.64
+    },
+    {
+      "x": 174.72,
+      "items": 1,
+      "meanWidth": 358.36,
+      "yMin": 308.16,
+      "yMax": 308.16
+    },
+    {
+      "x": 306.96,
+      "items": 2,
+      "meanWidth": 38.53,
+      "yMin": 50.4,
+      "yMax": 681.36
+    },
+    {
+      "x": 350.34,
+      "items": 4,
+      "meanWidth": 95.06,
+      "yMin": 132.48,
+      "yMax": 735.12
+    },
+    {
+      "x": 407.95,
+      "items": 5,
+      "meanWidth": 109.66,
+      "yMin": 132.48,
+      "yMax": 746.64
+    },
+    {
+      "x": 465.6,
+      "items": 1,
+      "meanWidth": 35.15,
+      "yMin": 321.84,
+      "yMax": 321.84
+    },
+    {
+      "x": 514.8,
+      "items": 1,
+      "meanWidth": 13.39,
+      "yMin": 482.64,
+      "yMax": 482.64
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 45,
+    "clusters": [
+      {
+        "x": 72,
+        "items": 30,
+        "share": 0.667
+      },
+      {
+        "x": 109.54,
+        "items": 7,
+        "share": 0.156
+      },
+      {
+        "x": 407.95,
+        "items": 5,
+        "share": 0.111
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.8222222222222222
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        20.88,
+        78.79
+      ],
+      "gap": 57.91000000000001
+    },
+    {
+      "between": [
+        78.79,
+        174.72
+      ],
+      "gap": 95.92999999999999
+    },
+    {
+      "between": [
+        174.72,
+        306.96
+      ],
+      "gap": 132.23999999999998
+    },
+    {
+      "between": [
+        306.96,
+        350.34
+      ],
+      "gap": 43.379999999999995
+    },
+    {
+      "between": [
+        350.34,
+        407.95
+      ],
+      "gap": 57.610000000000014
+    },
+    {
+      "between": [
+        407.95,
+        465.6
+      ],
+      "gap": 57.650000000000034
+    },
+    {
+      "between": [
+        465.6,
+        514.8
+      ],
+      "gap": 49.19999999999993
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "NIST SP 800-63B",
+      "x": 72,
+      "y": 746.64,
+      "width": 78.5,
+      "height": 10.08,
+      "right": 150.5,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 150.5,
+      "y": 746.64,
+      "width": 21.9,
+      "height": 0,
+      "right": 172.4,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "DIGITAL IDENTITY GUIDELINES:",
+      "x": 413.28,
+      "y": 746.64,
+      "width": 126.64,
+      "height": 10.08,
+      "right": 539.92,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 351.36,
+      "y": 735.12,
+      "width": 0,
+      "height": 0,
+      "right": 355.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "AUTHENTICATION & LIFECYCLE MANAGEMENT",
+      "x": 351.36,
+      "y": 735.12,
+      "width": 188.45,
+      "height": 10.08,
+      "right": 539.81,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 300,
+      "y": 50.4,
+      "width": 0,
+      "height": 0,
+      "right": 304,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "29",
+      "x": 300,
+      "y": 50.4,
+      "width": 12,
+      "height": 12,
+      "right": 312,
+      "visualLineId": 40,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "",
+      "x": 20.88,
+      "y": 564.48,
+      "width": 0,
+      "height": 0,
+      "right": 24.88,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-63b",
+      "x": 20.88,
+      "y": 564.48,
+      "width": 355.96,
+      "height": 9.12,
+      "right": 376.84,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "",
+      "x": 72,
+      "y": 708.96,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "Approved cryptographic algorithms SHALL be used to establish verifier impersonation",
+      "x": 72,
+      "y": 708.96,
+      "width": 420.48,
+      "height": 12,
+      "right": 492.48,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "resistance where it is required. Keys used for this purpose SHALL provide at least the minimum",
+      "x": 72,
+      "y": 695.28,
+      "width": 462.7,
+      "height": 12,
+      "right": 534.7,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "security strength specified in the latest revision of",
+      "x": 72,
+      "y": 681.36,
+      "width": 238.96,
+      "height": 12,
+      "right": 310.96,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": " ",
+      "x": 310.96,
+      "y": 681.36,
+      "width": 0.25,
+      "height": 0,
+      "right": 311.2,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "SP 800-131A",
+      "x": 313.92,
+      "y": 681.36,
+      "width": 65.06,
+      "height": 12,
+      "right": 378.98,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": " ",
+      "x": 378.98,
+      "y": 681.36,
+      "width": 0.26,
+      "height": 0,
+      "right": 379.24,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "(112 bits as of the date of this",
+      "x": 382.08,
+      "y": 681.36,
+      "width": 142.43,
+      "height": 12,
+      "right": 524.51,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": "publication).",
+      "x": 72,
+      "y": 667.44,
+      "width": 61.08,
+      "height": 12,
+      "right": 133.08,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "",
+      "x": 72,
+      "y": 641.76,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "One example of a verifier impersonation-resistant authentication protocol is client-authenticated",
+      "x": 72,
+      "y": 641.76,
+      "width": 461.52,
+      "height": 12,
+      "right": 533.52,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "TLS, because the client signs the authenticator output along with earlier messages from the",
+      "x": 72,
+      "y": 628.08,
+      "width": 437.33,
+      "height": 12,
+      "right": 509.33,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": "protocol that are unique to the particular TLS connection being negotiated.",
+      "x": 72,
+      "y": 613.92,
+      "width": 358.92,
+      "height": 12,
+      "right": 430.92,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "",
+      "x": 72,
+      "y": 588.48,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "Authenticators that involve the manual entry of an authenticator output, such as out-of-band and",
+      "x": 72,
+      "y": 588.48,
+      "width": 461.76,
+      "height": 12,
+      "right": 533.76,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "OTP authenticators, SHALL NOT be considered verifier impersonation-resistant because the",
+      "x": 72,
+      "y": 574.56,
+      "width": 447.17,
+      "height": 12,
+      "right": 519.17,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "manual entry does not bind the authenticator output to the specific session being authenticated.",
+      "x": 72,
+      "y": 560.88,
+      "width": 455.16,
+      "height": 12,
+      "right": 527.16,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "In a MitM attack, an impostor verifier could replay the OTP authenticator output to the verifier",
+      "x": 72,
+      "y": 546.96,
+      "width": 455.91,
+      "height": 12,
+      "right": 527.91,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "and successfully authenticate.",
+      "x": 72,
+      "y": 533.04,
+      "width": 142.92,
+      "height": 12,
+      "right": 214.92,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "",
+      "x": 72,
+      "y": 508.08,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "5.2.6",
+      "x": 72,
+      "y": 508.08,
+      "width": 24.63,
+      "height": 11.04,
+      "right": 96.63,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": " ",
+      "x": 96.63,
+      "y": 508.08,
+      "width": 1.03,
+      "height": 0,
+      "right": 97.66,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "Verifier-CSP Communications",
+      "x": 107.99,
+      "y": 508.08,
+      "width": 156.64,
+      "height": 11.04,
+      "right": 264.63,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "",
+      "x": 72,
+      "y": 482.64,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "In situations where the verifier and CSP are separate entities (as shown by the dotted line in",
+      "x": 72,
+      "y": 482.64,
+      "width": 439.92,
+      "height": 12,
+      "right": 511.92,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": " ",
+      "x": 511.92,
+      "y": 482.64,
+      "width": 0.24,
+      "height": 0,
+      "right": 512.16,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": "SP",
+      "x": 514.8,
+      "y": 482.64,
+      "width": 13.39,
+      "height": 12,
+      "right": 528.19,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": "800-63-3",
+      "x": 72,
+      "y": 468.96,
+      "width": 43.68,
+      "height": 12,
+      "right": 115.68,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": " ",
+      "x": 115.68,
+      "y": 468.96,
+      "width": 0.26,
+      "height": 0,
+      "right": 115.94,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "Figure 4-1), communications between the verifier and CSP SHALL occur through a",
+      "x": 118.8,
+      "y": 468.96,
+      "width": 403.73,
+      "height": 12,
+      "right": 522.53,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": "mutually-authenticated secure channel (such as a client-authenticated TLS connection) using",
+      "x": 72,
+      "y": 455.04,
+      "width": 445.44,
+      "height": 12,
+      "right": 517.44,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "approved cryptography.",
+      "x": 72,
+      "y": 441.12,
+      "width": 114.84,
+      "height": 12,
+      "right": 186.84,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": "",
+      "x": 72,
+      "y": 416.16,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "5.2.7",
+      "x": 72,
+      "y": 416.16,
+      "width": 24.63,
+      "height": 11.04,
+      "right": 96.63,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 96.63,
+      "y": 416.16,
+      "width": 1.03,
+      "height": 0,
+      "right": 97.66,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "Verifier-Compromise Resistance",
+      "x": 107.99,
+      "y": 416.16,
+      "width": 170.08,
+      "height": 11.04,
+      "right": 278.07,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "",
+      "x": 72,
+      "y": 390.96,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "Use of some types of authenticators requires that the verifier store a copy of the authenticator",
+      "x": 72,
+      "y": 390.96,
+      "width": 447.52,
+      "height": 12,
+      "right": 519.52,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": "secret. For example, an OTP authenticator (described in",
+      "x": 72,
+      "y": 377.04,
+      "width": 268.32,
+      "height": 12,
+      "right": 340.32,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": " ",
+      "x": 340.32,
+      "y": 377.04,
+      "width": 0.24,
+      "height": 0,
+      "right": 340.56,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": "Section 5.1.4",
+      "x": 343.2,
+      "y": 377.04,
+      "width": 63.36,
+      "height": 12,
+      "right": 406.56,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": ") requires that the verifier",
+      "x": 406.32,
+      "y": 377.04,
+      "width": 122.56,
+      "height": 12,
+      "right": 528.88,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "independently generate the authenticator output for comparison against the value sent by the",
+      "x": 72,
+      "y": 363.36,
+      "width": 443.33,
+      "height": 12,
+      "right": 515.33,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "claimant. Because of the potential for the verifier to be compromised and stored secrets stolen,",
+      "x": 72,
+      "y": 349.44,
+      "width": 453.72,
+      "height": 12,
+      "right": 525.72,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "authentication protocols that do not require the verifier to persistently store secrets that could be",
+      "x": 72,
+      "y": 335.76,
+      "width": 460.61,
+      "height": 12,
+      "right": 532.61,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "used for authentication are considered stronger, and are described herein as being",
+      "x": 72,
+      "y": 321.84,
+      "width": 390.48,
+      "height": 12,
+      "right": 462.48,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": " ",
+      "x": 462.48,
+      "y": 321.84,
+      "width": 0.26,
+      "height": 0,
+      "right": 462.74,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "verifier",
+      "x": 465.6,
+      "y": 321.84,
+      "width": 35.15,
+      "height": 12,
+      "right": 500.75,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "compromise resistant",
+      "x": 72,
+      "y": 308.16,
+      "width": 102.7,
+      "height": 12,
+      "right": 174.7,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": ". Note that such verifiers are not resistant to all attacks. A verifier could be",
+      "x": 174.72,
+      "y": 308.16,
+      "width": 358.36,
+      "height": 12,
+      "right": 533.08,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": "compromised in a different way, such as being manipulated into always accepting a particular",
+      "x": 72,
+      "y": 294.24,
+      "width": 450.39,
+      "height": 12,
+      "right": 522.39,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "authenticator output.",
+      "x": 72,
+      "y": 280.32,
+      "width": 99.48,
+      "height": 12,
+      "right": 171.48,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "",
+      "x": 72,
+      "y": 254.4,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "Verifier compromise resistance can be achieved in different ways, for example:",
+      "x": 72,
+      "y": 254.4,
+      "width": 381.57,
+      "height": 12,
+      "right": 453.57,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": "",
+      "x": 90,
+      "y": 228,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "•",
+      "x": 90,
+      "y": 228,
+      "width": 5.52,
+      "height": 12,
+      "right": 95.52,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": " ",
+      "x": 95.52,
+      "y": 228,
+      "width": 1.04,
+      "height": 0,
+      "right": 96.56,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "Use a cryptographic authenticator that requires the verifier store a public key",
+      "x": 108,
+      "y": 228,
+      "width": 368.88,
+      "height": 12,
+      "right": 476.88,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "corresponding to a private key held by the authenticator.",
+      "x": 108,
+      "y": 214.32,
+      "width": 270.84,
+      "height": 12,
+      "right": 378.84,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": "",
+      "x": 90,
+      "y": 199.44,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "•",
+      "x": 90,
+      "y": 199.44,
+      "width": 5.52,
+      "height": 12,
+      "right": 95.52,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": " ",
+      "x": 95.52,
+      "y": 199.44,
+      "width": 1.04,
+      "height": 0,
+      "right": 96.56,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "Store the expected authenticator output in hashed form. This method can be used with",
+      "x": 108,
+      "y": 199.44,
+      "width": 412.8,
+      "height": 12,
+      "right": 520.8,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "some look-up secret authenticators (described in",
+      "x": 108,
+      "y": 185.52,
+      "width": 232.32,
+      "height": 12,
+      "right": 340.32,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": " ",
+      "x": 340.32,
+      "y": 185.52,
+      "width": 0.24,
+      "height": 0,
+      "right": 340.56,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "Section 5.1.2",
+      "x": 343.2,
+      "y": 185.52,
+      "width": 63.36,
+      "height": 12,
+      "right": 406.56,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": "), for example.",
+      "x": 406.32,
+      "y": 185.52,
+      "width": 70.68,
+      "height": 12,
+      "right": 477,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": "",
+      "x": 72,
+      "y": 160.08,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "To be considered verifier compromise resistant, public keys stored by the verifier SHALL be",
+      "x": 72,
+      "y": 160.08,
+      "width": 446.69,
+      "height": 12,
+      "right": 518.69,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "associated with the use of approved cryptographic algorithms and SHALL provide at least the",
+      "x": 72,
+      "y": 146.16,
+      "width": 451.01,
+      "height": 12,
+      "right": 523.01,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": "minimum security strength specified in the latest revision of",
+      "x": 72,
+      "y": 132.48,
+      "width": 288.64,
+      "height": 12,
+      "right": 360.64,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": " ",
+      "x": 360.64,
+      "y": 132.48,
+      "width": 0.25,
+      "height": 0,
+      "right": 360.88,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "SP 800-131A",
+      "x": 363.6,
+      "y": 132.48,
+      "width": 65.06,
+      "height": 12,
+      "right": 428.66,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": " ",
+      "x": 428.66,
+      "y": 132.48,
+      "width": 0.26,
+      "height": 0,
+      "right": 428.92,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": "(112 bits as of the",
+      "x": 431.76,
+      "y": 132.48,
+      "width": 85.97,
+      "height": 12,
+      "right": 517.73,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": "date of this publication).",
+      "x": 72,
+      "y": 118.32,
+      "width": 117.48,
+      "height": 12,
+      "right": 189.48,
+      "visualLineId": 37,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": "",
+      "x": 72,
+      "y": 92.88,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "Other verifier compromise resistant secrets SHALL use approved hash algorithms and the",
+      "x": 72,
+      "y": 92.88,
+      "width": 432.53,
+      "height": 12,
+      "right": 504.53,
+      "visualLineId": 38,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": "underlying secrets SHALL have at least the minimum security strength specified in the latest",
+      "x": 72,
+      "y": 78.96,
+      "width": 446.13,
+      "height": 12,
+      "right": 518.13,
+      "visualLineId": 39,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 746.64,
+      "height": 12,
+      "text": "NIST SP 800-63B DIGITAL IDENTITY GUIDELINES:",
+      "itemIndexes": [
+        0,
+        1,
+        2
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 1,
+      "y": 735.12,
+      "height": 10.08,
+      "text": "AUTHENTICATION & LIFECYCLE MANAGEMENT",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 351.36
+    },
+    {
+      "lineId": 2,
+      "y": 708.96,
+      "height": 12,
+      "text": "Approved cryptographic algorithms SHALL be used to establish verifier impersonation",
+      "itemIndexes": [
+        10
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 3,
+      "y": 695.28,
+      "height": 12,
+      "text": "resistance where it is required. Keys used for this purpose SHALL provide at least the minimum",
+      "itemIndexes": [
+        11
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 4,
+      "y": 681.36,
+      "height": 12,
+      "text": "security strength specified in the latest revision of SP 800-131A (112 bits as of the date of this",
+      "itemIndexes": [
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 5,
+      "y": 667.44,
+      "height": 12,
+      "text": "publication).",
+      "itemIndexes": [
+        17
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 6,
+      "y": 641.76,
+      "height": 12,
+      "text": "One example of a verifier impersonation-resistant authentication protocol is client-authenticated",
+      "itemIndexes": [
+        19
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 7,
+      "y": 628.08,
+      "height": 12,
+      "text": "TLS, because the client signs the authenticator output along with earlier messages from the",
+      "itemIndexes": [
+        20
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 8,
+      "y": 613.92,
+      "height": 12,
+      "text": "protocol that are unique to the particular TLS connection being negotiated.",
+      "itemIndexes": [
+        21
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 9,
+      "y": 588.48,
+      "height": 12,
+      "text": "Authenticators that involve the manual entry of an authenticator output, such as out-of-band and",
+      "itemIndexes": [
+        23
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 10,
+      "y": 574.56,
+      "height": 12,
+      "text": "OTP authenticators, SHALL NOT be considered verifier impersonation-resistant because the",
+      "itemIndexes": [
+        24
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 11,
+      "y": 562.68,
+      "height": 12,
+      "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-63b manual entry does not bind the authenticator output to the specific session being authenticated.",
+      "itemIndexes": [
+        8,
+        25
+      ],
+      "firstX": 20.88
+    },
+    {
+      "lineId": 12,
+      "y": 546.96,
+      "height": 12,
+      "text": "In a MitM attack, an impostor verifier could replay the OTP authenticator output to the verifier",
+      "itemIndexes": [
+        26
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 13,
+      "y": 533.04,
+      "height": 12,
+      "text": "and successfully authenticate.",
+      "itemIndexes": [
+        27
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 14,
+      "y": 508.08,
+      "height": 12,
+      "text": "5.2.6 Verifier-CSP Communications",
+      "itemIndexes": [
+        29,
+        30,
+        31
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 15,
+      "y": 482.64,
+      "height": 12,
+      "text": "In situations where the verifier and CSP are separate entities (as shown by the dotted line in SP",
+      "itemIndexes": [
+        33,
+        34,
+        35
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 16,
+      "y": 468.96,
+      "height": 12,
+      "text": "800-63-3 Figure 4-1), communications between the verifier and CSP SHALL occur through a",
+      "itemIndexes": [
+        36,
+        37,
+        38
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 17,
+      "y": 455.04,
+      "height": 12,
+      "text": "mutually-authenticated secure channel (such as a client-authenticated TLS connection) using",
+      "itemIndexes": [
+        39
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 18,
+      "y": 441.12,
+      "height": 12,
+      "text": "approved cryptography.",
+      "itemIndexes": [
+        40
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 19,
+      "y": 416.16,
+      "height": 12,
+      "text": "5.2.7 Verifier-Compromise Resistance",
+      "itemIndexes": [
+        42,
+        43,
+        44
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 20,
+      "y": 390.96,
+      "height": 12,
+      "text": "Use of some types of authenticators requires that the verifier store a copy of the authenticator",
+      "itemIndexes": [
+        46
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 21,
+      "y": 377.04,
+      "height": 12,
+      "text": "secret. For example, an OTP authenticator (described in Section 5.1.4 ) requires that the verifier",
+      "itemIndexes": [
+        47,
+        48,
+        49,
+        50
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 22,
+      "y": 363.36,
+      "height": 12,
+      "text": "independently generate the authenticator output for comparison against the value sent by the",
+      "itemIndexes": [
+        51
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 23,
+      "y": 349.44,
+      "height": 12,
+      "text": "claimant. Because of the potential for the verifier to be compromised and stored secrets stolen,",
+      "itemIndexes": [
+        52
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 24,
+      "y": 335.76,
+      "height": 12,
+      "text": "authentication protocols that do not require the verifier to persistently store secrets that could be",
+      "itemIndexes": [
+        53
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 25,
+      "y": 321.84,
+      "height": 12,
+      "text": "used for authentication are considered stronger, and are described herein as being verifier",
+      "itemIndexes": [
+        54,
+        55,
+        56
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 26,
+      "y": 308.16,
+      "height": 12,
+      "text": "compromise resistant . Note that such verifiers are not resistant to all attacks. A verifier could be",
+      "itemIndexes": [
+        57,
+        58
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 27,
+      "y": 294.24,
+      "height": 12,
+      "text": "compromised in a different way, such as being manipulated into always accepting a particular",
+      "itemIndexes": [
+        59
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 28,
+      "y": 280.32,
+      "height": 12,
+      "text": "authenticator output.",
+      "itemIndexes": [
+        60
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 29,
+      "y": 254.4,
+      "height": 12,
+      "text": "Verifier compromise resistance can be achieved in different ways, for example:",
+      "itemIndexes": [
+        62
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 30,
+      "y": 228,
+      "height": 12,
+      "text": "• Use a cryptographic authenticator that requires the verifier store a public key",
+      "itemIndexes": [
+        64,
+        65,
+        66
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 31,
+      "y": 214.32,
+      "height": 12,
+      "text": "corresponding to a private key held by the authenticator.",
+      "itemIndexes": [
+        67
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 32,
+      "y": 199.44,
+      "height": 12,
+      "text": "• Store the expected authenticator output in hashed form. This method can be used with",
+      "itemIndexes": [
+        69,
+        70,
+        71
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 33,
+      "y": 185.52,
+      "height": 12,
+      "text": "some look-up secret authenticators (described in Section 5.1.2 ), for example.",
+      "itemIndexes": [
+        72,
+        73,
+        74,
+        75
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 34,
+      "y": 160.08,
+      "height": 12,
+      "text": "To be considered verifier compromise resistant, public keys stored by the verifier SHALL be",
+      "itemIndexes": [
+        77
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 35,
+      "y": 146.16,
+      "height": 12,
+      "text": "associated with the use of approved cryptographic algorithms and SHALL provide at least the",
+      "itemIndexes": [
+        78
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 36,
+      "y": 132.48,
+      "height": 12,
+      "text": "minimum security strength specified in the latest revision of SP 800-131A (112 bits as of the",
+      "itemIndexes": [
+        79,
+        80,
+        81,
+        82,
+        83
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 37,
+      "y": 118.32,
+      "height": 12,
+      "text": "date of this publication).",
+      "itemIndexes": [
+        84
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 38,
+      "y": 92.88,
+      "height": 12,
+      "text": "Other verifier compromise resistant secrets SHALL use approved hash algorithms and the",
+      "itemIndexes": [
+        86
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 39,
+      "y": 78.96,
+      "height": 12,
+      "text": "underlying secrets SHALL have at least the minimum security strength specified in the latest",
+      "itemIndexes": [
+        87
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 40,
+      "y": 50.4,
+      "height": 12,
+      "text": "29",
+      "itemIndexes": [
+        6
+      ],
+      "firstX": 300
+    }
+  ]
+}

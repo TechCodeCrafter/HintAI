@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import {
   Check,
   ChevronDown,
@@ -8,10 +8,12 @@ import {
   Copy,
   ExternalLink,
   FileCode2,
+  FileText,
   FolderGit2,
   FolderOpen,
   GitCommitHorizontal,
   Mic,
+  Plus,
   Minimize2,
   Play,
   Search,
@@ -23,9 +25,15 @@ import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
 import { stopHear, toggleHear } from "@/lib/listen/call-share";
 import { useLiveListen } from "@/lib/listen/speech";
+import { PdfPane } from "@/components/pdf-pane";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { isPdfSource } from "@/lib/context/types";
+import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
+import { citationText, citedPath, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
+import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
-import { readSavedPack, useGround } from "@/lib/store";
+import { useGround } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
 
@@ -41,7 +49,6 @@ export function Cockpit() {
   const liveDraft = useGround((s) => s.liveDraft);
   const listenError = useGround((s) => s.listenError);
   const folderError = useGround((s) => s.folderError);
-  const loadingFolder = useGround((s) => s.loadingFolder);
   const pack = useGround((s) => s.pack);
   const playMeeting = useGround((s) => s.playMeeting);
   const stopMeeting = useGround((s) => s.stopMeeting);
@@ -50,10 +57,15 @@ export function Cockpit() {
   const autoAnswer = useGround((s) => s.autoAnswer);
   const setAutoAnswer = useGround((s) => s.setAutoAnswer);
   const loadFolder = useGround((s) => s.loadFolder);
-  const resetPack = useGround((s) => s.resetPack);
-  const hydratePack = useGround((s) => s.hydratePack);
+  const addPdfFiles = useGround((s) => s.addPdfFiles);
+  const contextStatus = useGround((s) => s.contextStatus);
+  const contextError = useGround((s) => s.contextError);
+  const contextUpdating = useGround((s) => s.contextUpdating);
+  const ingestProgress = useGround((s) => s.ingestProgress);
   const setOpenFile = useGround((s) => s.setOpenFile);
+  const openDocumentCitation = useGround((s) => s.openDocumentCitation);
   const folderRef = useRef<HTMLInputElement>(null);
+  const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
@@ -61,7 +73,21 @@ export function Cockpit() {
   const demo = pack.id === "northstar-payments";
   const listenLabel = live ? "Stop listen" : "Listen";
   const statusLabel = live ? "Listening" : "Idle";
-  const folderLabel = loadingFolder ? "Loading…" : demo ? "Open folder" : pack.name;
+  const searchReady = contextStatus === "ready";
+  const ingestNote =
+    ingestProgress && ingestProgress.phase !== "ready"
+      ? ingestProgress.total > 1
+        ? `Adding ${ingestProgress.current} of ${ingestProgress.total}…`
+        : ingestProgress.phase === "indexing"
+          ? "Indexing…"
+          : "Reading PDF…"
+      : contextUpdating
+        ? "Updating…"
+        : null;
+  const statusNote =
+    contextError ??
+    ingestNote ??
+    (folderError && !listenError ? folderError : "The pack is the brief");
 
   useLiveListen();
 
@@ -71,11 +97,14 @@ export function Cockpit() {
   }, []);
 
   useEffect(() => {
-    const saved = readSavedPack();
-    if (saved && saved.id !== "northstar-payments") hydratePack(saved);
     const params = new URLSearchParams(window.location.search);
     if (params.get("overlay") === "1") setOverlay(true);
-  }, [hydratePack, setOverlay]);
+    void useGround.getState().boot().then(() => {
+      if (params.get("viewerqa") === "1") {
+        void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
+      }
+    });
+  }, [setOverlay]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -124,25 +153,42 @@ export function Cockpit() {
     if (overlay && mobilePane === "repo") setMobilePane("room");
   }, [overlay, mobilePane]);
 
-  function openCitedFile(path: string) {
-    setOpenFile(path);
-    setMobilePane("repo");
-    if (overlay) setOverlay(false);
+  function openCited(cite: Citation) {
+    if (isFileCitation(cite)) {
+      setOpenFile(cite.path);
+      setMobilePane("repo");
+      if (overlay) setOverlay(false);
+      return;
+    }
+    if (isDocumentCitation(cite)) {
+      // Overlay hides RepoPane. Do not open a PDF the user cannot see.
+      if (overlay) return;
+      openDocumentCitation(cite);
+      setMobilePane("repo");
+    }
   }
 
   return (
-    <div className="cockpit-shell text-fg">
+    <div
+      className="cockpit-shell text-fg"
+      data-context-status={contextStatus}
+      data-context-updating={contextUpdating ? "true" : undefined}
+    >
       <header className="shrink-0 border-b border-line px-4 py-3 md:px-8">
         <div className="mx-auto flex w-full min-w-0 max-w-[1600px] flex-col gap-2 md:flex-row md:items-center">
           <div className="flex min-w-0 items-center gap-3 md:shrink-0">
             <GroundMark />
             <span className="brand-word text-fg">MeetHint</span>
             <StatusDot on={live} down={false} label={statusLabel} live={live} />
-            <span className="hidden min-w-0 truncate font-serif text-base italic text-body lg:inline">
-              {folderError && !listenError ? folderError : "The pack is the brief"}
+            <span
+              className="hidden min-w-0 truncate font-serif text-base italic text-body lg:inline"
+              data-ingest-progress={ingestNote ?? undefined}
+            >
+              {statusNote}
             </span>
             <Button
               size="sm"
+              disabled={!searchReady}
               onClick={() => void search()}
               className={cn("ml-auto md:hidden", cueSearch && "ring-1 ring-accent/50")}
             >
@@ -156,6 +202,7 @@ export function Cockpit() {
               size="sm"
               aria-label={listenLabel}
               title="Hear you and the computer. The Card is what you say."
+              disabled={!searchReady}
               onClick={() => {
                 if (live) {
                   stopHear();
@@ -173,21 +220,14 @@ export function Cockpit() {
               size="sm"
               aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
               title="When they ask about this repo, the Card fills"
+              disabled={!searchReady}
               onClick={() => setAutoAnswer(!autoAnswer)}
             >
               <Zap className="size-4" />
               <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={folderLabel}
-              title={folderLabel}
-              onClick={() => folderRef.current?.click()}
-            >
-              <FolderOpen className="size-4" />
-              <span className="hidden max-w-40 truncate md:inline">{folderLabel}</span>
-            </Button>
+            <ContextSwitcher folderRef={folderRef} />
+            <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
             <input
               ref={folderRef}
               type="file"
@@ -195,6 +235,8 @@ export function Cockpit() {
               className="sr-only"
               aria-hidden="true"
               tabIndex={-1}
+              data-folder-input="true"
+              suppressHydrationWarning
               onChange={(e) => {
                 const files = e.target.files;
                 if (files && files.length > 0) void loadFolder(files);
@@ -202,11 +244,22 @@ export function Cockpit() {
               }}
               {...{ webkitdirectory: "", directory: "" }}
             />
-            {!demo ? (
-              <Button variant="ghost" size="sm" onClick={resetPack}>
-                Demo pack
-              </Button>
-            ) : null}
+            <input
+              ref={pdfRef}
+              type="file"
+              multiple
+              accept=".pdf,application/pdf"
+              className="sr-only"
+              aria-hidden="true"
+              tabIndex={-1}
+              data-pdf-input="true"
+              suppressHydrationWarning
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) void addPdfFiles(files);
+                e.target.value = "";
+              }}
+            />
             <a
               href="/app?overlay=1"
               target="_blank"
@@ -228,6 +281,7 @@ export function Cockpit() {
               <Minimize2 className="size-4" />
               <span className="hidden md:inline">{overlay ? "Cockpit" : "Overlay"}</span>
             </Button>
+            <ThemeToggle />
             {demo ? (
               <Button
                 variant="ghost"
@@ -240,14 +294,6 @@ export function Cockpit() {
                 <span className="hidden md:inline">{playing ? "Stop" : "Play review"}</span>
               </Button>
             ) : null}
-            <Button
-              size="sm"
-              onClick={() => void search()}
-              className={cn("ml-auto hidden md:inline-flex", cueSearch && "ring-1 ring-accent/50")}
-            >
-              <Search className="size-4" />
-              Search
-            </Button>
           </div>
         </div>
       </header>
@@ -288,9 +334,177 @@ export function Cockpit() {
           data-pane="card"
           data-active={mobilePane === "card" ? "true" : undefined}
         >
-          <CardPane refining={refining} compact={overlay} onOpenCited={openCitedFile} />
+          <CardPane refining={refining} compact={overlay} onOpenCited={openCited} overlay={overlay} />
         </div>
       </main>
+    </div>
+  );
+}
+
+function AddMaterial({
+  folderRef,
+  pdfRef,
+}: {
+  folderRef: RefObject<HTMLInputElement | null>;
+  pdfRef: RefObject<HTMLInputElement | null>;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label="Add material"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        data-add-material="true"
+        onClick={() => setOpen((value) => !value)}
+      >
+        <Plus className="size-4" />
+        <span className="hidden md:inline">Add material</span>
+        <ChevronDown className="size-3.5 shrink-0 text-faint" />
+      </Button>
+      {open ? (
+        <div className="context-menu" role="menu" aria-label="Add material">
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option"
+            onClick={() => {
+              setOpen(false);
+              folderRef.current?.click();
+            }}
+          >
+            <FolderOpen className="size-3.5 shrink-0" />
+            Open folder
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option"
+            data-add-pdf="true"
+            onClick={() => {
+              setOpen(false);
+              pdfRef.current?.click();
+            }}
+          >
+            <FileText className="size-3.5 shrink-0" />
+            Add PDF files
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement | null> }) {
+  const pack = useGround((s) => s.pack);
+  const contexts = useGround((s) => s.contexts);
+  const activeContextId = useGround((s) => s.activeContextId);
+  const contextStatus = useGround((s) => s.contextStatus);
+  const loadingFolder = useGround((s) => s.loadingFolder);
+  const activateContext = useGround((s) => s.activateContext);
+  const resetPack = useGround((s) => s.resetPack);
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const hydrating = contextStatus === "booting" || contextStatus === "hydrating" || loadingFolder;
+  const label = hydrating ? "Loading…" : pack.name;
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label={label}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        title={label}
+        disabled={hydrating}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <FolderOpen className="size-4" />
+        <span className="hidden max-w-40 truncate md:inline">{label}</span>
+        <ChevronDown className="size-3.5 shrink-0 text-faint" />
+      </Button>
+      {open ? (
+        <div className="context-menu" role="listbox" aria-label="Contexts">
+          <button
+            type="button"
+            role="option"
+            aria-selected={pack.id === "northstar-payments"}
+            className="context-option"
+            data-active={pack.id === "northstar-payments" ? "true" : undefined}
+            onClick={() => {
+              resetPack();
+              setOpen(false);
+            }}
+          >
+            northstar-payments
+          </button>
+          {contexts.map((context) => (
+            <button
+              key={context.id}
+              type="button"
+              role="option"
+              aria-selected={context.id === activeContextId}
+              className="context-option"
+              data-active={context.id === activeContextId ? "true" : undefined}
+              onClick={() => {
+                void activateContext(context.id);
+                setOpen(false);
+              }}
+            >
+              {context.name}
+            </button>
+          ))}
+          <div className="context-menu-rule" />
+          <button
+            type="button"
+            className="context-option"
+            onClick={() => {
+              setOpen(false);
+              folderRef.current?.click();
+            }}
+          >
+            <Plus className="size-3.5 shrink-0" />
+            Open new folder
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -372,19 +586,34 @@ function ProofLine({ local }: { local?: string }) {
 
 function RepoPane() {
   const pack = useGround((s) => s.pack);
+  const sources = useGround((s) => s.sources);
   const openFile = useGround((s) => s.openFile);
   const setOpenFile = useGround((s) => s.setOpenFile);
+  const openDocument = useGround((s) => s.openDocument);
+  const openPdfSource = useGround((s) => s.openPdfSource);
   const card = useGround((s) => s.card);
   const [filter, setFilter] = useState("");
-  const file = pack.files.find((f) => f.path === openFile) ?? pack.files[0];
-  const cite = card?.citations.find((c) => c.path === file?.path);
-  const citeLine = cite?.line;
+  const pdfs = sources.filter(isPdfSource);
+  const file = pack.files.find((f) => f.path === openFile) ?? (openDocument ? undefined : pack.files[0]);
+  // Only a file citation has a line to highlight in this pane. A commit
+  // citation is about history and deliberately has no position in the file.
+  const cite = card?.citations.find((c) => isFileCitation(c) && c.path === file?.path);
+  const citeLine = cite && isFileCitation(cite) ? cite.line : undefined;
   const preRef = useRef<HTMLPreElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const why = pack.commits.find((c) => c.sha === cite?.sha || c.pr === cite?.pr);
+  const why = pack.commits.find(
+    (c) =>
+      card?.citations.some(
+        (item) =>
+          (item.kind === "commit" && (item.sha === c.sha || item.pr === c.pr)) ||
+          (item.kind === "file" && (item.sha === c.sha || item.pr === c.pr)),
+      ) ?? false,
+  );
   const codeCount = pack.files.filter((f) => /\.(ts|tsx|js|jsx|go|py|java|rs|kt)$/i.test(f.path)).length;
-  const weak = pack.id !== "northstar-payments" && codeCount < 3;
+  const weak = pack.id !== "northstar-payments" && pack.files.length > 0 && codeCount < 3;
   const visible = pack.files.filter((f) => !filter || f.path.toLowerCase().includes(filter.toLowerCase()));
+  const visiblePdfs = pdfs.filter((source) => !filter || source.path.toLowerCase().includes(filter.toLowerCase()));
+  const sourceCount = pack.files.length + pdfs.length;
   const lines = useMemo(
     () => (file ? file.content.replace(/\n$/, "").split("\n") : []),
     [file],
@@ -407,7 +636,7 @@ function RepoPane() {
     listRef.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" });
   }, [file?.path]);
 
-  if (!file) {
+  if (!file && !openDocument && pdfs.length === 0) {
     return (
       <section className="ground-panel p-5">
         <p className="font-serif text-lg italic text-body">Open a local folder to cite your repo.</p>
@@ -422,7 +651,7 @@ function RepoPane() {
           <FolderGit2 className="size-3.5 shrink-0 text-faint" />
           <span className="truncate">{pack.name}</span>
         </span>
-        <span className="ground-hint tabular-nums">{pack.files.length} files</span>
+        <span className="ground-hint tabular-nums">{sourceCount} files</span>
       </div>
       {weak ? (
         <p className="px-3 pb-2 text-xs text-warn">Mostly CI/config. Open the src folder, then Search.</p>
@@ -435,15 +664,20 @@ function RepoPane() {
             placeholder="Filter files"
             className="ground-input mx-2 mb-1 h-9 shrink-0 rounded-sm px-2.5 text-xs placeholder:text-faint"
           />
-          <ul ref={listRef} className="min-h-0 min-w-0 flex-1 space-y-0.5 overflow-auto px-1">
-            {visible.length === 0 ? (
+          <ul
+            ref={listRef}
+            className="file-list min-h-0 min-w-0 flex-1 space-y-0.5 overflow-auto px-1 pt-1.5 pb-2"
+          >
+            {visible.length === 0 && visiblePdfs.length === 0 ? (
               <li className="px-2 py-3 text-xs text-muted">No files match that filter.</li>
             ) : null}
             {visible.map((f) => (
               <li key={f.path} className="min-w-0">
                 <button
                   type="button"
-                  data-active={f.path === file.path ? "true" : undefined}
+                  data-source-kind="file"
+                  data-source-path={f.path}
+                  data-active={!openDocument && file && f.path === file.path ? "true" : undefined}
                   onClick={() => setOpenFile(f.path)}
                   className="file-row flex h-9 w-full min-w-0 items-center gap-2 px-2 text-left text-xs text-muted hover:text-fg"
                 >
@@ -452,34 +686,72 @@ function RepoPane() {
                 </button>
               </li>
             ))}
+            {visiblePdfs.map((source) => {
+              const status = pdfSourceStatus(source);
+              const active = openDocument?.sourceId === source.id;
+              return (
+                <li key={source.id} className="min-w-0">
+                  <button
+                    type="button"
+                    data-source-kind="pdf"
+                    data-source-path={source.path}
+                    data-source-status={source.readiness}
+                    data-active={active ? "true" : undefined}
+                    title={status.detail}
+                    onClick={() => openPdfSource(source.id)}
+                    className="file-row flex min-h-9 w-full min-w-0 items-center gap-2 px-2 py-1 text-left text-xs text-muted hover:text-fg"
+                  >
+                    <FileText className="size-3.5 shrink-0" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-mono">{source.path}</span>
+                      {status.short !== "Ready" || source.lastFailedNote ? (
+                        <span className="block truncate text-[11px] text-faint" data-source-label>
+                          {source.lastFailedNote && source.readiness === "ready" ? "Update failed" : status.short}
+                        </span>
+                      ) : (
+                        <span className="block truncate text-[11px] text-faint" data-source-label>
+                          Ready
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="ground-code mx-2 mb-2 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          <div className="ground-code-name shrink-0 truncate text-xs">{file.path}</div>
-          <pre ref={preRef} className="min-h-0 min-w-0 flex-1 overflow-auto px-3 py-2 text-xs leading-6 text-fg">
-            {painted.map((node, i) => {
-              const n = i + 1;
-              const active = citeLine === n;
-              return (
-                <div
-                  key={n}
-                  data-line={n}
-                  className={cn("flex gap-3 md:min-w-max", active && "bg-pick")}
-                >
-                  <span className="w-8 shrink-0 select-none text-right text-gutter tabular-nums">{n}</span>
-                  <span className="min-w-0 whitespace-pre-wrap break-all md:whitespace-pre md:break-normal">
-                    {node}
-                  </span>
-                </div>
-              );
-            })}
-          </pre>
-          {why ? (
-            <p className="shrink-0 border-t border-line px-3 py-2 font-mono text-xs text-muted">
-              <span className="text-accent">{why.sha}</span>
-              <span className="mx-2 text-fg">{why.message}</span>
-              <span className="text-faint">#{why.pr}</span>
-            </p>
+          {openDocument ? (
+            <PdfPane />
+          ) : file ? (
+            <>
+              <div className="ground-code-name shrink-0 truncate text-xs">{file.path}</div>
+              <pre ref={preRef} className="min-h-0 min-w-0 flex-1 overflow-auto px-3 py-2 text-xs leading-6 text-fg">
+                {painted.map((node, i) => {
+                  const n = i + 1;
+                  const active = citeLine === n;
+                  return (
+                    <div
+                      key={n}
+                      data-line={n}
+                      className={cn("flex gap-3 md:min-w-max", active && "bg-pick")}
+                    >
+                      <span className="w-8 shrink-0 select-none text-right text-muted tabular-nums">{n}</span>
+                      <span className="min-w-0 whitespace-pre-wrap break-all md:whitespace-pre md:break-normal">
+                        {node}
+                      </span>
+                    </div>
+                  );
+                })}
+              </pre>
+              {why ? (
+                <p className="shrink-0 border-t border-line px-3 py-2 font-mono text-xs text-muted">
+                  <span className="text-accent">{why.sha}</span>
+                  <span className="mx-2 text-fg">{why.message}</span>
+                  <span className="text-faint">#{why.pr}</span>
+                </p>
+              ) : null}
+            </>
           ) : null}
         </div>
       </div>
@@ -492,6 +764,7 @@ function TranscriptPane() {
   const typedQuery = useGround((s) => s.typedQuery);
   const setTypedQuery = useGround((s) => s.setTypedQuery);
   const search = useGround((s) => s.search);
+  const searchReady = useGround((s) => s.contextStatus === "ready");
   const playing = useGround((s) => s.playing);
   const armed = useGround((s) => s.armed);
   const liveDraft = useGround((s) => s.liveDraft);
@@ -532,7 +805,7 @@ function TranscriptPane() {
   }
 
   return (
-    <section className="ground-panel">
+    <section className="ground-panel" data-fit="content">
       <div className="ground-head">
         <span className="ground-head-left">
           <ChevronDown className="size-3.5 shrink-0 text-faint" />
@@ -542,10 +815,10 @@ function TranscriptPane() {
           {playing ? "Playing design review" : live ? "Transcript" : "Idle"}
         </span>
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-hidden p-4">
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-line bg-input px-3 py-3">
+      <div className="flex min-h-0 min-w-0 flex-col gap-3 overflow-auto p-4">
+        <div className="flex min-h-0 min-w-0 flex-col rounded-md border border-line bg-input px-3 py-3">
           <p className="ground-hint">They said</p>
-          <div className="mt-2 min-h-0 flex-1 overflow-auto">
+          <div className="mt-2 max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
             {transcript || themDraft ? (
               <p className="ground-transcript">
                 {transcript}
@@ -612,7 +885,7 @@ function TranscriptPane() {
             className="ground-input ground-question"
           />
           <div className="flex min-w-0 flex-wrap gap-2">
-            <Button type="submit" size="sm" className="min-w-28 flex-1">
+            <Button type="submit" size="sm" className="min-w-28 flex-1" disabled={!searchReady}>
               <Search className="size-3.5" />
               Search
             </Button>
@@ -631,20 +904,25 @@ function CardPane({
   refining,
   compact,
   onOpenCited,
+  overlay,
 }: {
   refining: boolean;
   compact: boolean;
-  onOpenCited: (path: string) => void;
+  onOpenCited: (cite: Citation) => void;
+  overlay: boolean;
 }) {
   const card = useGround((s) => s.card);
   const pack = useGround((s) => s.pack);
   const ledger = useGround((s) => s.ledger);
   const search = useGround((s) => s.search);
+  const searchReady = useGround((s) => s.contextStatus === "ready");
   const heardQuestion = useGround((s) => s.heardQuestion);
   const theySaid = heardQuestion ?? (card?.query || null);
   const chips = useMemo(() => questionChips(pack), [pack]);
   const [copied, setCopied] = useState(false);
-  const cited = pack.files.find((f) => f.path === card?.citations[0]?.path);
+  // The inline excerpt can only be shown for evidence that is in a file.
+  const citedFile = card?.citations.find(isFileCitation);
+  const cited = pack.files.find((f) => f.path === citedFile?.path);
 
   function copySay() {
     if (!card?.say) return;
@@ -654,7 +932,7 @@ function CardPane({
   }
 
   return (
-    <section className="ground-panel">
+    <section className="ground-panel" data-fit="content">
       <div className="ground-head">
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
@@ -666,7 +944,7 @@ function CardPane({
             : "Say this"}
         </span>
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-between overflow-auto p-5">
+      <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
         {theySaid ? (
           <div className="mb-5 min-w-0 rounded-md border border-line bg-input px-3 py-3">
             <p className="ground-hint">Heard</p>
@@ -691,31 +969,39 @@ function CardPane({
               </Button>
             </div>
             <ul className="space-y-2">
-              {card.citations.map((c) => (
-                <li key={`${c.path}-${c.line}`} className="min-w-0">
-                  <button
-                    type="button"
-                    onClick={() => onOpenCited(c.path)}
-                    className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs hover:border-accent"
-                  >
-                    <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                    <span className="min-w-0">
-                      <span className="block break-all font-mono text-fg">
-                        {c.path}:{c.line}
+              {card.citations.map((c) => {
+                const opensFile = Boolean(citedPath(c));
+                const opensPdf = isDocumentCitation(c) && !overlay;
+                const opens = opensFile || opensPdf;
+                return (
+                  <li key={c.evidenceId ?? citationText(c)} className="min-w-0">
+                    <button
+                      type="button"
+                      onClick={opens ? () => onOpenCited(c) : undefined}
+                      disabled={!opens}
+                      className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs enabled:hover:border-accent disabled:cursor-default"
+                    >
+                      {isDocumentCitation(c) ? (
+                        <FileText className="mt-0.5 size-3.5 shrink-0 text-muted" />
+                      ) : (
+                        <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
+                      )}
+                      <span className="min-w-0">
+                        <span className="block break-all font-mono text-fg">{citationText(c)}</span>
+                        {c.label ? (
+                          <span className="mt-0.5 block break-words text-muted">{c.label}</span>
+                        ) : null}
                       </span>
-                      {c.label ? (
-                        <span className="mt-0.5 block break-words text-muted">{c.label}</span>
-                      ) : null}
-                    </span>
-                  </button>
-                </li>
-              ))}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
-            {compact && cited ? (
+            {compact && cited && citedFile ? (
               <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
                 {cited.content
                   .split("\n")
-                  .slice(Math.max(0, (card.citations[0]?.line ?? 1) - 3), (card.citations[0]?.line ?? 1) + 5)
+                  .slice(Math.max(0, citedFile.line - 3), citedFile.line + 5)
                   .join("\n")}
               </pre>
             ) : null}
@@ -726,10 +1012,17 @@ function CardPane({
               "Room is the transcript. A question about this pack becomes You say. Small talk stays in Room."}
           </p>
         )}
-        <div className="space-y-3 pt-6">
+        <div className="space-y-3 rounded-md border border-line bg-input px-3 py-3">
+          <p className="ground-hint">Try a question</p>
           <div className="flex min-w-0 flex-wrap gap-2">
             {chips.map((q) => (
-              <button key={q} type="button" onClick={() => void search(q)} className="ground-chip text-xs">
+              <button
+                key={q}
+                type="button"
+                disabled={!searchReady}
+                onClick={() => void search(q)}
+                className="ground-chip text-xs disabled:opacity-40"
+              >
                 {q}
               </button>
             ))}

@@ -1,14 +1,52 @@
 import type { RepoPack } from "./types";
 
+/**
+ * The built-in demo pack.
+ *
+ * Every answer the demo gives is extracted from the text below and verified
+ * against it, exactly as it would be for a folder a user opens — there is no
+ * scripted path and no support exemption for this pack. That puts a real
+ * constraint on the fixture: it has to carry the prose a working repository
+ * carries, because the demo can only say what the material says. A file with no
+ * docstring produces silence here, which is the correct product behaviour and a
+ * poor demonstration of it.
+ */
 export const NORTHSTAR: RepoPack = {
   id: "northstar-payments",
   name: "northstar-payments",
   description: "Settlement exporter and edge auth for Northstar Payments.",
   files: [
     {
+      path: "README.md",
+      language: "md",
+      content: `# Northstar Payments
+
+Northstar exports merchant settlement files to S3 and guards the operator
+dashboard with edge auth.
+
+## Layout
+
+- \`src/exporter\` — builds the settlement CSV and uploads it
+- \`src/auth\` — verifies and rotates session cookies at the edge
+- \`docs/adr\` — decisions worth keeping
+
+## Running
+
+Exports run per merchant on a nightly schedule. Failures land in the
+dead-letter queue and are replayed from the PAY-219 runbook.
+`,
+    },
+    {
       path: "src/exporter/retry.ts",
       language: "ts",
-      content: `import { logger } from "../lib/log";
+      content: `/**
+ * Retry policy for settlement exports.
+ *
+ * Attempts are capped at three because the payment gateway stalls rather than
+ * failing fast, so a fourth attempt duplicates the settlement file instead of
+ * recovering it.
+ */
+import { logger } from "../lib/log";
 import type { ExportJob } from "./types";
 
 /** Default attempts after the March 2026 payment-timeout incident. */
@@ -52,7 +90,14 @@ function sleep(ms: number) {
     {
       path: "src/exporter/index.ts",
       language: "ts",
-      content: `import { withRetry } from "./retry";
+      content: `/**
+ * Settlement export entry point.
+ *
+ * Maps captured payment rows into the locked settlement column order and
+ * uploads the resulting CSV to the merchant prefix in S3, retrying through the
+ * capped backoff when the gateway stalls.
+ */
+import { withRetry } from "./retry";
 import { mapSettlementRow } from "./format";
 import { putObject } from "../lib/s3";
 import type { ExportJob, SettlementRow } from "./types";
@@ -70,7 +115,13 @@ export async function runExporter(job: ExportJob, rows: SettlementRow[]) {
     {
       path: "src/exporter/format.ts",
       language: "ts",
-      content: `import type { SettlementRow } from "./types";
+      content: `/**
+ * Settlement CSV formatting.
+ *
+ * Writes one line per settlement in a column order finance imports directly,
+ * which is why the order is locked and changing it needs PAY-180.
+ */
+import type { SettlementRow } from "./types";
 
 /**
  * Column order locked in Feb 2026 for the finance settlement file.
@@ -100,7 +151,13 @@ export function mapSettlementRow(row: SettlementRow): string {
     {
       path: "src/exporter/types.ts",
       language: "ts",
-      content: `export type ExportJob = {
+      content: `/**
+ * Shared exporter types.
+ *
+ * Describes the settlement rows the exporter reads and the job envelope naming
+ * the destination bucket and merchant.
+ */
+export type ExportJob = {
   id: string;
   merchantId: string;
   bucket: string;
@@ -119,7 +176,13 @@ export type SettlementRow = {
     {
       path: "src/auth/flow.ts",
       language: "ts",
-      content: `import { rotateCookie } from "./session";
+      content: `/**
+ * Edge auth flow.
+ *
+ * Verifies the session cookie on every non-public request and rotates it on the
+ * way out, so a stolen cookie stops working within thirty minutes.
+ */
+import { rotateCookie } from "./session";
 import { verifyAccess } from "./tokens";
 
 export async function runAuthFlow(request: Request) {
@@ -134,7 +197,13 @@ export async function runAuthFlow(request: Request) {
     {
       path: "src/auth/middleware.ts",
       language: "ts",
-      content: `import { runAuthFlow } from "./flow";
+      content: `/**
+ * Request guard.
+ *
+ * Runs the auth flow ahead of every handler except paths under public, and
+ * answers with 401 before the route executes when verification fails.
+ */
+import { runAuthFlow } from "./flow";
 
 export async function authMiddleware(request: Request): Promise<Response | null> {
   if (request.url.includes("/public/")) return null;
@@ -149,7 +218,13 @@ export async function authMiddleware(request: Request): Promise<Response | null>
     {
       path: "src/auth/session.ts",
       language: "ts",
-      content: `type Session = { sub: string; exp: number };
+      content: `/**
+ * Session cookie issuance.
+ *
+ * Issues the rotated session cookie with HttpOnly, Secure and Lax same-site
+ * flags, expiring thirty minutes after it is handed back.
+ */
+type Session = { sub: string; exp: number };
 
 export async function rotateCookie(session: Session): Promise<string> {
   const exp = Date.now() + 1000 * 60 * 30;
@@ -166,6 +241,10 @@ Date: 2026-03-18
 Status: Accepted
 PR: #842
 Ticket: PAY-219
+
+Exporter attempts are capped at three because the payment gateway stalls
+instead of failing fast, so raising the cap only duplicates settlement files
+while the job still ends in the dead-letter queue.
 
 ## Context
 
@@ -217,6 +296,14 @@ from PAY-219 runbooks. Do not raise the cap without finance sign-off.
       message: "auth: rotate session cookies through edge middleware",
       files: ["src/auth/flow.ts", "src/auth/middleware.ts", "src/auth/session.ts"],
       pr: "640",
+    },
+    {
+      sha: "5f0c7d1",
+      date: "2025-10-04",
+      author: "Priya Shah",
+      message: "docs: describe the exporter and edge auth in the README",
+      files: ["README.md"],
+      pr: "488",
     },
     {
       sha: "e17bb30",

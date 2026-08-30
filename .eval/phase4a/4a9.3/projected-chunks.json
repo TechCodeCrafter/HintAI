@@ -1,0 +1,100 @@
+{
+  "phase": "4A.9.3",
+  "note": "Diagnostic only. Furniture/unknown/unmapped math contribute 0. Not stored. Do not treat as a 4A.9.4 commitment.",
+  "productionTotal": 7917,
+  "projectedTotal": 2528,
+  "perFile": [
+    {
+      "file": "attention.pdf",
+      "production": 304,
+      "projected": 87
+    },
+    {
+      "file": "bert.pdf",
+      "production": 325,
+      "projected": 208
+    },
+    {
+      "file": "bitcoin.pdf",
+      "production": 227,
+      "projected": 77
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "production": 922,
+      "projected": 276
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "production": 30,
+      "projected": 10
+    },
+    {
+      "file": "lora.pdf",
+      "production": 529,
+      "projected": 113
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "production": 138,
+      "projected": 50
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "production": 1200,
+      "projected": 407
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "production": 2104,
+      "projected": 638
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "production": 689,
+      "projected": 377
+    },
+    {
+      "file": "resnet.pdf",
+      "production": 804,
+      "projected": 145
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "production": 645,
+      "projected": 140
+    }
+  ],
+  "pdfsOver200": [
+    "bert.pdf",
+    "cisa-ransomware.pdf",
+    "nist-800-207.pdf",
+    "nist-800-63b.pdf",
+    "omb-m22-09.pdf"
+  ],
+  "largest5": [
+    {
+      "file": "nist-800-63b.pdf",
+      "projected": 638
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "projected": 407
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "projected": 377
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "projected": 276
+    },
+    {
+      "file": "bert.pdf",
+      "projected": 208
+    }
+  ],
+  "largest5Sum": 1906,
+  "contextCap": 800,
+  "pdfCap": 200
+}

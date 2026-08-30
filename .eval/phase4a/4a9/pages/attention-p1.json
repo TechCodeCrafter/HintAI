@@ -1,0 +1,1751 @@
+{
+  "file": "attention.pdf",
+  "page": 1,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 6 !== 2 (total clusters 9; sizes 32.0:1, 129.1:38, 203.6:5, 248.1:8, 292.3:2, 335.7:6, 409.3:6, 455.8:1, 493.1:1)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 251.8 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 9,
+    "substantialClusterCount": 6,
+    "clusters": [
+      {
+        "x": 32,
+        "items": 1,
+        "meanWidth": 341.08,
+        "yMin": 237,
+        "yMax": 237
+      },
+      {
+        "x": 129.11,
+        "items": 38,
+        "meanWidth": 246.94,
+        "yMin": 52.12,
+        "yMax": 710.04
+      },
+      {
+        "x": 203.61,
+        "items": 5,
+        "meanWidth": 112.04,
+        "yMin": 316.49,
+        "yMax": 629.96
+      },
+      {
+        "x": 248.14,
+        "items": 8,
+        "meanWidth": 82.37,
+        "yMin": 438.4,
+        "yMax": 682.14
+      },
+      {
+        "x": 292.26,
+        "items": 2,
+        "meanWidth": 24.28,
+        "yMin": 397.22,
+        "yMax": 552.92
+      },
+      {
+        "x": 335.67,
+        "items": 6,
+        "meanWidth": 58.01,
+        "yMin": 452.93,
+        "yMax": 549.3
+      },
+      {
+        "x": 409.27,
+        "items": 6,
+        "meanWidth": 55.02,
+        "yMin": 488.4,
+        "yMax": 552.92
+      },
+      {
+        "x": 455.84,
+        "items": 1,
+        "meanWidth": 4.08,
+        "yMin": 502.92,
+        "yMax": 502.92
+      },
+      {
+        "x": 493.13,
+        "items": 1,
+        "meanWidth": 4.08,
+        "yMin": 552.92,
+        "yMax": 552.92
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 32,
+      "items": 1,
+      "meanWidth": 341.08,
+      "yMin": 237,
+      "yMax": 237
+    },
+    {
+      "x": 129.11,
+      "items": 38,
+      "meanWidth": 246.94,
+      "yMin": 52.12,
+      "yMax": 710.04
+    },
+    {
+      "x": 203.61,
+      "items": 5,
+      "meanWidth": 112.04,
+      "yMin": 316.49,
+      "yMax": 629.96
+    },
+    {
+      "x": 248.14,
+      "items": 8,
+      "meanWidth": 82.37,
+      "yMin": 438.4,
+      "yMax": 682.14
+    },
+    {
+      "x": 292.26,
+      "items": 2,
+      "meanWidth": 24.28,
+      "yMin": 397.22,
+      "yMax": 552.92
+    },
+    {
+      "x": 335.67,
+      "items": 6,
+      "meanWidth": 58.01,
+      "yMin": 452.93,
+      "yMax": 549.3
+    },
+    {
+      "x": 409.27,
+      "items": 6,
+      "meanWidth": 55.02,
+      "yMin": 488.4,
+      "yMax": 552.92
+    },
+    {
+      "x": 455.84,
+      "items": 1,
+      "meanWidth": 4.08,
+      "yMin": 502.92,
+      "yMax": 502.92
+    },
+    {
+      "x": 493.13,
+      "items": 1,
+      "meanWidth": 4.08,
+      "yMin": 552.92,
+      "yMax": 552.92
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 48,
+    "clusters": [
+      {
+        "x": 129.95,
+        "items": 32,
+        "share": 0.667
+      },
+      {
+        "x": 249.96,
+        "items": 7,
+        "share": 0.146
+      },
+      {
+        "x": 410.24,
+        "items": 4,
+        "share": 0.083
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 243.74,
+    "topShare": 0.8125
+  },
+  "ySpanOverlap": 243.74,
+  "gutterCandidates": [
+    {
+      "between": [
+        32,
+        129.11
+      ],
+      "gap": 97.11000000000001
+    },
+    {
+      "between": [
+        129.11,
+        203.61
+      ],
+      "gap": 74.5
+    },
+    {
+      "between": [
+        203.61,
+        248.14
+      ],
+      "gap": 44.52999999999997
+    },
+    {
+      "between": [
+        248.14,
+        292.26
+      ],
+      "gap": 44.120000000000005
+    },
+    {
+      "between": [
+        292.26,
+        335.67
+      ],
+      "gap": 43.410000000000025
+    },
+    {
+      "between": [
+        335.67,
+        409.27
+      ],
+      "gap": 73.59999999999997
+    },
+    {
+      "between": [
+        409.27,
+        455.84
+      ],
+      "gap": 46.56999999999999
+    },
+    {
+      "between": [
+        455.84,
+        493.13
+      ],
+      "gap": 37.29000000000002
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Provided proper attribution is provided, Google hereby grants permission to",
+      "x": 124.67,
+      "y": 710.04,
+      "width": 362.67,
+      "height": 11.96,
+      "right": 487.34,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "reproduce the tables and figures in this paper solely for use in journalistic or",
+      "x": 124.31,
+      "y": 696.09,
+      "width": 363.58,
+      "height": 11.96,
+      "right": 487.89,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "scholarly works.",
+      "x": 267.59,
+      "y": 682.14,
+      "width": 78.9,
+      "height": 11.96,
+      "right": 346.5,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 211.49,
+      "y": 629.96,
+      "width": 0,
+      "height": 0,
+      "right": 215.49,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "Attention Is All You Need",
+      "x": 211.49,
+      "y": 629.96,
+      "width": 188.41,
+      "height": 17.22,
+      "right": 399.89,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 132.91,
+      "y": 549.3,
+      "width": 0,
+      "height": 0,
+      "right": 136.91,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "Ashish Vaswani",
+      "x": 132.91,
+      "y": 549.3,
+      "width": 66.9,
+      "height": 9.96,
+      "right": 199.81,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "∗",
+      "x": 199.81,
+      "y": 552.92,
+      "width": 4.08,
+      "height": 6.97,
+      "right": 203.89,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "",
+      "x": 139.38,
+      "y": 538.4,
+      "width": 0,
+      "height": 0,
+      "right": 143.38,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "Google Brain",
+      "x": 139.38,
+      "y": 538.4,
+      "width": 53.96,
+      "height": 9.96,
+      "right": 193.34,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "",
+      "x": 116.68,
+      "y": 527.49,
+      "width": 0,
+      "height": 0,
+      "right": 120.68,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "avaswani@google.com",
+      "x": 116.68,
+      "y": 527.49,
+      "width": 99.36,
+      "height": 9.96,
+      "right": 216.04,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "",
+      "x": 239.06,
+      "y": 549.3,
+      "width": 0,
+      "height": 0,
+      "right": 243.06,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "Noam Shazeer",
+      "x": 239.06,
+      "y": 549.3,
+      "width": 61.7,
+      "height": 9.96,
+      "right": 300.76,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "∗",
+      "x": 300.76,
+      "y": 552.92,
+      "width": 4.08,
+      "height": 6.97,
+      "right": 304.84,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "",
+      "x": 242.93,
+      "y": 538.4,
+      "width": 0,
+      "height": 0,
+      "right": 246.93,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "Google Brain",
+      "x": 242.93,
+      "y": 538.4,
+      "width": 53.96,
+      "height": 9.96,
+      "right": 296.89,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": "",
+      "x": 230.69,
+      "y": 527.49,
+      "width": 0,
+      "height": 0,
+      "right": 234.69,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "noam@google.com",
+      "x": 230.69,
+      "y": 527.49,
+      "width": 78.44,
+      "height": 9.96,
+      "right": 309.13,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "",
+      "x": 338.69,
+      "y": 549.3,
+      "width": 0,
+      "height": 0,
+      "right": 342.69,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "Niki Parmar",
+      "x": 338.69,
+      "y": 549.3,
+      "width": 53.86,
+      "height": 9.96,
+      "right": 392.55,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": "∗",
+      "x": 392.55,
+      "y": 552.92,
+      "width": 4.08,
+      "height": 6.97,
+      "right": 396.63,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "",
+      "x": 331.45,
+      "y": 538.4,
+      "width": 0,
+      "height": 0,
+      "right": 335.45,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "Google Research",
+      "x": 331.45,
+      "y": 538.4,
+      "width": 68.33,
+      "height": 9.96,
+      "right": 399.79,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "",
+      "x": 323.79,
+      "y": 527.49,
+      "width": 0,
+      "height": 0,
+      "right": 327.79,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "nikip@google.com",
+      "x": 323.79,
+      "y": 527.49,
+      "width": 83.67,
+      "height": 9.96,
+      "right": 407.46,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "",
+      "x": 424.3,
+      "y": 549.3,
+      "width": 0,
+      "height": 0,
+      "right": 428.3,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "Jakob Uszkoreit",
+      "x": 424.3,
+      "y": 549.3,
+      "width": 68.83,
+      "height": 9.96,
+      "right": 493.13,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "∗",
+      "x": 493.13,
+      "y": 552.92,
+      "width": 4.08,
+      "height": 6.97,
+      "right": 497.21,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "",
+      "x": 424.55,
+      "y": 538.4,
+      "width": 0,
+      "height": 0,
+      "right": 428.55,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": "Google Research",
+      "x": 424.55,
+      "y": 538.4,
+      "width": 68.33,
+      "height": 9.96,
+      "right": 492.88,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "",
+      "x": 422.11,
+      "y": 527.49,
+      "width": 0,
+      "height": 0,
+      "right": 426.11,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "usz@google.com",
+      "x": 422.11,
+      "y": 527.49,
+      "width": 73.21,
+      "height": 9.96,
+      "right": 495.32,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "",
+      "x": 144.29,
+      "y": 499.31,
+      "width": 0,
+      "height": 0,
+      "right": 148.29,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": "Llion Jones",
+      "x": 144.29,
+      "y": 499.31,
+      "width": 48.85,
+      "height": 9.96,
+      "right": 193.14,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": "∗",
+      "x": 193.14,
+      "y": 502.92,
+      "width": 4.08,
+      "height": 6.97,
+      "right": 197.22,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": "",
+      "x": 134.55,
+      "y": 488.4,
+      "width": 0,
+      "height": 0,
+      "right": 138.55,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": "Google Research",
+      "x": 134.55,
+      "y": 488.4,
+      "width": 68.33,
+      "height": 9.96,
+      "right": 202.88,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "",
+      "x": 126.88,
+      "y": 477.49,
+      "width": 0,
+      "height": 0,
+      "right": 130.88,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": "llion@google.com",
+      "x": 126.88,
+      "y": 477.49,
+      "width": 83.67,
+      "height": 9.96,
+      "right": 210.55,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "",
+      "x": 248.76,
+      "y": 499.31,
+      "width": 0,
+      "height": 0,
+      "right": 252.76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": "Aidan N. Gomez",
+      "x": 248.76,
+      "y": 499.31,
+      "width": 70.57,
+      "height": 9.96,
+      "right": 319.33,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "∗ †",
+      "x": 319.33,
+      "y": 502.92,
+      "width": 10.96,
+      "height": 6.97,
+      "right": 330.29,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": "",
+      "x": 244.57,
+      "y": 488.4,
+      "width": 0,
+      "height": 0,
+      "right": 248.57,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "University of Toronto",
+      "x": 244.57,
+      "y": 488.4,
+      "width": 86.25,
+      "height": 9.96,
+      "right": 330.82,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "",
+      "x": 235.41,
+      "y": 477.49,
+      "width": 0,
+      "height": 0,
+      "right": 239.41,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "aidan@cs.toronto.edu",
+      "x": 235.41,
+      "y": 477.49,
+      "width": 104.59,
+      "height": 9.96,
+      "right": 339.99,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": "",
+      "x": 394.12,
+      "y": 499.31,
+      "width": 0,
+      "height": 0,
+      "right": 398.12,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": "Łukasz Kaiser",
+      "x": 394.12,
+      "y": 499.31,
+      "width": 61.72,
+      "height": 9.96,
+      "right": 455.84,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": "∗",
+      "x": 455.84,
+      "y": 502.92,
+      "width": 4.08,
+      "height": 6.97,
+      "right": 459.92,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "",
+      "x": 398,
+      "y": 488.4,
+      "width": 0,
+      "height": 0,
+      "right": 402,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "Google Brain",
+      "x": 398,
+      "y": 488.4,
+      "width": 53.96,
+      "height": 9.96,
+      "right": 451.96,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "",
+      "x": 364.85,
+      "y": 477.49,
+      "width": 0,
+      "height": 0,
+      "right": 368.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "lukaszkaiser@google.com",
+      "x": 364.85,
+      "y": 477.49,
+      "width": 120.27,
+      "height": 9.96,
+      "right": 485.11,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "",
+      "x": 268.81,
+      "y": 449.31,
+      "width": 0,
+      "height": 0,
+      "right": 272.81,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": "Illia Polosukhin",
+      "x": 268.81,
+      "y": 449.31,
+      "width": 67.08,
+      "height": 9.96,
+      "right": 335.89,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "∗ ‡",
+      "x": 335.88,
+      "y": 452.93,
+      "width": 10.96,
+      "height": 6.97,
+      "right": 346.85,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "",
+      "x": 238.02,
+      "y": 438.4,
+      "width": 0,
+      "height": 0,
+      "right": 242.02,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": "illia.polosukhin@gmail.com",
+      "x": 238.02,
+      "y": 438.4,
+      "width": 135.95,
+      "height": 9.96,
+      "right": 373.98,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": "",
+      "x": 283.76,
+      "y": 397.22,
+      "width": 0,
+      "height": 0,
+      "right": 287.76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "Abstract",
+      "x": 283.76,
+      "y": 397.22,
+      "width": 44.49,
+      "height": 11.96,
+      "right": 328.24,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "",
+      "x": 143.56,
+      "y": 371.04,
+      "width": 0,
+      "height": 0,
+      "right": 147.56,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "The dominant sequence transduction models are based on complex recurrent or",
+      "x": 143.56,
+      "y": 371.04,
+      "width": 324.74,
+      "height": 9.96,
+      "right": 468.3,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": "convolutional neural networks that include an encoder and a decoder. The best",
+      "x": 143.87,
+      "y": 360.13,
+      "width": 324.26,
+      "height": 9.96,
+      "right": 468.13,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "performing models also connect the encoder and decoder through an attention",
+      "x": 143.87,
+      "y": 349.22,
+      "width": 324.26,
+      "height": 9.96,
+      "right": 468.13,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": "mechanism. We propose a new simple network architecture, the Transformer,",
+      "x": 143.87,
+      "y": 338.31,
+      "width": 325.51,
+      "height": 9.96,
+      "right": 469.38,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "based solely on attention mechanisms, dispensing with recurrence and convolutions",
+      "x": 143.87,
+      "y": 327.4,
+      "width": 324.27,
+      "height": 9.96,
+      "right": 468.14,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "entirely.",
+      "x": 143.87,
+      "y": 316.49,
+      "width": 32.93,
+      "height": 9.96,
+      "right": 176.8,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": " ",
+      "x": 176.8,
+      "y": 316.49,
+      "width": 6.01,
+      "height": 0,
+      "right": 182.81,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "Experiments on two machine translation tasks show these models to",
+      "x": 182.93,
+      "y": 316.49,
+      "width": 285.2,
+      "height": 9.96,
+      "right": 468.13,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": "be superior in quality while being more parallelizable and requiring significantly",
+      "x": 143.87,
+      "y": 305.58,
+      "width": 324.62,
+      "height": 9.96,
+      "right": 468.48,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-",
+      "x": 143.87,
+      "y": 294.67,
+      "width": 325.92,
+      "height": 9.96,
+      "right": 469.79,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "to-German translation task, improving over the existing best results, including",
+      "x": 143.87,
+      "y": 283.76,
+      "width": 324.26,
+      "height": 9.96,
+      "right": 468.13,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,",
+      "x": 143.87,
+      "y": 272.85,
+      "width": 325.51,
+      "height": 9.96,
+      "right": 469.38,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "our model establishes a new single-model state-of-the-art BLEU score of 41.8 after",
+      "x": 143.87,
+      "y": 261.94,
+      "width": 324.44,
+      "height": 9.96,
+      "right": 468.3,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": "training for 3.5 days on eight GPUs, a small fraction of the training costs of the",
+      "x": 143.87,
+      "y": 251.03,
+      "width": 324.26,
+      "height": 9.96,
+      "right": 468.13,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": "best models from the literature. We show that the Transformer generalizes well to",
+      "x": 143.87,
+      "y": 240.13,
+      "width": 324.27,
+      "height": 9.96,
+      "right": 468.13,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "other tasks by applying it successfully to English constituency parsing both with",
+      "x": 143.87,
+      "y": 229.22,
+      "width": 324.27,
+      "height": 9.96,
+      "right": 468.14,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "large and limited training data.",
+      "x": 143.87,
+      "y": 218.31,
+      "width": 122.4,
+      "height": 9.96,
+      "right": 266.27,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": "",
+      "x": 119.82,
+      "y": 189.95,
+      "width": 0,
+      "height": 0,
+      "right": 123.82,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": "∗",
+      "x": 119.82,
+      "y": 189.95,
+      "width": 3.82,
+      "height": 5.98,
+      "right": 123.64,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "Equal contribution. Listing order is random. Jakob proposed replacing RNNs with self-attention and started",
+      "x": 124.14,
+      "y": 186.15,
+      "width": 379.86,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "the effort to evaluate this idea. Ashish, with Illia, designed and implemented the first Transformer models and",
+      "x": 108,
+      "y": 176.18,
+      "width": 396,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": "has been crucially involved in every aspect of this work. Noam proposed scaled dot-product attention, multi-head",
+      "x": 108,
+      "y": 166.22,
+      "width": 396,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": "attention and the parameter-free position representation and became the other person involved in nearly every",
+      "x": 108,
+      "y": 156.26,
+      "width": 396.31,
+      "height": 8.97,
+      "right": 504.31,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": "detail. Niki designed, implemented, tuned and evaluated countless model variants in our original codebase and",
+      "x": 108,
+      "y": 146.29,
+      "width": 396,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "tensor2tensor. Llion also experimented with novel model variants, was responsible for our initial codebase, and",
+      "x": 108,
+      "y": 136.33,
+      "width": 396,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": "efficient inference and visualizations. Lukasz and Aidan spent countless long days designing various parts of and",
+      "x": 108,
+      "y": 126.37,
+      "width": 396,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "implementing tensor2tensor, replacing our earlier codebase, greatly improving results and massively accelerating",
+      "x": 108,
+      "y": 116.41,
+      "width": 396,
+      "height": 8.97,
+      "right": 504,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": "our research.",
+      "x": 108,
+      "y": 106.44,
+      "width": 46.3,
+      "height": 8.97,
+      "right": 154.3,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "",
+      "x": 120.21,
+      "y": 99.3,
+      "width": 0,
+      "height": 0,
+      "right": 124.21,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": "†",
+      "x": 120.21,
+      "y": 99.3,
+      "width": 3.43,
+      "height": 5.98,
+      "right": 123.64,
+      "visualLineId": 37,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": "Work performed while at Google Brain.",
+      "x": 124.14,
+      "y": 95.5,
+      "width": 143.21,
+      "height": 8.97,
+      "right": 267.35,
+      "visualLineId": 37,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": "",
+      "x": 120.21,
+      "y": 88.36,
+      "width": 0,
+      "height": 0,
+      "right": 124.21,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": "‡",
+      "x": 120.21,
+      "y": 88.36,
+      "width": 3.43,
+      "height": 5.98,
+      "right": 123.64,
+      "visualLineId": 38,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": "Work performed while at Google Research.",
+      "x": 124.14,
+      "y": 84.55,
+      "width": 156.15,
+      "height": 8.97,
+      "right": 280.29,
+      "visualLineId": 38,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": "31st Conference on Neural Information Processing Systems (NIPS 2017), Long Beach, CA, USA.",
+      "x": 108,
+      "y": 52.12,
+      "width": 352.14,
+      "height": 8.97,
+      "right": 460.14,
+      "visualLineId": 39,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": "",
+      "x": 32,
+      "y": 237,
+      "width": 0,
+      "height": 0,
+      "right": 36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": "arXiv:1706.03762v7 [cs.CL] 2 Aug 2023",
+      "x": 32,
+      "y": 237,
+      "width": 341.08,
+      "height": 20,
+      "right": 373.08,
+      "visualLineId": 25,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 710.04,
+      "height": 11.96,
+      "text": "Provided proper attribution is provided, Google hereby grants permission to",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 124.67
+    },
+    {
+      "lineId": 1,
+      "y": 696.09,
+      "height": 11.96,
+      "text": "reproduce the tables and figures in this paper solely for use in journalistic or",
+      "itemIndexes": [
+        1
+      ],
+      "firstX": 124.31
+    },
+    {
+      "lineId": 2,
+      "y": 682.14,
+      "height": 11.96,
+      "text": "scholarly works.",
+      "itemIndexes": [
+        2
+      ],
+      "firstX": 267.59
+    },
+    {
+      "lineId": 3,
+      "y": 629.96,
+      "height": 17.22,
+      "text": "Attention Is All You Need",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 211.49
+    },
+    {
+      "lineId": 4,
+      "y": 551.11,
+      "height": 9.96,
+      "text": "Ashish Vaswani ∗ Noam Shazeer ∗ Niki Parmar ∗ Jakob Uszkoreit ∗",
+      "itemIndexes": [
+        6,
+        7,
+        13,
+        14,
+        20,
+        21,
+        27,
+        28
+      ],
+      "firstX": 132.91
+    },
+    {
+      "lineId": 5,
+      "y": 538.4,
+      "height": 9.96,
+      "text": "Google Brain Google Brain Google Research Google Research",
+      "itemIndexes": [
+        9,
+        16,
+        23,
+        30
+      ],
+      "firstX": 139.38
+    },
+    {
+      "lineId": 6,
+      "y": 527.49,
+      "height": 9.96,
+      "text": "avaswani@google.com noam@google.com nikip@google.com usz@google.com",
+      "itemIndexes": [
+        11,
+        18,
+        25,
+        32
+      ],
+      "firstX": 116.68
+    },
+    {
+      "lineId": 7,
+      "y": 501.12,
+      "height": 9.96,
+      "text": "Llion Jones ∗ Aidan N. Gomez ∗ † Łukasz Kaiser ∗",
+      "itemIndexes": [
+        34,
+        35,
+        41,
+        42,
+        48,
+        49
+      ],
+      "firstX": 144.29
+    },
+    {
+      "lineId": 8,
+      "y": 488.4,
+      "height": 9.96,
+      "text": "Google Research University of Toronto Google Brain",
+      "itemIndexes": [
+        37,
+        44,
+        51
+      ],
+      "firstX": 134.55
+    },
+    {
+      "lineId": 9,
+      "y": 477.49,
+      "height": 9.96,
+      "text": "llion@google.com aidan@cs.toronto.edu lukaszkaiser@google.com",
+      "itemIndexes": [
+        39,
+        46,
+        53
+      ],
+      "firstX": 126.88
+    },
+    {
+      "lineId": 10,
+      "y": 451.12,
+      "height": 9.96,
+      "text": "Illia Polosukhin ∗ ‡",
+      "itemIndexes": [
+        55,
+        56
+      ],
+      "firstX": 268.81
+    },
+    {
+      "lineId": 11,
+      "y": 438.4,
+      "height": 9.96,
+      "text": "illia.polosukhin@gmail.com",
+      "itemIndexes": [
+        58
+      ],
+      "firstX": 238.02
+    },
+    {
+      "lineId": 12,
+      "y": 397.22,
+      "height": 11.96,
+      "text": "Abstract",
+      "itemIndexes": [
+        60
+      ],
+      "firstX": 283.76
+    },
+    {
+      "lineId": 13,
+      "y": 371.04,
+      "height": 9.96,
+      "text": "The dominant sequence transduction models are based on complex recurrent or",
+      "itemIndexes": [
+        62
+      ],
+      "firstX": 143.56
+    },
+    {
+      "lineId": 14,
+      "y": 360.13,
+      "height": 9.96,
+      "text": "convolutional neural networks that include an encoder and a decoder. The best",
+      "itemIndexes": [
+        63
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 15,
+      "y": 349.22,
+      "height": 9.96,
+      "text": "performing models also connect the encoder and decoder through an attention",
+      "itemIndexes": [
+        64
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 16,
+      "y": 338.31,
+      "height": 9.96,
+      "text": "mechanism. We propose a new simple network architecture, the Transformer,",
+      "itemIndexes": [
+        65
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 17,
+      "y": 327.4,
+      "height": 9.96,
+      "text": "based solely on attention mechanisms, dispensing with recurrence and convolutions",
+      "itemIndexes": [
+        66
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 18,
+      "y": 316.49,
+      "height": 12,
+      "text": "entirely. Experiments on two machine translation tasks show these models to",
+      "itemIndexes": [
+        67,
+        68,
+        69
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 19,
+      "y": 305.58,
+      "height": 9.96,
+      "text": "be superior in quality while being more parallelizable and requiring significantly",
+      "itemIndexes": [
+        70
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 20,
+      "y": 294.67,
+      "height": 9.96,
+      "text": "less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-",
+      "itemIndexes": [
+        71
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 21,
+      "y": 283.76,
+      "height": 9.96,
+      "text": "to-German translation task, improving over the existing best results, including",
+      "itemIndexes": [
+        72
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 22,
+      "y": 272.85,
+      "height": 9.96,
+      "text": "ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,",
+      "itemIndexes": [
+        73
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 23,
+      "y": 261.94,
+      "height": 9.96,
+      "text": "our model establishes a new single-model state-of-the-art BLEU score of 41.8 after",
+      "itemIndexes": [
+        74
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 24,
+      "y": 251.03,
+      "height": 9.96,
+      "text": "training for 3.5 days on eight GPUs, a small fraction of the training costs of the",
+      "itemIndexes": [
+        75
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 25,
+      "y": 238.56,
+      "height": 20,
+      "text": "arXiv:1706.03762v7 [cs.CL] 2 Aug 2023 best models from the literature. We show that the Transformer generalizes well to",
+      "itemIndexes": [
+        98,
+        76
+      ],
+      "firstX": 32
+    },
+    {
+      "lineId": 26,
+      "y": 229.22,
+      "height": 9.96,
+      "text": "other tasks by applying it successfully to English constituency parsing both with",
+      "itemIndexes": [
+        77
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 27,
+      "y": 218.31,
+      "height": 9.96,
+      "text": "large and limited training data.",
+      "itemIndexes": [
+        78
+      ],
+      "firstX": 143.87
+    },
+    {
+      "lineId": 28,
+      "y": 188.05,
+      "height": 8.97,
+      "text": "∗ Equal contribution. Listing order is random. Jakob proposed replacing RNNs with self-attention and started",
+      "itemIndexes": [
+        80,
+        81
+      ],
+      "firstX": 119.82
+    },
+    {
+      "lineId": 29,
+      "y": 176.18,
+      "height": 8.97,
+      "text": "the effort to evaluate this idea. Ashish, with Illia, designed and implemented the first Transformer models and",
+      "itemIndexes": [
+        82
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 30,
+      "y": 166.22,
+      "height": 8.97,
+      "text": "has been crucially involved in every aspect of this work. Noam proposed scaled dot-product attention, multi-head",
+      "itemIndexes": [
+        83
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 31,
+      "y": 156.26,
+      "height": 8.97,
+      "text": "attention and the parameter-free position representation and became the other person involved in nearly every",
+      "itemIndexes": [
+        84
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 32,
+      "y": 146.29,
+      "height": 8.97,
+      "text": "detail. Niki designed, implemented, tuned and evaluated countless model variants in our original codebase and",
+      "itemIndexes": [
+        85
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 33,
+      "y": 136.33,
+      "height": 8.97,
+      "text": "tensor2tensor. Llion also experimented with novel model variants, was responsible for our initial codebase, and",
+      "itemIndexes": [
+        86
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 34,
+      "y": 126.37,
+      "height": 8.97,
+      "text": "efficient inference and visualizations. Lukasz and Aidan spent countless long days designing various parts of and",
+      "itemIndexes": [
+        87
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 35,
+      "y": 116.41,
+      "height": 8.97,
+      "text": "implementing tensor2tensor, replacing our earlier codebase, greatly improving results and massively accelerating",
+      "itemIndexes": [
+        88
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 36,
+      "y": 106.44,
+      "height": 8.97,
+      "text": "our research.",
+      "itemIndexes": [
+        89
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 37,
+      "y": 97.4,
+      "height": 8.97,
+      "text": "† Work performed while at Google Brain.",
+      "itemIndexes": [
+        91,
+        92
+      ],
+      "firstX": 120.21
+    },
+    {
+      "lineId": 38,
+      "y": 86.45,
+      "height": 8.97,
+      "text": "‡ Work performed while at Google Research.",
+      "itemIndexes": [
+        94,
+        95
+      ],
+      "firstX": 120.21
+    },
+    {
+      "lineId": 39,
+      "y": 52.12,
+      "height": 8.97,
+      "text": "31st Conference on Neural Information Processing Systems (NIPS 2017), Long Beach, CA, USA.",
+      "itemIndexes": [
+        96
+      ],
+      "firstX": 108
+    }
+  ]
+}

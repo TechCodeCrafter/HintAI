@@ -9,7 +9,7 @@ import { resolveReference, threadFrom, withdrawReplay, type ThreadContext } from
 
 const card = (say: string, paths: string[]): Card => ({
   say,
-  citations: paths.map((path) => ({ path, line: 1, label: `${path}:1` })),
+  citations: paths.map((path) => ({ kind: "file" as const, path, line: 1, label: `${path}:1` })),
   query: "",
   latencyMs: 0,
   source: "local",

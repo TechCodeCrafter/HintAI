@@ -1,0 +1,121 @@
+{
+  "pageOpenAttempts": 4,
+  "correctPageOpen": 4,
+  "correctPageOpenRate": 1,
+  "exact": 4,
+  "itemBox": 0,
+  "captionOnly": 0,
+  "stale": 0,
+  "exactRate": 1,
+  "itemBoxRate": 0,
+  "captionOnlyRate": 0,
+  "wrongPage": 0,
+  "wrongText": 0,
+  "latencies": [
+    {
+      "id": "What does serializable isolation prevent?",
+      "cold": {
+        "blobMs": 0.009541999999981954,
+        "openMs": 0.004707999999993717,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.008874999999989086,
+        "totalMs": 0.05816599999999994,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0017909999999972115,
+        "openMs": 0.00045799999998052954,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.0060829999999896245,
+        "totalMs": 0.017208999999979824,
+        "cold": false
+      }
+    },
+    {
+      "id": "Which isolation levels does the lecture list?",
+      "cold": {
+        "blobMs": 0.0024579999999900792,
+        "openMs": 0.0005419999999958236,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.006042000000007874,
+        "totalMs": 0.015292000000016515,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0007909999999924366,
+        "openMs": 0.0002910000000042601,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.003542000000010148,
+        "totalMs": 0.008584000000013248,
+        "cold": false
+      }
+    },
+    {
+      "id": "What does two-phase locking require?",
+      "cold": {
+        "blobMs": 0.0009170000000153777,
+        "openMs": 0.0003749999999911324,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.0027499999999918145,
+        "totalMs": 0.007874999999984311,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0005830000000059954,
+        "openMs": 0.0002919999999733136,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.003375000000005457,
+        "totalMs": 0.0072499999999990905,
+        "cold": false
+      }
+    },
+    {
+      "id": "When does snapshot isolation allow write skew?",
+      "cold": {
+        "blobMs": 0.0007499999999822649,
+        "openMs": 0.0002910000000042601,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.0029159999999990305,
+        "totalMs": 0.007499999999993179,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0005830000000059954,
+        "openMs": 0.0002499999999940883,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.004540999999989026,
+        "totalMs": 0.008000000000009777,
+        "cold": false
+      }
+    }
+  ],
+  "note": "Spoken fixture Cards map exact when TextLayer strings match item.str (4/4). item-box and caption-only were forced for fallback QA, not invented by searching the page. Raster/text-layer ms are from browser shots.",
+  "browserShots": {
+    "exact": 6,
+    "itemBoxForced": 1,
+    "captionOnlyForced": 1,
+    "stale": 1,
+    "wrongPage": 0,
+    "wrongText": 0,
+    "evidenceVisibleMs": {
+      "median": 10.7,
+      "max": 19.5,
+      "breakdownTypicalMs": {
+        "blobRead": 0.9,
+        "getDocumentOpen": 0,
+        "pageRender": 7.5,
+        "textLayer": 0.1,
+        "highlightMapping": 0.2,
+        "total": 10.7
+      }
+    }
+  }
+}

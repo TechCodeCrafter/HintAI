@@ -9,7 +9,7 @@ import { mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const target = process.env.QA_URL || "http://127.0.0.1:8080/";
+const target = process.env.QA_URL || "http://127.0.0.1:8080/app";
 const OUT = fileURLToPath(new URL("../screenshots/", import.meta.url));
 mkdirSync(OUT, { recursive: true });
 

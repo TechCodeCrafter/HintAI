@@ -1,0 +1,71 @@
+{
+  "phase": "4A.9.4",
+  "comparedTo": "4A.9.2.2",
+  "genuineRelevanceWrongIntent": 0,
+  "unanswerableSpoken": 0,
+  "unsupported": 0,
+  "fabricatedProvenance": 0,
+  "wrongSource": 0,
+  "pageEvidenceLocationAccuracy": 1,
+  "freeze": "recommend-accept",
+  "newSpeakers": [
+    {
+      "id": "bert-glue",
+      "q": "What GLUE score did they report?",
+      "say": "Tasks, including pushing the GLUE score to 80.5% (7.7% point absolute improvement), Multi",
+      "citedPath": "bert.pdf",
+      "citedPage": 1,
+      "gold": "pushing the GLUE score to 80.5%",
+      "adjudication": "exact gold",
+      "genuineWrongIntent": false,
+      "note": "Newly spoken because a mapped BERT abstract paragraph is now one coherent chunk. Frozen QuestionContract admits the gold span independently."
+    },
+    {
+      "id": "tm-nested",
+      "q": "How do they solve nested loops?",
+      "say": "On ever tracing outer loops. We solve the nested loop problem by recording",
+      "citedPath": "tracemonkey.pdf",
+      "citedPage": 2,
+      "gold": "recording nested trace trees",
+      "adjudication": "partial-but-valid",
+      "genuineWrongIntent": false,
+      "machineIntentWrong": true,
+      "note": "The spoken clause is the start of the gold sentence. A sentence/cap split cut the chunk after recording, so nested trace trees is in the next range. Prefix on ever tracing outer loops is the tail of the previous sentence on the same mapped paragraph. Intent is the nested-loop solution, not a different claim."
+    }
+  ],
+  "changedExistingSpeakers": [
+    {
+      "id": "zta-asset",
+      "q": "Is any asset inherently trusted?",
+      "beforeSay": "No asset is inherently trusted.",
+      "afterSay": "3. No resource is inherently trusted. Every asset must have its security posture evaluated",
+      "citedPath": "nist-800-207.pdf",
+      "citedPage": 16,
+      "gold": "No asset is inherently trusted",
+      "adjudication": "acceptable alternate span",
+      "genuineWrongIntent": false,
+      "note": "Already spoken in 4A.9.2.2 with the exact gold. The block-aware chunk now surfaces the numbered NIST tenet No resource is inherently trusted, the same claim. Machine span miss only. Not a new speaker."
+    }
+  ],
+  "stillSpokenMachineStrictLeftovers": [
+    {
+      "id": "attn-arch",
+      "bucket": "I-eval-span",
+      "note": "Frozen 4A.8 acceptable; same say as 4A.9.2.2"
+    },
+    {
+      "id": "63b-aal1",
+      "bucket": "I-eval-span",
+      "note": "Frozen 4A.8 acceptable; same say as 4A.9.2.2"
+    }
+  ],
+  "lostSpeakers": [
+    "bert-nsp",
+    "resnet-what",
+    "resnet-degrade",
+    "tm-what",
+    "tm-speedup",
+    "nist145-hybrid",
+    "zta-what"
+  ]
+}

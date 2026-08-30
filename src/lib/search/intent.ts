@@ -81,6 +81,10 @@ export function shapeOf(query: string): Shape {
 const RATIONALE =
   /\b(because|since|so that|in order to|to avoid|to prevent|to ensure|rather than|instead of|trade[- ]?off|on purpose|by design|deliberately|intentionally|the reason|rationale|decided|decision|chose|chosen|opted|due to|owing to|required by|constraint|limitation|workaround|prevents|avoids)\b/i;
 
+/** Prose that states who is responsible, rather than describing behaviour. */
+const OWNERSHIP =
+  /\b(owned|owner|owners|ownership|maintained|maintainer|maintainers|authored|responsible for|on-call|oncall|codeowner|codeowners)\b/i;
+
 /**
  * Evidence about what happens when things break, as opposed to what happens
  * when they work.
@@ -94,13 +98,30 @@ const FAILURE_EVIDENCE =
  * `whyKind` is true for a commit message or ADR, which is rationale evidence by
  * construction: it exists to record why a change was made.
  */
-export function evidenceFitsShape(shape: Shape, claim: string, whyKind = false): boolean {
+export function evidenceFitsShape(
+  shape: Shape,
+  claim: string,
+  whyKind = false,
+  authored = false,
+): boolean {
   switch (shape) {
     case "why":
       // A description of behaviour is never a reason for it.
       return whyKind || RATIONALE.test(claim);
     case "failure":
       return FAILURE_EVIDENCE.test(claim);
+    case "who":
+      // Authorship is a property of history, not of prose. A docstring saying
+      // what a file does answers "how", and letting it through here is how "who
+      // touched the auth flow?" gets answered with "verifies the session cookie
+      // on every non-public request" — cited, true, and not the question.
+      //
+      // `authored` means the evidence identifies a person and the claim names
+      // them. Being a commit is not enough on its own: a commit message states
+      // what changed, and only its author field states who. Prose qualifies when
+      // it states ownership outright, which is what a CODEOWNERS note or an
+      // "owned by" line in a README does.
+      return authored || OWNERSHIP.test(claim);
     case "absence":
       // Nothing retrieved can prove a repo does *not* contain something, and a
       // docstring that merely mentions the word is not proof that it does. This
@@ -120,6 +141,8 @@ export function shapeGap(shape: Shape): string {
       return "Nothing loaded shows what happens when that fails.";
     case "absence":
       return "Nothing loaded proves that either way.";
+    case "who":
+      return "The material says what this does, not who owns it.";
     default:
       return "Nothing loaded answers that.";
   }

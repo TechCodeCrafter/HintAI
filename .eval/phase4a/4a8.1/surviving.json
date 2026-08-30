@@ -1,0 +1,34 @@
+[
+  {
+    "id": "attn-arch",
+    "q": "What architecture do they propose?",
+    "say": "We propose a new simple network architecture, the Transformer,",
+    "citedPath": "attention.pdf",
+    "evalSpanI": true,
+    "priorLayer": "I-eval-span"
+  },
+  {
+    "id": "tm-what",
+    "q": "What compilation technique do they present?",
+    "say": "We present a trace-based compilation technique for dynamic",
+    "citedPath": "tracemonkey.pdf",
+    "evalSpanI": true,
+    "priorLayer": "I-eval-span"
+  },
+  {
+    "id": "nist145-hybrid",
+    "q": "What is a hybrid cloud?",
+    "say": "Hybrid cloud. The cloud infrastructure is a composition of two or more distinct cloud",
+    "citedPath": "nist-800-145.pdf",
+    "evalSpanI": true,
+    "priorLayer": "I-eval-span"
+  },
+  {
+    "id": "63b-aal1",
+    "q": "What does AAL1 provide?",
+    "say": "Authenticator Assurance Level 1 : AAL1 provides some assurance that the claimant controls an",
+    "citedPath": "nist-800-63b.pdf",
+    "evalSpanI": true,
+    "priorLayer": "I-eval-span"
+  }
+]

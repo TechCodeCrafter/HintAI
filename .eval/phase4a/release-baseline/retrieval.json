@@ -1,0 +1,1502 @@
+{
+  "top1": 0.7528089887640449,
+  "top3": 0.8426966292134831,
+  "top6": 0.8764044943820225,
+  "rows": [
+    {
+      "id": "cs229-houses",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#28",
+        "lora.pdf#2",
+        "omb-m22-09.pdf#14",
+        "nist-800-207.pdf#36",
+        "tracemonkey.pdf#4",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "cs229-hypothesis",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "lora.pdf#18",
+        "tracemonkey.pdf#3",
+        "attention.pdf#11",
+        "resnet.pdf#3",
+        "bitcoin.pdf#5",
+        "bert.pdf#5"
+      ]
+    },
+    {
+      "id": "cs229-regression",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "cs229-notes.pdf#14",
+        "resnet.pdf#10",
+        "tracemonkey.pdf#9",
+        "bitcoin.pdf#1",
+        "lora.pdf#2",
+        "nist-800-207.pdf#47"
+      ]
+    },
+    {
+      "id": "cs229-classification",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "cs229-notes.pdf#14",
+        "tracemonkey.pdf#10",
+        "bert.pdf#4",
+        "nist-800-207.pdf#10",
+        "resnet.pdf#1",
+        "omb-m22-09.pdf#22"
+      ]
+    },
+    {
+      "id": "cs229-cost",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "bert.pdf#5",
+        "resnet.pdf#3",
+        "cs229-notes.pdf#14",
+        "nist-800-207.pdf#29",
+        "tracemonkey.pdf#5",
+        "omb-m22-09.pdf#22"
+      ]
+    },
+    {
+      "id": "cs229-lms",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "bert.pdf#2",
+        "nist-800-63b.pdf#4",
+        "nist-800-207.pdf#3",
+        "omb-m22-09.pdf#3",
+        "bert.pdf#1",
+        "nist-800-63b.pdf#61"
+      ]
+    },
+    {
+      "id": "cs229-batch",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "lora.pdf#14",
+        "resnet.pdf#1",
+        "resnet.pdf#9",
+        "lora.pdf#17",
+        "attention.pdf#7",
+        "bert.pdf#6"
+      ]
+    },
+    {
+      "id": "cs229-sgd",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "lora.pdf#14",
+        "resnet.pdf#1",
+        "nist-800-63b.pdf#62",
+        "attention.pdf#11",
+        "bert.pdf#10",
+        "cisa-ransomware.pdf#5"
+      ]
+    },
+    {
+      "id": "cs229-alpha",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "lora.pdf#5",
+        "cisa-ransomware.pdf#3",
+        "nist-800-207.pdf#30",
+        "omb-m22-09.pdf#14",
+        "resnet.pdf#12",
+        "tracemonkey.pdf#10"
+      ]
+    },
+    {
+      "id": "cs229-normal",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "tracemonkey.pdf#11",
+        "resnet.pdf#2",
+        "omb-m22-09.pdf#17",
+        "nist-800-63b.pdf#79",
+        "bert.pdf#6",
+        "cisa-ransomware.pdf#3"
+      ]
+    },
+    {
+      "id": "cs229-intercept",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#36",
+        "tracemonkey.pdf#3",
+        "resnet.pdf#6",
+        "lora.pdf#3",
+        "attention.pdf#3",
+        "bert.pdf#3"
+      ]
+    },
+    {
+      "id": "cs229-followup-gd",
+      "expectedPath": "cs229-notes.pdf",
+      "retrievePaths": [
+        "lora.pdf#14",
+        "resnet.pdf#1",
+        "nist-800-207.pdf#58",
+        "nist-800-63b.pdf#80",
+        "omb-m22-09.pdf#20",
+        "attention.pdf#11"
+      ]
+    },
+    {
+      "id": "cisa-what",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#4",
+        "nist-800-207.pdf#28",
+        "attention.pdf#7",
+        "nist-800-145.pdf#6",
+        "omb-m22-09.pdf#19",
+        "bert.pdf#3"
+      ]
+    },
+    {
+      "id": "cisa-double",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#3",
+        "omb-m22-09.pdf#1",
+        "nist-800-63b.pdf#28",
+        "lora.pdf#16",
+        "resnet.pdf#9",
+        "tracemonkey.pdf#3"
+      ]
+    },
+    {
+      "id": "cisa-parts",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#3",
+        "nist-800-207.pdf#38",
+        "omb-m22-09.pdf#20",
+        "nist-800-63b.pdf#28",
+        "attention.pdf#4",
+        "bert.pdf#9"
+      ]
+    },
+    {
+      "id": "cisa-backups",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#4",
+        "nist-800-63b.pdf#31",
+        "nist-800-207.pdf#36",
+        "tracemonkey.pdf#2",
+        "omb-m22-09.pdf#11",
+        "nist-800-145.pdf#1"
+      ]
+    },
+    {
+      "id": "cisa-smb",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#8",
+        "nist-800-207.pdf#27",
+        "nist-800-63b.pdf#73",
+        "omb-m22-09.pdf#24",
+        "bert.pdf#4",
+        "lora.pdf#13"
+      ]
+    },
+    {
+      "id": "cisa-why-offline",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#14",
+        "nist-800-63b.pdf#26",
+        "tracemonkey.pdf#13",
+        "bitcoin.pdf#3",
+        "bert.pdf#12",
+        "cs229-notes.pdf#14"
+      ]
+    },
+    {
+      "id": "cisa-audience",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#4",
+        "nist-800-207.pdf#5",
+        "nist-800-145.pdf#5",
+        "nist-800-63b.pdf#63",
+        "omb-m22-09.pdf#19",
+        "bert.pdf#3"
+      ]
+    },
+    {
+      "id": "cisa-ack",
+      "expectedPath": "cisa-ransomware.pdf",
+      "retrievePaths": [
+        "cisa-ransomware.pdf#31",
+        "omb-m22-09.pdf#20",
+        "nist-800-145.pdf#4",
+        "nist-800-207.pdf#53",
+        "nist-800-63b.pdf#63",
+        "tracemonkey.pdf#9"
+      ]
+    },
+    {
+      "id": "attn-arch",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "attention.pdf#1",
+        "lora.pdf#2",
+        "omb-m22-09.pdf#4",
+        "bitcoin.pdf#1",
+        "resnet.pdf#2",
+        "nist-800-207.pdf#10"
+      ]
+    },
+    {
+      "id": "attn-bleu-de",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "attention.pdf#1",
+        "nist-800-207.pdf#11",
+        "omb-m22-09.pdf#22",
+        "tracemonkey.pdf#4",
+        "bitcoin.pdf#2",
+        "cisa-ransomware.pdf#8"
+      ]
+    },
+    {
+      "id": "attn-bleu-fr",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#28",
+        "nist-800-207.pdf#29",
+        "bert.pdf#1",
+        "resnet.pdf#10",
+        "attention.pdf#1",
+        "bert.pdf#5"
+      ]
+    },
+    {
+      "id": "attn-encoder-n",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "attention.pdf#3",
+        "tracemonkey.pdf#9",
+        "bert.pdf#3",
+        "nist-800-63b.pdf#33",
+        "lora.pdf#2",
+        "resnet.pdf#2"
+      ]
+    },
+    {
+      "id": "attn-dmodel",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "attention.pdf#3",
+        "lora.pdf#2",
+        "nist-800-207.pdf#57",
+        "resnet.pdf#1",
+        "tracemonkey.pdf#4",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "attn-heads",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "attention.pdf#13",
+        "attention.pdf#7",
+        "lora.pdf#5",
+        "bert.pdf#3",
+        "lora.pdf#2",
+        "omb-m22-09.pdf#1"
+      ]
+    },
+    {
+      "id": "attn-why-scale",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "attention.pdf#4",
+        "nist-800-207.pdf#57",
+        "omb-m22-09.pdf#14",
+        "lora.pdf#9",
+        "cisa-ransomware.pdf#20",
+        "bert.pdf#8"
+      ]
+    },
+    {
+      "id": "attn-dropout",
+      "expectedPath": "attention.pdf",
+      "retrievePaths": [
+        "lora.pdf#18",
+        "bert.pdf#13",
+        "attention.pdf#7",
+        "resnet.pdf#7",
+        "nist-800-207.pdf#23",
+        "nist-800-63b.pdf#8"
+      ]
+    },
+    {
+      "id": "bert-stands",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#1",
+        "bert.pdf#11",
+        "nist-800-63b.pdf#4",
+        "nist-800-207.pdf#3",
+        "omb-m22-09.pdf#3",
+        "nist-800-63b.pdf#61"
+      ]
+    },
+    {
+      "id": "bert-glue",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#1",
+        "nist-800-207.pdf#28",
+        "resnet.pdf#10",
+        "attention.pdf#1",
+        "lora.pdf#1",
+        "nist-800-63b.pdf#47"
+      ]
+    },
+    {
+      "id": "bert-strategies",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#1",
+        "lora.pdf#3",
+        "nist-800-207.pdf#8",
+        "nist-800-63b.pdf#45",
+        "cisa-ransomware.pdf#8",
+        "omb-m22-09.pdf#21"
+      ]
+    },
+    {
+      "id": "bert-base",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#3",
+        "cisa-ransomware.pdf#3",
+        "lora.pdf#17",
+        "nist-800-63b.pdf#65",
+        "resnet.pdf#4",
+        "attention.pdf#7"
+      ]
+    },
+    {
+      "id": "bert-large",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#2",
+        "omb-m22-09.pdf#6",
+        "nist-800-207.pdf#11",
+        "attention.pdf#1",
+        "lora.pdf#1",
+        "nist-800-63b.pdf#26"
+      ]
+    },
+    {
+      "id": "bert-mask",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#4",
+        "attention.pdf#2",
+        "nist-800-63b.pdf#36",
+        "bitcoin.pdf#5",
+        "tracemonkey.pdf#3",
+        "lora.pdf#2"
+      ]
+    },
+    {
+      "id": "bert-nsp",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "bert.pdf#8",
+        "attention.pdf#2",
+        "bitcoin.pdf#2",
+        "lora.pdf#18",
+        "nist-800-207.pdf#40",
+        "nist-800-63b.pdf#25"
+      ]
+    },
+    {
+      "id": "bert-data",
+      "expectedPath": "bert.pdf",
+      "retrievePaths": [
+        "lora.pdf#9",
+        "bitcoin.pdf#8",
+        "nist-800-63b.pdf#28",
+        "attention.pdf#10",
+        "nist-800-207.pdf#11",
+        "omb-m22-09.pdf#22"
+      ]
+    },
+    {
+      "id": "resnet-what",
+      "expectedPath": "resnet.pdf",
+      "retrievePaths": [
+        "resnet.pdf#1",
+        "nist-800-207.pdf#41",
+        "bert.pdf#3",
+        "nist-800-63b.pdf#75",
+        "cisa-ransomware.pdf#11",
+        "omb-m22-09.pdf#27"
+      ]
+    },
+    {
+      "id": "resnet-depth",
+      "expectedPath": "resnet.pdf",
+      "retrievePaths": [
+        "resnet.pdf#2",
+        "attention.pdf#11",
+        "lora.pdf#13",
+        "omb-m22-09.pdf#13",
+        "bert.pdf#1",
+        "nist-800-207.pdf#38"
+      ]
+    },
+    {
+      "id": "resnet-error",
+      "expectedPath": "resnet.pdf",
+      "retrievePaths": [
+        "resnet.pdf#1",
+        "tracemonkey.pdf#4",
+        "bert.pdf#6",
+        "cisa-ransomware.pdf#8",
+        "nist-800-207.pdf#11",
+        "nist-800-63b.pdf#59"
+      ]
+    },
+    {
+      "id": "resnet-degrade",
+      "expectedPath": "resnet.pdf",
+      "retrievePaths": [
+        "resnet.pdf#1",
+        "attention.pdf#12",
+        "resnet.pdf#8"
+      ]
+    },
+    {
+      "id": "resnet-shortcut",
+      "expectedPath": "resnet.pdf",
+      "retrievePaths": [
+        "resnet.pdf#6",
+        "omb-m22-09.pdf#4",
+        "nist-800-63b.pdf#5",
+        "nist-800-207.pdf#38",
+        "attention.pdf#1",
+        "cisa-ransomware.pdf#8"
+      ]
+    },
+    {
+      "id": "resnet-params",
+      "expectedPath": "resnet.pdf",
+      "retrievePaths": [
+        "resnet.pdf#6",
+        "lora.pdf#3",
+        "omb-m22-09.pdf#16",
+        "nist-800-63b.pdf#44",
+        "bert.pdf#1",
+        "tracemonkey.pdf#11"
+      ]
+    },
+    {
+      "id": "lora-what",
+      "expectedPath": "lora.pdf",
+      "retrievePaths": [
+        "lora.pdf#5",
+        "lora.pdf#2"
+      ]
+    },
+    {
+      "id": "lora-reduce",
+      "expectedPath": "lora.pdf",
+      "retrievePaths": [
+        "lora.pdf#5",
+        "tracemonkey.pdf#8",
+        "resnet.pdf#2",
+        "omb-m22-09.pdf#4",
+        "nist-800-63b.pdf#43",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "lora-latency",
+      "expectedPath": "lora.pdf",
+      "retrievePaths": [
+        "lora.pdf#1",
+        "bert.pdf#1",
+        "resnet.pdf#10",
+        "tracemonkey.pdf#13",
+        "attention.pdf#1",
+        "bitcoin.pdf#4"
+      ]
+    },
+    {
+      "id": "lora-rank",
+      "expectedPath": "lora.pdf",
+      "retrievePaths": [
+        "lora.pdf#2",
+        "bert.pdf#2",
+        "nist-800-207.pdf#48",
+        "nist-800-63b.pdf#61",
+        "resnet.pdf#3",
+        "tracemonkey.pdf#1"
+      ]
+    },
+    {
+      "id": "lora-code",
+      "expectedPath": "lora.pdf",
+      "retrievePaths": [
+        "lora.pdf#1",
+        "cisa-ransomware.pdf#1",
+        "nist-800-63b.pdf#4",
+        "nist-800-207.pdf#3",
+        "omb-m22-09.pdf#21",
+        "nist-800-145.pdf#6"
+      ]
+    },
+    {
+      "id": "btc-coin",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#2",
+        "bitcoin.pdf#8",
+        "nist-800-63b.pdf#5",
+        "omb-m22-09.pdf#22",
+        "nist-800-207.pdf#15",
+        "tracemonkey.pdf#6"
+      ]
+    },
+    {
+      "id": "btc-pow",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#45",
+        "cisa-ransomware.pdf#8",
+        "bitcoin.pdf#3",
+        "resnet.pdf#10",
+        "omb-m22-09.pdf#21",
+        "attention.pdf#1"
+      ]
+    },
+    {
+      "id": "btc-incentive",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#4",
+        "cisa-ransomware.pdf#12",
+        "nist-800-207.pdf#49",
+        "omb-m22-09.pdf#23",
+        "attention.pdf#1",
+        "bert.pdf#2"
+      ]
+    },
+    {
+      "id": "btc-header",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#4",
+        "tracemonkey.pdf#6",
+        "attention.pdf#7",
+        "resnet.pdf#10",
+        "nist-800-207.pdf#11",
+        "nist-800-63b.pdf#73"
+      ]
+    },
+    {
+      "id": "btc-rate",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#4",
+        "lora.pdf#2",
+        "nist-800-207.pdf#11",
+        "tracemonkey.pdf#8",
+        "omb-m22-09.pdf#22",
+        "bert.pdf#3"
+      ]
+    },
+    {
+      "id": "btc-majority",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#44",
+        "nist-800-63b.pdf#28",
+        "omb-m22-09.pdf#2",
+        "cisa-ransomware.pdf#19",
+        "bitcoin.pdf#9",
+        "attention.pdf#11"
+      ]
+    },
+    {
+      "id": "btc-steps",
+      "expectedPath": "bitcoin.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#3",
+        "nist-800-207.pdf#44",
+        "attention.pdf#7",
+        "lora.pdf#18",
+        "tracemonkey.pdf#3",
+        "cisa-ransomware.pdf#12"
+      ]
+    },
+    {
+      "id": "tm-what",
+      "expectedPath": "tracemonkey.pdf",
+      "retrievePaths": [
+        "tracemonkey.pdf#1",
+        "nist-800-207.pdf#12",
+        "cisa-ransomware.pdf#22",
+        "bert.pdf#5",
+        "nist-800-63b.pdf#29",
+        "omb-m22-09.pdf#4"
+      ]
+    },
+    {
+      "id": "tm-speedup",
+      "expectedPath": "tracemonkey.pdf",
+      "retrievePaths": [
+        "tracemonkey.pdf#1",
+        "nist-800-207.pdf#41",
+        "cisa-ransomware.pdf#18",
+        "lora.pdf#17",
+        "bitcoin.pdf#9",
+        "nist-800-63b.pdf#3"
+      ]
+    },
+    {
+      "id": "tm-name",
+      "expectedPath": "tracemonkey.pdf",
+      "retrievePaths": [
+        "tracemonkey.pdf#2",
+        "nist-800-63b.pdf#26",
+        "resnet.pdf#6",
+        "omb-m22-09.pdf#12",
+        "attention.pdf#10",
+        "cisa-ransomware.pdf#28"
+      ]
+    },
+    {
+      "id": "tm-loops",
+      "expectedPath": "tracemonkey.pdf",
+      "retrievePaths": [
+        "tracemonkey.pdf#1",
+        "nist-800-207.pdf#45",
+        "omb-m22-09.pdf#7",
+        "bert.pdf#12",
+        "nist-800-63b.pdf#17",
+        "cisa-ransomware.pdf#3"
+      ]
+    },
+    {
+      "id": "tm-nested",
+      "expectedPath": "tracemonkey.pdf",
+      "retrievePaths": [
+        "tracemonkey.pdf#2",
+        "tracemonkey.pdf#2",
+        "bitcoin.pdf#8",
+        "bitcoin.pdf#3"
+      ]
+    },
+    {
+      "id": "tm-base",
+      "expectedPath": "tracemonkey.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#3",
+        "omb-m22-09.pdf#20",
+        "tracemonkey.pdf#3",
+        "cisa-ransomware.pdf#5",
+        "nist-800-207.pdf#16",
+        "nist-800-63b.pdf#21"
+      ]
+    },
+    {
+      "id": "nist145-def",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": [
+        "nist-800-145.pdf#5",
+        "nist-800-207.pdf#44",
+        "nist-800-63b.pdf#42",
+        "omb-m22-09.pdf#20",
+        "cisa-ransomware.pdf#6",
+        "tracemonkey.pdf#6"
+      ]
+    },
+    {
+      "id": "nist145-counts",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": [
+        "nist-800-145.pdf#6",
+        "nist-800-207.pdf#28",
+        "nist-800-63b.pdf#37",
+        "cisa-ransomware.pdf#21",
+        "resnet.pdf#6",
+        "attention.pdf#7"
+      ]
+    },
+    {
+      "id": "nist145-ondemand",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": []
+    },
+    {
+      "id": "nist145-iaas",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": [
+        "nist-800-145.pdf#6",
+        "nist-800-207.pdf#16",
+        "nist-800-63b.pdf#73",
+        "omb-m22-09.pdf#7",
+        "cisa-ransomware.pdf#6",
+        "lora.pdf#18"
+      ]
+    },
+    {
+      "id": "nist145-authors",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": [
+        "nist-800-145.pdf#5",
+        "nist-800-207.pdf#23",
+        "nist-800-63b.pdf#61",
+        "omb-m22-09.pdf#20",
+        "cisa-ransomware.pdf#6",
+        "bert.pdf#5"
+      ]
+    },
+    {
+      "id": "nist145-audience",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#63",
+        "nist-800-145.pdf#5",
+        "nist-800-207.pdf#3",
+        "cisa-ransomware.pdf#4",
+        "omb-m22-09.pdf#12",
+        "tracemonkey.pdf#4"
+      ]
+    },
+    {
+      "id": "nist145-hybrid",
+      "expectedPath": "nist-800-145.pdf",
+      "retrievePaths": [
+        "nist-800-145.pdf#7",
+        "omb-m22-09.pdf#4",
+        "nist-800-207.pdf#33",
+        "cisa-ransomware.pdf#6",
+        "nist-800-145.pdf#5",
+        "bert.pdf#5"
+      ]
+    },
+    {
+      "id": "zta-what",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#10",
+        "omb-m22-09.pdf#16",
+        "cisa-ransomware.pdf#4",
+        "bitcoin.pdf#3",
+        "attention.pdf#1",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "zta-assume",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#10",
+        "omb-m22-09.pdf#4",
+        "bitcoin.pdf#1",
+        "resnet.pdf#2",
+        "attention.pdf#7",
+        "cisa-ransomware.pdf#4"
+      ]
+    },
+    {
+      "id": "zta-kindervag",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#11",
+        "omb-m22-09.pdf#4",
+        "bitcoin.pdf#8",
+        "attention.pdf#11",
+        "cisa-ransomware.pdf#4",
+        "nist-800-63b.pdf#44"
+      ]
+    },
+    {
+      "id": "zta-asset",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#16",
+        "tracemonkey.pdf#5",
+        "bitcoin.pdf#1",
+        "cisa-ransomware.pdf#14",
+        "nist-800-63b.pdf#32",
+        "omb-m22-09.pdf#2"
+      ]
+    },
+    {
+      "id": "zta-mfa",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#14",
+        "omb-m22-09.pdf#9",
+        "nist-800-63b.pdf#13",
+        "cisa-ransomware.pdf#28",
+        "tracemonkey.pdf#1",
+        "nist-800-145.pdf#6"
+      ]
+    },
+    {
+      "id": "zta-audience",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#5",
+        "nist-800-63b.pdf#4",
+        "nist-800-145.pdf#5",
+        "omb-m22-09.pdf#22",
+        "cisa-ransomware.pdf#1",
+        "bert.pdf#2"
+      ]
+    },
+    {
+      "id": "zta-lateral",
+      "expectedPath": "nist-800-207.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#10",
+        "lora.pdf#3",
+        "cisa-ransomware.pdf#25",
+        "nist-800-63b.pdf#79",
+        "omb-m22-09.pdf#23",
+        "attention.pdf#1"
+      ]
+    },
+    {
+      "id": "omb-who",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#39",
+        "cisa-ransomware.pdf#16",
+        "nist-800-63b.pdf#33",
+        "lora.pdf#15",
+        "omb-m22-09.pdf#5",
+        "bitcoin.pdf#2"
+      ]
+    },
+    {
+      "id": "omb-when",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#1",
+        "nist-800-207.pdf#3",
+        "nist-800-63b.pdf#4",
+        "nist-800-145.pdf#5",
+        "bitcoin.pdf#2",
+        "tracemonkey.pdf#6"
+      ]
+    },
+    {
+      "id": "omb-mfa",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "nist-800-207.pdf#57",
+        "omb-m22-09.pdf#2",
+        "nist-800-63b.pdf#62",
+        "cisa-ransomware.pdf#8",
+        "tracemonkey.pdf#2",
+        "resnet.pdf#1"
+      ]
+    },
+    {
+      "id": "omb-pillars",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#4",
+        "cisa-ransomware.pdf#5",
+        "lora.pdf#18",
+        "nist-800-145.pdf#6",
+        "nist-800-207.pdf#43",
+        "attention.pdf#10"
+      ]
+    },
+    {
+      "id": "omb-encrypt",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#14",
+        "nist-800-207.pdf#38",
+        "cisa-ransomware.pdf#9",
+        "nist-800-63b.pdf#4",
+        "bitcoin.pdf#1",
+        "tracemonkey.pdf#1"
+      ]
+    },
+    {
+      "id": "omb-passwords",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#5",
+        "nist-800-207.pdf#36",
+        "cisa-ransomware.pdf#10",
+        "nist-800-63b.pdf#79",
+        "tracemonkey.pdf#14",
+        "bitcoin.pdf#3"
+      ]
+    },
+    {
+      "id": "omb-lead",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#16",
+        "tracemonkey.pdf#7",
+        "nist-800-207.pdf#5",
+        "bitcoin.pdf#8",
+        "cisa-ransomware.pdf#5",
+        "nist-800-63b.pdf#13"
+      ]
+    },
+    {
+      "id": "omb-tenet",
+      "expectedPath": "omb-m22-09.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#2",
+        "nist-800-207.pdf#46",
+        "omb-m22-09.pdf#11",
+        "nist-800-207.pdf#12",
+        "resnet.pdf#1"
+      ]
+    },
+    {
+      "id": "63b-withdrawn",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "bitcoin.pdf#1",
+        "nist-800-63b.pdf#1",
+        "tracemonkey.pdf#3",
+        "omb-m22-09.pdf#13",
+        "nist-800-207.pdf#43",
+        "cisa-ransomware.pdf#15"
+      ]
+    },
+    {
+      "id": "63b-aal1",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#13",
+        "omb-m22-09.pdf#16",
+        "nist-800-207.pdf#29",
+        "cisa-ransomware.pdf#5",
+        "lora.pdf#1",
+        "nist-800-145.pdf#5"
+      ]
+    },
+    {
+      "id": "63b-password",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#24",
+        "lora.pdf#18",
+        "cisa-ransomware.pdf#11",
+        "attention.pdf#4",
+        "omb-m22-09.pdf#14",
+        "tracemonkey.pdf#8"
+      ]
+    },
+    {
+      "id": "63b-length",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#79",
+        "omb-m22-09.pdf#16",
+        "attention.pdf#11",
+        "bitcoin.pdf#4",
+        "bert.pdf#2",
+        "nist-800-207.pdf#17"
+      ]
+    },
+    {
+      "id": "63b-complexity",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#79",
+        "omb-m22-09.pdf#2",
+        "bitcoin.pdf#4",
+        "nist-800-207.pdf#36",
+        "cisa-ransomware.pdf#6",
+        "lora.pdf#9"
+      ]
+    },
+    {
+      "id": "63b-aal3",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "nist-800-63b.pdf#18",
+        "bitcoin.pdf#3",
+        "attention.pdf#3",
+        "omb-m22-09.pdf#10",
+        "nist-800-207.pdf#29",
+        "bert.pdf#4"
+      ]
+    },
+    {
+      "id": "63b-pii",
+      "expectedPath": "nist-800-63b.pdf",
+      "retrievePaths": [
+        "omb-m22-09.pdf#16",
+        "nist-800-63b.pdf#16",
+        "cisa-ransomware.pdf#13",
+        "lora.pdf#3",
+        "tracemonkey.pdf#13",
+        "nist-800-207.pdf#48"
+      ]
+    },
+    {
+      "id": "un-vendor-db",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#23",
+        "cisa-ransomware.pdf#10",
+        "nist-800-63b.pdf#52",
+        "omb-m22-09.pdf#23",
+        "bert.pdf#10",
+        "nist-800-145.pdf#1"
+      ]
+    },
+    {
+      "id": "un-cloud-cost",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#33",
+        "cisa-ransomware.pdf#7",
+        "omb-m22-09.pdf#20",
+        "nist-800-145.pdf#6",
+        "nist-800-63b.pdf#62",
+        "bitcoin.pdf#1"
+      ]
+    },
+    {
+      "id": "un-who-owns-btc",
+      "expectedPath": null,
+      "retrievePaths": [
+        "bitcoin.pdf#1",
+        "nist-800-207.pdf#5",
+        "omb-m22-09.pdf#22",
+        "cisa-ransomware.pdf#30",
+        "nist-800-63b.pdf#74",
+        "tracemonkey.pdf#9"
+      ]
+    },
+    {
+      "id": "un-passwords-lock",
+      "expectedPath": null,
+      "retrievePaths": [
+        "tracemonkey.pdf#7",
+        "nist-800-63b.pdf#79",
+        "nist-800-207.pdf#58",
+        "omb-m22-09.pdf#9",
+        "cisa-ransomware.pdf#10",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "un-growth",
+      "expectedPath": null,
+      "retrievePaths": [
+        "bert.pdf#11",
+        "attention.pdf#12",
+        "cisa-ransomware.pdf#10",
+        "lora.pdf#18",
+        "nist-800-63b.pdf#8",
+        "resnet.pdf#4"
+      ]
+    },
+    {
+      "id": "un-gpu-buy",
+      "expectedPath": null,
+      "retrievePaths": [
+        "lora.pdf#5",
+        "nist-800-207.pdf#57",
+        "bert.pdf#1",
+        "attention.pdf#2",
+        "resnet.pdf#10",
+        "cisa-ransomware.pdf#6"
+      ]
+    },
+    {
+      "id": "un-bert-aws",
+      "expectedPath": null,
+      "retrievePaths": [
+        "bert.pdf#13",
+        "attention.pdf#1",
+        "nist-800-63b.pdf#62",
+        "lora.pdf#2",
+        "resnet.pdf#8",
+        "bitcoin.pdf#1"
+      ]
+    },
+    {
+      "id": "un-resnet-stock",
+      "expectedPath": null,
+      "retrievePaths": [
+        "resnet.pdf#1",
+        "cisa-ransomware.pdf#4",
+        "omb-m22-09.pdf#15",
+        "nist-800-207.pdf#33",
+        "nist-800-63b.pdf#6",
+        "nist-800-145.pdf#7"
+      ]
+    },
+    {
+      "id": "un-lora-salary",
+      "expectedPath": null,
+      "retrievePaths": [
+        "lora.pdf#1",
+        "nist-800-207.pdf#6",
+        "nist-800-63b.pdf#3",
+        "cisa-ransomware.pdf#31",
+        "omb-m22-09.pdf#9",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "un-cisa-price",
+      "expectedPath": null,
+      "retrievePaths": [
+        "cisa-ransomware.pdf#4",
+        "omb-m22-09.pdf#20",
+        "nist-800-207.pdf#12",
+        "nist-800-63b.pdf#2",
+        "nist-800-145.pdf#6",
+        "bert.pdf#3"
+      ]
+    },
+    {
+      "id": "un-prof-grade",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-63b.pdf#63",
+        "bitcoin.pdf#8",
+        "nist-800-207.pdf#55",
+        "cs229-notes.pdf#14",
+        "omb-m22-09.pdf#2",
+        "lora.pdf#5"
+      ]
+    },
+    {
+      "id": "un-customer-pii-attn",
+      "expectedPath": null,
+      "retrievePaths": [
+        "omb-m22-09.pdf#23",
+        "nist-800-207.pdf#39",
+        "lora.pdf#3",
+        "bert.pdf#3",
+        "tracemonkey.pdf#3",
+        "attention.pdf#10"
+      ]
+    },
+    {
+      "id": "un-omb-vendor",
+      "expectedPath": null,
+      "retrievePaths": [
+        "cisa-ransomware.pdf#8",
+        "omb-m22-09.pdf#17",
+        "nist-800-207.pdf#57",
+        "omb-m22-09.pdf#4",
+        "nist-800-63b.pdf#73",
+        "nist-800-145.pdf#5"
+      ]
+    },
+    {
+      "id": "un-zta-price",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#50",
+        "nist-800-63b.pdf#37",
+        "resnet.pdf#1",
+        "tracemonkey.pdf#4",
+        "omb-m22-09.pdf#4",
+        "lora.pdf#9"
+      ]
+    },
+    {
+      "id": "un-63b-vendor",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#5",
+        "nist-800-63b.pdf#79",
+        "cisa-ransomware.pdf#10",
+        "omb-m22-09.pdf#5",
+        "tracemonkey.pdf#2",
+        "bert.pdf#9"
+      ]
+    },
+    {
+      "id": "un-tm-firefox-share",
+      "expectedPath": null,
+      "retrievePaths": [
+        "tracemonkey.pdf#8",
+        "nist-800-207.pdf#22",
+        "omb-m22-09.pdf#21",
+        "nist-800-63b.pdf#47",
+        "cisa-ransomware.pdf#6",
+        "bert.pdf#1"
+      ]
+    },
+    {
+      "id": "un-hybrid-sla",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-145.pdf#7",
+        "nist-800-207.pdf#44",
+        "omb-m22-09.pdf#4",
+        "nist-800-63b.pdf#35",
+        "cisa-ransomware.pdf#6",
+        "bert.pdf#9"
+      ]
+    },
+    {
+      "id": "un-ransom-pay",
+      "expectedPath": null,
+      "retrievePaths": [
+        "cisa-ransomware.pdf#21",
+        "cs229-notes.pdf#14",
+        "nist-800-145.pdf#6",
+        "bitcoin.pdf#1",
+        "nist-800-207.pdf#38",
+        "omb-m22-09.pdf#10"
+      ]
+    },
+    {
+      "id": "un-theta0-secret",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#40",
+        "omb-m22-09.pdf#20",
+        "lora.pdf#3",
+        "nist-800-63b.pdf#28",
+        "bitcoin.pdf#2",
+        "cisa-ransomware.pdf#16"
+      ]
+    },
+    {
+      "id": "un-who-owns-zta",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#33",
+        "omb-m22-09.pdf#2",
+        "bitcoin.pdf#2",
+        "cisa-ransomware.pdf#13",
+        "nist-800-63b.pdf#62",
+        "attention.pdf#4"
+      ]
+    },
+    {
+      "id": "un-isolation-vendor",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#23",
+        "omb-m22-09.pdf#12",
+        "cisa-ransomware.pdf#10",
+        "nist-800-63b.pdf#52",
+        "bert.pdf#10",
+        "nist-800-145.pdf#1"
+      ]
+    },
+    {
+      "id": "un-table-cagr",
+      "expectedPath": null,
+      "retrievePaths": [
+        "tracemonkey.pdf#4",
+        "nist-800-207.pdf#20",
+        "nist-800-63b.pdf#66",
+        "omb-m22-09.pdf#22",
+        "bert.pdf#8",
+        "attention.pdf#1"
+      ]
+    },
+    {
+      "id": "un-scan-text",
+      "expectedPath": null,
+      "retrievePaths": [
+        "cs229-notes.pdf#14",
+        "nist-800-207.pdf#26",
+        "omb-m22-09.pdf#12",
+        "bitcoin.pdf#3",
+        "cisa-ransomware.pdf#7",
+        "nist-800-63b.pdf#74"
+      ]
+    },
+    {
+      "id": "un-enc-secret",
+      "expectedPath": null,
+      "retrievePaths": [
+        "omb-m22-09.pdf#14",
+        "omb-m22-09.pdf#14",
+        "nist-800-63b.pdf#79",
+        "nist-800-63b.pdf#79",
+        "cisa-ransomware.pdf#5",
+        "nist-800-207.pdf#23"
+      ]
+    },
+    {
+      "id": "un-rfc-status",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-63b.pdf#75",
+        "nist-800-207.pdf#59",
+        "omb-m22-09.pdf#14",
+        "lora.pdf#15",
+        "bitcoin.pdf#9",
+        "tracemonkey.pdf#14"
+      ]
+    },
+    {
+      "id": "un-irs-ssn",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#38",
+        "tracemonkey.pdf#3",
+        "nist-800-63b.pdf#24",
+        "cisa-ransomware.pdf#25",
+        "resnet.pdf#12",
+        "lora.pdf#18"
+      ]
+    },
+    {
+      "id": "un-80012-quiz",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-63b.pdf#1",
+        "tracemonkey.pdf#3",
+        "omb-m22-09.pdf#13",
+        "bert.pdf#1",
+        "attention.pdf#2",
+        "nist-800-207.pdf#1"
+      ]
+    },
+    {
+      "id": "un-tomorrow",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-207.pdf#15",
+        "nist-800-63b.pdf#51",
+        "tracemonkey.pdf#2",
+        "bitcoin.pdf#2",
+        "nist-800-207.pdf#13",
+        "nist-800-63b.pdf#61"
+      ]
+    },
+    {
+      "id": "un-personal",
+      "expectedPath": null,
+      "retrievePaths": [
+        "omb-m22-09.pdf#19",
+        "nist-800-207.pdf#31",
+        "nist-800-63b.pdf#44",
+        "cisa-ransomware.pdf#26",
+        "resnet.pdf#2",
+        "tracemonkey.pdf#4"
+      ]
+    },
+    {
+      "id": "un-followup-cost",
+      "expectedPath": null,
+      "retrievePaths": [
+        "cisa-ransomware.pdf#7",
+        "bitcoin.pdf#1",
+        "nist-800-207.pdf#39",
+        "nist-800-63b.pdf#62",
+        "nist-800-145.pdf#3",
+        "tracemonkey.pdf#8"
+      ]
+    },
+    {
+      "id": "un-casual-owner",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-63b.pdf#79",
+        "cisa-ransomware.pdf#24",
+        "nist-800-207.pdf#47",
+        "omb-m22-09.pdf#14",
+        "bert.pdf#2",
+        "tracemonkey.pdf#4"
+      ]
+    },
+    {
+      "id": "un-why-pay",
+      "expectedPath": null,
+      "retrievePaths": [
+        "cisa-ransomware.pdf#21",
+        "cisa-ransomware.pdf#21",
+        "nist-800-63b.pdf#58",
+        "nist-800-63b.pdf#61",
+        "bitcoin.pdf#1",
+        "nist-800-207.pdf#38"
+      ]
+    },
+    {
+      "id": "un-where-passwords",
+      "expectedPath": null,
+      "retrievePaths": [
+        "omb-m22-09.pdf#8",
+        "cisa-ransomware.pdf#10",
+        "nist-800-63b.pdf#78",
+        "nist-800-207.pdf#44",
+        "cs229-notes.pdf#14",
+        "tracemonkey.pdf#3"
+      ]
+    },
+    {
+      "id": "un-bert-phone",
+      "expectedPath": null,
+      "retrievePaths": [
+        "bert.pdf#1",
+        "lora.pdf#13",
+        "cisa-ransomware.pdf#28",
+        "nist-800-63b.pdf#44",
+        "omb-m22-09.pdf#7",
+        "tracemonkey.pdf#6"
+      ]
+    },
+    {
+      "id": "un-satoshi-kyc",
+      "expectedPath": null,
+      "retrievePaths": [
+        "bitcoin.pdf#1",
+        "nist-800-207.pdf#57",
+        "cisa-ransomware.pdf#6",
+        "omb-m22-09.pdf#17",
+        "nist-800-63b.pdf#58",
+        "nist-800-145.pdf#1"
+      ]
+    },
+    {
+      "id": "un-figure-secret",
+      "expectedPath": null,
+      "retrievePaths": [
+        "bert.pdf#16",
+        "attention.pdf#2",
+        "cisa-ransomware.pdf#16",
+        "tracemonkey.pdf#3",
+        "nist-800-207.pdf#30",
+        "nist-800-63b.pdf#63"
+      ]
+    },
+    {
+      "id": "un-retry-fail",
+      "expectedPath": null,
+      "retrievePaths": [
+        "nist-800-63b.pdf#79",
+        "tracemonkey.pdf#6",
+        "nist-800-207.pdf#58",
+        "omb-m22-09.pdf#9",
+        "cisa-ransomware.pdf#10",
+        "nist-800-145.pdf#6"
+      ]
+    }
+  ]
+}

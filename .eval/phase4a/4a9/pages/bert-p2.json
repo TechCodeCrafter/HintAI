@@ -1,0 +1,2610 @@
+{
+  "file": "bert.pdf",
+  "page": 2,
+  "pageWidth": 595.276,
+  "pageHeight": 841.89,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 77.5:51, 164.1:7, 216.0:3, 269.6:3, 308.4:51, 348.7:2, 389.3:4, 502.5:1)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 246.2 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 7,
+    "clusters": [
+      {
+        "x": 77.51,
+        "items": 51,
+        "meanWidth": 173.57,
+        "yMin": 78.92,
+        "yMax": 768.12
+      },
+      {
+        "x": 164.14,
+        "items": 7,
+        "meanWidth": 97.06,
+        "yMin": 187.32,
+        "yMax": 482.05
+      },
+      {
+        "x": 216,
+        "items": 3,
+        "meanWidth": 44.39,
+        "yMin": 255.06,
+        "yMax": 768.12
+      },
+      {
+        "x": 269.64,
+        "items": 3,
+        "meanWidth": 20.63,
+        "yMin": 255.06,
+        "yMax": 713.93
+      },
+      {
+        "x": 308.4,
+        "items": 51,
+        "meanWidth": 187.07,
+        "yMin": 78.92,
+        "yMax": 768.12
+      },
+      {
+        "x": 348.73,
+        "items": 2,
+        "meanWidth": 176.82,
+        "yMin": 133.12,
+        "yMax": 713.93
+      },
+      {
+        "x": 389.31,
+        "items": 4,
+        "meanWidth": 136.24,
+        "yMin": 78.92,
+        "yMax": 754.57
+      },
+      {
+        "x": 502.52,
+        "items": 1,
+        "meanWidth": 23.03,
+        "yMin": 256.75,
+        "yMax": 256.75
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 77.51,
+      "items": 51,
+      "meanWidth": 173.57,
+      "yMin": 78.92,
+      "yMax": 768.12
+    },
+    {
+      "x": 164.14,
+      "items": 7,
+      "meanWidth": 97.06,
+      "yMin": 187.32,
+      "yMax": 482.05
+    },
+    {
+      "x": 216,
+      "items": 3,
+      "meanWidth": 44.39,
+      "yMin": 255.06,
+      "yMax": 768.12
+    },
+    {
+      "x": 269.64,
+      "items": 3,
+      "meanWidth": 20.63,
+      "yMin": 255.06,
+      "yMax": 713.93
+    },
+    {
+      "x": 308.4,
+      "items": 51,
+      "meanWidth": 187.07,
+      "yMin": 78.92,
+      "yMax": 768.12
+    },
+    {
+      "x": 348.73,
+      "items": 2,
+      "meanWidth": 176.82,
+      "yMin": 133.12,
+      "yMax": 713.93
+    },
+    {
+      "x": 389.31,
+      "items": 4,
+      "meanWidth": 136.24,
+      "yMin": 78.92,
+      "yMax": 754.57
+    },
+    {
+      "x": 502.52,
+      "items": 1,
+      "meanWidth": 23.03,
+      "yMin": 256.75,
+      "yMax": 256.75
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 100,
+    "clusters": [
+      {
+        "x": 308.55,
+        "items": 45,
+        "share": 0.45
+      },
+      {
+        "x": 76.83,
+        "items": 44,
+        "share": 0.44
+      },
+      {
+        "x": 166.81,
+        "items": 4,
+        "share": 0.04
+      },
+      {
+        "x": 389.31,
+        "items": 4,
+        "share": 0.04
+      }
+    ],
+    "twoDominant": true,
+    "overlap": 675.65,
+    "topShare": 0.89
+  },
+  "ySpanOverlap": 675.65,
+  "gutterCandidates": [
+    {
+      "between": [
+        77.51,
+        164.14
+      ],
+      "gap": 86.62999999999998
+    },
+    {
+      "between": [
+        164.14,
+        216
+      ],
+      "gap": 51.860000000000014
+    },
+    {
+      "between": [
+        216,
+        269.64
+      ],
+      "gap": 53.639999999999986
+    },
+    {
+      "between": [
+        269.64,
+        308.4
+      ],
+      "gap": 38.75999999999999
+    },
+    {
+      "between": [
+        308.4,
+        348.73
+      ],
+      "gap": 40.33000000000004
+    },
+    {
+      "between": [
+        348.73,
+        389.31
+      ],
+      "gap": 40.579999999999984
+    },
+    {
+      "between": [
+        389.31,
+        502.52
+      ],
+      "gap": 113.20999999999998
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "word based only on its context.",
+      "x": 72,
+      "y": 768.12,
+      "width": 145.08,
+      "height": 10.91,
+      "right": 217.08,
+      "visualLineId": 0,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 217.08,
+      "y": 768.12,
+      "width": 8.78,
+      "height": 0,
+      "right": 225.86,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 2,
+      "str": "Unlike left-to-",
+      "x": 225.86,
+      "y": 768.12,
+      "width": 64.41,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 3,
+      "str": "right language model pre-training, the MLM ob-",
+      "x": 72,
+      "y": 754.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 4,
+      "str": "jective enables the representation to fuse the left",
+      "x": 72,
+      "y": 741.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 5,
+      "str": "and the right context, which allows us to pre-",
+      "x": 72,
+      "y": 727.48,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 3,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 6,
+      "str": "train a deep bidirectional Transformer.",
+      "x": 72,
+      "y": 713.93,
+      "width": 174.21,
+      "height": 10.91,
+      "right": 246.21,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 7,
+      "str": " ",
+      "x": 246.21,
+      "y": 713.93,
+      "width": 8.21,
+      "height": 0,
+      "right": 254.42,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 8,
+      "str": "In addi-",
+      "x": 254.42,
+      "y": 713.93,
+      "width": 35.85,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 9,
+      "str": "tion to the masked language model, we also use",
+      "x": 72,
+      "y": 700.38,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 10,
+      "str": "a “next sentence prediction” task that jointly pre-",
+      "x": 72,
+      "y": 686.83,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 11,
+      "str": "trains text-pair representations. The contributions",
+      "x": 72,
+      "y": 673.28,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 12,
+      "str": "of our paper are as follows:",
+      "x": 72,
+      "y": 659.73,
+      "width": 119.39,
+      "height": 10.91,
+      "right": 191.39,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 13,
+      "str": "• We demonstrate the importance of bidirectional",
+      "x": 74.11,
+      "y": 639.25,
+      "width": 216.15,
+      "height": 10.91,
+      "right": 290.26,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 14,
+      "str": "pre-training for language representations.",
+      "x": 82.91,
+      "y": 625.7,
+      "width": 183.79,
+      "height": 10.91,
+      "right": 266.69,
+      "visualLineId": 12,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 15,
+      "str": " ",
+      "x": 266.69,
+      "y": 625.7,
+      "width": 6.61,
+      "height": 0,
+      "right": 273.31,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 16,
+      "str": "Un-",
+      "x": 273.31,
+      "y": 625.7,
+      "width": 16.96,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 17,
+      "str": "like Radford et al. (2018), which uses unidirec-",
+      "x": 82.91,
+      "y": 612.15,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 18,
+      "str": "tional language models for pre-training, BERT",
+      "x": 82.91,
+      "y": 598.6,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 16,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 19,
+      "str": "uses masked language models to enable pre-",
+      "x": 82.91,
+      "y": 585.05,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 18,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 20,
+      "str": "trained deep bidirectional representations. This",
+      "x": 82.91,
+      "y": 571.5,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 21,
+      "str": "is also in contrast to Peters et al. (2018a), which",
+      "x": 82.91,
+      "y": 557.95,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 22,
+      "str": "uses a shallow concatenation of independently",
+      "x": 82.91,
+      "y": 544.4,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 23,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 23,
+      "str": "trained left-to-right and right-to-left LMs.",
+      "x": 82.91,
+      "y": 530.85,
+      "width": 182.09,
+      "height": 10.91,
+      "right": 265,
+      "visualLineId": 25,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 24,
+      "str": "• We show that pre-trained representations reduce",
+      "x": 74.11,
+      "y": 509.15,
+      "width": 216.15,
+      "height": 10.91,
+      "right": 290.26,
+      "visualLineId": 27,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 25,
+      "str": "the need for many heavily-engineered task-",
+      "x": 82.91,
+      "y": 495.6,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 26,
+      "str": "specific architectures.",
+      "x": 82.91,
+      "y": 482.05,
+      "width": 96.23,
+      "height": 10.91,
+      "right": 179.14,
+      "visualLineId": 29,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 27,
+      "str": " ",
+      "x": 179.14,
+      "y": 482.05,
+      "width": 8.54,
+      "height": 0,
+      "right": 187.68,
+      "visualLineId": 29,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 28,
+      "str": "BERT is the first fine-",
+      "x": 187.68,
+      "y": 482.05,
+      "width": 102.59,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 29,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 29,
+      "str": "tuning based representation model that achieves",
+      "x": 82.91,
+      "y": 468.5,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 30,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 30,
+      "str": "state-of-the-art performance on a large suite",
+      "x": 82.91,
+      "y": 454.95,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 31,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 31,
+      "str": "of sentence-level",
+      "x": 82.91,
+      "y": 441.4,
+      "width": 74.15,
+      "height": 10.91,
+      "right": 157.06,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 32,
+      "str": " ",
+      "x": 157.06,
+      "y": 441.4,
+      "width": 3.1,
+      "height": 0,
+      "right": 160.15,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 33,
+      "str": "and",
+      "x": 160.15,
+      "y": 441.4,
+      "width": 16.36,
+      "height": 10.91,
+      "right": 176.52,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 34,
+      "str": " ",
+      "x": 176.52,
+      "y": 441.4,
+      "width": 3.1,
+      "height": 0,
+      "right": 179.62,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 35,
+      "str": "token-level tasks, outper-",
+      "x": 179.62,
+      "y": 441.4,
+      "width": 110.65,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 36,
+      "str": "forming many task-specific architectures.",
+      "x": 82.91,
+      "y": 427.85,
+      "width": 180.4,
+      "height": 10.91,
+      "right": 263.31,
+      "visualLineId": 33,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 37,
+      "str": "• BERT advances the state of the art for eleven",
+      "x": 74.11,
+      "y": 406.15,
+      "width": 216.15,
+      "height": 10.91,
+      "right": 290.26,
+      "visualLineId": 35,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 38,
+      "str": "NLP tasks.",
+      "x": 82.91,
+      "y": 392.6,
+      "width": 50.5,
+      "height": 10.91,
+      "right": 133.41,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 39,
+      "str": " ",
+      "x": 133.41,
+      "y": 392.6,
+      "width": 11.26,
+      "height": 0,
+      "right": 144.67,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 40,
+      "str": "The code and pre-trained mod-",
+      "x": 144.67,
+      "y": 392.6,
+      "width": 145.6,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 41,
+      "str": "els are available at",
+      "x": 82.91,
+      "y": 379.05,
+      "width": 80.3,
+      "height": 10.91,
+      "right": 163.21,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 42,
+      "str": " ",
+      "x": 163.21,
+      "y": 379.05,
+      "width": 2.69,
+      "height": 0,
+      "right": 165.9,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 43,
+      "str": "https://github.com/",
+      "x": 165.9,
+      "y": 379.05,
+      "width": 124.36,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 44,
+      "str": "google-research/bert",
+      "x": 82.91,
+      "y": 365.5,
+      "width": 131.41,
+      "height": 10.91,
+      "right": 214.32,
+      "visualLineId": 41,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 45,
+      "str": ".",
+      "x": 214.32,
+      "y": 365.5,
+      "width": 2.73,
+      "height": 10.91,
+      "right": 217.04,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 46,
+      "str": "",
+      "x": 72,
+      "y": 342.14,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 47,
+      "str": "2",
+      "x": 72,
+      "y": 342.14,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 77.98,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 48,
+      "str": " ",
+      "x": 77.98,
+      "y": 342.14,
+      "width": 11.96,
+      "height": 0,
+      "right": 89.93,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 49,
+      "str": "Related Work",
+      "x": 89.93,
+      "y": 342.14,
+      "width": 71.16,
+      "height": 11.96,
+      "right": 161.09,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 50,
+      "str": "",
+      "x": 72,
+      "y": 321.62,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 51,
+      "str": "There is a long history of pre-training general lan-",
+      "x": 72,
+      "y": 321.62,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 45,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 52,
+      "str": "guage representations, and we briefly review the",
+      "x": 72,
+      "y": 308.08,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 53,
+      "str": "most widely-used approaches in this section.",
+      "x": 72,
+      "y": 294.53,
+      "width": 195.13,
+      "height": 10.91,
+      "right": 267.13,
+      "visualLineId": 47,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 54,
+      "str": "",
+      "x": 72,
+      "y": 272.54,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 55,
+      "str": "2.1",
+      "x": 72,
+      "y": 272.54,
+      "width": 13.64,
+      "height": 10.91,
+      "right": 85.64,
+      "visualLineId": 49,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 56,
+      "str": " ",
+      "x": 85.64,
+      "y": 272.54,
+      "width": 10.91,
+      "height": 0,
+      "right": 96.55,
+      "visualLineId": 49,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 57,
+      "str": "Unsupervised Feature-based Approaches",
+      "x": 96.55,
+      "y": 272.54,
+      "width": 190.46,
+      "height": 10.91,
+      "right": 287.01,
+      "visualLineId": 49,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 58,
+      "str": "",
+      "x": 72,
+      "y": 255.06,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 59,
+      "str": "Learning",
+      "x": 72,
+      "y": 255.06,
+      "width": 39.38,
+      "height": 10.91,
+      "right": 111.38,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 60,
+      "str": " ",
+      "x": 111.38,
+      "y": 255.06,
+      "width": 7.31,
+      "height": 0,
+      "right": 118.69,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 61,
+      "str": "widely",
+      "x": 118.69,
+      "y": 255.06,
+      "width": 29.69,
+      "height": 10.91,
+      "right": 148.39,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 62,
+      "str": " ",
+      "x": 148.39,
+      "y": 255.06,
+      "width": 7.3,
+      "height": 0,
+      "right": 155.68,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 63,
+      "str": "applicable",
+      "x": 155.68,
+      "y": 255.06,
+      "width": 44.84,
+      "height": 10.91,
+      "right": 200.52,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 64,
+      "str": " ",
+      "x": 200.52,
+      "y": 255.06,
+      "width": 7.31,
+      "height": 0,
+      "right": 207.83,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 65,
+      "str": "representations",
+      "x": 207.83,
+      "y": 255.06,
+      "width": 66.04,
+      "height": 10.91,
+      "right": 273.87,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 66,
+      "str": " ",
+      "x": 273.87,
+      "y": 255.06,
+      "width": 7.31,
+      "height": 0,
+      "right": 281.18,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 67,
+      "str": "of",
+      "x": 281.18,
+      "y": 255.06,
+      "width": 9.09,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 68,
+      "str": "words has been an active area of research for",
+      "x": 72,
+      "y": 241.52,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 51,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 69,
+      "str": "decades, including non-neural (Brown et al., 1992;",
+      "x": 72,
+      "y": 227.97,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 52,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 70,
+      "str": "Ando and Zhang, 2005; Blitzer et al., 2006) and",
+      "x": 72,
+      "y": 214.42,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 53,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 71,
+      "str": "neural (Mikolov et al., 2013; Pennington et al.,",
+      "x": 72,
+      "y": 200.87,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 72,
+      "str": "2014) methods.",
+      "x": 72,
+      "y": 187.32,
+      "width": 70.89,
+      "height": 10.91,
+      "right": 142.89,
+      "visualLineId": 55,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 73,
+      "str": " ",
+      "x": 142.89,
+      "y": 187.32,
+      "width": 12.4,
+      "height": 0,
+      "right": 155.29,
+      "visualLineId": 55,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 74,
+      "str": "Pre-trained word embeddings",
+      "x": 155.29,
+      "y": 187.32,
+      "width": 134.98,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 55,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 75,
+      "str": "are an integral part of modern NLP systems, of-",
+      "x": 72,
+      "y": 173.77,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 56,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 76,
+      "str": "fering significant improvements over embeddings",
+      "x": 72,
+      "y": 160.22,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 57,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 77,
+      "str": "learned from scratch (Turian et al., 2010). To pre-",
+      "x": 72,
+      "y": 146.67,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 58,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 78,
+      "str": "train word embedding vectors, left-to-right lan-",
+      "x": 72,
+      "y": 133.12,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 59,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 79,
+      "str": "guage modeling objectives have been used (Mnih",
+      "x": 72,
+      "y": 119.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 60,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 80,
+      "str": "and Hinton, 2009), as well as objectives to dis-",
+      "x": 72,
+      "y": 106.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 61,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 81,
+      "str": "criminate correct from incorrect words in left and",
+      "x": 72,
+      "y": 92.47,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 290.27,
+      "visualLineId": 62,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 82,
+      "str": "right context (Mikolov et al., 2013).",
+      "x": 72,
+      "y": 78.92,
+      "width": 156.52,
+      "height": 10.91,
+      "right": 228.52,
+      "visualLineId": 63,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 83,
+      "str": "These approaches have been generalized to",
+      "x": 318.19,
+      "y": 768.12,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 84,
+      "str": "coarser granularities,",
+      "x": 307.28,
+      "y": 754.57,
+      "width": 94.63,
+      "height": 10.91,
+      "right": 401.9,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 85,
+      "str": " ",
+      "x": 401.9,
+      "y": 754.57,
+      "width": 6.67,
+      "height": 0,
+      "right": 408.57,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 86,
+      "str": "such as sentence embed-",
+      "x": 408.57,
+      "y": 754.57,
+      "width": 116.98,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 87,
+      "str": "dings (Kiros et al., 2015; Logeswaran and Lee,",
+      "x": 307.28,
+      "y": 741.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 88,
+      "str": "2018) or paragraph embeddings (Le and Mikolov,",
+      "x": 307.28,
+      "y": 727.48,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 89,
+      "str": "2014).",
+      "x": 307.28,
+      "y": 713.93,
+      "width": 28.18,
+      "height": 10.91,
+      "right": 335.45,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 90,
+      "str": " ",
+      "x": 335.45,
+      "y": 713.93,
+      "width": 10.43,
+      "height": 0,
+      "right": 345.88,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 91,
+      "str": "To train sentence representations, prior",
+      "x": 345.88,
+      "y": 713.93,
+      "width": 179.66,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 92,
+      "str": "work has used objectives to rank candidate next",
+      "x": 307.28,
+      "y": 700.38,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 93,
+      "str": "sentences (Jernite et al., 2017; Logeswaran and",
+      "x": 307.28,
+      "y": 686.83,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 94,
+      "str": "Lee, 2018), left-to-right generation of next sen-",
+      "x": 307.28,
+      "y": 673.28,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 95,
+      "str": "tence words given a representation of the previous",
+      "x": 307.28,
+      "y": 659.73,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 96,
+      "str": "sentence (Kiros et al., 2015), or denoising auto-",
+      "x": 307.28,
+      "y": 646.18,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 9,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 97,
+      "str": "encoder derived objectives (Hill et al., 2016).",
+      "x": 307.28,
+      "y": 632.63,
+      "width": 196.96,
+      "height": 10.91,
+      "right": 504.24,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 98,
+      "str": "ELMo and its predecessor (Peters et al., 2017,",
+      "x": 318.19,
+      "y": 617.4,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 99,
+      "str": "2018a) generalize traditional word embedding re-",
+      "x": 307.28,
+      "y": 603.85,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 100,
+      "str": "search along a different dimension. They extract",
+      "x": 307.28,
+      "y": 590.3,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 17,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 101,
+      "str": "",
+      "x": 307.28,
+      "y": 576.75,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 102,
+      "str": "context-sensitive",
+      "x": 307.28,
+      "y": 576.75,
+      "width": 72.49,
+      "height": 10.91,
+      "right": 379.77,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 103,
+      "str": " ",
+      "x": 379.77,
+      "y": 576.75,
+      "width": 2.28,
+      "height": 0,
+      "right": 382.05,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 104,
+      "str": "features from a left-to-right and a",
+      "x": 382.05,
+      "y": 576.75,
+      "width": 143.5,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 105,
+      "str": "right-to-left language model. The contextual rep-",
+      "x": 307.28,
+      "y": 563.2,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 106,
+      "str": "resentation of each token is the concatenation of",
+      "x": 307.28,
+      "y": 549.65,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 107,
+      "str": "the left-to-right and right-to-left representations.",
+      "x": 307.28,
+      "y": 536.11,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 108,
+      "str": "When integrating contextual word embeddings",
+      "x": 307.28,
+      "y": 522.56,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 26,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 109,
+      "str": "with existing task-specific architectures, ELMo",
+      "x": 307.28,
+      "y": 509.01,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 110,
+      "str": "advances the state of the art for several major NLP",
+      "x": 307.28,
+      "y": 495.46,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 28,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 111,
+      "str": "benchmarks (Peters et al., 2018a) including ques-",
+      "x": 307.28,
+      "y": 481.91,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 29,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 112,
+      "str": "tion answering (Rajpurkar et al., 2016), sentiment",
+      "x": 307.28,
+      "y": 468.36,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 30,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 113,
+      "str": "analysis (Socher et al., 2013), and named entity",
+      "x": 307.28,
+      "y": 454.81,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 31,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 114,
+      "str": "recognition (Tjong Kim Sang and De Meulder,",
+      "x": 307.28,
+      "y": 441.26,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 115,
+      "str": "2003). Melamud et al. (2016) proposed learning",
+      "x": 307.28,
+      "y": 427.71,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 116,
+      "str": "contextual representations through a task to pre-",
+      "x": 307.28,
+      "y": 414.16,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 117,
+      "str": "dict a single word from both left and right context",
+      "x": 307.28,
+      "y": 400.61,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 36,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 118,
+      "str": "using LSTMs.",
+      "x": 307.28,
+      "y": 387.06,
+      "width": 63.77,
+      "height": 10.91,
+      "right": 371.05,
+      "visualLineId": 38,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 119,
+      "str": " ",
+      "x": 371.05,
+      "y": 387.06,
+      "width": 7.42,
+      "height": 0,
+      "right": 378.47,
+      "visualLineId": 38,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 120,
+      "str": "Similar to ELMo, their model is",
+      "x": 378.47,
+      "y": 387.06,
+      "width": 147.08,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 38,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 121,
+      "str": "feature-based and not deeply bidirectional. Fedus",
+      "x": 307.28,
+      "y": 373.52,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 40,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 122,
+      "str": "et al. (2018) shows that the cloze task can be used",
+      "x": 307.28,
+      "y": 359.97,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 123,
+      "str": "to improve the robustness of text generation mod-",
+      "x": 307.28,
+      "y": 346.42,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 124,
+      "str": "els.",
+      "x": 307.28,
+      "y": 332.87,
+      "width": 14.85,
+      "height": 10.91,
+      "right": 322.12,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 125,
+      "str": "",
+      "x": 307.28,
+      "y": 304.66,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 126,
+      "str": "2.2",
+      "x": 307.28,
+      "y": 304.66,
+      "width": 13.64,
+      "height": 10.91,
+      "right": 320.91,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 127,
+      "str": " ",
+      "x": 320.91,
+      "y": 304.66,
+      "width": 10.91,
+      "height": 0,
+      "right": 331.82,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 128,
+      "str": "Unsupervised Fine-tuning Approaches",
+      "x": 331.82,
+      "y": 304.66,
+      "width": 178.83,
+      "height": 10.91,
+      "right": 510.65,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 129,
+      "str": "",
+      "x": 307.28,
+      "y": 283.84,
+      "width": 0,
+      "height": 0,
+      "right": 311.28,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 130,
+      "str": "As with the feature-based approaches, the first",
+      "x": 307.28,
+      "y": 283.84,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 48,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 131,
+      "str": "works in this direction only pre-trained word em-",
+      "x": 307.28,
+      "y": 270.29,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 49,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 132,
+      "str": "bedding parameters from unlabeled text",
+      "x": 307.28,
+      "y": 256.75,
+      "width": 184.44,
+      "height": 10.91,
+      "right": 491.72,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 133,
+      "str": " ",
+      "x": 491.72,
+      "y": 256.75,
+      "width": 10.8,
+      "height": 0,
+      "right": 502.52,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 134,
+      "str": "(Col-",
+      "x": 502.52,
+      "y": 256.75,
+      "width": 23.03,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 135,
+      "str": "lobert and Weston, 2008).",
+      "x": 307.28,
+      "y": 243.2,
+      "width": 112.75,
+      "height": 10.91,
+      "right": 420.02,
+      "visualLineId": 51,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 136,
+      "str": "More recently, sentence or document encoders",
+      "x": 318.19,
+      "y": 227.97,
+      "width": 207.36,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 52,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 137,
+      "str": "which produce contextual token representations",
+      "x": 307.28,
+      "y": 214.42,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 53,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 138,
+      "str": "have been pre-trained from unlabeled text and",
+      "x": 307.28,
+      "y": 200.87,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 54,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 139,
+      "str": "fine-tuned for a supervised downstream task (Dai",
+      "x": 307.28,
+      "y": 187.32,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 55,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 140,
+      "str": "and Le, 2015; Howard and Ruder, 2018; Radford",
+      "x": 307.28,
+      "y": 173.77,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 56,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 141,
+      "str": "et al., 2018). The advantage of these approaches",
+      "x": 307.28,
+      "y": 160.22,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 57,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 142,
+      "str": "is that few parameters need to be learned from",
+      "x": 307.28,
+      "y": 146.67,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 58,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 143,
+      "str": "scratch.",
+      "x": 307.28,
+      "y": 133.12,
+      "width": 33.62,
+      "height": 10.91,
+      "right": 340.9,
+      "visualLineId": 59,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 144,
+      "str": " ",
+      "x": 340.9,
+      "y": 133.12,
+      "width": 10.67,
+      "height": 0,
+      "right": 351.57,
+      "visualLineId": 59,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 145,
+      "str": "At least partly due to this advantage,",
+      "x": 351.57,
+      "y": 133.12,
+      "width": 173.98,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 59,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 146,
+      "str": "OpenAI GPT (Radford et al., 2018) achieved pre-",
+      "x": 307.28,
+      "y": 119.57,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 60,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 147,
+      "str": "viously state-of-the-art results on many sentence-",
+      "x": 307.28,
+      "y": 106.02,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 61,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 148,
+      "str": "level tasks from the GLUE benchmark (Wang",
+      "x": 307.28,
+      "y": 92.47,
+      "width": 218.27,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 62,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 149,
+      "str": "et al., 2018a).",
+      "x": 307.28,
+      "y": 78.92,
+      "width": 66.81,
+      "height": 10.91,
+      "right": 374.08,
+      "visualLineId": 63,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 150,
+      "str": " ",
+      "x": 374.08,
+      "y": 78.92,
+      "width": 14.06,
+      "height": 0,
+      "right": 388.15,
+      "visualLineId": 63,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 151,
+      "str": "Left-to-right language model-",
+      "x": 388.15,
+      "y": 78.92,
+      "width": 137.4,
+      "height": 10.91,
+      "right": 525.55,
+      "visualLineId": 63,
+      "inferredColumn": 1
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 768.12,
+      "height": 12,
+      "text": "word based only on its context. Unlike left-to- These approaches have been generalized to",
+      "itemIndexes": [
+        0,
+        1,
+        2,
+        83
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 1,
+      "y": 754.57,
+      "height": 12,
+      "text": "right language model pre-training, the MLM ob- coarser granularities, such as sentence embed-",
+      "itemIndexes": [
+        3,
+        84,
+        85,
+        86
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 2,
+      "y": 741.02,
+      "height": 10.91,
+      "text": "jective enables the representation to fuse the left dings (Kiros et al., 2015; Logeswaran and Lee,",
+      "itemIndexes": [
+        4,
+        87
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 3,
+      "y": 727.48,
+      "height": 10.91,
+      "text": "and the right context, which allows us to pre- 2018) or paragraph embeddings (Le and Mikolov,",
+      "itemIndexes": [
+        5,
+        88
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 4,
+      "y": 713.93,
+      "height": 12,
+      "text": "train a deep bidirectional Transformer. In addi- 2014). To train sentence representations, prior",
+      "itemIndexes": [
+        6,
+        7,
+        8,
+        89,
+        90,
+        91
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 5,
+      "y": 700.38,
+      "height": 10.91,
+      "text": "tion to the masked language model, we also use work has used objectives to rank candidate next",
+      "itemIndexes": [
+        9,
+        92
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 6,
+      "y": 686.83,
+      "height": 10.91,
+      "text": "a “next sentence prediction” task that jointly pre- sentences (Jernite et al., 2017; Logeswaran and",
+      "itemIndexes": [
+        10,
+        93
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 7,
+      "y": 673.28,
+      "height": 10.91,
+      "text": "trains text-pair representations. The contributions Lee, 2018), left-to-right generation of next sen-",
+      "itemIndexes": [
+        11,
+        94
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 8,
+      "y": 659.73,
+      "height": 10.91,
+      "text": "of our paper are as follows: tence words given a representation of the previous",
+      "itemIndexes": [
+        12,
+        95
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 9,
+      "y": 646.18,
+      "height": 10.91,
+      "text": "sentence (Kiros et al., 2015), or denoising auto-",
+      "itemIndexes": [
+        96
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 10,
+      "y": 639.25,
+      "height": 10.91,
+      "text": "• We demonstrate the importance of bidirectional",
+      "itemIndexes": [
+        13
+      ],
+      "firstX": 74.11
+    },
+    {
+      "lineId": 11,
+      "y": 632.63,
+      "height": 10.91,
+      "text": "encoder derived objectives (Hill et al., 2016).",
+      "itemIndexes": [
+        97
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 12,
+      "y": 625.7,
+      "height": 12,
+      "text": "pre-training for language representations. Un-",
+      "itemIndexes": [
+        14,
+        15,
+        16
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 13,
+      "y": 617.4,
+      "height": 10.91,
+      "text": "ELMo and its predecessor (Peters et al., 2017,",
+      "itemIndexes": [
+        98
+      ],
+      "firstX": 318.19
+    },
+    {
+      "lineId": 14,
+      "y": 612.15,
+      "height": 10.91,
+      "text": "like Radford et al. (2018), which uses unidirec-",
+      "itemIndexes": [
+        17
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 15,
+      "y": 603.85,
+      "height": 10.91,
+      "text": "2018a) generalize traditional word embedding re-",
+      "itemIndexes": [
+        99
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 16,
+      "y": 598.6,
+      "height": 10.91,
+      "text": "tional language models for pre-training, BERT",
+      "itemIndexes": [
+        18
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 17,
+      "y": 590.3,
+      "height": 10.91,
+      "text": "search along a different dimension. They extract",
+      "itemIndexes": [
+        100
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 18,
+      "y": 585.05,
+      "height": 10.91,
+      "text": "uses masked language models to enable pre-",
+      "itemIndexes": [
+        19
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 19,
+      "y": 575.44,
+      "height": 12,
+      "text": "trained deep bidirectional representations. This context-sensitive features from a left-to-right and a",
+      "itemIndexes": [
+        20,
+        102,
+        103,
+        104
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 20,
+      "y": 563.2,
+      "height": 10.91,
+      "text": "right-to-left language model. The contextual rep-",
+      "itemIndexes": [
+        105
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 21,
+      "y": 557.95,
+      "height": 10.91,
+      "text": "is also in contrast to Peters et al. (2018a), which",
+      "itemIndexes": [
+        21
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 22,
+      "y": 549.65,
+      "height": 10.91,
+      "text": "resentation of each token is the concatenation of",
+      "itemIndexes": [
+        106
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 23,
+      "y": 544.4,
+      "height": 10.91,
+      "text": "uses a shallow concatenation of independently",
+      "itemIndexes": [
+        22
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 24,
+      "y": 536.11,
+      "height": 10.91,
+      "text": "the left-to-right and right-to-left representations.",
+      "itemIndexes": [
+        107
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 25,
+      "y": 530.85,
+      "height": 10.91,
+      "text": "trained left-to-right and right-to-left LMs.",
+      "itemIndexes": [
+        23
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 26,
+      "y": 522.56,
+      "height": 10.91,
+      "text": "When integrating contextual word embeddings",
+      "itemIndexes": [
+        108
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 27,
+      "y": 509.08,
+      "height": 10.91,
+      "text": "• We show that pre-trained representations reduce with existing task-specific architectures, ELMo",
+      "itemIndexes": [
+        24,
+        109
+      ],
+      "firstX": 74.11
+    },
+    {
+      "lineId": 28,
+      "y": 495.53,
+      "height": 10.91,
+      "text": "the need for many heavily-engineered task- advances the state of the art for several major NLP",
+      "itemIndexes": [
+        25,
+        110
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 29,
+      "y": 482.01,
+      "height": 12,
+      "text": "specific architectures. BERT is the first fine- benchmarks (Peters et al., 2018a) including ques-",
+      "itemIndexes": [
+        26,
+        27,
+        28,
+        111
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 30,
+      "y": 468.43,
+      "height": 10.91,
+      "text": "tuning based representation model that achieves tion answering (Rajpurkar et al., 2016), sentiment",
+      "itemIndexes": [
+        29,
+        112
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 31,
+      "y": 454.88,
+      "height": 10.91,
+      "text": "state-of-the-art performance on a large suite analysis (Socher et al., 2013), and named entity",
+      "itemIndexes": [
+        30,
+        113
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 32,
+      "y": 441.38,
+      "height": 12,
+      "text": "of sentence-level and token-level tasks, outper- recognition (Tjong Kim Sang and De Meulder,",
+      "itemIndexes": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        114
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 33,
+      "y": 427.78,
+      "height": 10.91,
+      "text": "forming many task-specific architectures. 2003). Melamud et al. (2016) proposed learning",
+      "itemIndexes": [
+        36,
+        115
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 34,
+      "y": 414.16,
+      "height": 10.91,
+      "text": "contextual representations through a task to pre-",
+      "itemIndexes": [
+        116
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 35,
+      "y": 406.15,
+      "height": 10.91,
+      "text": "• BERT advances the state of the art for eleven",
+      "itemIndexes": [
+        37
+      ],
+      "firstX": 74.11
+    },
+    {
+      "lineId": 36,
+      "y": 400.61,
+      "height": 10.91,
+      "text": "dict a single word from both left and right context",
+      "itemIndexes": [
+        117
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 37,
+      "y": 392.6,
+      "height": 12,
+      "text": "NLP tasks. The code and pre-trained mod-",
+      "itemIndexes": [
+        38,
+        39,
+        40
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 38,
+      "y": 387.06,
+      "height": 12,
+      "text": "using LSTMs. Similar to ELMo, their model is",
+      "itemIndexes": [
+        118,
+        119,
+        120
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 39,
+      "y": 379.05,
+      "height": 12,
+      "text": "els are available at https://github.com/",
+      "itemIndexes": [
+        41,
+        42,
+        43
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 40,
+      "y": 373.52,
+      "height": 10.91,
+      "text": "feature-based and not deeply bidirectional. Fedus",
+      "itemIndexes": [
+        121
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 41,
+      "y": 365.5,
+      "height": 10.91,
+      "text": "google-research/bert .",
+      "itemIndexes": [
+        44,
+        45
+      ],
+      "firstX": 82.91
+    },
+    {
+      "lineId": 42,
+      "y": 359.97,
+      "height": 10.91,
+      "text": "et al. (2018) shows that the cloze task can be used",
+      "itemIndexes": [
+        122
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 43,
+      "y": 343.21,
+      "height": 12,
+      "text": "2 Related Work to improve the robustness of text generation mod-",
+      "itemIndexes": [
+        47,
+        48,
+        49,
+        123
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 44,
+      "y": 332.87,
+      "height": 10.91,
+      "text": "els.",
+      "itemIndexes": [
+        124
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 45,
+      "y": 321.62,
+      "height": 10.91,
+      "text": "There is a long history of pre-training general lan-",
+      "itemIndexes": [
+        51
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 46,
+      "y": 305.51,
+      "height": 12,
+      "text": "guage representations, and we briefly review the 2.2 Unsupervised Fine-tuning Approaches",
+      "itemIndexes": [
+        52,
+        126,
+        127,
+        128
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 47,
+      "y": 294.53,
+      "height": 10.91,
+      "text": "most widely-used approaches in this section.",
+      "itemIndexes": [
+        53
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 48,
+      "y": 283.84,
+      "height": 10.91,
+      "text": "As with the feature-based approaches, the first",
+      "itemIndexes": [
+        130
+      ],
+      "firstX": 307.28
+    },
+    {
+      "lineId": 49,
+      "y": 271.98,
+      "height": 12,
+      "text": "2.1 Unsupervised Feature-based Approaches works in this direction only pre-trained word em-",
+      "itemIndexes": [
+        55,
+        56,
+        57,
+        131
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 50,
+      "y": 255.48,
+      "height": 12,
+      "text": "Learning widely applicable representations of bedding parameters from unlabeled text (Col-",
+      "itemIndexes": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        132,
+        133,
+        134
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 51,
+      "y": 242.36,
+      "height": 10.91,
+      "text": "words has been an active area of research for lobert and Weston, 2008).",
+      "itemIndexes": [
+        68,
+        135
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 52,
+      "y": 227.97,
+      "height": 10.91,
+      "text": "decades, including non-neural (Brown et al., 1992; More recently, sentence or document encoders",
+      "itemIndexes": [
+        69,
+        136
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 53,
+      "y": 214.42,
+      "height": 10.91,
+      "text": "Ando and Zhang, 2005; Blitzer et al., 2006) and which produce contextual token representations",
+      "itemIndexes": [
+        70,
+        137
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 54,
+      "y": 200.87,
+      "height": 10.91,
+      "text": "neural (Mikolov et al., 2013; Pennington et al., have been pre-trained from unlabeled text and",
+      "itemIndexes": [
+        71,
+        138
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 55,
+      "y": 187.32,
+      "height": 12,
+      "text": "2014) methods. Pre-trained word embeddings fine-tuned for a supervised downstream task (Dai",
+      "itemIndexes": [
+        72,
+        73,
+        74,
+        139
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 56,
+      "y": 173.77,
+      "height": 10.91,
+      "text": "are an integral part of modern NLP systems, of- and Le, 2015; Howard and Ruder, 2018; Radford",
+      "itemIndexes": [
+        75,
+        140
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 57,
+      "y": 160.22,
+      "height": 10.91,
+      "text": "fering significant improvements over embeddings et al., 2018). The advantage of these approaches",
+      "itemIndexes": [
+        76,
+        141
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 58,
+      "y": 146.67,
+      "height": 10.91,
+      "text": "learned from scratch (Turian et al., 2010). To pre- is that few parameters need to be learned from",
+      "itemIndexes": [
+        77,
+        142
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 59,
+      "y": 133.12,
+      "height": 12,
+      "text": "train word embedding vectors, left-to-right lan- scratch. At least partly due to this advantage,",
+      "itemIndexes": [
+        78,
+        143,
+        144,
+        145
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 60,
+      "y": 119.57,
+      "height": 10.91,
+      "text": "guage modeling objectives have been used (Mnih OpenAI GPT (Radford et al., 2018) achieved pre-",
+      "itemIndexes": [
+        79,
+        146
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 61,
+      "y": 106.02,
+      "height": 10.91,
+      "text": "and Hinton, 2009), as well as objectives to dis- viously state-of-the-art results on many sentence-",
+      "itemIndexes": [
+        80,
+        147
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 62,
+      "y": 92.47,
+      "height": 10.91,
+      "text": "criminate correct from incorrect words in left and level tasks from the GLUE benchmark (Wang",
+      "itemIndexes": [
+        81,
+        148
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 63,
+      "y": 78.92,
+      "height": 12,
+      "text": "right context (Mikolov et al., 2013). et al., 2018a). Left-to-right language model-",
+      "itemIndexes": [
+        82,
+        149,
+        150,
+        151
+      ],
+      "firstX": 72
+    }
+  ]
+}

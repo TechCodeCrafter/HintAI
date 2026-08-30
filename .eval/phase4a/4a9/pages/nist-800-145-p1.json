@@ -1,0 +1,266 @@
+{
+  "file": "nist-800-145.pdf",
+  "page": 1,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "single-column",
+    "index": "full",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 1 !== 2 (total clusters 2; sizes 90.0:6, 351.8:1)"
+    ],
+    "clusterCount": 2,
+    "substantialClusterCount": 1,
+    "clusters": [
+      {
+        "x": 90,
+        "items": 6,
+        "meanWidth": 247.18,
+        "yMin": 252.6,
+        "yMax": 506.04
+      },
+      {
+        "x": 351.84,
+        "items": 1,
+        "meanWidth": 170.42,
+        "yMin": 677.64,
+        "yMax": 677.64
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 90,
+      "items": 6,
+      "meanWidth": 247.18,
+      "yMin": 252.6,
+      "yMax": 506.04
+    },
+    {
+      "x": 351.84,
+      "items": 1,
+      "meanWidth": 170.42,
+      "yMin": 677.64,
+      "yMax": 677.64
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 6,
+    "clusters": [
+      {
+        "x": 90,
+        "items": 5,
+        "share": 0.833
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.8333333333333334
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        90,
+        351.84
+      ],
+      "gap": 261.84
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "The NIST Definition of Cloud",
+      "x": 90,
+      "y": 506.04,
+      "width": 403.29,
+      "height": 30,
+      "right": 493.29,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "Computing",
+      "x": 90,
+      "y": 463.68,
+      "width": 157.65,
+      "height": 30,
+      "right": 247.65,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "",
+      "x": 90,
+      "y": 376.2,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "Recommendations of the National Institute",
+      "x": 90,
+      "y": 376.2,
+      "width": 428.06,
+      "height": 24,
+      "right": 518.06,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "of Standards and Technology",
+      "x": 90,
+      "y": 348.72,
+      "width": 295.7,
+      "height": 24,
+      "right": 385.7,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 90,
+      "y": 275.64,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "Peter Mell",
+      "x": 90,
+      "y": 275.64,
+      "width": 76.45,
+      "height": 20.04,
+      "right": 166.45,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "",
+      "x": 90,
+      "y": 252.6,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "Timothy Grance",
+      "x": 90,
+      "y": 252.6,
+      "width": 121.9,
+      "height": 20.04,
+      "right": 211.9,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "",
+      "x": 351.84,
+      "y": 677.64,
+      "width": 0,
+      "height": 0,
+      "right": 355.84,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "Special Publication 800-145",
+      "x": 351.84,
+      "y": 677.64,
+      "width": 170.42,
+      "height": 12.96,
+      "right": 522.26,
+      "visualLineId": 0,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 677.64,
+      "height": 12.96,
+      "text": "Special Publication 800-145",
+      "itemIndexes": [
+        10
+      ],
+      "firstX": 351.84
+    },
+    {
+      "lineId": 1,
+      "y": 506.04,
+      "height": 30,
+      "text": "The NIST Definition of Cloud",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 2,
+      "y": 463.68,
+      "height": 30,
+      "text": "Computing",
+      "itemIndexes": [
+        1
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 3,
+      "y": 376.2,
+      "height": 24,
+      "text": "Recommendations of the National Institute",
+      "itemIndexes": [
+        3
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 4,
+      "y": 348.72,
+      "height": 24,
+      "text": "of Standards and Technology",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 5,
+      "y": 275.64,
+      "height": 20.04,
+      "text": "Peter Mell",
+      "itemIndexes": [
+        6
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 6,
+      "y": 252.6,
+      "height": 20.04,
+      "text": "Timothy Grance",
+      "itemIndexes": [
+        8
+      ],
+      "firstX": 90
+    }
+  ]
+}

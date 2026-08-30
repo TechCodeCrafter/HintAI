@@ -1,0 +1,5383 @@
+[
+  {
+    "file": "attention.pdf",
+    "page": 2,
+    "lines": 50,
+    "regions": 4,
+    "gridKind": "none",
+    "blocks": 9,
+    "kinds": {
+      "heading": 3,
+      "paragraph": 5,
+      "unknown": 1
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 5,
+    "headings": 3,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 Introduction"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2 Background"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "3 Model Architecture"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 7,
+        "mapped": true,
+        "text": "Recurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks\nin particular, have been firmly established as state of the art approaches in sequenc"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 13,
+        "mapped": true,
+        "text": "sequential nature precludes parallelization within training examples, which becomes critical at longer\nsequence lengths, as memory constraints limit batching across examples. Recen"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 20,
+        "mapped": true,
+        "text": "The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[16], ByteNet [18] and ConvS2S [9], all of which use convolutional neural networks "
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Most competitive neural sequence transduction models have an encoder-decoder structure [5, 2, 35]."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "sequence (y1, ..., ym) of symbols one element at a time. At each step the model is auto-regressive\n[10], consuming the previously generated symbols as additional input when generat"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2"
+      }
+    ]
+  },
+  {
+    "file": "attention.pdf",
+    "page": 3,
+    "lines": 23,
+    "regions": 4,
+    "gridKind": "none",
+    "blocks": 9,
+    "kinds": {
+      "caption": 1,
+      "heading": 2,
+      "paragraph": 5,
+      "unknown": 1
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 1,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 5,
+    "headings": 2,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "caption",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Figure 1: The Transformer - model architecture."
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3.1 Encoder and Decoder Stacks"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3.2 Attention"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "The Transformer follows this overall architecture using stacked self-attention and point-wise, fully\nconnected layers for both the encoder and decoder, shown in the left and right "
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "sub-layers. The first is a multi-head self-attention mechanism, and the second is a simple, position-\nwise fully connected feed-forward network. We employ a residual connection [11"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "itself. To facilitate these residual connections, all sub-layers in the model, as well as the embedding"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head\nattention over the output of the encoder stack. Similar to the encoder, we employ"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "An attention function can be described as mapping a query and a set of key-value pairs to an output,\nwhere the query, keys, values, and output are all vectors. The output is comput"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "3"
+      }
+    ]
+  },
+  {
+    "file": "attention.pdf",
+    "page": 7,
+    "lines": 44,
+    "regions": 7,
+    "gridKind": "none",
+    "blocks": 18,
+    "kinds": {
+      "math": 1,
+      "heading": 5,
+      "paragraph": 10,
+      "unknown": 2
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 1,
+    "paragraphs": 10,
+    "headings": 5,
+    "unknown": 2,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "warmup_steps = 4000."
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "5 Training"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "5.1 Training Data and Batching"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "5.2 Hardware and Schedule"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "5.3 Optimizer"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "5.4 Regularization"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "sentence representations used by state-of-the-art models in machine translations, such as word-piece\n[38] and byte-pair [31] representations. To improve computational performance f"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "the input sequence centered around the respective output position. This would increase the maximum\npath length to O(n/r). We plan to investigate this approach further in future wor"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "positions. Doing so requires a stack of O(n/k) convolutional layers in the case of contiguous kernels,\nor O(logk(n)) in the case of dilated convolutions [18], increasing the length"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "convolution is equal to the combination of a self-attention layer and a point-wise feed-forward layer,\nthe approach we take in our model.\nAs side benefit, self-attention could yiel"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "This section describes the training regime for our models."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 7,
+        "mapped": true,
+        "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [3], which has a shared s"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 second"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "rate over the course of training, according to the formula:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "and decreasing it thereafter proportionally to the inverse square root of the step number. We used"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "We employ three types of regularization during training:"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "very long sequences, self-attention could be restricted to considering only a neighborhood of size"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p7:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "7"
+      }
+    ]
+  },
+  {
+    "file": "attention.pdf",
+    "page": 10,
+    "lines": 48,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 17,
+    "kinds": {
+      "caption": 1,
+      "math": 1,
+      "heading": 1,
+      "paragraph": 5,
+      "unknown": 9
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 1,
+    "furniture": 0,
+    "math": 1,
+    "paragraphs": 5,
+    "headings": 1,
+    "unknown": 9,
+    "previews": [
+      {
+        "kind": "caption",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Table 4: The Transformer generalizes well to English constituency parsing (Results are on Section 23"
+      },
+      {
+        "kind": "math",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "of WSJ)"
+      },
+      {
+        "kind": "heading",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "7 Conclusion"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "for both WSJ only and the semi-supervised setting.\nOur results in Table 4 show that despite the lack of task-specific tuning our model performs sur-\nprisingly well, yielding better"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 11,
+        "mapped": true,
+        "text": "In this work, we presented the Transformer, the first sequence transduction model based entirely on\nattention, replacing the recurrent layers most commonly used in encoder-decoder "
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "[2] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly\nlearning to align and translate. CoRR, abs/1409.0473, 2014."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "[3] Denny Britz, Anna Goldie, Minh-Thang Luong, and Quoc V. Le. Massive exploration of neural\nmachine translation architectures. CoRR, abs/1703.03906, 2017."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "[4] Jianpeng Cheng, Li Dong, and Mirella Lapata. Long short-term memory-networks for machine\nreading. arXiv preprint arXiv:1601.06733 , 2016."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Training WSJ 23 F1"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "semi-supervised 92.7"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tensorflow/tensor2tensor."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Acknowledgements We are grateful to Nal Kalchbrenner and Stephan Gouws for their fruitful"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "comments, corrections and inspiration."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "References"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[1] Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E Hinton. Layer normalization."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "arXiv:1607.06450, 2016."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "attention.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "10"
+      }
+    ]
+  },
+  {
+    "file": "attention.pdf",
+    "page": 11,
+    "lines": 45,
+    "regions": 5,
+    "gridKind": "none",
+    "blocks": 29,
+    "kinds": {
+      "paragraph": 18,
+      "unknown": 11
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 18,
+    "headings": 0,
+    "unknown": 11,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "[5] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Fethi Bougares, Holger Schwenk,\nand Yoshua Bengio. Learning phrase representations using rnn encoder-decoder for statistic"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "preprint arXiv:1610.02357 , 2016."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[7] Junyoung Chung, Çaglar Gülçehre, Kyunghyun Cho, and Yoshua Bengio. Empirical evaluation"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "[8] Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, and Noah A. Smith. Recurrent neural\nnetwork grammars. In Proc. of NAACL, 2016."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[9] Jonas Gehring, Michael Auli, David Grangier, Denis Yarats, and Yann N. Dauphin. Convolu-"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "[11] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRec"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "[12] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient flow in\nrecurrent nets: the difficulty of learning long-term dependencies, 2001."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "[14] Zhongqiang Huang and Mary Harper. Self-training PCFG grammars with latent annotations\nacross languages. In Proceedings of the 2009 Conference on Empirical Methods in Natural\nL"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[15] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Information Processing Systems, (NIPS) , 2016."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "on Learning Representations (ICLR) , 2016."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[18] Nal Kalchbrenner, Lasse Espeholt, Karen Simonyan, Aaron van den Oord, Alex Graves, and Ko-"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[19] Yoon Kim, Carl Denton, Luong Hoang, and Alexander M. Rush. Structured attention networks."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "arXiv:1703.10722, 2017."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[22] Zhouhan Lin, Minwei Feng, Cicero Nogueira dos Santos, Mo Yu, Bing Xiang, Bowen"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "arXiv:1703.03130, 2017."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[23] Minh-Thang Luong, Quoc V. Le, Ilya Sutskever, Oriol Vinyals, and Lukasz Kaiser. Multi-task"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "attention.pdf:p11:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "[24] Minh-Thang Luong, Hieu Pham, and Christopher D Manning. Effective approaches to attention-"
+      }
+    ]
+  },
+  {
+    "file": "bert.pdf",
+    "page": 2,
+    "lines": 64,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 15,
+    "kinds": {
+      "paragraph": 11,
+      "list": 1,
+      "list-item": 1,
+      "unknown": 2
+    },
+    "listLikeLines": 4,
+    "listBlocks": 1,
+    "listItemBlocks": 1,
+    "unassignedListLike": 3,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 11,
+    "headings": 0,
+    "unknown": 2,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "sentence (Kiros et al., 2015), or denoising autoencoder derived objectives (Hill et al., 2016)."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "ELMo and its predecessor (Peters et al., 2017,"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "2018a) generalize traditional word embedding research along a different dimension. They extract"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "right-to-left language model. The contextual representation of each token is the concatenation of the left-to-right and right-to-left representations. When integrating contextual w"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "contextual representations through a task to predict a single word from both left and right context using LSTMs. Similar to ELMo, their model is feature-based and not deeply bidire"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "et al. (2018) shows that the cloze task can be used"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "As with the feature-based approaches, the first"
+      },
+      {
+        "kind": "list",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "• BERT advances the state of the art for eleven NLP tasks. The code and pre-trained models are available at https://github.com/"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": "bert.pdf:p2:block:list:0",
+        "lines": 3,
+        "mapped": true,
+        "text": "• BERT advances the state of the art for eleven NLP tasks. The code and pre-trained models are available at https://github.com/"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "like Radford et al. (2018), which uses unidirectional language models for pre-training, BERT uses masked language models to enable pre"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "is also in contrast to Peters et al. (2018a), which uses a shallow concatenation of independently trained left-to-right and right-to-left LMs."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "There is a long history of pre-training general lan"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "most widely-used approaches in this section."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "bert.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "• We demonstrate the importance of bidirectional"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "bert.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "els."
+      }
+    ]
+  },
+  {
+    "file": "bert.pdf",
+    "page": 3,
+    "lines": 55,
+    "regions": 7,
+    "gridKind": "none",
+    "blocks": 17,
+    "kinds": {
+      "list": 1,
+      "list-item": 1,
+      "caption": 1,
+      "paragraph": 12,
+      "heading": 1,
+      "unknown": 1
+    },
+    "listLikeLines": 1,
+    "listBlocks": 1,
+    "listItemBlocks": 1,
+    "unassignedListLike": 0,
+    "captions": 1,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 12,
+    "headings": 1,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2017) and machine translation (McCann et al.,"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": "bert.pdf:p3:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "2017) and machine translation (McCann et al.,"
+      },
+      {
+        "kind": "caption",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Figure 1: Overall pre-training and fine-tuning procedures for BERT. Apart from output layers, the same architec"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tures are used in both pre-training and fine-tuning. The same pre-trained model parameters are used to initialize"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2018; Radford et al., 2018; Dai and Le, 2015)."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "There has also been work showing effective trans"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "2017). Computer vision research has also demonstrated the importance of transfer learning from large pre-trained models, where an effective recipe is"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "geNet (Deng et al., 2009; Yosinski et al., 2014)."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tialized with the same pre-trained parameters. The"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2http://nlp.seas.harvard.edu/2018/04/03/attention.html"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Model Architecture BERT’s model architec"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "coder based on the original implementation described in Vaswani et al. (2017) and released in"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "of Transformers has become common and our implementation is almost identical to the original, we will omit an exhaustive background description of the model architecture and refer "
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "such as “The Annotated Transformer.” In this work, we denote the number of layers"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "H, and the number of self-attention heads as A.3"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p3:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "In all cases we set the feed-forward/filter size to be"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "bert.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tions/answers)."
+      }
+    ]
+  },
+  {
+    "file": "bert.pdf",
+    "page": 4,
+    "lines": 52,
+    "regions": 8,
+    "gridKind": "none",
+    "blocks": 3,
+    "kinds": {
+      "paragraph": 3
+    },
+    "listLikeLines": 1,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 1,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 3,
+    "headings": 0,
+    "unknown": 0,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tion of this construction can be seen in Figure 2."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p4:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Task #2: Next Sentence Prediction (NSP)"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p4:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tence prediction task that can be trivially gener"
+      }
+    ]
+  },
+  {
+    "file": "bert.pdf",
+    "page": 5,
+    "lines": 63,
+    "regions": 5,
+    "gridKind": "none",
+    "blocks": 26,
+    "kinds": {
+      "caption": 1,
+      "heading": 12,
+      "paragraph": 10,
+      "unknown": 3
+    },
+    "listLikeLines": 1,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 1,
+    "captions": 1,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 10,
+    "headings": 12,
+    "unknown": 3,
+    "previews": [
+      {
+        "kind": "caption",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Figure 2: BERT input representation. The input embeddings are the sum of the token embeddings, the segmenta"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tion embeddings and the position embeddings."
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "shuffled sentence-level corpus such as the Billion"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "extract long contiguous sequences."
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "lows BERT to model many downstream tasks—"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "whether they involve single text or text pairs—by"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "swapping out the appropriate inputs and outputs."
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "For applications involving text pairs, a common"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "pattern is to independently encode text pairs be"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "fore applying bidirectional cross attention, such"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "as Parikh et al. (2016); Seo et al. (2017). BERT"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "these two stages, as encoding a concatenated text"
+      },
+      {
+        "kind": "heading",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "rectional cross attention between two sentences."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "are analogous to (1) sentence pairs in paraphras"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "tailment or sentiment analysis."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "In this section, we present BERT fine-tuning re"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p5:region:2",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "The General Language Understanding Evaluation (GLUE) benchmark (Wang et al., 2018a) is a collection of diverse natural language understanding tasks. Detailed descriptions of GLUE d"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "bert.pdf:p5:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "sequence (for single sentence or sentence pairs) as described in Section 3, and use the final hid"
+      }
+    ]
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 30,
+    "lines": 36,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 27,
+    "kinds": {
+      "list": 4,
+      "list-item": 12,
+      "paragraph": 6,
+      "unknown": 5
+    },
+    "listLikeLines": 15,
+    "listBlocks": 4,
+    "listItemBlocks": 12,
+    "unassignedListLike": 3,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 6,
+    "headings": 0,
+    "unknown": 5,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "• Information sharing with CISA and MS-ISAC (for SLTT organizations) is bi-directional. This\nincludes best practices and network defense information regarding ransomware trends and"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:0",
+        "lines": 3,
+        "mapped": true,
+        "text": "• Information sharing with CISA and MS-ISAC (for SLTT organizations) is bi-directional. This\nincludes best practices and network defense information regarding ransomware trends and"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "• Policy-oriented or technical assessments help organizations understand how they can improve"
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": null,
+        "lines": 10,
+        "mapped": true,
+        "text": "• Cyber exercises evaluate or help develop a cyber incident response plan in the context of a\nransomware incident scenario: cisa.gov/resources-tools/services/cisa-tabletop-exercise"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:1",
+        "lines": 3,
+        "mapped": true,
+        "text": "• Cyber exercises evaluate or help develop a cyber incident response plan in the context of a\nransomware incident scenario: cisa.gov/resources-tools/services/cisa-tabletop-exercise"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• CISA cybersecurity advisors advise on best practices and connect you with CISA resources to\nmanage cyber risk."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:1",
+        "lines": 5,
+        "mapped": true,
+        "text": "• Cyber Security Evaluation Tool (CSET) guides asset owners and operators through a\nsystematic process of evaluating operational technology (OT) and IT. CSET includes the\nRansomwar"
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "• SLTT and private sector organizations: CISA.JCDC@cisa.dhs.gov"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:2",
+        "lines": 1,
+        "mapped": true,
+        "text": "• SLTT and private sector organizations: CISA.JCDC@cisa.dhs.gov"
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "• NIST: Zero Trust Architecture\n• CISA: Cloud Security Technical Reference Architecture\n• CISA: Secure Cloud Business Applications (SCuBA) Project\n• CISA: Mitigations and Hardening"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:3",
+        "lines": 1,
+        "mapped": true,
+        "text": "• NIST: Zero Trust Architecture"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:3",
+        "lines": 1,
+        "mapped": true,
+        "text": "• CISA: Cloud Security Technical Reference Architecture"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:3",
+        "lines": 1,
+        "mapped": true,
+        "text": "• CISA: Secure Cloud Business Applications (SCuBA) Project"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:3",
+        "lines": 1,
+        "mapped": true,
+        "text": "• CISA: Mitigations and Hardening Guidance for MSPs and Small- and Mid-sized Businesses"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:3",
+        "lines": 1,
+        "mapped": true,
+        "text": "• CISA: Protecting Against Cyber Threats to Managed Service Providers and their Customers"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p30:region:0",
+        "parent": "cisa-ransomware.pdf:p30:block:list:3",
+        "lines": 1,
+        "mapped": true,
+        "text": "• NSA: Mitigating Cloud Vulnerabilities (NSA)"
+      }
+    ]
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 10,
+    "lines": 44,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 19,
+    "kinds": {
+      "paragraph": 11,
+      "list": 1,
+      "list-item": 1,
+      "unknown": 6
+    },
+    "listLikeLines": 12,
+    "listBlocks": 1,
+    "listItemBlocks": 1,
+    "unassignedListLike": 11,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 11,
+    "headings": 0,
+    "unknown": 6,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:3",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "CISA offers a no-cost Phishing\nCampaign Assessment and other\nno-cost assessments. Visit\ncisa.gov/cyber-resource-hub ."
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "• Implement filters at the email gateway to filter out\nemails with known malicious indicators, such as known malicious subject lines, and block"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": "cisa-ransomware.pdf:p10:block:list:0",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Implement filters at the email gateway to filter out\nemails with known malicious indicators, such as known malicious subject lines, and block"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "[CPG 2.B] [CPG 2.C].\no Password managers can help you develop and manage secure passwords. Secure and\nlimit access to any password managers in use and enable all security features "
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "older than Windows Server 2019 and Windows 10 as these versions do not have LAPS built in."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "and Windows 10 or greater."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "o Implement the Attack Surface Reduction (ASR) rule for LSASS."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2012R2, enable Protected Process Light (PPL) for Local Security Authority (LSA)."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "include emphasizing not reusing passwords and not saving passwords in local files."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "Admin Mode as feasible when establishing a remote connection to avoid direct exposure of\ncredentials."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "admin accounts to be used for admin purposes. If an individual user needs administrative rights\nover their workstation, use a separate account that does not have administrative acc"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Initial Access Vector: Phishing"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p10:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "training program that includes guidance on how to\nidentify and report suspicious activity (e.g., phishing) or\nincidents [CPG 2.I]."
+      }
+    ]
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 2,
+    "lines": 36,
+    "regions": 3,
+    "gridKind": "none",
+    "blocks": 18,
+    "kinds": {
+      "list": 2,
+      "list-item": 10,
+      "paragraph": 3,
+      "heading": 1,
+      "unknown": 2
+    },
+    "listLikeLines": 10,
+    "listBlocks": 2,
+    "listItemBlocks": 10,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 3,
+    "headings": 1,
+    "unknown": 2,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": null,
+        "lines": 12,
+        "mapped": true,
+        "text": "• Part 1: Ransomware and Data Extortion Preparation, Prevention, and Mitigation Best Practices, pages 8, and 9. • Initial Access Vector: Advanced Forms of Social Engineering p.14. "
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": "cisa-ransomware.pdf:p2:block:list:0",
+        "lines": 4,
+        "mapped": true,
+        "text": "• Part 1: Ransomware and Data Extortion Preparation, Prevention, and Mitigation Best Practices, pages 8, and 9."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": "cisa-ransomware.pdf:p2:block:list:0",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Initial Access Vector: Advanced Forms of Social Engineering p.14."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": "cisa-ransomware.pdf:p2:block:list:0",
+        "lines": 2,
+        "mapped": true,
+        "text": "• General Best Practices and Hardening Guidance, p.20."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": "cisa-ransomware.pdf:p2:block:list:0",
+        "lines": 3,
+        "mapped": true,
+        "text": "• Part 2: Ransomware and Data Extortion Response Checklist p. 24."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": "cisa-ransomware.pdf:p2:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "• Acknowledgements, p.30."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p2:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "Facing Vulnerabilities and Mitigations p.7."
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": null,
+        "lines": 12,
+        "mapped": true,
+        "text": "• Updated guidance on hardening SMB. • Added information about threat actors impersonating employees. • Added guidance on hardening web browsers. • Added a bullet about abnormal am"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": "cisa-ransomware.pdf:p2:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Updated guidance on hardening SMB."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": "cisa-ransomware.pdf:p2:block:list:1",
+        "lines": 3,
+        "mapped": true,
+        "text": "• Added information about threat actors impersonating employees."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": "cisa-ransomware.pdf:p2:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Added guidance on hardening web browsers."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": "cisa-ransomware.pdf:p2:block:list:1",
+        "lines": 3,
+        "mapped": true,
+        "text": "• Added a bullet about abnormal amounts of data outgoing over any ports."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": "cisa-ransomware.pdf:p2:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Added Acknowledgements section."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Change Record"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "added for internet-facing vulnerabilities."
+      }
+    ]
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 4,
+    "lines": 45,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 18,
+    "kinds": {
+      "paragraph": 7,
+      "list": 3,
+      "list-item": 6,
+      "unknown": 2
+    },
+    "listLikeLines": 8,
+    "listBlocks": 3,
+    "listItemBlocks": 6,
+    "unassignedListLike": 2,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 7,
+    "headings": 0,
+    "unknown": 2,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:4",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "#StopRansomware is CISA and FBI’s effort\nto publish advisories for network defenders\nthat detail network defense information\nrelated to various ransomware variants and\nthreat actor"
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "• Join a sector-based information sharing and analysis center (ISAC), where eligible, such as:\no MS-ISAC for U.S. State, Local, Tribal, & Territorial (SLTT) Government Entities -"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": "cisa-ransomware.pdf:p4:block:list:0",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Join a sector-based information sharing and analysis center (ISAC), where eligible, such as:\no MS-ISAC for U.S. State, Local, Tribal, & Territorial (SLTT) Government Entities -"
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "• Contact your local FBI field office for a list of points of contact (POCs) in the event of a cyber\nincident."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": "cisa-ransomware.pdf:p4:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Contact your local FBI field office for a list of points of contact (POCs) in the event of a cyber\nincident."
+      },
+      {
+        "kind": "list",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 11,
+        "mapped": true,
+        "text": "changes have been made:\n• Incorporated the #StopRansomware effort into\nthe title.\n• Added recommendations for preventing\ncommon initial infection vectors, including\ncompromised cre"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": "cisa-ransomware.pdf:p4:block:list:2",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Incorporated the #StopRansomware effort into\nthe title."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": "cisa-ransomware.pdf:p4:block:list:2",
+        "lines": 4,
+        "mapped": true,
+        "text": "• Added recommendations for preventing\ncommon initial infection vectors, including\ncompromised credentials and advanced forms\nof social engineering."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": "cisa-ransomware.pdf:p4:block:list:2",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Updated recommendations to address cloud\nbackups and zero trust architecture (ZTA)."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": "cisa-ransomware.pdf:p4:block:list:2",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Expanded the ransomware response checklist with threat hunting tips for detection and\nanalysis."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "audience for this guide includes information technology (IT) professionals as well as others within an\norganization involved in developing cyber incident response policies and proc"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "representatives from all 50 states, the District of Columbia, U.S. Territories, local and\ntribal governments, public K-12 education entities, public institutions of higher educatio"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "o Elections Infrastructure Information Sharing & Analysis Center (EI-ISAC) for U.S."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Council of ISACs for more information."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "practices, assessments, exercises, and more."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cisa-ransomware.pdf:p4:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "Engaging with peer organizations and CISA enables your organization to receive critical and timely\ninformation and access to services for managing ransomware and other cyber threat"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 1,
+    "lines": 30,
+    "regions": 3,
+    "gridKind": "table",
+    "blocks": 30,
+    "kinds": {
+      "unknown": 30
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 0,
+    "headings": 0,
+    "unknown": 30,
+    "previews": [
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "CS229 Lecture Notes"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Andrew Ng"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "(updates by Tengyu Ma)"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Supervised learning"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Let’s start by talking about a few examples of supervised learning problems."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Suppose we have a dataset giving the living areas and prices of 47 houses"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "from Portland, Oregon:"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Living area (feet 2 ) Price (1000$s)"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2104 400"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1600 330"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2400 369"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1416 232"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "3000 540"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": ". . . ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": ". ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "We can plot this data:"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "housing prices"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p1:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1000"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 2,
+    "lines": 29,
+    "regions": 6,
+    "gridKind": "math",
+    "blocks": 27,
+    "kinds": {
+      "paragraph": 8,
+      "unknown": 19
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 8,
+    "headings": 0,
+    "unknown": 19,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Given data like this, how can we learn to predict the prices of other houses"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "in Portland, as a function of the size of their living areas?"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "to denote the “output” or target variable that we are trying to predict"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "notation is simply an index into the training set, and has nothing to do with"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "To describe the supervised learning problem slightly more formally, our"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "function h is called a hypothesis . Seen pictorially, the process is therefore / like this:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "When the target variable that we’re trying to predict is continuous, such"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "lem. When y can take on only a small number of discrete values (such as / if, given the living area, we wanted to predict if a dwelling is a house or an"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "CS229 Fall 2018 2"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "To establish notation for future use, we’ll use x ( i ) to denote the “input”"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "variables (living area in this example), also called input features , and y ( i )"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "(price). A pair ( x ( i ) , y ( i ) ) is called a training example , and the dataset"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "that we’ll be using to learn—a list of n training examples { ( x ( i ) , y ( i ) ); i ="
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 , . . . , n } —is called a training set . Note that the superscript “( i )” in the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "exponentiation. We will also use X denote the space of input values, and Y"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "the space of output values. In this example, X = Y = R ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "goal is, given a training set, to learn a function h : X 7 → Y so that h ( x ) is a"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "“good” predictor for the corresponding value of y . For historical reasons, this"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 3,
+    "lines": 37,
+    "regions": 5,
+    "gridKind": "math",
+    "blocks": 28,
+    "kinds": {
+      "math": 3,
+      "paragraph": 5,
+      "unknown": 20
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 3,
+    "paragraphs": 5,
+    "headings": 0,
+    "unknown": 20,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p3:region:3",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "2 ( i ) / ( i )"
+      },
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "given.)"
+      },
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "∑ d / i =0"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": false,
+        "text": "Linear Regression / To make our housing example more interesting, let’s consider a slightly richer / dataset in which we also know the number of bedrooms in each house:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": false,
+        "text": "bedrooms. (In general, when designing a learning problem, it will be up to / you to decide what features to choose, so if you are out in Portland gathering / housing data, you migh"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "To perform supervised learning, we must decide how we’re going to rep-"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "resent functions/hypotheses h in a computer. As an initial choice, let’s say"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "h ( x ). To simplify our notation, we also introduce the convention of letting / x 0 = 1 (this is the intercept term ), so that"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "3"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Part I"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Living area (feet 2 ) #bedrooms Price (1000$s)"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2104 3 400"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1600 3 330"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2400 3 369"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1416 2 232"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "3000 4 540"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": ". . . . . ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": ". . ."
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 4,
+    "lines": 43,
+    "regions": 5,
+    "gridKind": "math",
+    "blocks": 36,
+    "kinds": {
+      "math": 3,
+      "heading": 1,
+      "paragraph": 5,
+      "unknown": 27
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 3,
+    "paragraphs": 5,
+    "headings": 1,
+    "unknown": 27,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p4:region:3",
+        "parent": null,
+        "lines": 3,
+        "mapped": false,
+        "text": "( ) / ∂ ∑ d / ∂θ j i =0"
+      },
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 ∑ n"
+      },
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "i =1"
+      },
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 LMS algorithm"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "the training examples we have. To formalize this, we will define a function"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": false,
+        "text": "If you’ve seen linear regression before, you may recognize this as the familiar / regression model. Whether or not you have seen it previously, let’s keep / going, and we’ll eventu"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "changes θ to make J ( θ ) smaller, until hopefully we converge to a value of"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "Here, α is called the learning rate . This is a very natural algorithm that / In order to implement this algorithm, we have to work out what is the"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "partial derivative term on the right hand side. Let’s first work it out for the / the sum in the definition of J . We have:"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p4:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "4"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Now, given a training set, how do we pick, or learn, the parameters θ ?"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "One reasonable method seems to be to make h ( x ) close to y , at least for"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "that measures, for each value of the θ ’s, how close the h ( x ( i ) )’s are to the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "corresponding y ( i ) ’s. We define the cost function :"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "J ( θ ) = ( h θ ( x ( i ) ) − y ( i ) ) 2 ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "least-squares cost function that gives rise to the ordinary least squares"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "We want to choose θ so as to minimize J ( θ ). To do so, let’s use a search"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 5,
+    "lines": 36,
+    "regions": 6,
+    "gridKind": "math",
+    "blocks": 27,
+    "kinds": {
+      "math": 3,
+      "paragraph": 8,
+      "unknown": 16
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 3,
+    "paragraphs": 8,
+    "headings": 0,
+    "unknown": 16,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "y ( i ) )."
+      },
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "i =1 / }"
+      },
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "i =1"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": false,
+        "text": "The rule is called the LMS update rule (LMS stands for “least mean squares”), / properties that seem natural and intuitive. For instance, the magnitude of / stance, if we are encou"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "We’d derived the LMS rule for when there was only a single training"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "example. There are two ways to modify this method for a training set of / more than one example. The first is replace it with the following algorithm:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Repeat until convergence {"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "By grouping the updates of the coordinates into an update of the vector"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "θ , we can rewrite update (1) in a slightly more succinct way:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "The reader can easily verify that the quantity in the summation in the"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p5:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": false,
+        "text": "gradient descent . Note that, while gradient descent can be susceptible / to local minima in general, the optimization problem we have posed here / 1 We use the notation “ a := b ”"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p5:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "5"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "For a single training example, this gives the update rule: 1"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "( ( i ) ( i ) ) ( i )"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "θ j := θ j + α y − h θ ( x ) x j ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "and is also known as the Widrow-Hoff learning rule. This rule has several"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "the update is proportional to the error term ( y ( i ) − h θ ( x ( i ) )); thus, for in-"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∑ n ( ( i ) ( i ) ) ( i )"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 8,
+    "lines": 35,
+    "regions": 5,
+    "gridKind": "math",
+    "blocks": 31,
+    "kinds": {
+      "heading": 3,
+      "paragraph": 4,
+      "unknown": 24
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 4,
+    "headings": 3,
+    "unknown": 24,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2 The normal equations"
+      },
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2.1 Matrix derivatives"
+      },
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "2.2 Least squares revisited"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "of doing so, this time performing the minimization explicitly and without"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": false,
+        "text": "zero. To enable us to do this without having to write reams of algebra and / pages full of matrices of derivatives, let’s introduce some notation for doing / calculus with matrices"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "the function f : R 2 × 2 7 → R is given by"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p8:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": false,
+        "text": "Armed with the tools of matrix derivatives, let us now proceed to find in / matrix-vectorial notation. / (actually n -by- d + 1, if we include the intercept term) that contains the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p8:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "8"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Gradient descent gives one way of minimizing J . Let’s discuss a second way"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "resorting to an iterative algorithm. In this method, we will minimize J by"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "explicitly taking its derivatives with respect to the θ j ’s, and setting them to"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "For a function f : R n × d 7 → R mapping from n -by- d matrices to the real"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "numbers, we define the derivative of f with respect to A to be:"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": " ∂f ∂f "
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∂A 11 · · · ∂A 1 d"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∇ A f ( A ) =   . . . . . . . . .  "
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∂f · · · ∂f"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∂A n 1 ∂A nd"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 10,
+    "lines": 38,
+    "regions": 6,
+    "gridKind": "math",
+    "blocks": 27,
+    "kinds": {
+      "math": 1,
+      "heading": 1,
+      "paragraph": 5,
+      "unknown": 20
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 1,
+    "paragraphs": 5,
+    "headings": 1,
+    "unknown": 20,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p10:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "( ( i ) 2 )"
+      },
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "3 Probabilistic interpretation"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "more details, see Section 4.3 of “Linear Algebra Review and Reference”). To"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": false,
+        "text": "When faced with a regression problem, why might linear regression, and / choice? In this section, we will give a set of probabilistic assumptions, under / which least-squares regre"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": false,
+        "text": "where \u000f ( i ) is an error term that captures either unmodeled effects (such as / if there are some features very pertinent to predicting housing price, but / that we’d left out of "
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "This implies that"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": false,
+        "text": "linearly independent examples is fewer than the number of features, or if the features / are not linearly independent, then X T X will not be invertible. Even in such cases, it is "
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p10:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "10"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "In the third step, we used the fact that a T b = b T a , and in the fifth step"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "used the facts ∇ x b T x = b and ∇ x x T Ax = 2 Ax for symmetric matrix A (for"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "minimize J , we set its derivatives to zero, and obtain the normal equations :"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "X T Xθ = X T ~ y"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Thus, the value of θ that minimizes J ( θ ) is given in closed form by the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "equation"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "θ = ( X T X ) − 1 X T ~ y. 3"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "specifically why might the least-squares cost function J , be a reasonable"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p10:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "equation"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "y ( i ) = θ T x ( i ) + \u000f ( i ) ,"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 14,
+    "lines": 33,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 18,
+    "kinds": {
+      "heading": 2,
+      "paragraph": 10,
+      "unknown": 6
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 10,
+    "headings": 2,
+    "unknown": 6,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Part II"
+      },
+      {
+        "kind": "heading",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "5 Logistic regression"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "τ controls how quickly the weight of a training example falls off with distance"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "is also something that you’ll get to experiment with in your homework.\nLocally weighted linear regression is the first example we’re seeing of a"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "non-parametric algorithm. The (unweighted) linear regression algorithm"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "data. Once we’ve fit the θi’s and stored them away, we no longer need to"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "make predictions using locally weighted linear regression, we need to keep\nthe entire training set around. The term “non-parametric” (roughly) refers\nto the fact that the amount of"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "Let’s now talk about the classification problem. This is just like the regression\nproblem, except that the values y we now want to predict take on only"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "classification problem in which y can take on only two values, 0 and 1.\n(Most of what we say here will also generalize to the multiple-class case.)"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "the positive class , and they are sometimes also denoted by the symbols “-”"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "training example."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p14:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "discrete-valued, and use our old linear regression algorithm to try to predict\ny given x. However, it is easy to construct examples where this method"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p14:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "14"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "of its x(i) from the query point x; τ is called the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "that we saw earlier is known as a parametric"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "keep the training data around to make future predictions."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "a small number of discrete values. For now, we will focus on the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "We could approach the classification problem ignoring the fact that"
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 25,
+    "lines": 37,
+    "regions": 6,
+    "gridKind": "math",
+    "blocks": 32,
+    "kinds": {
+      "math": 1,
+      "paragraph": 7,
+      "unknown": 24
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 1,
+    "paragraphs": 7,
+    "headings": 0,
+    "unknown": 24,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∑ k − 1"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Let’s derive a GLM for modelling this type of multinomial data. To do"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": false,
+        "text": "so, we will begin by expressing the multinomial as an exponential family / distribution. / k parameters φ 1 , . . . , φ k specifying the probability of each of the outcomes. / Howe"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "we will also let φ k = 1 − i =1 φ i , but we should keep in mind that this is / To express the multinomial as an exponential family distribution, we will"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "define T ( y ) ∈ R k − 1 as follows:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "We introduce one more very useful piece of notation. An indicator func-"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "tion 1 {·} takes on a value of 1 if its argument is true, and 0 otherwise"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "cs229-notes.pdf:p25:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "( T ( y )) i = 1 { y = i } . (Before you continue reading, please make sure you un- / We are now ready to show that the multinomial is a member of the"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p25:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "25"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "To parameterize a multinomial over k possible outcomes, one could use"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "not be independent (since knowing any ∑ k − 1 of the φ i ’s uniquely determines"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p25:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "k"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "the last one, as they must satisfy i =1 φ i = 1). So, we will instead pa-"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "rameterize the multinomial with only k ∑ − 1 parameters, φ 1 , . . . , φ k − 1 , where"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p25:region:4",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "k − 1"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "φ i = p ( y = i ; φ ), and p ( y = k ; φ ) = 1 − i =1 φ i . For notational convenience,"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "not a parameter, and that it is fully specified by φ 1 , . . . , φ k − 1 ."
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "         "
+      }
+    ]
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 26,
+    "lines": 45,
+    "regions": 3,
+    "gridKind": "table",
+    "blocks": 45,
+    "kinds": {
+      "unknown": 45
+    },
+    "listLikeLines": 2,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 2,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 0,
+    "headings": 0,
+    "unknown": 45,
+    "previews": [
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p26:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "26"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p26:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "exponential family. We have:"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 { y =1 } 1 { y =2 } 1 { y = k }"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "p ( y ; φ ) = φ 1 φ 2 · · · φ k"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p26:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "∑ k − 1"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 { y =1 } 1 { y =2 } 1 − i =1 1 { y = i }"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "= φ 1 φ 2 · · · φ k"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p26:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "1 − ( T"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "( T ( y )) 1 ( T ( y )) 2 ∑ k i =1 − 1 ( y )) i"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "= φ 1 φ 2 · · · φ k"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "= exp(( T ( y )) 1 log( φ 1 ) + ( T ( y )) 2 log( φ 2 ) +"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "( ∑ )"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p26:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "k − 1"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "· · · + 1 − i =1 ( T ( y )) i log( φ k ))"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "= exp(( T ( y )) 1 log( φ 1 /φ k ) + ( T ( y )) 2 log( φ 2 /φ k ) +"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "· · · + ( T ( y )) k − 1 log( φ k − 1 /φ k ) + log( φ k ))"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "= b ( y ) exp( η T T ( y ) − a ( η ))"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "cs229-notes.pdf:p26:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "where"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "page": 2,
+    "lines": 14,
+    "regions": 2,
+    "gridKind": "none",
+    "blocks": 3,
+    "kinds": {
+      "paragraph": 3
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 3,
+    "headings": 0,
+    "unknown": 0,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "page",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "Peter Mell Timothy Grance"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "page",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "Computer Security Division Information Technology Laboratory National Institute of Standards and Technology Gaithersburg, MD 20899-8930\nSeptember 2011"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "page",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "U.S. Department of Commerce\nRebecca M. Blank, Acting Secretary\nNational Institute of Standards and Technology\nPatrick D. Gallagher, Under Secretary for Standards and Technology and"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "page": 3,
+    "lines": 18,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 8,
+    "kinds": {
+      "heading": 1,
+      "paragraph": 6,
+      "unknown": 1
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 6,
+    "headings": 1,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "7 pages (September 2011)"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Reports on Computer Systems Technology"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "The Information Technology Laboratory (ITL) at the National Institute of Standards and Technology\n(NIST) promotes the U.S. economy and public welfare by providing technical leaders"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "administrative, and management standards and guidelines for the cost-effective security and privacy of"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "reports on ITL’s research, guidance, and outreach efforts in computer security and its collaborative\nactivities with industry, government, and academic organizations."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "National Institute of Standards and Technology Special Publication 800-145"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "Certain commercial entities, equipment, or materials may be identified in this\ndocument in order to describe an experimental procedure or concept adequately.\nSuch identification is"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "nist-800-145.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "ii"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 2,
+    "lines": 19,
+    "regions": 5,
+    "gridKind": "none",
+    "blocks": 17,
+    "kinds": {
+      "heading": 1,
+      "paragraph": 15,
+      "unknown": 1
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 15,
+    "headings": 1,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "nist-800-207.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Zero Trust Architecture"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "NIST Special Publication 800-207"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Advanced Network Technologies Division"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Cybersecurity & Infrastructure Security Agency"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "This publication is available free of charge from:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Walter Copan, NIST Director and Under Secretary of Commerce for Standards and Technology"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Scott Rose"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Oliver Borchert"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Information Technology Laboratory"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": false,
+        "text": "Stu Mitchell / Stu2Labs"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Stafford, VA"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Sean Connelly"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Department of Homeland Security"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "https://doi.org/10.6028/NIST.SP.800-207"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "U.S. Department of Commerce\nWilbur L. Ross, Jr., Secretary"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "National Institute of Standards and Technology"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "nist-800-207.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "August 2020"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 3,
+    "lines": 38,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 16,
+    "kinds": {
+      "heading": 1,
+      "paragraph": 14,
+      "unknown": 1
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 14,
+    "headings": 1,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "100 Bureau Drive (Mail Stop 8920) Gaithersburg, MD 20899-8920"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "This publication has been developed by NIST in accordance with its statutory responsibilities under the"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 8,
+        "mapped": true,
+        "text": "(P.L.) 113-283. NIST is responsible for developing information security standards and guidelines, including\nminimum requirements for federal information systems, but such standards"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "organizations on a voluntary basis and is not subject to copyright in the United States. Attribution would,\nhowever, be appreciated by NIST."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "National Institute of Standards and Technology Special Publication 800-207"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Natl. Inst. Stand. Technol. Spec. Publ. 800-207, 59 pages (August 2020)"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "CODEN: NSPUE2"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "This publication is available free of charge from:\nhttps://doi.org/10.6028/NIST.SP.800-207"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 11,
+        "mapped": true,
+        "text": "Certain commercial entities, equipment, or materials may be identified in this document in order to describe an\nexperimental procedure or concept adequately. Such identification is"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "https://csrc.nist.gov/publications."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Comments on this publication may be submitted to:"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "National Institute of Standards and Technology"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Attn: Advanced Network Technologies Division, Information Technology Laboratory"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Email: zerotrust-arch@nist.gov"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "All comments are subject to release under the Freedom of Information Act (FOIA)."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "nist-800-207.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": false,
+        "text": "Authority"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 14,
+    "lines": 35,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 21,
+    "kinds": {
+      "furniture": 2,
+      "caption": 1,
+      "paragraph": 4,
+      "unknown": 14
+    },
+    "listLikeLines": 11,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 11,
+    "captions": 1,
+    "furniture": 2,
+    "math": 0,
+    "paragraphs": 4,
+    "headings": 0,
+    "unknown": 14,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p14:region:0",
+        "parent": null,
+        "lines": 9,
+        "mapped": true,
+        "text": "authentication requires that the claimant prove possession and control of the authenticator\nthrough a secure authentication protocol.\nAuthenticator Assurance Level 2 : AAL2 provide"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p14:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-63b hardware-based authenticator and an authenticator that provides verifier impersonation"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p14:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "resistance; the same device may fulfill both these requirements. In order to authenticate at AAL3,\nclaimants are required to prove possession and control of two distinct authentica"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p14:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "Appendix A — Strength of Memorized"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 16,
+    "lines": 38,
+    "regions": 5,
+    "gridKind": "none",
+    "blocks": 22,
+    "kinds": {
+      "furniture": 2,
+      "list": 1,
+      "list-item": 1,
+      "heading": 2,
+      "paragraph": 7,
+      "unknown": 9
+    },
+    "listLikeLines": 9,
+    "listBlocks": 1,
+    "listItemBlocks": 1,
+    "unassignedListLike": 8,
+    "captions": 0,
+    "furniture": 2,
+    "math": 0,
+    "paragraphs": 7,
+    "headings": 2,
+    "unknown": 9,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "• Multi-Factor OTP Device ( Section 5.1.5 )"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": "nist-800-63b.pdf:p16:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "• Multi-Factor OTP Device ( Section 5.1.5 )"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 7,
+        "mapped": true,
+        "text": "This section contains both normative and informative material.\nTo satisfy the requirements of a given AAL, a claimant SHALL be authenticated with at least a\ngiven level of strength"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-63b Detailed normative requirements for authenticators and verifiers at each AAL are provided"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "See SP 800-63 Section 6.2 for details on how to choose the most appropriate AAL."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 4,
+        "mapped": true,
+        "text": "At IAL1, it is possible that attributes are collected and made available by the digital identity\nservice. Any PII or other personal information — whether self-asserted or validated"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Authenticator Assurance Level 1"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "This section is normative.\nAAL1 provides some assurance that the claimant controls an authenticator bound to the\nsubscriber’s account. AAL1 requires either single-factor or multi-f"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p16:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "AAL1 authentication SHALL occur by the use of any of the following authenticator types, which\nare defined in Section 5:"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 37,
+    "lines": 41,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 20,
+    "kinds": {
+      "furniture": 2,
+      "list": 2,
+      "list-item": 8,
+      "heading": 1,
+      "paragraph": 6,
+      "unknown": 1
+    },
+    "listLikeLines": 8,
+    "listBlocks": 2,
+    "listItemBlocks": 8,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 2,
+    "math": 0,
+    "paragraphs": 6,
+    "headings": 1,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 8,
+        "mapped": true,
+        "text": "legitimate claimant out as a result of rate limiting. These include:\n• Requiring the claimant to complete a CAPTCHA before attempting authentication.\n• Requiring the claimant to wa"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "• Requiring the claimant to complete a CAPTCHA before attempting authentication."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:0",
+        "lines": 3,
+        "mapped": true,
+        "text": "• Requiring the claimant to wait following a failed attempt for a period of time that\nincreases as the account approaches its maximum allowance for consecutive failed\nattempts (e.g"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:0",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Accepting only authentication requests that come from a white list of IP addresses from\nwhich the subscriber has been successfully authenticated before."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "• Leveraging other risk-based or adaptive authentication techniques to identify user"
+      },
+      {
+        "kind": "list",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 16,
+        "mapped": true,
+        "text": "authentication. These reasons include:\n• The biometric False Match Rate (FMR) does not provide confidence in the authentication\nof the subscriber by itself. In addition, FMR does n"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• The biometric False Match Rate (FMR) does not provide confidence in the authentication\nof the subscriber by itself. In addition, FMR does not account for spoofing attacks."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:1",
+        "lines": 2,
+        "mapped": true,
+        "text": "• Biometric comparison is probabilistic, whereas the other authentication factors are\ndeterministic."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:1",
+        "lines": 4,
+        "mapped": true,
+        "text": "• Biometric template protection schemes provide a method for revoking biometric\ncredentials that is comparable to other authentication factors (e.g., PKI certificates and\npasswords"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": "nist-800-63b.pdf:p37:block:list:1",
+        "lines": 7,
+        "mapped": true,
+        "text": "• Biometric characteristics do not constitute secrets. They can be obtained online or by\ntaking a picture of someone with a camera phone (e.g., facial images) with or without\ntheir"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Additional techniques MAY be used to reduce the likelihood that an attacker will lock the"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-63b behavior that falls within, or out of, typical norms. These might, for example, include u"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "of IP address, geolocation, timing of request patterns, or browser metadata."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "When the subscriber successfully authenticates, the verifier SHOULD disregard any previous\nfailed attempts for that user from the same IP address."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 6,
+        "mapped": true,
+        "text": "The use of biometrics (something you are ) in authentication includes both measurement of\nphysical characteristics (e.g., fingerprint, iris, facial characteristics) and behavioral\n"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p37:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "Therefore, the limited use of biometrics for authentication is supported with the following"
+      }
+    ]
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 49,
+    "lines": 39,
+    "regions": 6,
+    "gridKind": "none",
+    "blocks": 26,
+    "kinds": {
+      "furniture": 3,
+      "list": 2,
+      "list-item": 5,
+      "heading": 3,
+      "paragraph": 8,
+      "unknown": 5
+    },
+    "listLikeLines": 8,
+    "listBlocks": 2,
+    "listItemBlocks": 5,
+    "unassignedListLike": 3,
+    "captions": 0,
+    "furniture": 3,
+    "math": 0,
+    "paragraphs": 8,
+    "headings": 3,
+    "unknown": 5,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "8. SHALL NOT be available to insecure communications between the host and\nsubscriber’s endpoint. Authenticated sessions SHALL NOT fall back to an insecure\ntransport, such as from h"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": "nist-800-63b.pdf:p49:block:list:0",
+        "lines": 3,
+        "mapped": true,
+        "text": "8. SHALL NOT be available to insecure communications between the host and\nsubscriber’s endpoint. Authenticated sessions SHALL NOT fall back to an insecure\ntransport, such as from h"
+      },
+      {
+        "kind": "list",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 7,
+        "mapped": true,
+        "text": "1. SHALL be tagged to be accessible only on secure (HTTPS) sessions.\n2. SHALL be accessible to the minimum practical set of hostnames and paths.\n3. SHOULD be tagged to be inaccessi"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": "nist-800-63b.pdf:p49:block:list:1",
+        "lines": 1,
+        "mapped": true,
+        "text": "1. SHALL be tagged to be accessible only on secure (HTTPS) sessions."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": "nist-800-63b.pdf:p49:block:list:1",
+        "lines": 1,
+        "mapped": true,
+        "text": "2. SHALL be accessible to the minimum practical set of hostnames and paths."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": "nist-800-63b.pdf:p49:block:list:1",
+        "lines": 1,
+        "mapped": true,
+        "text": "3. SHOULD be tagged to be inaccessible via JavaScript (HttpOnly)."
+      },
+      {
+        "kind": "list-item",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": "nist-800-63b.pdf:p49:block:list:1",
+        "lines": 3,
+        "mapped": true,
+        "text": "4. SHOULD be tagged to expire at, or soon after, the session’s validity period. This\nrequirement is intended to limit the accumulation of cookies, but SHALL NOT be\ndepended upon to"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "the potential exposure of local storage to cross-site scripting (XSS) attacks."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "and 4.3.4, as appropriate for the AAL."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "URLs or POST content SHALL contain a session identifier that SHALL be verified by the RP to"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "ensure that actions taken outside the session do not affect the protected session.\nThere are several mechanisms for managing a session over time. The following sections give\ndiffer"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Management Cheat Sheet [OWASP-session]."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "Browser cookies are the predominant mechanism by which a session will be created and tracked\nfor a subscriber accessing a service."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 5,
+        "mapped": true,
+        "text": "An access token — such as found in OAuth — is used to allow an application to access a set of\nservices on a subscriber’s behalf following an authentication event. The presence of a"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "nist-800-63b.pdf:p49:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "Other methods of secure device identification — including but not limited to mutual TLS, token\nbinding, or other mechanisms — MAY be used to enact a session between a subscriber an"
+      }
+    ]
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 2,
+    "lines": 55,
+    "regions": 8,
+    "gridKind": "none",
+    "blocks": 7,
+    "kinds": {
+      "heading": 1,
+      "paragraph": 5,
+      "unknown": 1
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 5,
+    "headings": 1,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "heading",
+        "regionId": "resnet.pdf:p2:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2015 classification competition . The extremely deep rep"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p2:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "resentations also have excellent generalization performance"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p2:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "it is applicable in other vision and non-vision problems."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "weight layer"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "are comparably good or better than the constructed solution"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "In this paper, we address the degradation problem by"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p2:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2"
+      }
+    ]
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 3,
+    "lines": 58,
+    "regions": 8,
+    "gridKind": "none",
+    "blocks": 12,
+    "kinds": {
+      "paragraph": 11,
+      "unknown": 1
+    },
+    "listLikeLines": 1,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 1,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 11,
+    "headings": 0,
+    "unknown": 1,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "connection and element-wise addition. We adopt the sec"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "The shortcut connections in Eqn.(1) introduce neither ex"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "Plain Network. Our plain baselines (Fig. 3, middle) are mainly inspired by the philosophy of VGG nets [41] (Fig. 3, left). The convolutional layers mostly have 3×3 filters and"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "feature map size, the layers have the same number of fil"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "convolutional layers that have a stride of 2. The network"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "layer baseline has 3.6 billion FLOPs (multiply-adds), which"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "explicitly let these layers approximate a residual function"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "F(x)+x. Although both forms should be able to asymptot"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "problem. If the optimal function is closer to an identity"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "by experiments (Fig. 7) that the learned residual functions in general have small responses, suggesting that identity mappings provide reasonable preconditioning."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "ers considered."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p3:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3"
+      }
+    ]
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 4,
+    "lines": 70,
+    "regions": 8,
+    "gridKind": "none",
+    "blocks": 30,
+    "kinds": {
+      "paragraph": 24,
+      "unknown": 6
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 24,
+    "headings": 0,
+    "unknown": 6,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "insert shortcut connections (Fig. 3, right) which turn the"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "network into its counterpart residual version. The identity"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "shortcuts (Eqn.(1)) can be directly used when the input and\noutput are of the same dimensions (solid line shortcuts in"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Fig. 3). When the dimensions increase (dotted line shortcuts"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "3x3 conv, 128 7x7 conv, 64, /2 7x7 conv, 64, /2\npool, /2 pool, /2 pool, /2"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "for increasing dimensions. This option introduces no extra"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3x3 conv, 256 3x3 conv, 64 3x3 conv, 64"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3x3 conv, 64 3x3 conv, 64"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "in [21, 41]. The image is resized with its shorter side ran-"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3x3 conv, 512 3x3 conv, 128 3x3 conv, 128"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "3x3 conv, 512 3x3 conv, 256 3x3 conv, 256\n3x3 conv, 512 3x3 conv, 256 3x3 conv, 256"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3x3 conv, 256 3x3 conv, 256"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3x3 conv, 256 3x3 conv, 256"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "pool, /2 3x3 conv, 512, /2 3x3 conv, 512, /2"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "4.1. ImageNet Classification"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3x3 conv, 512 3x3 conv, 512"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "fc 4096 fc 1000 fc 1000"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p4:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "more details and other variants."
+      }
+    ]
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 5,
+    "lines": 62,
+    "regions": 8,
+    "gridKind": "math",
+    "blocks": 19,
+    "kinds": {
+      "math": 3,
+      "heading": 1,
+      "paragraph": 7,
+      "caption": 2,
+      "unknown": 6
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 2,
+    "furniture": 0,
+    "math": 3,
+    "paragraphs": 7,
+    "headings": 1,
+    "unknown": 6,
+    "previews": [
+      {
+        "kind": "math",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "["
+      },
+      {
+        "kind": "math",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "["
+      },
+      {
+        "kind": "math",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "["
+      },
+      {
+        "kind": "heading",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Residual Networks. Next we evaluate 18-layer and 34-"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "1×1, 256 1×1, 256 1×1, 256"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "1×1, 512 1×1, 512 1×1, 512"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "1×1, 1024 1×1, 1024 1×1, 1024"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "1×1, 2048 1×1, 2048 1×1, 2048"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "(right). In the first comparison (Table 2 and Fig. 4 right), we use identity mapping for all shortcuts and zero-padding"
+      },
+      {
+        "kind": "caption",
+        "regionId": "resnet.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Table 1. Architectures for ImageNet. Building blocks are shown in brackets (see also Fig. 5), with the numbers of blocks stacked. Down"
+      },
+      {
+        "kind": "caption",
+        "regionId": "resnet.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Figure 4. Training on ImageNet . Thin curves denote training error, and bold curves denote validation error of the center crops. Left: plain"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "sampling is performed by conv3 1, conv4 1, and conv5 1 with a stride of 2."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "resnet.pdf:p5:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "networks of 18 and 34 layers. Right: ResNets of 18 and 34 layers. In this plot, the residual networks have no extra parameter compared to their plain counterparts."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3×3 max pool, stride 2"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "["
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "18-layer"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "18-layer"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "resnet.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "0"
+      }
+    ]
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 2,
+    "lines": 73,
+    "regions": 7,
+    "gridKind": "none",
+    "blocks": 18,
+    "kinds": {
+      "list": 2,
+      "list-item": 2,
+      "paragraph": 11,
+      "heading": 1,
+      "unknown": 2
+    },
+    "listLikeLines": 4,
+    "listBlocks": 2,
+    "listItemBlocks": 2,
+    "unassignedListLike": 2,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 11,
+    "headings": 1,
+    "unknown": 2,
+    "previews": [
+      {
+        "kind": "list",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "This paper makes the following contributions:\n• We explain an algorithm for dynamically forming trace trees to"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": "tracemonkey.pdf:p2:block:list:0",
+        "lines": 1,
+        "mapped": true,
+        "text": "• We explain an algorithm for dynamically forming trace trees to"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "a na¨ıve implementation, inner loops would become hot first, and the VM would start tracing there. When the inner loop exits, the VM would detect that a different branch was taken."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "on ever tracing outer loops. We solve the nested loop problem by recording"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "loop, but then it starts a new trace at the outer loop header. When the outer loop reaches the inner loop header, the system tries to call"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "the outer trace as normal. In this way, our system can trace any number of loops nested to any depth without causing excessive tail duplication."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "We implemented these techniques for an existing JavaScript in"
+      },
+      {
+        "kind": "list",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "2. Overview: Example Tracing Run"
+      },
+      {
+        "kind": "list-item",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": "tracemonkey.pdf:p2:block:list:1",
+        "lines": 1,
+        "mapped": true,
+        "text": "2. Overview: Example Tracing Run"
+      },
+      {
+        "kind": "heading",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "how TraceMonkey executes an example program. The example"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Record Enter"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "LIR Trace Compiled Trace"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "LIR Trace Compiled Trace"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "existing trace"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Compiled Trace"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "code interpreter. Every loop back edge is a potential trace point."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "tracemonkey.pdf:p2:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "loop/exit"
+      },
+      {
+        "kind": "unknown",
+        "regionId": null,
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "finish at nested trace loop header loop edge with"
+      }
+    ]
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 3,
+    "lines": 59,
+    "regions": 7,
+    "gridKind": "none",
+    "blocks": 13,
+    "kinds": {
+      "caption": 2,
+      "paragraph": 11
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 2,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 11,
+    "headings": 0,
+    "unknown": 0,
+    "previews": [
+      {
+        "kind": "caption",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Figure 3. LIR snippet for sample program. This is the LIR recorded for line 5 of the sample program in Figure 1. The LIR encodes"
+      },
+      {
+        "kind": "caption",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "Figure 4. x86 snippet for sample program. This is the x86 code compiled from the LIR snippet in Figure 3. Most LIR instructions compile"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "v0 := ld state[748] // load primes from the trace activation record"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "st sp[0], v0 // store primes to interpreter stack"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "v1 := ld state[764] // load k from the trace activation record\nv2 := i2f(v1) // convert k from int to double"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "st sp[8], v1 // store k to interpreter stack\nst sp[16], 0 // store false to interpreter stack"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "v3 := ld v0[4] // load class word for primes\nv4 := and v3, -4 // mask out object class tag for primes\nv5 := eq v4, Array // test whether primes is an array"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "xf v5 // side exit if v5 is false"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "v6 := js_Array_set(v0, v2, false) // call function to set array element\nv7 := eq v6, 0 // test return value from call"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "xt v7 // side exit if js_Array_set returns false."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "the semantics in SSA form using temporary variables. The LIR also encodes all the stores that the interpreter would do to its data stack.\nSometimes these stores can be optimized aw"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 22,
+        "mapped": true,
+        "text": "mov edx, ebx(748) // load primes from the trace activation record\nmov edi(0), edx // (*) store primes to interpreter stack\nmov esi, ebx(764) // load k from the trace activation rec"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p3:region:0",
+        "parent": null,
+        "lines": 3,
+        "mapped": true,
+        "text": "to a single x86 instruction. Instructions marked with (*) would be omitted by an idealized compiler that knew that none of the side exits\nwould ever be taken. The 17 instructions g"
+      }
+    ]
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 4,
+    "lines": 66,
+    "regions": 7,
+    "gridKind": "none",
+    "blocks": 4,
+    "kinds": {
+      "paragraph": 4
+    },
+    "listLikeLines": 1,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 1,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 4,
+    "headings": 0,
+    "unknown": 0,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p4:region:3",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "LIR instruction. This is just an unconditional branch to the top of the trace. Such traces return only via guards."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p4:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "trace if necessary."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p4:region:3",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "All LIR primitives apply to operands of specific types. Thus,"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p4:region:0",
+        "parent": null,
+        "lines": 2,
+        "mapped": true,
+        "text": "ate on unboxed values in simple variables and arrays as much as possible."
+      }
+    ]
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 5,
+    "lines": 68,
+    "regions": 5,
+    "gridKind": "none",
+    "blocks": 7,
+    "kinds": {
+      "paragraph": 5,
+      "unknown": 2
+    },
+    "listLikeLines": 0,
+    "listBlocks": 0,
+    "listItemBlocks": 0,
+    "unassignedListLike": 0,
+    "captions": 0,
+    "furniture": 0,
+    "math": 0,
+    "paragraphs": 5,
+    "headings": 0,
+    "unknown": 2,
+    "previews": [
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "trace we note the fact that the variable in question as been observed"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "which we call the “oracle”."
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "side exits. These traces are recorded much like root traces: there is"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p5:region:2",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "threshold, recording starts. Recording stops exactly as for the root"
+      },
+      {
+        "kind": "paragraph",
+        "regionId": "tracemonkey.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "then to an integer internally to the array implementation."
+      },
+      {
+        "kind": "unknown",
+        "regionId": "tracemonkey.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "3.2"
+      },
+      {
+        "kind": "unknown",
+        "regionId": "tracemonkey.pdf:p5:region:0",
+        "parent": null,
+        "lines": 1,
+        "mapped": true,
+        "text": "1"
+      }
+    ]
+  }
+]

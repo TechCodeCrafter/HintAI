@@ -1,0 +1,345 @@
+{
+  "summary": {
+    "phase": "4A.9.1",
+    "role": "structural IR + diagnostics only — no production behavior change",
+    "generatedAt": "2026-08-30T21:03:40.601Z",
+    "frozenComparison": {
+      "readyPages": 326,
+      "readingOrder": {
+        "uncertain": 242,
+        "singleColumn": 70,
+        "twoColumn": 14
+      },
+      "index": {
+        "isolated": 187,
+        "skipped": 55,
+        "full": 84
+      },
+      "totalChunks": 7616,
+      "isolatedLineChunks": 6536,
+      "isolatedShare": 0.8581932773109243,
+      "note": "6017 was the 4A.9 origin class (isolated line after list/caption/header labels). Page-index isolated chunks are 6536. Production equality is 7616 total + per-file counts.",
+      "expected": {
+        "readyPages": 326,
+        "uncertain": 242,
+        "singleColumn": 70,
+        "twoColumn": 14,
+        "isolated": 187,
+        "skipped": 55,
+        "totalChunks": 7616
+      },
+      "match": true
+    },
+    "mappingErrorCount": 0,
+    "structureErrorCount": 0,
+    "chunkMismatches": [],
+    "frozenCardMetricsUntouched": {
+      "questions": 126,
+      "spoken": 13,
+      "wrongIntent": 0.031746031746031744,
+      "wrongIntentCount": "4/126",
+      "unsupported": 0,
+      "unsupportedCount": "0/13",
+      "fabricatedProvenance": 0,
+      "pageCitationAccuracy": 1,
+      "evidenceLocationAccuracy": 1,
+      "answerableHitRate": 0.10112359550561797,
+      "answerableHitCount": "9/89",
+      "falseSilence": 0.8539325842696629,
+      "falseSilenceCount": "76/89",
+      "unanswerableSpoke": 0
+    },
+    "timings": [
+      {
+        "file": "attention.pdf",
+        "deriveMs": 15.362083999999982,
+        "pages": 15,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "bert.pdf",
+        "deriveMs": 21.088958000000048,
+        "pages": 16,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "bitcoin.pdf",
+        "deriveMs": 4.960542000000032,
+        "pages": 9,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "cisa-ransomware.pdf",
+        "deriveMs": 16.571957999999995,
+        "pages": 31,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "cs229-notes.pdf",
+        "deriveMs": 17.255083000000013,
+        "pages": 28,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "lora.pdf",
+        "deriveMs": 19.722792000000027,
+        "pages": 26,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "nist-800-145.pdf",
+        "deriveMs": 1.7684580000000096,
+        "pages": 7,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "nist-800-207.pdf",
+        "deriveMs": 22.933583,
+        "pages": 59,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "nist-800-63b.pdf",
+        "deriveMs": 39.213624999999865,
+        "pages": 80,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "omb-m22-09.pdf",
+        "deriveMs": 13.198916000000281,
+        "pages": 29,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "resnet.pdf",
+        "deriveMs": 14.164708000000246,
+        "pages": 12,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      },
+      {
+        "file": "tracemonkey.pdf",
+        "deriveMs": 15.844833000000108,
+        "pages": 14,
+        "blobLoads": 0,
+        "pdfjsOpensDuringDerive": 0
+      }
+    ]
+  },
+  "documents": [
+    {
+      "file": "attention.pdf",
+      "readiness": "ready",
+      "pages": 15,
+      "chunks": 158,
+      "twoDominantProsePages": 3,
+      "crossGutterPages": 15,
+      "listCandidates": 3,
+      "captionCandidates": 10,
+      "furnitureCandidates": 5,
+      "structureErrors": 0,
+      "deriveMs": 15.362083999999982,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "bert.pdf",
+      "readiness": "ready",
+      "pages": 16,
+      "chunks": 781,
+      "twoDominantProsePages": 16,
+      "crossGutterPages": 16,
+      "listCandidates": 24,
+      "captionCandidates": 13,
+      "furnitureCandidates": 0,
+      "structureErrors": 0,
+      "deriveMs": 21.088958000000048,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "bitcoin.pdf",
+      "readiness": "ready",
+      "pages": 9,
+      "chunks": 118,
+      "twoDominantProsePages": 4,
+      "crossGutterPages": 9,
+      "listCandidates": 18,
+      "captionCandidates": 0,
+      "furnitureCandidates": 1,
+      "structureErrors": 0,
+      "deriveMs": 4.960542000000032,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "readiness": "ready",
+      "pages": 31,
+      "chunks": 945,
+      "twoDominantProsePages": 7,
+      "crossGutterPages": 31,
+      "listCandidates": 135,
+      "captionCandidates": 3,
+      "furnitureCandidates": 0,
+      "structureErrors": 0,
+      "deriveMs": 16.571957999999995,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "readiness": "ready",
+      "pages": 28,
+      "chunks": 27,
+      "twoDominantProsePages": 10,
+      "crossGutterPages": 28,
+      "listCandidates": 11,
+      "captionCandidates": 0,
+      "furnitureCandidates": 9,
+      "structureErrors": 0,
+      "deriveMs": 17.255083000000013,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "encrypted-sample.pdf",
+      "readiness": "unreadable",
+      "pages": 0,
+      "chunks": 0
+    },
+    {
+      "file": "encrypted.pdf",
+      "readiness": "unreadable",
+      "pages": 0,
+      "chunks": 0
+    },
+    {
+      "file": "irs-p15.pdf",
+      "readiness": "refused",
+      "pages": 59,
+      "chunks": 0
+    },
+    {
+      "file": "lora.pdf",
+      "readiness": "ready",
+      "pages": 26,
+      "chunks": 353,
+      "twoDominantProsePages": 10,
+      "crossGutterPages": 26,
+      "listCandidates": 8,
+      "captionCandidates": 26,
+      "furnitureCandidates": 8,
+      "structureErrors": 0,
+      "deriveMs": 19.722792000000027,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "nist-800-12.pdf",
+      "readiness": "refused",
+      "pages": 101,
+      "chunks": 0
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "readiness": "ready",
+      "pages": 7,
+      "chunks": 129,
+      "twoDominantProsePages": 0,
+      "crossGutterPages": 7,
+      "listCandidates": 2,
+      "captionCandidates": 0,
+      "furnitureCandidates": 1,
+      "structureErrors": 0,
+      "deriveMs": 1.7684580000000096,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "readiness": "ready",
+      "pages": 59,
+      "chunks": 1154,
+      "twoDominantProsePages": 2,
+      "crossGutterPages": 59,
+      "listCandidates": 62,
+      "captionCandidates": 23,
+      "furnitureCandidates": 13,
+      "structureErrors": 0,
+      "deriveMs": 22.933583,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "readiness": "ready",
+      "pages": 80,
+      "chunks": 2080,
+      "twoDominantProsePages": 12,
+      "crossGutterPages": 80,
+      "listCandidates": 150,
+      "captionCandidates": 11,
+      "furnitureCandidates": 92,
+      "structureErrors": 0,
+      "deriveMs": 39.213624999999865,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "readiness": "ready",
+      "pages": 29,
+      "chunks": 578,
+      "twoDominantProsePages": 2,
+      "crossGutterPages": 29,
+      "listCandidates": 77,
+      "captionCandidates": 0,
+      "furnitureCandidates": 15,
+      "structureErrors": 0,
+      "deriveMs": 13.198916000000281,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "resnet.pdf",
+      "readiness": "ready",
+      "pages": 12,
+      "chunks": 567,
+      "twoDominantProsePages": 12,
+      "crossGutterPages": 12,
+      "listCandidates": 12,
+      "captionCandidates": 20,
+      "furnitureCandidates": 0,
+      "structureErrors": 0,
+      "deriveMs": 14.164708000000246,
+      "pdfjsOpensDuringDerive": 0
+    },
+    {
+      "file": "rfc9110.pdf",
+      "readiness": "refused",
+      "pages": 194,
+      "chunks": 0
+    },
+    {
+      "file": "scanned.pdf",
+      "readiness": "scanned",
+      "pages": 1,
+      "chunks": 0
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "readiness": "ready",
+      "pages": 14,
+      "chunks": 726,
+      "twoDominantProsePages": 13,
+      "crossGutterPages": 14,
+      "listCandidates": 19,
+      "captionCandidates": 10,
+      "furnitureCandidates": 0,
+      "structureErrors": 0,
+      "deriveMs": 15.844833000000108,
+      "pdfjsOpensDuringDerive": 0
+    }
+  ]
+}

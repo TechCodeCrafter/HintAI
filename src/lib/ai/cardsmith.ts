@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { Card, Citation, Hit } from "@/lib/repo/types";
+import type { Card, Citation, FileCitation, Hit } from "@/lib/repo/types";
 import { sayable } from "@/lib/search/say";
 
 type Payload = {
@@ -100,11 +100,16 @@ export const craftCard = createServerFn({ method: "POST" })
       return { say: null, citations: [], source: "grok" };
     }
 
+    // The model may only cite files it was shown, and only as file citations:
+    // it never sees commit evidence, so it has no standing to produce one.
     const allowed = new Set(data.hits.map((h) => h.path));
-    const citations = (parsed?.citations ?? []).filter((c) => allowed.has(c.path));
+    const citations: Citation[] = (parsed?.citations ?? []).filter(
+      (c): c is FileCitation => c.kind === "file" && allowed.has(c.path),
+    );
     if (citations.length === 0) {
       const top = data.hits[0];
       citations.push({
+        kind: "file",
         path: top.path,
         line: top.startLine,
         sha: top.sha,

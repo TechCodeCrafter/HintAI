@@ -1,0 +1,199 @@
+{
+  "note": "A = derive+chunk from already-parsed IR (no PDF.js). B = warm storedChunks via indexContext.",
+  "structureAndChunkFromIr": {
+    "attention.pdf": {
+      "structureMs": 41.15625,
+      "chunkMs": 1.1171249999999873,
+      "pages": 15
+    },
+    "bert.pdf": {
+      "structureMs": 85.76933300000007,
+      "chunkMs": 0.5642920000000231,
+      "pages": 16
+    },
+    "bitcoin.pdf": {
+      "structureMs": 17.693832999999927,
+      "chunkMs": 0.1714999999999236,
+      "pages": 9
+    },
+    "cisa-ransomware.pdf": {
+      "structureMs": 51.571750000000065,
+      "chunkMs": 0.5115829999999733,
+      "pages": 31
+    },
+    "cs229-notes.pdf": {
+      "structureMs": 83.42829199999983,
+      "chunkMs": 0.1257079999998041,
+      "pages": 28
+    },
+    "lora.pdf": {
+      "structureMs": 95.67758299999991,
+      "chunkMs": 0.2881670000001577,
+      "pages": 26
+    },
+    "nist-800-145.pdf": {
+      "structureMs": 5.534459000000197,
+      "chunkMs": 0.11083299999995688,
+      "pages": 7
+    },
+    "nist-800-207.pdf": {
+      "structureMs": 66.80145799999991,
+      "chunkMs": 2.660917000000154,
+      "pages": 59
+    },
+    "nist-800-63b.pdf": {
+      "structureMs": 107.25737500000014,
+      "chunkMs": 2.575000000000273,
+      "pages": 80
+    },
+    "omb-m22-09.pdf": {
+      "structureMs": 37.25916700000016,
+      "chunkMs": 0.5343330000000606,
+      "pages": 29
+    },
+    "resnet.pdf": {
+      "structureMs": 58.93483399999968,
+      "chunkMs": 0.28687500000023647,
+      "pages": 12
+    },
+    "tracemonkey.pdf": {
+      "structureMs": 58.239958000000115,
+      "chunkMs": 0.24508400000013353,
+      "pages": 14
+    }
+  },
+  "representativeWarm": {
+    "bert.pdf": {
+      "parseMs": 153.53650000000005,
+      "firstIndexMs": 80.16745900000001,
+      "warmMs": 0.08275000000003274,
+      "first": {
+        "blobLoads": 0,
+        "irLoads": 1,
+        "pdfjs": 0,
+        "rebuilt": 1,
+        "reused": 0,
+        "chunks": 0,
+        "refused": 0
+      },
+      "warm": {
+        "blobLoads": 0,
+        "irLoads": 0,
+        "pdfjs": 0,
+        "rebuilt": 0,
+        "reused": 1,
+        "chunks": 0
+      }
+    },
+    "attention.pdf": {
+      "parseMs": 168.7595,
+      "firstIndexMs": 36.67795899999999,
+      "warmMs": 0.3653749999999718,
+      "first": {
+        "blobLoads": 0,
+        "irLoads": 1,
+        "pdfjs": 0,
+        "rebuilt": 1,
+        "reused": 0,
+        "chunks": 93,
+        "refused": 0
+      },
+      "warm": {
+        "blobLoads": 0,
+        "irLoads": 0,
+        "pdfjs": 0,
+        "rebuilt": 0,
+        "reused": 1,
+        "chunks": 93
+      }
+    },
+    "cs229-notes.pdf": {
+      "parseMs": 104.12591700000007,
+      "firstIndexMs": 78.82312500000012,
+      "warmMs": 0.05891699999983757,
+      "first": {
+        "blobLoads": 0,
+        "irLoads": 1,
+        "pdfjs": 0,
+        "rebuilt": 1,
+        "reused": 0,
+        "chunks": 9,
+        "refused": 0
+      },
+      "warm": {
+        "blobLoads": 0,
+        "irLoads": 0,
+        "pdfjs": 0,
+        "rebuilt": 0,
+        "reused": 1,
+        "chunks": 9
+      }
+    },
+    "nist-800-63b.pdf": {
+      "parseMs": 226.17512499999998,
+      "firstIndexMs": 109.82412499999987,
+      "warmMs": 0.13620799999989686,
+      "first": {
+        "blobLoads": 0,
+        "irLoads": 1,
+        "pdfjs": 0,
+        "rebuilt": 1,
+        "reused": 0,
+        "chunks": 0,
+        "refused": 0
+      },
+      "warm": {
+        "blobLoads": 0,
+        "irLoads": 0,
+        "pdfjs": 0,
+        "rebuilt": 0,
+        "reused": 1,
+        "chunks": 0
+      }
+    },
+    "cisa-ransomware.pdf": {
+      "parseMs": 89.63237499999991,
+      "firstIndexMs": 41.742750000000115,
+      "warmMs": 0.03824999999983447,
+      "first": {
+        "blobLoads": 0,
+        "irLoads": 1,
+        "pdfjs": 0,
+        "rebuilt": 1,
+        "reused": 0,
+        "chunks": 0,
+        "refused": 0
+      },
+      "warm": {
+        "blobLoads": 0,
+        "irLoads": 0,
+        "pdfjs": 0,
+        "rebuilt": 0,
+        "reused": 1,
+        "chunks": 0
+      }
+    },
+    "nist-800-207.pdf": {
+      "parseMs": 133.24950000000013,
+      "firstIndexMs": 68.91937499999995,
+      "warmMs": 0.02141699999992852,
+      "first": {
+        "blobLoads": 0,
+        "irLoads": 1,
+        "pdfjs": 0,
+        "rebuilt": 1,
+        "reused": 0,
+        "chunks": 0,
+        "refused": 0
+      },
+      "warm": {
+        "blobLoads": 0,
+        "irLoads": 0,
+        "pdfjs": 0,
+        "rebuilt": 0,
+        "reused": 1,
+        "chunks": 0
+      }
+    }
+  }
+}

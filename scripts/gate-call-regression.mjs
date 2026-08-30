@@ -138,7 +138,7 @@ async function readCard() {
   return { say, cites };
 }
 
-await page.goto("http://127.0.0.1:8080/", { waitUntil: "domcontentloaded", timeout: 60000 });
+await page.goto("http://127.0.0.1:8080/app", { waitUntil: "domcontentloaded", timeout: 60000 });
 await room.waitFor({ state: "visible", timeout: 60000 });
 for (let i = 0; i < 400; i += 1) {
   const text = await room.innerText();

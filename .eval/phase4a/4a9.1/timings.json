@@ -1,0 +1,86 @@
+[
+  {
+    "file": "attention.pdf",
+    "deriveMs": 15.362083999999982,
+    "pages": 15,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "bert.pdf",
+    "deriveMs": 21.088958000000048,
+    "pages": 16,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "bitcoin.pdf",
+    "deriveMs": 4.960542000000032,
+    "pages": 9,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "deriveMs": 16.571957999999995,
+    "pages": 31,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "deriveMs": 17.255083000000013,
+    "pages": 28,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "lora.pdf",
+    "deriveMs": 19.722792000000027,
+    "pages": 26,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "deriveMs": 1.7684580000000096,
+    "pages": 7,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "deriveMs": 22.933583,
+    "pages": 59,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "deriveMs": 39.213624999999865,
+    "pages": 80,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "deriveMs": 13.198916000000281,
+    "pages": 29,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "resnet.pdf",
+    "deriveMs": 14.164708000000246,
+    "pages": 12,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "deriveMs": 15.844833000000108,
+    "pages": 14,
+    "blobLoads": 0,
+    "pdfjsOpensDuringDerive": 0
+  }
+]

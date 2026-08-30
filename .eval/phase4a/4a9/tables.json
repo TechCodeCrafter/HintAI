@@ -1,0 +1,62 @@
+[
+  {
+    "file": "attention.pdf",
+    "denseGridPages": 6,
+    "skippedProbablyGrid": 6
+  },
+  {
+    "file": "bert.pdf",
+    "denseGridPages": 2,
+    "skippedProbablyGrid": 2
+  },
+  {
+    "file": "bitcoin.pdf",
+    "denseGridPages": 1,
+    "skippedProbablyGrid": 1
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "denseGridPages": 0,
+    "skippedProbablyGrid": 0
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "denseGridPages": 27,
+    "skippedProbablyGrid": 27
+  },
+  {
+    "file": "lora.pdf",
+    "denseGridPages": 15,
+    "skippedProbablyGrid": 15
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "denseGridPages": 0,
+    "skippedProbablyGrid": 0
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "denseGridPages": 0,
+    "skippedProbablyGrid": 0
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "denseGridPages": 1,
+    "skippedProbablyGrid": 1
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "denseGridPages": 0,
+    "skippedProbablyGrid": 0
+  },
+  {
+    "file": "resnet.pdf",
+    "denseGridPages": 2,
+    "skippedProbablyGrid": 2
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "denseGridPages": 1,
+    "skippedProbablyGrid": 1
+  }
+]

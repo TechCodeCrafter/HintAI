@@ -16,6 +16,7 @@
 import { readFileSync } from "node:fs";
 import type { Card, RepoPack } from "../src/lib/repo/types.ts";
 import { claimDecisions, closeDecision, traceClaims } from "../src/lib/search/claim-trace.ts";
+import { citationText, citedSource } from "../src/lib/search/cite.ts";
 import { localCard } from "../src/lib/search/local-card.ts";
 import { buildChunks, retrieve } from "../src/lib/search/retrieve.ts";
 
@@ -80,7 +81,7 @@ const QUESTIONS: Array<{ q: string; shape: string; answerable: boolean }> = [
 function supportedBy(card: Card, pack: RepoPack): boolean {
   if (!card.say) return true;
   const cited = [
-    ...card.citations.map((c) => pack.files.find((f) => f.path === c.path)?.content ?? ""),
+    ...card.citations.map((c) => citedSource(c, pack)),
     pack.files.map((f) => f.path.replace(/[/_.-]/g, " ")).join(" "),
     pack.name,
   ]
@@ -141,7 +142,7 @@ for (const item of QUESTIONS) {
     evidence: hits[0] ? `${hits[0].path}:${hits[0].startLine} (${hits[0].score})` : "none",
     spoke: Boolean(card.say),
     say: card.say,
-    cite: card.citations.map((c) => `${c.path}:${c.line}`).join(", ") || "none",
+    cite: card.citations.map(citationText).join(", ") || "none",
     supported: supportedBy(card, pack),
     reason: traced?.reason ?? null,
     spokeBefore,

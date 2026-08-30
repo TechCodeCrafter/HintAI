@@ -1,0 +1,308 @@
+[
+  {
+    "file": "attention.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 15,
+    "extractedChars": 25011,
+    "chunksIfReady": 158,
+    "layout": {
+      "singleColumn": 6,
+      "twoColumn": 0,
+      "uncertain": 9,
+      "skipped": 6,
+      "isolated": 3,
+      "full": 6
+    },
+    "parseMs": 514.5627079999999
+  },
+  {
+    "file": "bert.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 16,
+    "extractedChars": 57959,
+    "chunksIfReady": 781,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 16,
+      "skipped": 2,
+      "isolated": 14,
+      "full": 0
+    },
+    "parseMs": 93.56375000000003
+  },
+  {
+    "file": "bitcoin.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 9,
+    "extractedChars": 18960,
+    "chunksIfReady": 118,
+    "layout": {
+      "singleColumn": 7,
+      "twoColumn": 0,
+      "uncertain": 2,
+      "skipped": 1,
+      "isolated": 1,
+      "full": 7
+    },
+    "parseMs": 29.52529100000004
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 31,
+    "extractedChars": 68147,
+    "chunksIfReady": 945,
+    "layout": {
+      "singleColumn": 1,
+      "twoColumn": 0,
+      "uncertain": 30,
+      "skipped": 0,
+      "isolated": 30,
+      "full": 1
+    },
+    "parseMs": 94.41750000000002
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 28,
+    "extractedChars": 2035,
+    "chunksIfReady": 27,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 28,
+      "skipped": 27,
+      "isolated": 1,
+      "full": 0
+    },
+    "parseMs": 76.62079199999994
+  },
+  {
+    "file": "encrypted-sample.pdf",
+    "readiness": "unreadable",
+    "readinessNote": "This PDF could not be read.",
+    "pageCount": 0,
+    "extractedChars": 0,
+    "chunksIfReady": 0,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 0,
+      "skipped": 0,
+      "isolated": 0,
+      "full": 0
+    },
+    "parseMs": 1.5836249999999836
+  },
+  {
+    "file": "encrypted.pdf",
+    "readiness": "unreadable",
+    "readinessNote": "This PDF could not be read.",
+    "pageCount": 0,
+    "extractedChars": 0,
+    "chunksIfReady": 0,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 0,
+      "skipped": 0,
+      "isolated": 0,
+      "full": 0
+    },
+    "parseMs": 0.525916000000052
+  },
+  {
+    "file": "irs-p15.pdf",
+    "readiness": "refused",
+    "readinessNote": "This PDF has too much extracted text to index.",
+    "pageCount": 59,
+    "extractedChars": 0,
+    "chunksIfReady": 0,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 0,
+      "skipped": 0,
+      "isolated": 0,
+      "full": 0
+    },
+    "parseMs": 223.51145799999995
+  },
+  {
+    "file": "lora.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 26,
+    "extractedChars": 40827,
+    "chunksIfReady": 353,
+    "layout": {
+      "singleColumn": 9,
+      "twoColumn": 0,
+      "uncertain": 17,
+      "skipped": 15,
+      "isolated": 2,
+      "full": 9
+    },
+    "parseMs": 239.9570409999999
+  },
+  {
+    "file": "nist-800-12.pdf",
+    "readiness": "refused",
+    "readinessNote": "This PDF has too many pages to index.",
+    "pageCount": 101,
+    "extractedChars": 0,
+    "chunksIfReady": 0,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 0,
+      "skipped": 0,
+      "isolated": 0,
+      "full": 0
+    },
+    "parseMs": 2.4765830000001188
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 7,
+    "extractedChars": 10665,
+    "chunksIfReady": 129,
+    "layout": {
+      "singleColumn": 1,
+      "twoColumn": 1,
+      "uncertain": 5,
+      "skipped": 0,
+      "isolated": 5,
+      "full": 2
+    },
+    "parseMs": 18.263625000000047
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 59,
+    "extractedChars": 151787,
+    "chunksIfReady": 1154,
+    "layout": {
+      "singleColumn": 28,
+      "twoColumn": 5,
+      "uncertain": 26,
+      "skipped": 0,
+      "isolated": 26,
+      "full": 33
+    },
+    "parseMs": 152.93224999999984
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 80,
+    "extractedChars": 188798,
+    "chunksIfReady": 2080,
+    "layout": {
+      "singleColumn": 4,
+      "twoColumn": 5,
+      "uncertain": 71,
+      "skipped": 1,
+      "isolated": 70,
+      "full": 9
+    },
+    "parseMs": 190.604875
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 29,
+    "extractedChars": 78774,
+    "chunksIfReady": 578,
+    "layout": {
+      "singleColumn": 13,
+      "twoColumn": 3,
+      "uncertain": 13,
+      "skipped": 0,
+      "isolated": 13,
+      "full": 16
+    },
+    "parseMs": 84.07791700000007
+  },
+  {
+    "file": "resnet.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 12,
+    "extractedChars": 50804,
+    "chunksIfReady": 567,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 12,
+      "skipped": 2,
+      "isolated": 10,
+      "full": 0
+    },
+    "parseMs": 69.31475
+  },
+  {
+    "file": "rfc9110.pdf",
+    "readiness": "refused",
+    "readinessNote": "This PDF has too many pages to index.",
+    "pageCount": 194,
+    "extractedChars": 0,
+    "chunksIfReady": 0,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 0,
+      "skipped": 0,
+      "isolated": 0,
+      "full": 0
+    },
+    "parseMs": 5.159415999999965
+  },
+  {
+    "file": "scanned.pdf",
+    "readiness": "scanned",
+    "readinessNote": "This PDF appears to contain scanned pages. MeetHint cannot read scanned PDFs yet.",
+    "pageCount": 1,
+    "extractedChars": 0,
+    "chunksIfReady": 0,
+    "layout": {
+      "singleColumn": 0,
+      "twoColumn": 0,
+      "uncertain": 1,
+      "skipped": 1,
+      "isolated": 0,
+      "full": 0
+    },
+    "parseMs": 3.048999999999978
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "readiness": "ready",
+    "readinessNote": "",
+    "pageCount": 14,
+    "extractedChars": 77325,
+    "chunksIfReady": 726,
+    "layout": {
+      "singleColumn": 1,
+      "twoColumn": 0,
+      "uncertain": 13,
+      "skipped": 1,
+      "isolated": 12,
+      "full": 1
+    },
+    "parseMs": 93.22825000000012
+  }
+]

@@ -1,0 +1,120 @@
+[
+  {
+    "q": "What is the architecture of this application?",
+    "snap": {
+      "query": "What is the architecture of this application?",
+      "say": "Northstar-payments is a service — Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+      "silent": false,
+      "reason": null,
+      "evidence": [
+        {
+          "kind": "text",
+          "path": "README.md",
+          "startLine": 3,
+          "endLine": 4,
+          "startOffset": 22,
+          "endOffset": 121,
+          "text": "Northstar exports merchant settlement files to S3 and guards the operator\ndashboard with edge auth."
+        }
+      ],
+      "citations": [
+        {
+          "kind": "file",
+          "path": "README.md",
+          "line": 3,
+          "endLine": 4,
+          "label": "PR #488 · 5f0c7d1",
+          "text": "README.md:3-4"
+        }
+      ]
+    }
+  },
+  {
+    "q": "What did we change in the exporter?",
+    "snap": {
+      "query": "What did we change in the exporter?",
+      "say": "Writes one line per settlement in a column order finance imports directly, which is why the order is locked and changing it needs PAY-180.",
+      "silent": false,
+      "reason": null,
+      "evidence": [
+        {
+          "kind": "text",
+          "path": "src/exporter/format.ts",
+          "startLine": 4,
+          "endLine": 5,
+          "startOffset": 40,
+          "endOffset": 181,
+          "text": "Writes one line per settlement in a column order finance imports directly,\n * which is why the order is locked and changing it needs PAY-180."
+        }
+      ],
+      "citations": [
+        {
+          "kind": "file",
+          "path": "src/exporter/format.ts",
+          "line": 4,
+          "endLine": 5,
+          "label": "PR #771 · 11ae902",
+          "text": "src/exporter/format.ts:4-5"
+        }
+      ]
+    }
+  },
+  {
+    "q": "Why does that retry three times?",
+    "snap": {
+      "query": "Why does that retry three times?",
+      "say": "Attempts are capped at three because the payment gateway stalls rather than failing fast, so a fourth attempt duplicates the settlement file instead of recovering it.",
+      "silent": false,
+      "reason": null,
+      "evidence": [
+        {
+          "kind": "text",
+          "path": "src/exporter/retry.ts",
+          "startLine": 4,
+          "endLine": 6,
+          "startOffset": 50,
+          "endOffset": 222,
+          "text": "Attempts are capped at three because the payment gateway stalls rather than\n * failing fast, so a fourth attempt duplicates the settlement file instead of\n * recovering it."
+        }
+      ],
+      "citations": [
+        {
+          "kind": "file",
+          "path": "src/exporter/retry.ts",
+          "line": 4,
+          "endLine": 6,
+          "label": "",
+          "text": "src/exporter/retry.ts:4-6"
+        }
+      ]
+    }
+  },
+  {
+    "q": "Who touched the auth flow?",
+    "snap": {
+      "query": "Who touched the auth flow?",
+      "say": "Jordan Lee, in PR #640: auth: rotate session cookies through edge middleware",
+      "silent": false,
+      "reason": null,
+      "evidence": [
+        {
+          "kind": "commit",
+          "sha": "c4d88aa",
+          "message": "auth: rotate session cookies through edge middleware",
+          "author": "Jordan Lee",
+          "date": "2026-01-09",
+          "pr": "640",
+          "text": "auth: rotate session cookies through edge middleware"
+        }
+      ],
+      "citations": [
+        {
+          "kind": "commit",
+          "sha": "c4d88aa",
+          "label": "Jordan Lee · 2026-01-09",
+          "text": "Commit c4d88aa · PR #640"
+        }
+      ]
+    }
+  }
+]

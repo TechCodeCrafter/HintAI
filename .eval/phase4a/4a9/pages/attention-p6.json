@@ -1,0 +1,3877 @@
+{
+  "file": "attention.pdf",
+  "page": 6,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "skipped",
+    "earliestSkip": "dense-grid",
+    "whyNotTwoColumn": [
+      "dense-grid detector fired first",
+      "substantial left-edge clusters 6 !== 2 (total clusters 7; sizes 115.5:56, 218.7:7, 278.5:53, 341.9:40, 389.7:8, 443.0:31, 486.1:1)"
+    ],
+    "clusterCount": 7,
+    "substantialClusterCount": 6,
+    "clusters": [
+      {
+        "x": 115.47,
+        "items": 56,
+        "meanWidth": 203.43,
+        "yMin": 72,
+        "yMax": 713.25
+      },
+      {
+        "x": 218.69,
+        "items": 7,
+        "meanWidth": 87.42,
+        "yMin": 406.92,
+        "yMax": 702.34
+      },
+      {
+        "x": 278.47,
+        "items": 53,
+        "meanWidth": 7.37,
+        "yMin": 42.11,
+        "yMax": 667.81
+      },
+      {
+        "x": 341.85,
+        "items": 40,
+        "meanWidth": 21.56,
+        "yMin": 82.91,
+        "yMax": 702.34
+      },
+      {
+        "x": 389.7,
+        "items": 8,
+        "meanWidth": 15.88,
+        "yMin": 239.67,
+        "yMax": 667.81
+      },
+      {
+        "x": 443,
+        "items": 31,
+        "meanWidth": 10.95,
+        "yMin": 241.17,
+        "yMax": 702.34
+      },
+      {
+        "x": 486.07,
+        "items": 1,
+        "meanWidth": 17.43,
+        "yMin": 516.37,
+        "yMax": 516.37
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 115.47,
+      "items": 56,
+      "meanWidth": 203.43,
+      "yMin": 72,
+      "yMax": 713.25
+    },
+    {
+      "x": 218.69,
+      "items": 7,
+      "meanWidth": 87.42,
+      "yMin": 406.92,
+      "yMax": 702.34
+    },
+    {
+      "x": 278.47,
+      "items": 53,
+      "meanWidth": 7.37,
+      "yMin": 42.11,
+      "yMax": 667.81
+    },
+    {
+      "x": 341.85,
+      "items": 40,
+      "meanWidth": 21.56,
+      "yMin": 82.91,
+      "yMax": 702.34
+    },
+    {
+      "x": 389.7,
+      "items": 8,
+      "meanWidth": 15.88,
+      "yMin": 239.67,
+      "yMax": 667.81
+    },
+    {
+      "x": 443,
+      "items": 31,
+      "meanWidth": 10.95,
+      "yMin": 241.17,
+      "yMax": 702.34
+    },
+    {
+      "x": 486.07,
+      "items": 1,
+      "meanWidth": 17.43,
+      "yMin": 516.37,
+      "yMax": 516.37
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 49,
+    "clusters": [
+      {
+        "x": 109.42,
+        "items": 35,
+        "share": 0.714
+      },
+      {
+        "x": 145.76,
+        "items": 4,
+        "share": 0.082
+      },
+      {
+        "x": 225.77,
+        "items": 4,
+        "share": 0.082
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.7959183673469388
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        115.47,
+        218.69
+      ],
+      "gap": 103.22
+    },
+    {
+      "between": [
+        218.69,
+        278.47
+      ],
+      "gap": 59.78000000000003
+    },
+    {
+      "between": [
+        278.47,
+        341.85
+      ],
+      "gap": 63.379999999999995
+    },
+    {
+      "between": [
+        341.85,
+        389.7
+      ],
+      "gap": 47.849999999999966
+    },
+    {
+      "between": [
+        389.7,
+        443
+      ],
+      "gap": 53.30000000000001
+    },
+    {
+      "between": [
+        443,
+        486.07
+      ],
+      "gap": 43.06999999999999
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Table 1:",
+      "x": 107.69,
+      "y": 713.25,
+      "width": 31.22,
+      "height": 9.96,
+      "right": 138.91,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 138.91,
+      "y": 713.25,
+      "width": 5.99,
+      "height": 0,
+      "right": 144.9,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "Maximum path lengths, per-layer complexity and minimum number of sequential operations",
+      "x": 144.78,
+      "y": 713.25,
+      "width": 359.21,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "for different layer types.",
+      "x": 108,
+      "y": 702.34,
+      "width": 97.02,
+      "height": 9.96,
+      "right": 205.02,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": " ",
+      "x": 205.02,
+      "y": 702.34,
+      "width": 3.09,
+      "height": 0,
+      "right": 208.11,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "n",
+      "x": 208.11,
+      "y": 702.34,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 214.09,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": " ",
+      "x": 214.09,
+      "y": 702.34,
+      "width": 2.48,
+      "height": 0,
+      "right": 216.57,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "is the sequence length,",
+      "x": 216.59,
+      "y": 702.34,
+      "width": 90.61,
+      "height": 9.96,
+      "right": 307.2,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": " ",
+      "x": 307.2,
+      "y": 702.34,
+      "width": 2.5,
+      "height": 0,
+      "right": 309.69,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "d",
+      "x": 309.69,
+      "y": 702.34,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 314.88,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": " ",
+      "x": 314.88,
+      "y": 702.34,
+      "width": 2.48,
+      "height": 0,
+      "right": 317.36,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "is the representation dimension,",
+      "x": 317.37,
+      "y": 702.34,
+      "width": 127.33,
+      "height": 9.96,
+      "right": 444.7,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": " ",
+      "x": 444.7,
+      "y": 702.34,
+      "width": 2.5,
+      "height": 0,
+      "right": 447.19,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "k",
+      "x": 447.19,
+      "y": 702.34,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 452.38,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": " ",
+      "x": 452.38,
+      "y": 702.34,
+      "width": 2.79,
+      "height": 0,
+      "right": 455.17,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "is the kernel",
+      "x": 455.18,
+      "y": 702.34,
+      "width": 48.82,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "size of convolutions and",
+      "x": 108,
+      "y": 691.43,
+      "width": 96.53,
+      "height": 9.96,
+      "right": 204.53,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": " ",
+      "x": 204.53,
+      "y": 691.43,
+      "width": 2.49,
+      "height": 0,
+      "right": 207.02,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "r",
+      "x": 207.02,
+      "y": 691.43,
+      "width": 4.5,
+      "height": 9.96,
+      "right": 211.51,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": " ",
+      "x": 211.51,
+      "y": 691.43,
+      "width": 2.77,
+      "height": 0,
+      "right": 214.28,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "the size of the neighborhood in restricted self-attention.",
+      "x": 214.28,
+      "y": 691.43,
+      "width": 220.8,
+      "height": 9.96,
+      "right": 435.08,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": "Layer Type",
+      "x": 124.55,
+      "y": 667.81,
+      "width": 45.4,
+      "height": 9.96,
+      "right": 169.95,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": " ",
+      "x": 169.95,
+      "y": 667.81,
+      "width": 69.76,
+      "height": 0,
+      "right": 239.7,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "Complexity per Layer",
+      "x": 239.7,
+      "y": 667.81,
+      "width": 87.84,
+      "height": 9.96,
+      "right": 327.54,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": " ",
+      "x": 327.54,
+      "y": 667.81,
+      "width": 12.78,
+      "height": 0,
+      "right": 340.33,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "Sequential",
+      "x": 340.33,
+      "y": 667.81,
+      "width": 42.06,
+      "height": 9.96,
+      "right": 382.39,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": " ",
+      "x": 382.39,
+      "y": 667.81,
+      "width": 12.78,
+      "height": 0,
+      "right": 395.17,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "Maximum Path Length",
+      "x": 395.17,
+      "y": 667.81,
+      "width": 92.28,
+      "height": 9.96,
+      "right": 487.45,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "Operations",
+      "x": 339.5,
+      "y": 656.9,
+      "width": 43.72,
+      "height": 9.96,
+      "right": 383.21,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "Self-Attention",
+      "x": 124.55,
+      "y": 644.26,
+      "width": 57.01,
+      "height": 9.96,
+      "right": 181.55,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": " ",
+      "x": 181.55,
+      "y": 644.26,
+      "width": 82.84,
+      "height": 0,
+      "right": 264.4,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "O",
+      "x": 264.4,
+      "y": 644.26,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 272,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "(",
+      "x": 272.27,
+      "y": 644.26,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 276.15,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "n",
+      "x": 276.15,
+      "y": 644.26,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 282.13,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": "2",
+      "x": 282.13,
+      "y": 647.88,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 286.1,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": " ",
+      "x": 286.1,
+      "y": 647.88,
+      "width": 2.71,
+      "height": 0,
+      "right": 288.81,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": "·",
+      "x": 288.81,
+      "y": 644.26,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 291.58,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": " ",
+      "x": 291.58,
+      "y": 644.26,
+      "width": 2.21,
+      "height": 0,
+      "right": 293.79,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "d",
+      "x": 293.79,
+      "y": 644.26,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 298.98,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": ")",
+      "x": 298.98,
+      "y": 644.26,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 302.85,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": " ",
+      "x": 302.85,
+      "y": 644.26,
+      "width": 48.2,
+      "height": 0,
+      "right": 351.05,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": "O",
+      "x": 351.05,
+      "y": 644.26,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 358.65,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "(1)",
+      "x": 358.93,
+      "y": 644.26,
+      "width": 12.73,
+      "height": 9.96,
+      "right": 371.66,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 371.66,
+      "y": 644.26,
+      "width": 59.35,
+      "height": 0,
+      "right": 431.01,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "O",
+      "x": 431.01,
+      "y": 644.26,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 438.61,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "(1)",
+      "x": 438.88,
+      "y": 644.26,
+      "width": 12.73,
+      "height": 9.96,
+      "right": 451.61,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "",
+      "x": 124.55,
+      "y": 632.88,
+      "width": 0,
+      "height": 0,
+      "right": 128.55,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": "Recurrent",
+      "x": 124.55,
+      "y": 632.88,
+      "width": 39.28,
+      "height": 9.96,
+      "right": 163.83,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": " ",
+      "x": 163.83,
+      "y": 632.88,
+      "width": 100.57,
+      "height": 0,
+      "right": 264.4,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": "O",
+      "x": 264.4,
+      "y": 632.88,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 272,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "(",
+      "x": 272.27,
+      "y": 632.88,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 276.15,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "n",
+      "x": 276.15,
+      "y": 632.88,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 282.13,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": " ",
+      "x": 282.13,
+      "y": 632.88,
+      "width": 2.21,
+      "height": 0,
+      "right": 284.34,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "·",
+      "x": 284.34,
+      "y": 632.88,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 287.11,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": " ",
+      "x": 287.11,
+      "y": 632.88,
+      "width": 2.21,
+      "height": 0,
+      "right": 289.32,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": "d",
+      "x": 289.32,
+      "y": 632.88,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 294.51,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "2",
+      "x": 294.51,
+      "y": 636.49,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 298.48,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": ")",
+      "x": 298.98,
+      "y": 632.88,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 302.85,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": " ",
+      "x": 302.85,
+      "y": 632.88,
+      "width": 47.7,
+      "height": 0,
+      "right": 350.55,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": "O",
+      "x": 350.55,
+      "y": 632.88,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 358.15,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "(",
+      "x": 358.43,
+      "y": 632.88,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 362.3,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "n",
+      "x": 362.3,
+      "y": 632.88,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 368.28,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": ")",
+      "x": 368.28,
+      "y": 632.88,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 372.16,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": " ",
+      "x": 372.16,
+      "y": 632.88,
+      "width": 58.35,
+      "height": 0,
+      "right": 430.51,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "O",
+      "x": 430.51,
+      "y": 632.88,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 438.11,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": "(",
+      "x": 438.38,
+      "y": 632.88,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 442.26,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "n",
+      "x": 442.26,
+      "y": 632.88,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 448.24,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": ")",
+      "x": 448.24,
+      "y": 632.88,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 452.11,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": "",
+      "x": 124.55,
+      "y": 621.5,
+      "width": 0,
+      "height": 0,
+      "right": 128.55,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "Convolutional",
+      "x": 124.55,
+      "y": 621.5,
+      "width": 56.42,
+      "height": 9.96,
+      "right": 180.97,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": " ",
+      "x": 180.97,
+      "y": 621.5,
+      "width": 77.08,
+      "height": 0,
+      "right": 258.05,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "O",
+      "x": 258.05,
+      "y": 621.5,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 265.65,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "(",
+      "x": 265.92,
+      "y": 621.5,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 269.8,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "k",
+      "x": 269.8,
+      "y": 621.5,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 274.99,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": " ",
+      "x": 274.99,
+      "y": 621.5,
+      "width": 2.53,
+      "height": 0,
+      "right": 277.51,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": "·",
+      "x": 277.51,
+      "y": 621.5,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 280.28,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": " ",
+      "x": 280.28,
+      "y": 621.5,
+      "width": 2.21,
+      "height": 0,
+      "right": 282.49,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "n",
+      "x": 282.49,
+      "y": 621.5,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 288.47,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": " ",
+      "x": 288.47,
+      "y": 621.5,
+      "width": 2.21,
+      "height": 0,
+      "right": 290.69,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": "·",
+      "x": 290.69,
+      "y": 621.5,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 293.46,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": " ",
+      "x": 293.46,
+      "y": 621.5,
+      "width": 2.21,
+      "height": 0,
+      "right": 295.67,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "d",
+      "x": 295.67,
+      "y": 621.5,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 300.86,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "2",
+      "x": 300.85,
+      "y": 625.11,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 304.83,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": ")",
+      "x": 305.32,
+      "y": 621.5,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 309.2,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": " ",
+      "x": 309.2,
+      "y": 621.5,
+      "width": 41.86,
+      "height": 0,
+      "right": 351.05,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": "O",
+      "x": 351.05,
+      "y": 621.5,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 358.65,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "(1)",
+      "x": 358.93,
+      "y": 621.5,
+      "width": 12.73,
+      "height": 9.96,
+      "right": 371.66,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": " ",
+      "x": 371.66,
+      "y": 621.5,
+      "width": 46.15,
+      "height": 0,
+      "right": 417.81,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "O",
+      "x": 417.81,
+      "y": 621.5,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 425.41,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": "(",
+      "x": 425.68,
+      "y": 621.5,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 429.56,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "log",
+      "x": 429.56,
+      "y": 621.5,
+      "width": 12.75,
+      "height": 9.96,
+      "right": 442.31,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": "k",
+      "x": 442.31,
+      "y": 620,
+      "width": 4.24,
+      "height": 6.97,
+      "right": 446.54,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": "(",
+      "x": 447.21,
+      "y": 621.5,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 451.09,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": "n",
+      "x": 451.08,
+      "y": 621.5,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 457.06,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": "))",
+      "x": 457.06,
+      "y": 621.5,
+      "width": 7.75,
+      "height": 9.96,
+      "right": 464.81,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": "",
+      "x": 124.55,
+      "y": 610.59,
+      "width": 0,
+      "height": 0,
+      "right": 128.55,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": "Self-Attention (restricted)",
+      "x": 124.55,
+      "y": 610.59,
+      "width": 103.2,
+      "height": 9.96,
+      "right": 227.75,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": " ",
+      "x": 227.75,
+      "y": 610.59,
+      "width": 32.9,
+      "height": 0,
+      "right": 260.65,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": "O",
+      "x": 260.65,
+      "y": 610.59,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 268.25,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 99,
+      "str": "(",
+      "x": 268.52,
+      "y": 610.59,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 272.4,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 100,
+      "str": "r",
+      "x": 272.4,
+      "y": 610.59,
+      "width": 4.5,
+      "height": 9.96,
+      "right": 276.89,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 101,
+      "str": " ",
+      "x": 276.89,
+      "y": 610.59,
+      "width": 2.49,
+      "height": 0,
+      "right": 279.38,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 102,
+      "str": "·",
+      "x": 279.38,
+      "y": 610.59,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 282.15,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 103,
+      "str": " ",
+      "x": 282.15,
+      "y": 610.59,
+      "width": 2.21,
+      "height": 0,
+      "right": 284.37,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 104,
+      "str": "n",
+      "x": 284.37,
+      "y": 610.59,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 290.34,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 105,
+      "str": " ",
+      "x": 290.34,
+      "y": 610.59,
+      "width": 2.21,
+      "height": 0,
+      "right": 292.56,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 106,
+      "str": "·",
+      "x": 292.56,
+      "y": 610.59,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 295.33,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 107,
+      "str": " ",
+      "x": 295.33,
+      "y": 610.59,
+      "width": 2.21,
+      "height": 0,
+      "right": 297.54,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 108,
+      "str": "d",
+      "x": 297.54,
+      "y": 610.59,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 302.73,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 109,
+      "str": ")",
+      "x": 302.73,
+      "y": 610.59,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 306.6,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 110,
+      "str": " ",
+      "x": 306.6,
+      "y": 610.59,
+      "width": 44.45,
+      "height": 0,
+      "right": 351.05,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 111,
+      "str": "O",
+      "x": 351.05,
+      "y": 610.59,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 358.65,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 112,
+      "str": "(1)",
+      "x": 358.93,
+      "y": 610.59,
+      "width": 12.73,
+      "height": 9.96,
+      "right": 371.66,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 113,
+      "str": " ",
+      "x": 371.66,
+      "y": 610.59,
+      "width": 53.97,
+      "height": 0,
+      "right": 425.63,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 114,
+      "str": "O",
+      "x": 425.63,
+      "y": 610.59,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 433.23,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 115,
+      "str": "(",
+      "x": 433.51,
+      "y": 610.59,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 437.38,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 116,
+      "str": "n/r",
+      "x": 437.38,
+      "y": 610.59,
+      "width": 15.46,
+      "height": 9.96,
+      "right": 452.84,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 117,
+      "str": ")",
+      "x": 453.12,
+      "y": 610.59,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 456.99,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 118,
+      "str": "",
+      "x": 108,
+      "y": 570.56,
+      "width": 0,
+      "height": 0,
+      "right": 112,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 119,
+      "str": "3.5",
+      "x": 108,
+      "y": 570.56,
+      "width": 12.45,
+      "height": 9.96,
+      "right": 120.45,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 120,
+      "str": " ",
+      "x": 120.45,
+      "y": 570.56,
+      "width": 9.96,
+      "height": 0,
+      "right": 130.42,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 121,
+      "str": "Positional Encoding",
+      "x": 130.42,
+      "y": 570.56,
+      "width": 84.78,
+      "height": 9.96,
+      "right": 215.2,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 122,
+      "str": "",
+      "x": 108,
+      "y": 550.59,
+      "width": 0,
+      "height": 0,
+      "right": 112,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 123,
+      "str": "Since our model contains no recurrence and no convolution, in order for the model to make use of the",
+      "x": 108,
+      "y": 550.59,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 124,
+      "str": "order of the sequence, we must inject some information about the relative or absolute position of the",
+      "x": 108,
+      "y": 539.68,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 125,
+      "str": "tokens in the sequence. To this end, we add \"positional encodings\" to the input embeddings at the",
+      "x": 108,
+      "y": 528.77,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 126,
+      "str": "bottoms of the encoder and decoder stacks. The positional encodings have the same dimension",
+      "x": 108,
+      "y": 517.86,
+      "width": 370.42,
+      "height": 9.96,
+      "right": 478.42,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 127,
+      "str": " ",
+      "x": 478.42,
+      "y": 517.86,
+      "width": 2.46,
+      "height": 0,
+      "right": 480.88,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 128,
+      "str": "d",
+      "x": 480.88,
+      "y": 517.86,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 486.07,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 129,
+      "str": "model",
+      "x": 486.07,
+      "y": 516.37,
+      "width": 17.43,
+      "height": 6.97,
+      "right": 503.5,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 130,
+      "str": "",
+      "x": 108,
+      "y": 506.95,
+      "width": 0,
+      "height": 0,
+      "right": 112,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 131,
+      "str": "as the embeddings, so that the two can be summed. There are many choices of positional encodings,",
+      "x": 108,
+      "y": 506.95,
+      "width": 397.25,
+      "height": 9.96,
+      "right": 505.25,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 132,
+      "str": "learned and fixed [9].",
+      "x": 108,
+      "y": 496.04,
+      "width": 85.06,
+      "height": 9.96,
+      "right": 193.06,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 133,
+      "str": "In this work, we use sine and cosine functions of different frequencies:",
+      "x": 108,
+      "y": 479.65,
+      "width": 281.86,
+      "height": 9.96,
+      "right": 389.86,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 134,
+      "str": "",
+      "x": 235.51,
+      "y": 446.27,
+      "width": 0,
+      "height": 0,
+      "right": 239.51,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 135,
+      "str": "P E",
+      "x": 235.51,
+      "y": 446.27,
+      "width": 15.14,
+      "height": 9.96,
+      "right": 250.64,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 136,
+      "str": "(",
+      "x": 250.64,
+      "y": 444.47,
+      "width": 3.11,
+      "height": 6.97,
+      "right": 253.76,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 137,
+      "str": "pos,",
+      "x": 253.76,
+      "y": 444.47,
+      "width": 14.17,
+      "height": 6.97,
+      "right": 267.92,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 138,
+      "str": "2",
+      "x": 267.92,
+      "y": 444.47,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 271.89,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 139,
+      "str": "i",
+      "x": 271.89,
+      "y": 444.47,
+      "width": 2.82,
+      "height": 6.97,
+      "right": 274.71,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 140,
+      "str": ")",
+      "x": 274.71,
+      "y": 444.47,
+      "width": 3.11,
+      "height": 6.97,
+      "right": 277.83,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 141,
+      "str": " ",
+      "x": 277.83,
+      "y": 444.47,
+      "width": 3.27,
+      "height": 0,
+      "right": 281.09,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 142,
+      "str": "=",
+      "x": 281.09,
+      "y": 446.27,
+      "width": 7.75,
+      "height": 9.96,
+      "right": 288.84,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 143,
+      "str": " ",
+      "x": 288.84,
+      "y": 446.27,
+      "width": 2.77,
+      "height": 0,
+      "right": 291.61,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 144,
+      "str": "sin",
+      "x": 291.61,
+      "y": 446.27,
+      "width": 14.08,
+      "height": 9.96,
+      "right": 305.69,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 145,
+      "str": "(",
+      "x": 305.69,
+      "y": 446.27,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 309.56,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 146,
+      "str": "pos/",
+      "x": 309.56,
+      "y": 446.27,
+      "width": 19.49,
+      "height": 9.96,
+      "right": 329.06,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 147,
+      "str": "10000",
+      "x": 329.06,
+      "y": 446.27,
+      "width": 24.91,
+      "height": 9.96,
+      "right": 353.96,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 148,
+      "str": "2",
+      "x": 353.96,
+      "y": 450.38,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 357.93,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 149,
+      "str": "i/d",
+      "x": 357.94,
+      "y": 450.38,
+      "width": 11.05,
+      "height": 6.97,
+      "right": 368.98,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 150,
+      "str": "model",
+      "x": 368.98,
+      "y": 449.39,
+      "width": 12.45,
+      "height": 4.98,
+      "right": 381.44,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 151,
+      "str": " ",
+      "x": 381.44,
+      "y": 449.39,
+      "width": 1,
+      "height": 0,
+      "right": 382.43,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 152,
+      "str": ")",
+      "x": 382.43,
+      "y": 446.27,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 386.31,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 153,
+      "str": "",
+      "x": 225.69,
+      "y": 429.4,
+      "width": 0,
+      "height": 0,
+      "right": 229.69,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 154,
+      "str": "P E",
+      "x": 225.69,
+      "y": 429.4,
+      "width": 15.14,
+      "height": 9.96,
+      "right": 240.83,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 155,
+      "str": "(",
+      "x": 240.83,
+      "y": 427.6,
+      "width": 3.11,
+      "height": 6.97,
+      "right": 243.94,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 156,
+      "str": "pos,",
+      "x": 243.94,
+      "y": 427.6,
+      "width": 14.17,
+      "height": 6.97,
+      "right": 258.11,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 157,
+      "str": "2",
+      "x": 258.11,
+      "y": 427.6,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 262.08,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 158,
+      "str": "i",
+      "x": 262.08,
+      "y": 427.6,
+      "width": 2.82,
+      "height": 6.97,
+      "right": 264.9,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 159,
+      "str": "+1)",
+      "x": 264.9,
+      "y": 427.6,
+      "width": 13.2,
+      "height": 6.97,
+      "right": 278.1,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 160,
+      "str": " ",
+      "x": 278.1,
+      "y": 427.6,
+      "width": 3.27,
+      "height": 0,
+      "right": 281.36,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 161,
+      "str": "=",
+      "x": 281.36,
+      "y": 429.4,
+      "width": 7.75,
+      "height": 9.96,
+      "right": 289.11,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 162,
+      "str": " ",
+      "x": 289.11,
+      "y": 429.4,
+      "width": 2.77,
+      "height": 0,
+      "right": 291.88,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 163,
+      "str": "cos",
+      "x": 291.88,
+      "y": 429.4,
+      "width": 13.81,
+      "height": 9.96,
+      "right": 305.69,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 164,
+      "str": "(",
+      "x": 305.69,
+      "y": 429.4,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 309.56,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 165,
+      "str": "pos/",
+      "x": 309.56,
+      "y": 429.4,
+      "width": 19.49,
+      "height": 9.96,
+      "right": 329.06,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 166,
+      "str": "10000",
+      "x": 329.06,
+      "y": 429.4,
+      "width": 24.91,
+      "height": 9.96,
+      "right": 353.96,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 167,
+      "str": "2",
+      "x": 353.96,
+      "y": 433.51,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 357.93,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 168,
+      "str": "i/d",
+      "x": 357.94,
+      "y": 433.51,
+      "width": 11.05,
+      "height": 6.97,
+      "right": 368.98,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 169,
+      "str": "model",
+      "x": 368.98,
+      "y": 432.52,
+      "width": 12.45,
+      "height": 4.98,
+      "right": 381.44,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 170,
+      "str": " ",
+      "x": 381.44,
+      "y": 432.52,
+      "width": 1,
+      "height": 0,
+      "right": 382.43,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 171,
+      "str": ")",
+      "x": 382.43,
+      "y": 429.4,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 386.31,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 172,
+      "str": "",
+      "x": 107.64,
+      "y": 406.92,
+      "width": 0,
+      "height": 0,
+      "right": 111.64,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 173,
+      "str": "where",
+      "x": 107.64,
+      "y": 406.92,
+      "width": 24.31,
+      "height": 9.96,
+      "right": 131.96,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 174,
+      "str": " ",
+      "x": 131.96,
+      "y": 406.92,
+      "width": 2.48,
+      "height": 0,
+      "right": 134.44,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 175,
+      "str": "pos",
+      "x": 134.44,
+      "y": 406.92,
+      "width": 14.51,
+      "height": 9.96,
+      "right": 148.95,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 176,
+      "str": " ",
+      "x": 148.95,
+      "y": 406.92,
+      "width": 2.49,
+      "height": 0,
+      "right": 151.44,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 177,
+      "str": "is the position and",
+      "x": 151.43,
+      "y": 406.92,
+      "width": 72.69,
+      "height": 9.96,
+      "right": 224.13,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 178,
+      "str": " ",
+      "x": 224.13,
+      "y": 406.92,
+      "width": 2.49,
+      "height": 0,
+      "right": 226.61,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 179,
+      "str": "i",
+      "x": 226.61,
+      "y": 406.92,
+      "width": 3.43,
+      "height": 9.96,
+      "right": 230.05,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 180,
+      "str": " ",
+      "x": 230.05,
+      "y": 406.92,
+      "width": 2.49,
+      "height": 0,
+      "right": 232.53,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 181,
+      "str": "is the dimension. That is, each dimension of the positional encoding",
+      "x": 232.53,
+      "y": 406.92,
+      "width": 271.47,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 182,
+      "str": "corresponds to a sinusoid. The wavelengths form a geometric progression from",
+      "x": 108,
+      "y": 396.01,
+      "width": 309.33,
+      "height": 9.96,
+      "right": 417.33,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 183,
+      "str": " ",
+      "x": 417.33,
+      "y": 396.01,
+      "width": 2.41,
+      "height": 0,
+      "right": 419.74,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 184,
+      "str": "2",
+      "x": 419.74,
+      "y": 396.01,
+      "width": 4.98,
+      "height": 9.96,
+      "right": 424.72,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 185,
+      "str": "π",
+      "x": 424.72,
+      "y": 396.01,
+      "width": 5.68,
+      "height": 9.96,
+      "right": 430.4,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 186,
+      "str": " ",
+      "x": 430.4,
+      "y": 396.01,
+      "width": 2.83,
+      "height": 0,
+      "right": 433.23,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 187,
+      "str": "to",
+      "x": 433.17,
+      "y": 396.01,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 440.77,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 188,
+      "str": " ",
+      "x": 440.77,
+      "y": 396.01,
+      "width": 2.42,
+      "height": 0,
+      "right": 443.19,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 189,
+      "str": "10000",
+      "x": 443.19,
+      "y": 396.01,
+      "width": 24.91,
+      "height": 9.96,
+      "right": 468.09,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 190,
+      "str": " ",
+      "x": 468.09,
+      "y": 396.01,
+      "width": 1.93,
+      "height": 0,
+      "right": 470.02,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 191,
+      "str": "·",
+      "x": 470.02,
+      "y": 396.01,
+      "width": 2.77,
+      "height": 9.96,
+      "right": 472.79,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 192,
+      "str": " ",
+      "x": 472.79,
+      "y": 396.01,
+      "width": 1.93,
+      "height": 0,
+      "right": 474.72,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 193,
+      "str": "2",
+      "x": 474.72,
+      "y": 396.01,
+      "width": 4.98,
+      "height": 9.96,
+      "right": 479.71,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 194,
+      "str": "π",
+      "x": 479.7,
+      "y": 396.01,
+      "width": 5.68,
+      "height": 9.96,
+      "right": 485.38,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 195,
+      "str": ". We",
+      "x": 485.74,
+      "y": 396.01,
+      "width": 18.26,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 196,
+      "str": "chose this function because we hypothesized it would allow the model to easily learn to attend by",
+      "x": 108,
+      "y": 385.11,
+      "width": 396.34,
+      "height": 9.96,
+      "right": 504.34,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 197,
+      "str": "relative positions, since for any fixed offset",
+      "x": 108,
+      "y": 374.2,
+      "width": 175.16,
+      "height": 9.96,
+      "right": 283.16,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 198,
+      "str": " ",
+      "x": 283.16,
+      "y": 374.2,
+      "width": 2.59,
+      "height": 0,
+      "right": 285.75,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 199,
+      "str": "k",
+      "x": 285.75,
+      "y": 374.2,
+      "width": 5.19,
+      "height": 9.96,
+      "right": 290.93,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 200,
+      "str": ",",
+      "x": 291.25,
+      "y": 374.2,
+      "width": 2.54,
+      "height": 9.96,
+      "right": 293.79,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 201,
+      "str": " ",
+      "x": 293.79,
+      "y": 374.2,
+      "width": 2.61,
+      "height": 0,
+      "right": 296.39,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 202,
+      "str": "P E",
+      "x": 296.39,
+      "y": 374.2,
+      "width": 15.14,
+      "height": 9.96,
+      "right": 311.53,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 203,
+      "str": "pos",
+      "x": 311.53,
+      "y": 372.7,
+      "width": 11.8,
+      "height": 6.97,
+      "right": 323.33,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 204,
+      "str": "+",
+      "x": 323.33,
+      "y": 372.7,
+      "width": 6.12,
+      "height": 6.97,
+      "right": 329.44,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 205,
+      "str": "k",
+      "x": 329.44,
+      "y": 372.7,
+      "width": 4.24,
+      "height": 6.97,
+      "right": 333.68,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 206,
+      "str": " ",
+      "x": 333.68,
+      "y": 372.7,
+      "width": 3.19,
+      "height": 0,
+      "right": 336.87,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 207,
+      "str": "can be represented as a linear function of",
+      "x": 336.93,
+      "y": 374.2,
+      "width": 167.07,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 208,
+      "str": "",
+      "x": 108,
+      "y": 363.29,
+      "width": 0,
+      "height": 0,
+      "right": 112,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 209,
+      "str": "P E",
+      "x": 108,
+      "y": 363.29,
+      "width": 15.14,
+      "height": 9.96,
+      "right": 123.14,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 210,
+      "str": "pos",
+      "x": 123.13,
+      "y": 361.79,
+      "width": 11.8,
+      "height": 6.97,
+      "right": 134.93,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 211,
+      "str": ".",
+      "x": 135.43,
+      "y": 363.29,
+      "width": 2.49,
+      "height": 9.96,
+      "right": 137.92,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 212,
+      "str": "We also experimented with using learned positional embeddings [9] instead, and found that the two",
+      "x": 107.53,
+      "y": 346.9,
+      "width": 396.46,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 213,
+      "str": "versions produced nearly identical results (see Table 3 row (E)). We chose the sinusoidal version",
+      "x": 107.75,
+      "y": 335.99,
+      "width": 396.25,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 214,
+      "str": "because it may allow the model to extrapolate to sequence lengths longer than the ones encountered",
+      "x": 108,
+      "y": 325.08,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 215,
+      "str": "during training.",
+      "x": 108,
+      "y": 314.17,
+      "width": 61.99,
+      "height": 9.96,
+      "right": 169.99,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 216,
+      "str": "",
+      "x": 108,
+      "y": 285.94,
+      "width": 0,
+      "height": 0,
+      "right": 112,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 217,
+      "str": "4",
+      "x": 108,
+      "y": 285.94,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 113.98,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 218,
+      "str": " ",
+      "x": 113.98,
+      "y": 285.94,
+      "width": 11.96,
+      "height": 0,
+      "right": 125.93,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 219,
+      "str": "Why Self-Attention",
+      "x": 125.93,
+      "y": 285.94,
+      "width": 99.11,
+      "height": 11.96,
+      "right": 225.04,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 220,
+      "str": "",
+      "x": 108,
+      "y": 262.98,
+      "width": 0,
+      "height": 0,
+      "right": 112,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 221,
+      "str": "In this section we compare various aspects of self-attention layers to the recurrent and convolu-",
+      "x": 108,
+      "y": 262.98,
+      "width": 397.65,
+      "height": 9.96,
+      "right": 505.65,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 222,
+      "str": "tional layers commonly used for mapping one variable-length sequence of symbol representations",
+      "x": 108,
+      "y": 252.07,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 223,
+      "str": "",
+      "x": 106.83,
+      "y": 241.17,
+      "width": 0,
+      "height": 0,
+      "right": 110.83,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 224,
+      "str": "(",
+      "x": 106.83,
+      "y": 241.17,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 110.71,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 225,
+      "str": "x",
+      "x": 110.71,
+      "y": 241.17,
+      "width": 5.69,
+      "height": 9.96,
+      "right": 116.4,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 226,
+      "str": "1",
+      "x": 116.4,
+      "y": 239.67,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 120.37,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 227,
+      "str": ", ..., x",
+      "x": 120.87,
+      "y": 241.17,
+      "width": 22.85,
+      "height": 9.96,
+      "right": 143.72,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 228,
+      "str": "n",
+      "x": 143.72,
+      "y": 239.67,
+      "width": 4.92,
+      "height": 6.97,
+      "right": 148.65,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 229,
+      "str": ")",
+      "x": 149.15,
+      "y": 241.17,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 153.02,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 230,
+      "str": " ",
+      "x": 153.02,
+      "y": 241.17,
+      "width": 3.31,
+      "height": 0,
+      "right": 156.33,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 231,
+      "str": "to another sequence of equal length",
+      "x": 156.4,
+      "y": 241.17,
+      "width": 148.38,
+      "height": 9.96,
+      "right": 304.78,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 232,
+      "str": " ",
+      "x": 304.78,
+      "y": 241.17,
+      "width": 3.37,
+      "height": 0,
+      "right": 308.15,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 233,
+      "str": "(",
+      "x": 308.15,
+      "y": 241.17,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 312.02,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 234,
+      "str": "z",
+      "x": 312.02,
+      "y": 241.17,
+      "width": 4.63,
+      "height": 9.96,
+      "right": 316.66,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 235,
+      "str": "1",
+      "x": 316.66,
+      "y": 239.67,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 320.63,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 236,
+      "str": ", ..., z",
+      "x": 321.13,
+      "y": 241.17,
+      "width": 21.79,
+      "height": 9.96,
+      "right": 342.92,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 237,
+      "str": "n",
+      "x": 342.92,
+      "y": 239.67,
+      "width": 4.92,
+      "height": 6.97,
+      "right": 347.84,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 238,
+      "str": ")",
+      "x": 348.34,
+      "y": 241.17,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 352.22,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 239,
+      "str": ", with",
+      "x": 352.21,
+      "y": 241.17,
+      "width": 24.21,
+      "height": 9.96,
+      "right": 376.42,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 240,
+      "str": " ",
+      "x": 376.42,
+      "y": 241.17,
+      "width": 3.37,
+      "height": 0,
+      "right": 379.79,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 241,
+      "str": "x",
+      "x": 379.79,
+      "y": 241.17,
+      "width": 5.69,
+      "height": 9.96,
+      "right": 385.49,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 242,
+      "str": "i",
+      "x": 385.49,
+      "y": 239.67,
+      "width": 2.82,
+      "height": 6.97,
+      "right": 388.31,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 243,
+      "str": ", z",
+      "x": 388.81,
+      "y": 241.17,
+      "width": 9.06,
+      "height": 9.96,
+      "right": 397.87,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 244,
+      "str": "i",
+      "x": 397.87,
+      "y": 239.67,
+      "width": 2.82,
+      "height": 6.97,
+      "right": 400.68,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 245,
+      "str": " ",
+      "x": 400.68,
+      "y": 239.67,
+      "width": 4.9,
+      "height": 0,
+      "right": 405.59,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 246,
+      "str": "∈",
+      "x": 405.59,
+      "y": 241.17,
+      "width": 6.64,
+      "height": 9.96,
+      "right": 412.23,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 247,
+      "str": " ",
+      "x": 412.23,
+      "y": 241.17,
+      "width": 4.4,
+      "height": 0,
+      "right": 416.63,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 248,
+      "str": "R",
+      "x": 416.63,
+      "y": 241.17,
+      "width": 7.19,
+      "height": 9.96,
+      "right": 423.83,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 249,
+      "str": "d",
+      "x": 423.83,
+      "y": 244.78,
+      "width": 4.15,
+      "height": 6.97,
+      "right": 427.98,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 250,
+      "str": ", such as a hidden",
+      "x": 428.48,
+      "y": 241.17,
+      "width": 75.52,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 251,
+      "str": "layer in a typical sequence transduction encoder or decoder. Motivating our use of self-attention we",
+      "x": 108,
+      "y": 230.26,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 252,
+      "str": "consider three desiderata.",
+      "x": 108,
+      "y": 219.35,
+      "width": 101.53,
+      "height": 9.96,
+      "right": 209.53,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 253,
+      "str": "One is the total computational complexity per layer. Another is the amount of computation that can",
+      "x": 108,
+      "y": 202.96,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 254,
+      "str": "be parallelized, as measured by the minimum number of sequential operations required.",
+      "x": 108,
+      "y": 192.05,
+      "width": 349.46,
+      "height": 9.96,
+      "right": 457.46,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 255,
+      "str": "The third is the path length between long-range dependencies in the network. Learning long-range",
+      "x": 107.69,
+      "y": 175.66,
+      "width": 396.31,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 256,
+      "str": "dependencies is a key challenge in many sequence transduction tasks. One key factor affecting the",
+      "x": 108,
+      "y": 164.75,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 37,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 257,
+      "str": "ability to learn such dependencies is the length of the paths forward and backward signals have to",
+      "x": 108,
+      "y": 153.84,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 38,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 258,
+      "str": "traverse in the network. The shorter these paths between any combination of positions in the input",
+      "x": 108,
+      "y": 142.93,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 39,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 259,
+      "str": "and output sequences, the easier it is to learn long-range dependencies [12]. Hence we also compare",
+      "x": 108,
+      "y": 132.03,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 40,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 260,
+      "str": "the maximum path length between any two input and output positions in networks composed of the",
+      "x": 108,
+      "y": 121.12,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 41,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 261,
+      "str": "different layer types.",
+      "x": 108,
+      "y": 110.21,
+      "width": 82.47,
+      "height": 9.96,
+      "right": 190.47,
+      "visualLineId": 42,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 262,
+      "str": "As noted in Table 1, a self-attention layer connects all positions with a constant number of sequentially",
+      "x": 107.64,
+      "y": 93.82,
+      "width": 396.7,
+      "height": 9.96,
+      "right": 504.35,
+      "visualLineId": 43,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 263,
+      "str": "executed operations, whereas a recurrent layer requires",
+      "x": 108,
+      "y": 82.91,
+      "width": 227.58,
+      "height": 9.96,
+      "right": 335.58,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 264,
+      "str": " ",
+      "x": 335.58,
+      "y": 82.91,
+      "width": 3.2,
+      "height": 0,
+      "right": 338.79,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 265,
+      "str": "O",
+      "x": 338.79,
+      "y": 82.91,
+      "width": 7.6,
+      "height": 9.96,
+      "right": 346.39,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 266,
+      "str": "(",
+      "x": 346.66,
+      "y": 82.91,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 350.54,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 267,
+      "str": "n",
+      "x": 350.54,
+      "y": 82.91,
+      "width": 5.98,
+      "height": 9.96,
+      "right": 356.52,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 268,
+      "str": ")",
+      "x": 356.52,
+      "y": 82.91,
+      "width": 3.87,
+      "height": 9.96,
+      "right": 360.39,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 269,
+      "str": " ",
+      "x": 360.39,
+      "y": 82.91,
+      "width": 3.14,
+      "height": 0,
+      "right": 363.53,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 270,
+      "str": "sequential operations. In terms of",
+      "x": 363.59,
+      "y": 82.91,
+      "width": 140.41,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 44,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 271,
+      "str": "computational complexity, self-attention layers are faster than recurrent layers when the sequence",
+      "x": 108,
+      "y": 72,
+      "width": 396,
+      "height": 9.96,
+      "right": 504,
+      "visualLineId": 45,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 272,
+      "str": "6",
+      "x": 303.51,
+      "y": 42.11,
+      "width": 4.98,
+      "height": 9.96,
+      "right": 308.49,
+      "visualLineId": 46,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 713.25,
+      "height": 12,
+      "text": "Table 1: Maximum path lengths, per-layer complexity and minimum number of sequential operations",
+      "itemIndexes": [
+        0,
+        1,
+        2
+      ],
+      "firstX": 107.69
+    },
+    {
+      "lineId": 1,
+      "y": 702.34,
+      "height": 12,
+      "text": "for different layer types. n is the sequence length, d is the representation dimension, k is the kernel",
+      "itemIndexes": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 2,
+      "y": 691.43,
+      "height": 12,
+      "text": "size of convolutions and r the size of the neighborhood in restricted self-attention.",
+      "itemIndexes": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 3,
+      "y": 667.81,
+      "height": 12,
+      "text": "Layer Type Complexity per Layer Sequential Maximum Path Length",
+      "itemIndexes": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "firstX": 124.55
+    },
+    {
+      "lineId": 4,
+      "y": 656.9,
+      "height": 9.96,
+      "text": "Operations",
+      "itemIndexes": [
+        28
+      ],
+      "firstX": 339.5
+    },
+    {
+      "lineId": 5,
+      "y": 644.69,
+      "height": 12,
+      "text": "Self-Attention O ( n 2 · d ) O (1) O (1)",
+      "itemIndexes": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "firstX": 124.55
+    },
+    {
+      "lineId": 6,
+      "y": 633.05,
+      "height": 12,
+      "text": "Recurrent O ( n · d 2 ) O ( n ) O ( n )",
+      "itemIndexes": [
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67
+      ],
+      "firstX": 124.55
+    },
+    {
+      "lineId": 7,
+      "y": 621.58,
+      "height": 12,
+      "text": "Convolutional O ( k · n · d 2 ) O (1) O ( log k ( n ))",
+      "itemIndexes": [
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94
+      ],
+      "firstX": 124.55
+    },
+    {
+      "lineId": 8,
+      "y": 610.59,
+      "height": 12,
+      "text": "Self-Attention (restricted) O ( r · n · d ) O (1) O ( n/r )",
+      "itemIndexes": [
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117
+      ],
+      "firstX": 124.55
+    },
+    {
+      "lineId": 9,
+      "y": 570.56,
+      "height": 12,
+      "text": "3.5 Positional Encoding",
+      "itemIndexes": [
+        119,
+        120,
+        121
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 10,
+      "y": 550.59,
+      "height": 9.96,
+      "text": "Since our model contains no recurrence and no convolution, in order for the model to make use of the",
+      "itemIndexes": [
+        123
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 11,
+      "y": 539.68,
+      "height": 9.96,
+      "text": "order of the sequence, we must inject some information about the relative or absolute position of the",
+      "itemIndexes": [
+        124
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 12,
+      "y": 528.77,
+      "height": 9.96,
+      "text": "tokens in the sequence. To this end, we add \"positional encodings\" to the input embeddings at the",
+      "itemIndexes": [
+        125
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 13,
+      "y": 517.49,
+      "height": 12,
+      "text": "bottoms of the encoder and decoder stacks. The positional encodings have the same dimension d model",
+      "itemIndexes": [
+        126,
+        127,
+        128,
+        129
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 14,
+      "y": 506.95,
+      "height": 9.96,
+      "text": "as the embeddings, so that the two can be summed. There are many choices of positional encodings,",
+      "itemIndexes": [
+        131
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 15,
+      "y": 496.04,
+      "height": 9.96,
+      "text": "learned and fixed [9].",
+      "itemIndexes": [
+        132
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 16,
+      "y": 479.65,
+      "height": 9.96,
+      "text": "In this work, we use sine and cosine functions of different frequencies:",
+      "itemIndexes": [
+        133
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 17,
+      "y": 446.47,
+      "height": 12,
+      "text": "P E ( pos, 2 i ) = sin ( pos/ 10000 2 i/d model )",
+      "itemIndexes": [
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152
+      ],
+      "firstX": 235.51
+    },
+    {
+      "lineId": 18,
+      "y": 429.6,
+      "height": 12,
+      "text": "P E ( pos, 2 i +1) = cos ( pos/ 10000 2 i/d model )",
+      "itemIndexes": [
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171
+      ],
+      "firstX": 225.69
+    },
+    {
+      "lineId": 19,
+      "y": 406.92,
+      "height": 12,
+      "text": "where pos is the position and i is the dimension. That is, each dimension of the positional encoding",
+      "itemIndexes": [
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181
+      ],
+      "firstX": 107.64
+    },
+    {
+      "lineId": 20,
+      "y": 396.01,
+      "height": 12,
+      "text": "corresponds to a sinusoid. The wavelengths form a geometric progression from 2 π to 10000 · 2 π . We",
+      "itemIndexes": [
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 21,
+      "y": 385.11,
+      "height": 9.96,
+      "text": "chose this function because we hypothesized it would allow the model to easily learn to attend by",
+      "itemIndexes": [
+        196
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 22,
+      "y": 373.65,
+      "height": 12,
+      "text": "relative positions, since for any fixed offset k , P E pos + k can be represented as a linear function of",
+      "itemIndexes": [
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 23,
+      "y": 362.79,
+      "height": 9.96,
+      "text": "P E pos .",
+      "itemIndexes": [
+        209,
+        210,
+        211
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 24,
+      "y": 346.9,
+      "height": 9.96,
+      "text": "We also experimented with using learned positional embeddings [9] instead, and found that the two",
+      "itemIndexes": [
+        212
+      ],
+      "firstX": 107.53
+    },
+    {
+      "lineId": 25,
+      "y": 335.99,
+      "height": 9.96,
+      "text": "versions produced nearly identical results (see Table 3 row (E)). We chose the sinusoidal version",
+      "itemIndexes": [
+        213
+      ],
+      "firstX": 107.75
+    },
+    {
+      "lineId": 26,
+      "y": 325.08,
+      "height": 9.96,
+      "text": "because it may allow the model to extrapolate to sequence lengths longer than the ones encountered",
+      "itemIndexes": [
+        214
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 27,
+      "y": 314.17,
+      "height": 9.96,
+      "text": "during training.",
+      "itemIndexes": [
+        215
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 28,
+      "y": 285.94,
+      "height": 12,
+      "text": "4 Why Self-Attention",
+      "itemIndexes": [
+        217,
+        218,
+        219
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 29,
+      "y": 262.98,
+      "height": 9.96,
+      "text": "In this section we compare various aspects of self-attention layers to the recurrent and convolu-",
+      "itemIndexes": [
+        221
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 30,
+      "y": 252.07,
+      "height": 9.96,
+      "text": "tional layers commonly used for mapping one variable-length sequence of symbol representations",
+      "itemIndexes": [
+        222
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 31,
+      "y": 240.91,
+      "height": 12,
+      "text": "( x 1 , ..., x n ) to another sequence of equal length ( z 1 , ..., z n ) , with x i , z i ∈ R d , such as a hidden",
+      "itemIndexes": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250
+      ],
+      "firstX": 106.83
+    },
+    {
+      "lineId": 32,
+      "y": 230.26,
+      "height": 9.96,
+      "text": "layer in a typical sequence transduction encoder or decoder. Motivating our use of self-attention we",
+      "itemIndexes": [
+        251
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 33,
+      "y": 219.35,
+      "height": 9.96,
+      "text": "consider three desiderata.",
+      "itemIndexes": [
+        252
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 34,
+      "y": 202.96,
+      "height": 9.96,
+      "text": "One is the total computational complexity per layer. Another is the amount of computation that can",
+      "itemIndexes": [
+        253
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 35,
+      "y": 192.05,
+      "height": 9.96,
+      "text": "be parallelized, as measured by the minimum number of sequential operations required.",
+      "itemIndexes": [
+        254
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 36,
+      "y": 175.66,
+      "height": 9.96,
+      "text": "The third is the path length between long-range dependencies in the network. Learning long-range",
+      "itemIndexes": [
+        255
+      ],
+      "firstX": 107.69
+    },
+    {
+      "lineId": 37,
+      "y": 164.75,
+      "height": 9.96,
+      "text": "dependencies is a key challenge in many sequence transduction tasks. One key factor affecting the",
+      "itemIndexes": [
+        256
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 38,
+      "y": 153.84,
+      "height": 9.96,
+      "text": "ability to learn such dependencies is the length of the paths forward and backward signals have to",
+      "itemIndexes": [
+        257
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 39,
+      "y": 142.93,
+      "height": 9.96,
+      "text": "traverse in the network. The shorter these paths between any combination of positions in the input",
+      "itemIndexes": [
+        258
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 40,
+      "y": 132.03,
+      "height": 9.96,
+      "text": "and output sequences, the easier it is to learn long-range dependencies [12]. Hence we also compare",
+      "itemIndexes": [
+        259
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 41,
+      "y": 121.12,
+      "height": 9.96,
+      "text": "the maximum path length between any two input and output positions in networks composed of the",
+      "itemIndexes": [
+        260
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 42,
+      "y": 110.21,
+      "height": 9.96,
+      "text": "different layer types.",
+      "itemIndexes": [
+        261
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 43,
+      "y": 93.82,
+      "height": 9.96,
+      "text": "As noted in Table 1, a self-attention layer connects all positions with a constant number of sequentially",
+      "itemIndexes": [
+        262
+      ],
+      "firstX": 107.64
+    },
+    {
+      "lineId": 44,
+      "y": 82.91,
+      "height": 12,
+      "text": "executed operations, whereas a recurrent layer requires O ( n ) sequential operations. In terms of",
+      "itemIndexes": [
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 45,
+      "y": 72,
+      "height": 9.96,
+      "text": "computational complexity, self-attention layers are faster than recurrent layers when the sequence",
+      "itemIndexes": [
+        271
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 46,
+      "y": 42.11,
+      "height": 9.96,
+      "text": "6",
+      "itemIndexes": [
+        272
+      ],
+      "firstX": 303.51
+    }
+  ]
+}

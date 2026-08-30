@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as RelayRouteImport } from './routes/relay'
 import { Route as SoonRouteImport } from './routes/soon'
+import { Route as EvalViewerRouteImport } from './routes/eval.viewer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const SoonRoute = SoonRouteImport.update({
   path: '/soon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EvalViewerRoute = EvalViewerRouteImport.update({
+  id: '/eval/viewer',
+  path: '/eval/viewer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
+  '/eval/viewer': typeof EvalViewerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
+  '/eval/viewer': typeof EvalViewerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/app': typeof AppRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
+  '/eval/viewer': typeof EvalViewerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/relay' | '/soon'
+  fullPaths: '/' | '/app' | '/relay' | '/soon' | '/eval/viewer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/relay' | '/soon'
-  id: '__root__' | '/' | '/app' | '/relay' | '/soon'
+  to: '/' | '/app' | '/relay' | '/soon' | '/eval/viewer'
+  id: '__root__' | '/' | '/app' | '/relay' | '/soon' | '/eval/viewer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRoute
   RelayRoute: typeof RelayRoute
   SoonRoute: typeof SoonRoute
+  EvalViewerRoute: typeof EvalViewerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SoonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/eval/viewer': {
+      id: '/eval/viewer'
+      path: '/eval/viewer'
+      fullPath: '/eval/viewer'
+      preLoaderRoute: typeof EvalViewerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRoute,
   RelayRoute: RelayRoute,
   SoonRoute: SoonRoute,
+  EvalViewerRoute: EvalViewerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

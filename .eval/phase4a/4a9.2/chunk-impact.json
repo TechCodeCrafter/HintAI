@@ -1,0 +1,105 @@
+{
+  "phase": "4A.9.2",
+  "note": "Chunk rules unchanged. Counts may move because page.text / readingOrder changed.",
+  "beforeTotal": 7616,
+  "afterTotal": 7917,
+  "isolatedShare": 0.7039282556523936,
+  "perFile": [
+    {
+      "file": "attention.pdf",
+      "before": 158,
+      "after": 304
+    },
+    {
+      "file": "bert.pdf",
+      "before": 781,
+      "after": 325
+    },
+    {
+      "file": "bitcoin.pdf",
+      "before": 118,
+      "after": 227
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "before": 945,
+      "after": 922
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "before": 27,
+      "after": 30
+    },
+    {
+      "file": "lora.pdf",
+      "before": 353,
+      "after": 529
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "before": 129,
+      "after": 138
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "before": 1154,
+      "after": 1200
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "before": 2080,
+      "after": 2104
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "before": 578,
+      "after": 689
+    },
+    {
+      "file": "resnet.pdf",
+      "before": 567,
+      "after": 804
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "before": 726,
+      "after": 645
+    }
+  ],
+  "pdfsOver200": [
+    "attention.pdf",
+    "bert.pdf",
+    "bitcoin.pdf",
+    "cisa-ransomware.pdf",
+    "lora.pdf",
+    "nist-800-207.pdf",
+    "nist-800-63b.pdf",
+    "omb-m22-09.pdf",
+    "resnet.pdf",
+    "tracemonkey.pdf"
+  ],
+  "largest5": [
+    {
+      "file": "nist-800-63b.pdf",
+      "chunks": 2104
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "chunks": 1200
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "chunks": 922
+    },
+    {
+      "file": "resnet.pdf",
+      "chunks": 804
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "chunks": 689
+    }
+  ],
+  "largest5Sum": 5719,
+  "contextCap": 800
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "file": "attention.pdf",
+    "captions": 10,
+    "captionCandidates": 10
+  },
+  {
+    "file": "bert.pdf",
+    "captions": 8,
+    "captionCandidates": 13
+  },
+  {
+    "file": "bitcoin.pdf",
+    "captions": 0,
+    "captionCandidates": 0
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "captions": 2,
+    "captionCandidates": 3
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "captions": 0,
+    "captionCandidates": 0
+  },
+  {
+    "file": "lora.pdf",
+    "captions": 25,
+    "captionCandidates": 26
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "captions": 0,
+    "captionCandidates": 0
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "captions": 20,
+    "captionCandidates": 23
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "captions": 10,
+    "captionCandidates": 11
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "captions": 0,
+    "captionCandidates": 0
+  },
+  {
+    "file": "resnet.pdf",
+    "captions": 9,
+    "captionCandidates": 20
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "captions": 5,
+    "captionCandidates": 10
+  }
+]

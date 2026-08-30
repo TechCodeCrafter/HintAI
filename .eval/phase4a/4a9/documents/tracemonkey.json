@@ -1,0 +1,1973 @@
+{
+  "sourceId": "tracemonkey.pdf",
+  "filename": "tracemonkey.pdf",
+  "byteSize": 1016315,
+  "pageCount": 14,
+  "extractedCharacterCount": 77325,
+  "readiness": "ready",
+  "pageReadiness": [
+    {
+      "page": 1,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 2,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 3,
+      "index": "full",
+      "readingOrder": "single-column"
+    },
+    {
+      "page": 4,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 5,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 6,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 7,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 8,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 9,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 10,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 11,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 12,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 13,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 14,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    }
+  ],
+  "totals": {
+    "singleColumn": 1,
+    "twoColumn": 0,
+    "uncertain": 13,
+    "full": 1,
+    "isolated": 12,
+    "skipped": 1,
+    "denseGrid": 1,
+    "twoDominantProsePages": 13
+  },
+  "itemCountPerPage": [
+    182,
+    214,
+    191,
+    260,
+    194,
+    241,
+    240,
+    311,
+    156,
+    238,
+    165,
+    592,
+    169,
+    129
+  ],
+  "visualLineCountPerPage": [
+    55,
+    73,
+    59,
+    66,
+    68,
+    68,
+    74,
+    72,
+    64,
+    78,
+    43,
+    62,
+    86,
+    40
+  ],
+  "newlineBlocksPerPage": [
+    50,
+    69,
+    5,
+    66,
+    67,
+    65,
+    57,
+    68,
+    64,
+    78,
+    37,
+    0,
+    84,
+    40
+  ],
+  "chunkCountPerPage": [
+    45,
+    68,
+    25,
+    65,
+    66,
+    64,
+    55,
+    67,
+    63,
+    69,
+    33,
+    0,
+    71,
+    35
+  ],
+  "totalChunks": 726,
+  "averageChunksPerPage": 51.857142857142854,
+  "averageChunksPerIndexedPage": 55.84615384615385,
+  "maxChunksPerPage": 71,
+  "exceeds200": true,
+  "headerFooterCandidates": [],
+  "headerFooterNearMiss": [],
+  "pages": [
+    {
+      "page": 1,
+      "itemCount": 182,
+      "visualLineCount": 55,
+      "usefulItemCount": 116,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 9,
+      "substantialClusterCount": 9,
+      "clusters": [
+        {
+          "x": 57.81,
+          "items": 39,
+          "meanWidth": 164.31,
+          "yMin": 69.95,
+          "yMax": 700.67
+        },
+        {
+          "x": 114.53,
+          "items": 11,
+          "meanWidth": 126.22,
+          "yMin": 69.95,
+          "yMax": 644.88
+        },
+        {
+          "x": 205.99,
+          "items": 11,
+          "meanWidth": 30.07,
+          "yMin": 288.83,
+          "yMax": 648.84
+        },
+        {
+          "x": 262.34,
+          "items": 16,
+          "meanWidth": 57.03,
+          "yMin": 278.87,
+          "yMax": 680.75
+        },
+        {
+          "x": 320.98,
+          "items": 50,
+          "meanWidth": 173.43,
+          "yMin": 69.32,
+          "yMax": 648.84
+        },
+        {
+          "x": 362.39,
+          "items": 6,
+          "meanWidth": 47.1,
+          "yMin": 228.72,
+          "yMax": 635.89
+        },
+        {
+          "x": 412.82,
+          "items": 8,
+          "meanWidth": 35.99,
+          "yMin": 158.98,
+          "yMax": 648.84
+        },
+        {
+          "x": 463.67,
+          "items": 6,
+          "meanWidth": 40.4,
+          "yMin": 158.98,
+          "yMax": 648.84
+        },
+        {
+          "x": 511.19,
+          "items": 4,
+          "meanWidth": 4.07,
+          "yMin": 622.94,
+          "yMax": 644.88
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 50
+        },
+        {
+          "x": 72,
+          "count": 39
+        },
+        {
+          "x": 252,
+          "count": 10
+        },
+        {
+          "x": 108,
+          "count": 7
+        },
+        {
+          "x": 216,
+          "count": 7
+        },
+        {
+          "x": 468,
+          "count": 6
+        }
+      ],
+      "newlineBlocks": 50,
+      "chunkCount": 45,
+      "averageItemWidth": 102.22,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 318.4,
+          "items": 39,
+          "share": 0.415
+        },
+        {
+          "x": 56.66,
+          "items": 28,
+          "share": 0.298
+        },
+        {
+          "x": 114.4,
+          "items": 9,
+          "share": 0.096
+        },
+        {
+          "x": 269.35,
+          "items": 7,
+          "share": 0.074
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 57.8:39, 114.5:11, 206.0:11, 262.3:16, 321.0:50, 362.4:6, 412.8:8, 463.7:6, 511.2:4)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 263.0 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 2,
+      "itemCount": 214,
+      "visualLineCount": 73,
+      "usefulItemCount": 160,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 9,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 58.31,
+          "items": 71,
+          "meanWidth": 191.91,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 125.24,
+          "items": 1,
+          "meanWidth": 154.14,
+          "yMin": 632.33,
+          "yMax": 632.33
+        },
+        {
+          "x": 209.64,
+          "items": 3,
+          "meanWidth": 41.58,
+          "yMin": 682.14,
+          "yMax": 712.03
+        },
+        {
+          "x": 254.5,
+          "items": 5,
+          "meanWidth": 38.6,
+          "yMin": 293.6,
+          "yMax": 712.03
+        },
+        {
+          "x": 324.78,
+          "items": 55,
+          "meanWidth": 130.31,
+          "yMin": 68.44,
+          "yMax": 713.77
+        },
+        {
+          "x": 418.16,
+          "items": 17,
+          "meanWidth": 36.94,
+          "yMin": 118.26,
+          "yMax": 631.8
+        },
+        {
+          "x": 466.21,
+          "items": 8,
+          "meanWidth": 34,
+          "yMin": 428.12,
+          "yMax": 631.8
+        },
+        {
+          "x": 511.56,
+          "items": 7,
+          "meanWidth": 25.21,
+          "yMin": 438.89,
+          "yMax": 641.76
+        },
+        {
+          "x": 550.14,
+          "items": 1,
+          "meanWidth": 5.98,
+          "yMin": 641.76,
+          "yMax": 641.76
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 49
+        },
+        {
+          "x": 72,
+          "count": 41
+        },
+        {
+          "x": 36,
+          "count": 30
+        },
+        {
+          "x": 432,
+          "count": 10
+        },
+        {
+          "x": 468,
+          "count": 8
+        },
+        {
+          "x": 504,
+          "count": 7
+        }
+      ],
+      "newlineBlocks": 69,
+      "chunkCount": 68,
+      "averageItemWidth": 105.1,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 58.68,
+          "items": 62,
+          "share": 0.53
+        },
+        {
+          "x": 322.73,
+          "items": 37,
+          "share": 0.316
+        },
+        {
+          "x": 443.08,
+          "items": 10,
+          "share": 0.085
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 7 !== 2 (total clusters 9; sizes 58.3:71, 125.2:1, 209.6:3, 254.5:5, 324.8:55, 418.2:17, 466.2:8, 511.6:7, 550.1:1)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 461.7 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 3,
+      "itemCount": 191,
+      "visualLineCount": 59,
+      "usefulItemCount": 123,
+      "readingOrder": "single-column",
+      "index": "full",
+      "layoutReadingOrder": "single-column",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 57.91,
+          "items": 61,
+          "meanWidth": 129.79,
+          "yMin": 72.92,
+          "yMax": 713.77
+        },
+        {
+          "x": 110.05,
+          "items": 1,
+          "meanWidth": 183.06,
+          "yMin": 162.58,
+          "yMax": 162.58
+        },
+        {
+          "x": 163.48,
+          "items": 34,
+          "meanWidth": 159.2,
+          "yMin": 182.51,
+          "yMax": 713.77
+        },
+        {
+          "x": 235.17,
+          "items": 5,
+          "meanWidth": 229.42,
+          "yMin": 272.12,
+          "yMax": 614.15
+        },
+        {
+          "x": 321.17,
+          "items": 22,
+          "meanWidth": 166.95,
+          "yMin": 72.92,
+          "yMax": 540.89
+        },
+        {
+          "x": 394.18,
+          "items": 4,
+          "meanWidth": 10.79,
+          "yMin": 71.92,
+          "yMax": 192.47
+        },
+        {
+          "x": 436.48,
+          "items": 1,
+          "meanWidth": 102.15,
+          "yMin": 192.47,
+          "yMax": 192.47
+        },
+        {
+          "x": 546.88,
+          "items": 6,
+          "meanWidth": 4.98,
+          "yMin": 191.47,
+          "yMax": 212.39
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 36,
+          "count": 44
+        },
+        {
+          "x": 180,
+          "count": 32
+        },
+        {
+          "x": 324,
+          "count": 19
+        },
+        {
+          "x": 72,
+          "count": 17
+        },
+        {
+          "x": 540,
+          "count": 6
+        },
+        {
+          "x": 396,
+          "count": 4
+        }
+      ],
+      "newlineBlocks": 5,
+      "chunkCount": 25,
+      "averageItemWidth": 104.43,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 55.25,
+          "items": 43,
+          "share": 0.434
+        },
+        {
+          "x": 163.95,
+          "items": 33,
+          "share": 0.333
+        },
+        {
+          "x": 321.11,
+          "items": 17,
+          "share": 0.172
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 6 !== 2 (total clusters 8; sizes 57.9:61, 110.0:1, 163.5:34, 235.2:5, 321.2:22, 394.2:4, 436.5:1, 546.9:6)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "single-column",
+      "isolatedLines": false,
+      "skipped": false
+    },
+    {
+      "page": 4,
+      "itemCount": 260,
+      "visualLineCount": 66,
+      "usefulItemCount": 163,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 9,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 59.68,
+          "items": 77,
+          "meanWidth": 149.08,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 109.96,
+          "items": 3,
+          "meanWidth": 126.44,
+          "yMin": 297.58,
+          "yMax": 357.36
+        },
+        {
+          "x": 167.76,
+          "items": 14,
+          "meanWidth": 45.34,
+          "yMin": 307.55,
+          "yMax": 692.1
+        },
+        {
+          "x": 222.61,
+          "items": 16,
+          "meanWidth": 17.84,
+          "yMin": 307.55,
+          "yMax": 712.03
+        },
+        {
+          "x": 282.14,
+          "items": 7,
+          "meanWidth": 7.42,
+          "yMin": 237.81,
+          "yMax": 712.03
+        },
+        {
+          "x": 319.07,
+          "items": 66,
+          "meanWidth": 199.9,
+          "yMin": 84.38,
+          "yMax": 712.03
+        },
+        {
+          "x": 408.03,
+          "items": 8,
+          "meanWidth": 75.39,
+          "yMin": 144.16,
+          "yMax": 233.82
+        },
+        {
+          "x": 485.44,
+          "items": 5,
+          "meanWidth": 46,
+          "yMin": 243.79,
+          "yMax": 273.67
+        },
+        {
+          "x": 537.29,
+          "items": 1,
+          "meanWidth": 18.83,
+          "yMin": 562.59,
+          "yMax": 562.59
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 66
+        },
+        {
+          "x": 36,
+          "count": 51
+        },
+        {
+          "x": 72,
+          "count": 26
+        },
+        {
+          "x": 216,
+          "count": 14
+        },
+        {
+          "x": 180,
+          "count": 8
+        },
+        {
+          "x": 288,
+          "count": 7
+        }
+      ],
+      "newlineBlocks": 66,
+      "chunkCount": 65,
+      "averageItemWidth": 103.85,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 318.85,
+          "items": 61,
+          "share": 0.452
+        },
+        {
+          "x": 59.15,
+          "items": 58,
+          "share": 0.43
+        },
+        {
+          "x": 175.67,
+          "items": 4,
+          "share": 0.03
+        },
+        {
+          "x": 412.39,
+          "items": 4,
+          "share": 0.03
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 59.7:77, 110.0:3, 167.8:14, 222.6:16, 282.1:7, 319.1:66, 408.0:8, 485.4:5, 537.3:1)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 275.0 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 5,
+      "itemCount": 194,
+      "visualLineCount": 68,
+      "usefulItemCount": 152,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 56.18,
+          "items": 66,
+          "meanWidth": 189.51,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 125.1,
+          "items": 6,
+          "meanWidth": 139.88,
+          "yMin": 165.17,
+          "yMax": 542.3
+        },
+        {
+          "x": 164.61,
+          "items": 1,
+          "meanWidth": 34.14,
+          "yMin": 145.25,
+          "yMax": 145.25
+        },
+        {
+          "x": 235.73,
+          "items": 7,
+          "meanWidth": 31.57,
+          "yMin": 145.25,
+          "yMax": 712.03
+        },
+        {
+          "x": 318.57,
+          "items": 67,
+          "meanWidth": 210.87,
+          "yMin": 74.42,
+          "yMax": 712.03
+        },
+        {
+          "x": 394.83,
+          "items": 3,
+          "meanWidth": 156.29,
+          "yMin": 134.2,
+          "yMax": 712.03
+        },
+        {
+          "x": 503.46,
+          "items": 4,
+          "meanWidth": 29.67,
+          "yMin": 393.23,
+          "yMax": 592.48
+        },
+        {
+          "x": 540.64,
+          "items": 3,
+          "meanWidth": 15.48,
+          "yMin": 393.23,
+          "yMax": 592.48
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 66
+        },
+        {
+          "x": 324,
+          "count": 65
+        },
+        {
+          "x": 252,
+          "count": 4
+        },
+        {
+          "x": 504,
+          "count": 4
+        },
+        {
+          "x": 216,
+          "count": 3
+        },
+        {
+          "x": 144,
+          "count": 3
+        }
+      ],
+      "newlineBlocks": 67,
+      "chunkCount": 66,
+      "averageItemWidth": 146.59,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 319.02,
+          "items": 65,
+          "share": 0.468
+        },
+        {
+          "x": 56.13,
+          "items": 62,
+          "share": 0.446
+        },
+        {
+          "x": 134.94,
+          "items": 6,
+          "share": 0.043
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 56.2:66, 125.1:6, 164.6:1, 235.7:7, 318.6:67, 394.8:3, 503.5:4, 540.6:3)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 263.0 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 6,
+      "itemCount": 241,
+      "visualLineCount": 68,
+      "usefulItemCount": 157,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 9,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 56.71,
+          "items": 66,
+          "meanWidth": 197.57,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 131.74,
+          "items": 5,
+          "meanWidth": 67.25,
+          "yMin": 77.41,
+          "yMax": 451.41
+        },
+        {
+          "x": 209.43,
+          "items": 1,
+          "meanWidth": 41.67,
+          "yMin": 501.22,
+          "yMax": 501.22
+        },
+        {
+          "x": 258.02,
+          "items": 3,
+          "meanWidth": 22.11,
+          "yMin": 501.22,
+          "yMax": 672.18
+        },
+        {
+          "x": 319.85,
+          "items": 32,
+          "meanWidth": 158.07,
+          "yMin": 68.44,
+          "yMax": 562.35
+        },
+        {
+          "x": 361.72,
+          "items": 16,
+          "meanWidth": 33.15,
+          "yMin": 77.41,
+          "yMax": 562.35
+        },
+        {
+          "x": 419.9,
+          "items": 35,
+          "meanWidth": 13.61,
+          "yMin": 77.41,
+          "yMax": 702.49
+        },
+        {
+          "x": 484.18,
+          "items": 32,
+          "meanWidth": 12.23,
+          "yMin": 97.33,
+          "yMax": 653.76
+        },
+        {
+          "x": 536.1,
+          "items": 7,
+          "meanWidth": 9.13,
+          "yMin": 98.33,
+          "yMax": 108.29
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 36,
+          "count": 47
+        },
+        {
+          "x": 324,
+          "count": 32
+        },
+        {
+          "x": 72,
+          "count": 19
+        },
+        {
+          "x": 432,
+          "count": 19
+        },
+        {
+          "x": 468,
+          "count": 17
+        },
+        {
+          "x": 396,
+          "count": 16
+        }
+      ],
+      "newlineBlocks": 65,
+      "chunkCount": 64,
+      "averageItemWidth": 83.93,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 56.38,
+          "items": 60,
+          "share": 0.612
+        },
+        {
+          "x": 318.01,
+          "items": 24,
+          "share": 0.245
+        },
+        {
+          "x": 450.68,
+          "items": 7,
+          "share": 0.071
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 56.7:66, 131.7:5, 209.4:1, 258.0:3, 319.8:32, 361.7:16, 419.9:35, 484.2:32, 536.1:7)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 394.4 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 7,
+      "itemCount": 240,
+      "visualLineCount": 74,
+      "usefulItemCount": 122,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 60.22,
+          "items": 55,
+          "meanWidth": 144.74,
+          "yMin": 68.44,
+          "yMax": 559.95
+        },
+        {
+          "x": 118.37,
+          "items": 27,
+          "meanWidth": 49.1,
+          "yMin": 180.51,
+          "yMax": 707.21
+        },
+        {
+          "x": 200.69,
+          "items": 11,
+          "meanWidth": 20.88,
+          "yMin": 144.1,
+          "yMax": 709.56
+        },
+        {
+          "x": 261.72,
+          "items": 19,
+          "meanWidth": 10.9,
+          "yMin": 115.18,
+          "yMax": 491.41
+        },
+        {
+          "x": 320.1,
+          "items": 51,
+          "meanWidth": 184.83,
+          "yMin": 68.44,
+          "yMax": 578.74
+        },
+        {
+          "x": 396.46,
+          "items": 14,
+          "meanWidth": 25.3,
+          "yMin": 505.07,
+          "yMax": 707.95
+        },
+        {
+          "x": 449.58,
+          "items": 5,
+          "meanWidth": 9.3,
+          "yMin": 643.92,
+          "yMax": 709.27
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 54
+        },
+        {
+          "x": 324,
+          "count": 49
+        },
+        {
+          "x": 108,
+          "count": 15
+        },
+        {
+          "x": 396,
+          "count": 14
+        },
+        {
+          "x": 252,
+          "count": 13
+        },
+        {
+          "x": 144,
+          "count": 12
+        }
+      ],
+      "newlineBlocks": 57,
+      "chunkCount": 55,
+      "averageItemWidth": 82.08,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 320.76,
+          "items": 42,
+          "share": 0.412
+        },
+        {
+          "x": 57.69,
+          "items": 41,
+          "share": 0.402
+        },
+        {
+          "x": 99.74,
+          "items": 6,
+          "share": 0.059
+        },
+        {
+          "x": 220.36,
+          "items": 4,
+          "share": 0.039
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 60.2:55, 118.4:27, 200.7:11, 261.7:19, 320.1:51, 396.5:14, 449.6:5)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 409.3 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 8,
+      "itemCount": 311,
+      "visualLineCount": 72,
+      "usefulItemCount": 171,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 60.83,
+          "items": 74,
+          "meanWidth": 148.49,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 119.7,
+          "items": 9,
+          "meanWidth": 35.58,
+          "yMin": 137.19,
+          "yMax": 558.61
+        },
+        {
+          "x": 198.85,
+          "items": 17,
+          "meanWidth": 19.21,
+          "yMin": 68.44,
+          "yMax": 568.57
+        },
+        {
+          "x": 258.48,
+          "items": 18,
+          "meanWidth": 13.3,
+          "yMin": 77.41,
+          "yMax": 698.08
+        },
+        {
+          "x": 326.33,
+          "items": 75,
+          "meanWidth": 131.56,
+          "yMin": 68.44,
+          "yMax": 713.03
+        },
+        {
+          "x": 394.84,
+          "items": 9,
+          "meanWidth": 105.4,
+          "yMin": 340.56,
+          "yMax": 713.03
+        },
+        {
+          "x": 447.91,
+          "items": 11,
+          "meanWidth": 45.41,
+          "yMin": 197.96,
+          "yMax": 558.45
+        },
+        {
+          "x": 501.39,
+          "items": 4,
+          "meanWidth": 30.71,
+          "yMin": 360.49,
+          "yMax": 508.64
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 68
+        },
+        {
+          "x": 324,
+          "count": 62
+        },
+        {
+          "x": 252,
+          "count": 13
+        },
+        {
+          "x": 360,
+          "count": 13
+        },
+        {
+          "x": 216,
+          "count": 9
+        },
+        {
+          "x": 396,
+          "count": 9
+        }
+      ],
+      "newlineBlocks": 68,
+      "chunkCount": 67,
+      "averageItemWidth": 76.24,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 60.34,
+          "items": 55,
+          "share": 0.455
+        },
+        {
+          "x": 319.24,
+          "items": 46,
+          "share": 0.38
+        },
+        {
+          "x": 394.66,
+          "items": 8,
+          "share": 0.066
+        },
+        {
+          "x": 447.23,
+          "items": 6,
+          "share": 0.05
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 60.8:74, 119.7:9, 198.8:17, 258.5:18, 326.3:75, 394.8:9, 447.9:11, 501.4:4)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 295.0 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 9,
+      "itemCount": 156,
+      "visualLineCount": 64,
+      "usefulItemCount": 139,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 4,
+      "clusters": [
+        {
+          "x": 56.16,
+          "items": 66,
+          "meanWidth": 203.8,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 274.81,
+          "items": 1,
+          "meanWidth": 18.29,
+          "yMin": 529.71,
+          "yMax": 529.71
+        },
+        {
+          "x": 319.38,
+          "items": 65,
+          "meanWidth": 204.92,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 420.99,
+          "items": 4,
+          "meanWidth": 73.1,
+          "yMin": 512.78,
+          "yMax": 642.29
+        },
+        {
+          "x": 468.18,
+          "items": 1,
+          "meanWidth": 87.93,
+          "yMin": 512.78,
+          "yMax": 512.78
+        },
+        {
+          "x": 527.12,
+          "items": 2,
+          "meanWidth": 17.8,
+          "yMin": 642.29,
+          "yMax": 642.29
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 66
+        },
+        {
+          "x": 324,
+          "count": 65
+        },
+        {
+          "x": 396,
+          "count": 2
+        },
+        {
+          "x": 432,
+          "count": 2
+        },
+        {
+          "x": 288,
+          "count": 1
+        },
+        {
+          "x": 504,
+          "count": 1
+        }
+      ],
+      "newlineBlocks": 64,
+      "chunkCount": 63,
+      "averageItemWidth": 174.73,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 56.27,
+          "items": 63,
+          "share": 0.5
+        },
+        {
+          "x": 319.01,
+          "items": 60,
+          "share": 0.476
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 4 !== 2 (total clusters 6; sizes 56.2:66, 274.8:1, 319.4:65, 421.0:4, 468.2:1, 527.1:2)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 263.0 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 10,
+      "itemCount": 238,
+      "visualLineCount": 78,
+      "usefulItemCount": 174,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 9,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 57.68,
+          "items": 71,
+          "meanWidth": 176.25,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 109.57,
+          "items": 9,
+          "meanWidth": 85.95,
+          "yMin": 108.29,
+          "yMax": 468.94
+        },
+        {
+          "x": 168.1,
+          "items": 4,
+          "meanWidth": 53.35,
+          "yMin": 449.02,
+          "yMax": 618.38
+        },
+        {
+          "x": 211.64,
+          "items": 1,
+          "meanWidth": 24.89,
+          "yMin": 478.9,
+          "yMax": 478.9
+        },
+        {
+          "x": 262.08,
+          "items": 7,
+          "meanWidth": 17.52,
+          "yMin": 98.33,
+          "yMax": 618.38
+        },
+        {
+          "x": 328.4,
+          "items": 75,
+          "meanWidth": 119.93,
+          "yMin": 68.44,
+          "yMax": 709.28
+        },
+        {
+          "x": 397.52,
+          "items": 9,
+          "meanWidth": 34.5,
+          "yMin": 68.44,
+          "yMax": 532.3
+        },
+        {
+          "x": 454.12,
+          "items": 12,
+          "meanWidth": 37.21,
+          "yMin": 68.44,
+          "yMax": 532.3
+        },
+        {
+          "x": 528.24,
+          "items": 7,
+          "meanWidth": 10.97,
+          "yMin": 68.44,
+          "yMax": 532.3
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 71
+        },
+        {
+          "x": 324,
+          "count": 62
+        },
+        {
+          "x": 360,
+          "count": 13
+        },
+        {
+          "x": 108,
+          "count": 9
+        },
+        {
+          "x": 396,
+          "count": 9
+        },
+        {
+          "x": 432,
+          "count": 6
+        }
+      ],
+      "newlineBlocks": 78,
+      "chunkCount": 69,
+      "averageItemWidth": 99.1,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 56.41,
+          "items": 58,
+          "share": 0.518
+        },
+        {
+          "x": 321.49,
+          "items": 45,
+          "share": 0.402
+        },
+        {
+          "x": 118.37,
+          "items": 4,
+          "share": 0.036
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 57.7:71, 109.6:9, 168.1:4, 211.6:1, 262.1:7, 328.4:75, 397.5:9, 454.1:12, 528.2:7)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 296.2 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 11,
+      "itemCount": 165,
+      "visualLineCount": 43,
+      "usefulItemCount": 103,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 10,
+      "substantialClusterCount": 10,
+      "clusters": [
+        {
+          "x": 60.89,
+          "items": 42,
+          "meanWidth": 159.7,
+          "yMin": 68.44,
+          "yMax": 709.85
+        },
+        {
+          "x": 106.52,
+          "items": 9,
+          "meanWidth": 107.67,
+          "yMin": 108.29,
+          "yMax": 431.32
+        },
+        {
+          "x": 145.07,
+          "items": 3,
+          "meanWidth": 109.03,
+          "yMin": 68.44,
+          "yMax": 341.65
+        },
+        {
+          "x": 192.45,
+          "items": 8,
+          "meanWidth": 48.84,
+          "yMin": 68.44,
+          "yMax": 371.54
+        },
+        {
+          "x": 242.1,
+          "items": 4,
+          "meanWidth": 35.9,
+          "yMin": 152.13,
+          "yMax": 195.97
+        },
+        {
+          "x": 278.13,
+          "items": 4,
+          "meanWidth": 10.11,
+          "yMin": 78.41,
+          "yMax": 195.97
+        },
+        {
+          "x": 324.8,
+          "items": 30,
+          "meanWidth": 178.07,
+          "yMin": 68.44,
+          "yMax": 371.54
+        },
+        {
+          "x": 376.17,
+          "items": 3,
+          "meanWidth": 63.09,
+          "yMin": 257.97,
+          "yMax": 331.69
+        },
+        {
+          "x": 443.41,
+          "items": 6,
+          "meanWidth": 52.99,
+          "yMin": 178.03,
+          "yMax": 267.93
+        },
+        {
+          "x": 506.75,
+          "items": 8,
+          "meanWidth": 27.02,
+          "yMin": 228.08,
+          "yMax": 692.15
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 33
+        },
+        {
+          "x": 324,
+          "count": 30
+        },
+        {
+          "x": 108,
+          "count": 9
+        },
+        {
+          "x": 36,
+          "count": 9
+        },
+        {
+          "x": 504,
+          "count": 6
+        },
+        {
+          "x": 180,
+          "count": 4
+        }
+      ],
+      "newlineBlocks": 37,
+      "chunkCount": 33,
+      "averageItemWidth": 89.49,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 60.18,
+          "items": 25,
+          "share": 0.431
+        },
+        {
+          "x": 324.15,
+          "items": 24,
+          "share": 0.414
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 60.9:42, 106.5:9, 145.1:3, 192.5:8, 242.1:4, 278.1:4, 324.8:30, 376.2:3, 443.4:6, 506.7:8)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 434.1 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 12,
+      "itemCount": 592,
+      "visualLineCount": 62,
+      "usefulItemCount": 204,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 62.49,
+          "items": 59,
+          "meanWidth": 149.32,
+          "yMin": 80.52,
+          "yMax": 702.66
+        },
+        {
+          "x": 144.03,
+          "items": 2,
+          "meanWidth": 42.88,
+          "yMin": 399.32,
+          "yMax": 429.16
+        },
+        {
+          "x": 198.89,
+          "items": 57,
+          "meanWidth": 12.55,
+          "yMin": 399.32,
+          "yMax": 713.03
+        },
+        {
+          "x": 250.21,
+          "items": 27,
+          "meanWidth": 7.21,
+          "yMin": 453.6,
+          "yMax": 713.03
+        },
+        {
+          "x": 311.89,
+          "items": 85,
+          "meanWidth": 76.32,
+          "yMin": 68.44,
+          "yMax": 713.03
+        },
+        {
+          "x": 373.91,
+          "items": 28,
+          "meanWidth": 12.79,
+          "yMin": 453.6,
+          "yMax": 713.03
+        },
+        {
+          "x": 428.82,
+          "items": 27,
+          "meanWidth": 14.43,
+          "yMin": 178.03,
+          "yMax": 702.66
+        },
+        {
+          "x": 500.56,
+          "items": 55,
+          "meanWidth": 17.43,
+          "yMin": 337.43,
+          "yMax": 713.03
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 59
+        },
+        {
+          "x": 324,
+          "count": 58
+        },
+        {
+          "x": 504,
+          "count": 30
+        },
+        {
+          "x": 216,
+          "count": 29
+        },
+        {
+          "x": 180,
+          "count": 28
+        },
+        {
+          "x": 252,
+          "count": 27
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 45.21,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 55.92,
+          "items": 34,
+          "share": 0.507
+        },
+        {
+          "x": 319.74,
+          "items": 29,
+          "share": 0.433
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 62.5:59, 144.0:2, 198.9:57, 250.2:27, 311.9:85, 373.9:28, 428.8:27, 500.6:55)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 13,
+      "itemCount": 169,
+      "visualLineCount": 86,
+      "usefulItemCount": 144,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 64.12,
+          "items": 66,
+          "meanWidth": 138.73,
+          "yMin": 68.44,
+          "yMax": 708.11
+        },
+        {
+          "x": 135.08,
+          "items": 4,
+          "meanWidth": 13.78,
+          "yMin": 516.53,
+          "yMax": 532.34
+        },
+        {
+          "x": 203.25,
+          "items": 5,
+          "meanWidth": 27.68,
+          "yMin": 88.37,
+          "yMax": 532.34
+        },
+        {
+          "x": 260.99,
+          "items": 5,
+          "meanWidth": 22.48,
+          "yMin": 257.73,
+          "yMax": 532.34
+        },
+        {
+          "x": 319.23,
+          "items": 63,
+          "meanWidth": 200.88,
+          "yMin": 68.44,
+          "yMax": 712.03
+        },
+        {
+          "x": 470.64,
+          "items": 2,
+          "meanWidth": 47.45,
+          "yMin": 193.31,
+          "yMax": 193.31
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 66
+        },
+        {
+          "x": 324,
+          "count": 63
+        },
+        {
+          "x": 216,
+          "count": 3
+        },
+        {
+          "x": 252,
+          "count": 3
+        },
+        {
+          "x": 108,
+          "count": 2
+        },
+        {
+          "x": 144,
+          "count": 2
+        }
+      ],
+      "newlineBlocks": 84,
+      "chunkCount": 71,
+      "averageItemWidth": 131.84,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 319.16,
+          "items": 56,
+          "share": 0.523
+        },
+        {
+          "x": 59.25,
+          "items": 48,
+          "share": 0.449
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 64.1:66, 135.1:4, 203.3:5, 261.0:5, 319.2:63, 470.6:2)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 275.0 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 14,
+      "itemCount": 129,
+      "visualLineCount": 40,
+      "usefulItemCount": 92,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 10,
+      "substantialClusterCount": 9,
+      "clusters": [
+        {
+          "x": 63.91,
+          "items": 29,
+          "meanWidth": 149.44,
+          "yMin": 420.12,
+          "yMax": 712.03
+        },
+        {
+          "x": 110.18,
+          "items": 2,
+          "meanWidth": 102.18,
+          "yMin": 476.66,
+          "yMax": 648.27
+        },
+        {
+          "x": 162.04,
+          "items": 9,
+          "meanWidth": 69.03,
+          "yMin": 438.06,
+          "yMax": 648.27
+        },
+        {
+          "x": 223.25,
+          "items": 3,
+          "meanWidth": 57.43,
+          "yMin": 533.2,
+          "yMax": 595.22
+        },
+        {
+          "x": 290.89,
+          "items": 3,
+          "meanWidth": 2.21,
+          "yMin": 429.09,
+          "yMax": 595.22
+        },
+        {
+          "x": 327.79,
+          "items": 28,
+          "meanWidth": 128.35,
+          "yMin": 443.04,
+          "yMax": 712.03
+        },
+        {
+          "x": 382.37,
+          "items": 7,
+          "meanWidth": 132.84,
+          "yMin": 511.78,
+          "yMax": 712.03
+        },
+        {
+          "x": 454.05,
+          "items": 9,
+          "meanWidth": 49.45,
+          "yMin": 460.97,
+          "yMax": 682.14
+        },
+        {
+          "x": 496.76,
+          "items": 6,
+          "meanWidth": 59.36,
+          "yMin": 452,
+          "yMax": 673.18
+        },
+        {
+          "x": 532.94,
+          "items": 1,
+          "meanWidth": 23.19,
+          "yMin": 664.21,
+          "yMax": 664.21
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 72,
+          "count": 29
+        },
+        {
+          "x": 324,
+          "count": 28
+        },
+        {
+          "x": 504,
+          "count": 6
+        },
+        {
+          "x": 144,
+          "count": 5
+        },
+        {
+          "x": 468,
+          "count": 5
+        },
+        {
+          "x": 180,
+          "count": 4
+        }
+      ],
+      "newlineBlocks": 40,
+      "chunkCount": 35,
+      "averageItemWidth": 84.9,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 63.96,
+          "items": 23,
+          "share": 0.348
+        },
+        {
+          "x": 328.44,
+          "items": 22,
+          "share": 0.333
+        },
+        {
+          "x": 480.22,
+          "items": 8,
+          "share": 0.121
+        },
+        {
+          "x": 378.82,
+          "items": 6,
+          "share": 0.091
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 9 !== 2 (total clusters 10; sizes 63.9:29, 110.2:2, 162.0:9, 223.2:3, 290.9:3, 327.8:28, 382.4:7, 454.1:9, 496.8:6, 532.9:1)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 279.8 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    }
+  ]
+}

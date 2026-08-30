@@ -1,0 +1,38 @@
+{
+  "phase": "4A.9.3",
+  "generatedAt": "2026-08-30T22:57:04.809Z",
+  "versions": {
+    "parser": 1,
+    "normalizer": 3,
+    "structure": 3,
+    "chunker": 1
+  },
+  "documents": 18,
+  "kinds": {
+    "paragraph": 2527,
+    "unknown": 2081,
+    "heading": 250,
+    "caption": 89,
+    "list": 207,
+    "list-item": 331,
+    "math": 97,
+    "furniture": 239
+  },
+  "listLikeLines": 524,
+  "listBlocks": 207,
+  "listItemBlocks": 331,
+  "unassignedListLike": 193,
+  "gates": {
+    "mappingErrorCount": 0,
+    "structureErrorCount": 0,
+    "reconstructionErrorCount": 0,
+    "crossRegionBlocks": 0,
+    "crossPageBlocks": 0,
+    "tableFlattened": 0,
+    "invalidItemRefs": 0,
+    "productionChunks": 7917,
+    "frozen92Chunks": 7917,
+    "chunkerUnchanged": true,
+    "pdfjsDuringDerive": 0
+  }
+}

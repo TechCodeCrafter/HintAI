@@ -1,0 +1,27 @@
+{
+  "cold": {
+    "lecture": {
+      "label": "lecture-cold",
+      "ms": 157.9
+    }
+  },
+  "warm": {
+    "lecture": {
+      "label": "lecture-warm-same-hash",
+      "ms": 0.47
+    },
+    "multipage": {
+      "label": "multipage-cold",
+      "ms": 8.12
+    },
+    "paper": {
+      "label": "paper-cold",
+      "ms": 3.49
+    }
+  },
+  "batch": {
+    "label": "batch-three",
+    "ms": 4.62
+  },
+  "at": "2026-08-30T18:30:56.148Z"
+}

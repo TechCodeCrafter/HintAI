@@ -1,0 +1,50 @@
+[
+  {
+    "file": "attention.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "bert.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "bitcoin.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "lora.pdf",
+    "flaggedItems": 1
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "flaggedItems": 2
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "resnet.pdf",
+    "flaggedItems": 0
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "flaggedItems": 0
+  }
+]

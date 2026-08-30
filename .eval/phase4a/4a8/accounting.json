@@ -1,0 +1,18 @@
+{
+  "questions": 126,
+  "answerable": 89,
+  "answerableSilences": 27,
+  "answerableSpoke": 62,
+  "answerableHits": 14,
+  "answerableWrong": 48,
+  "unanswerable": 37,
+  "unanswerableSpoke": 20,
+  "unanswerableSilent": 17,
+  "wrongIntent": 68,
+  "expected": {
+    "answerableWrong": 48,
+    "unanswerableSpoke": 20,
+    "wrongIntent": 68
+  },
+  "reconciled": true
+}

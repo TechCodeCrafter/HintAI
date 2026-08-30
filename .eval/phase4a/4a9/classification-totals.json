@@ -1,0 +1,12 @@
+{
+  "singleColumn": 70,
+  "twoColumn": 14,
+  "uncertain": 242,
+  "full": 84,
+  "isolated": 187,
+  "skipped": 55,
+  "readyDocs": 12,
+  "refusedDocs": 3,
+  "scannedDocs": 1,
+  "unreadableDocs": 2
+}

@@ -72,7 +72,7 @@ const errors = [];
 page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 page.on("pageerror", (e) => errors.push(String(e)));
 
-await page.goto("http://127.0.0.1:8080/", { waitUntil: "networkidle" });
+await page.goto("http://127.0.0.1:8080/app", { waitUntil: "networkidle" });
 await page.waitForTimeout(500);
 
 const card = page.locator('[data-pane="card"]');

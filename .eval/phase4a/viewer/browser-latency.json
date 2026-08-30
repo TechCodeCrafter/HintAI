@@ -1,0 +1,191 @@
+[
+  {
+    "id": "exact",
+    "mode": "exact",
+    "wallMs": 2041,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "exact",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 0.6999998092651367,
+        "openMs": 0,
+        "pageMs": 17,
+        "textLayerMs": 0.10000038146972656,
+        "highlightMs": 0.19999980926513672,
+        "totalMs": 19.5,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "multi",
+    "mode": "exact",
+    "wallMs": 2063,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "exact",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 0.6999998092651367,
+        "openMs": 0,
+        "pageMs": 16.800000190734863,
+        "textLayerMs": 0,
+        "highlightMs": 0.2999997138977051,
+        "totalMs": 18.699999809265137,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "hyphen",
+    "mode": "exact",
+    "wallMs": 2778,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "exact",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 2.0999999046325684,
+        "openMs": 0,
+        "pageMs": 2.1999998092651367,
+        "textLayerMs": 0.09999990463256836,
+        "highlightMs": 0.19999980926513672,
+        "totalMs": 12.099999904632568,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "twocol-left",
+    "mode": "exact",
+    "wallMs": 2256,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "exact",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 0.9000000953674316,
+        "openMs": 0,
+        "pageMs": 0.09999990463256836,
+        "textLayerMs": 0,
+        "highlightMs": 0.20000028610229492,
+        "totalMs": 2.200000286102295,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "twocol-right",
+    "mode": "exact",
+    "wallMs": 2092,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "exact",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 1,
+        "openMs": 0,
+        "pageMs": 7.400000095367432,
+        "textLayerMs": 0,
+        "highlightMs": 0.20000028610229492,
+        "totalMs": 10.700000286102295,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "item-box",
+    "mode": "item-box",
+    "wallMs": 2052,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "item-box",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 1.0999999046325684,
+        "openMs": 0,
+        "pageMs": 7.5,
+        "textLayerMs": 0.09999990463256836,
+        "highlightMs": 0.09999990463256836,
+        "totalMs": 9.899999618530273,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "caption",
+    "mode": "caption-only",
+    "wallMs": 2088,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "caption-only",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 0.7000002861022949,
+        "openMs": 0,
+        "pageMs": 7.700000286102295,
+        "textLayerMs": 0.20000028610229492,
+        "highlightMs": 0,
+        "totalMs": 9.600000381469727,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "mobile",
+    "mode": "exact",
+    "wallMs": 4621,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "exact",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 1.0999999046325684,
+        "openMs": 0,
+        "pageMs": 7.400000095367432,
+        "textLayerMs": 0.09999990463256836,
+        "highlightMs": 0.20000028610229492,
+        "totalMs": 10,
+        "cold": false
+      }
+    }
+  },
+  {
+    "id": "stale",
+    "mode": "stale",
+    "wallMs": 1871,
+    "metric": {
+      "pageRequested": 1,
+      "pageOpened": 1,
+      "mode": "stale",
+      "wrongPage": false,
+      "wrongText": false,
+      "latency": {
+        "blobMs": 0.7999997138977051,
+        "openMs": 0,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0,
+        "totalMs": 1,
+        "cold": true
+      }
+    }
+  }
+]

@@ -58,8 +58,12 @@ function show(tag: string, hits: Hit[], want: RegExp) {
   if (hits.length === 0) console.log("      (no hits)");
   hits.forEach((h, i) => {
     const mark = want.test(h.path) ? "*" : " ";
+    const where =
+      h.kind === "document"
+        ? `${h.path} p${h.page}`
+        : `${h.path}:${h.startLine}-${h.endLine}`;
     console.log(
-      `      ${mark}${String(i + 1).padStart(2)}. ${h.score.toFixed(2).padStart(7)}  ${h.kind === "why" ? "[why] " : "[code]"} ${h.path}:${h.startLine}-${h.endLine}`,
+      `      ${mark}${String(i + 1).padStart(2)}. ${h.score.toFixed(2).padStart(7)}  [${h.kind}] ${where}`,
     );
   });
   console.log(`      files: ${[...new Set(hits.map((h) => h.path))].join(", ") || "none"}`);

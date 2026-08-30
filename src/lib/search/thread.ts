@@ -41,6 +41,8 @@ export type ThreadContext = {
   claim: string;
   /** Cited evidence paths. */
   files: string[];
+  /** Document sourceIds cited by the last spoken Card, when any. */
+  sourceIds?: string[];
   /** Entity names the thread established — cited modules, and named subjects. */
   entities: string[];
   at: number;
@@ -268,7 +270,14 @@ export function threadFrom(input: {
   // Entities come from cited material only. Deriving them from the question's
   // own words would let an ordinary word like "service" register as a second
   // candidate and make every reference look ambiguous.
-  const files = [...new Set(input.card.citations.map((c) => c.path))];
+  const files = [
+    ...new Set(
+      input.card.citations.flatMap((c) => (c.kind === "file" || c.kind === "document" ? [c.path] : [])),
+    ),
+  ];
+  const sourceIds = [
+    ...new Set(input.card.citations.flatMap((c) => (c.kind === "document" && c.sourceId ? [c.sourceId] : []))),
+  ];
   return {
     utteranceId: input.utteranceId,
     canonical: input.canonical,
@@ -276,6 +285,7 @@ export function threadFrom(input: {
     subject: input.subject,
     claim: input.card.say,
     files,
+    sourceIds: sourceIds.length > 0 ? sourceIds : undefined,
     entities: [...new Set(files.flatMap(entitiesFromPath))],
     at: input.at ?? Date.now(),
   };

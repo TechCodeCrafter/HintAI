@@ -1,0 +1,130 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "Northstar chips all speak",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Who chip uses commit evidence",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "commit citations have no file line",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "fresh build rebuilt every source",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":0,\"rebuiltSourceCount\":160,\"deletedSourceCount\":0,\"newSourceCount\":160,\"reusedChunkCount\":0,\"rebuiltChunkCount\":1998,\"hydrateMs\":2.6898339999999905,\"hashCompareMs\":0.021583000000021002,\"cacheReadMs\":0,\"chunkBuildMs\":5.786366000000129,\"assembleMs\":5.958708999999999,\"vocabMs\":22.191709000000003,\"totalMs\":30.938333}"
+    },
+    {
+      "name": "warm reload reused every source",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":160,\"rebuiltSourceCount\":0,\"deletedSourceCount\":0,\"newSourceCount\":0,\"reusedChunkCount\":1998,\"rebuiltChunkCount\":0,\"hydrateMs\":1.0769999999999982,\"hashCompareMs\":0.07824999999996862,\"cacheReadMs\":0.20870800000028567,\"chunkBuildMs\":0,\"assembleMs\":0.5584999999999809,\"vocabMs\":18.501166000000012,\"totalMs\":20.246999999999957}"
+    },
+    {
+      "name": "fresh and cached chunks equivalent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "fresh and cached Cards identical",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "A no changes: 160 reused",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":160,\"rebuiltSourceCount\":0,\"deletedSourceCount\":0,\"newSourceCount\":0,\"reusedChunkCount\":1998,\"rebuiltChunkCount\":0,\"hydrateMs\":0.7131660000000011,\"hashCompareMs\":0.024875000000065484,\"cacheReadMs\":0.5284220000002051,\"chunkBuildMs\":0,\"assembleMs\":0.6992500000000064,\"vocabMs\":18.52354200000002,\"totalMs\":19.980500000000006}"
+    },
+    {
+      "name": "A no changes: Excel card still speaks",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "B one changed: 159 reused / 1 rebuilt",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":159,\"rebuiltSourceCount\":1,\"deletedSourceCount\":0,\"newSourceCount\":0,\"reusedChunkCount\":1980,\"rebuiltChunkCount\":18,\"hydrateMs\":0.7641250000000355,\"hashCompareMs\":0.024792000000047665,\"cacheReadMs\":0.09537399999953777,\"chunkBuildMs\":0.055124999999975444,\"assembleMs\":0.3792909999999665,\"vocabMs\":19.10141699999997,\"totalMs\":20.28941700000007}"
+    },
+    {
+      "name": "B one changed: Excel card unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "C one added: only new source rebuilt",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":160,\"rebuiltSourceCount\":1,\"deletedSourceCount\":0,\"newSourceCount\":1,\"reusedChunkCount\":1998,\"rebuiltChunkCount\":1,\"hydrateMs\":0.7861669999999776,\"hashCompareMs\":0.024750000000040018,\"cacheReadMs\":0.10249499999963518,\"chunkBuildMs\":0.011875000000031832,\"assembleMs\":0.29770799999994324,\"vocabMs\":18.11824999999999,\"totalMs\":19.246833000000038}"
+    },
+    {
+      "name": "D one deleted: cached source removed",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":160,\"rebuiltSourceCount\":0,\"deletedSourceCount\":1,\"newSourceCount\":0,\"reusedChunkCount\":1998,\"rebuiltChunkCount\":0,\"hydrateMs\":0.8163749999999936,\"hashCompareMs\":0.04841699999997218,\"cacheReadMs\":0.10108499999955711,\"chunkBuildMs\":0,\"assembleMs\":0.2693330000000742,\"vocabMs\":17.854375000000005,\"totalMs\":19.03479200000004}"
+    },
+    {
+      "name": "E 16 changed: only those rebuilt",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":144,\"rebuiltSourceCount\":16,\"deletedSourceCount\":0,\"newSourceCount\":0,\"reusedChunkCount\":1759,\"rebuiltChunkCount\":241,\"hydrateMs\":0.7750419999999849,\"hashCompareMs\":0.02545800000007148,\"cacheReadMs\":0.08154699999965942,\"chunkBuildMs\":0.5791289999999663,\"assembleMs\":0.8187919999999167,\"vocabMs\":18.744542000000024,\"totalMs\":20.385583999999994}"
+    },
+    {
+      "name": "E several changed: Excel card still speaks",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "corrupt cache: canonical source survives",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "corrupt cache: Context still ready with chunks",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "corrupt cache: bad chunk not searchable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "corrupt cache: Excel question still answers",
+      "ok": true,
+      "detail": "Generates Excel files in the required format for Synthes biocompatibility data"
+    },
+    {
+      "name": "IDB count-mismatch rebuilds that source",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":159,\"rebuiltSourceCount\":1,\"deletedSourceCount\":0,\"newSourceCount\":0,\"reusedChunkCount\":1992,\"rebuiltChunkCount\":6,\"hydrateMs\":1.7900830000000951,\"hashCompareMs\":0.48279200000001765,\"cacheReadMs\":16.67891500000019,\"chunkBuildMs\":1.5715410000000247,\"assembleMs\":18.49087499999996,\"vocabMs\":19.751500000000078,\"totalMs\":40.541749999999865}"
+    },
+    {
+      "name": "realistic ingest warm reuses all sources",
+      "ok": true,
+      "detail": "{\"reusedSourceCount\":160,\"rebuiltSourceCount\":0,\"deletedSourceCount\":0,\"newSourceCount\":0,\"reusedChunkCount\":959,\"rebuiltChunkCount\":0,\"hydrateMs\":0.20395800000005693,\"hashCompareMs\":0.025582999999642198,\"cacheReadMs\":0.12720999999964988,\"chunkBuildMs\":0,\"assembleMs\":0.18975000000000364,\"vocabMs\":10.494708999999602,\"totalMs\":10.932874999999967}"
+    },
+    {
+      "name": "realistic ingest under 2MB product cap",
+      "ok": true,
+      "detail": "1635156 bytes"
+    }
+  ],
+  "lastIndex": {
+    "reusedSourceCount": 1000,
+    "rebuiltSourceCount": 0,
+    "deletedSourceCount": 0,
+    "newSourceCount": 0,
+    "reusedChunkCount": 1000,
+    "rebuiltChunkCount": 0,
+    "hydrateMs": 0.8970840000001772,
+    "hashCompareMs": 0.9885410000001684,
+    "cacheReadMs": 0.8352429999986271,
+    "chunkBuildMs": 0,
+    "assembleMs": 1.011833999999908,
+    "vocabMs": 0.6807090000002063,
+    "totalMs": 3.646125000000211
+  }
+}

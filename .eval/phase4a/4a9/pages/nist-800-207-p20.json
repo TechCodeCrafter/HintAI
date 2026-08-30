@@ -1,0 +1,1445 @@
+{
+  "file": "nist-800-207.pdf",
+  "page": 20,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 4 !== 2 (total clusters 6; sizes 19.7:1, 87.6:45, 134.4:2, 235.0:1, 329.0:4, 421.6:2)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 280.3 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 6,
+    "substantialClusterCount": 4,
+    "clusters": [
+      {
+        "x": 19.68,
+        "items": 1,
+        "meanWidth": 355.64,
+        "yMin": 559.26,
+        "yMax": 559.26
+      },
+      {
+        "x": 87.57,
+        "items": 45,
+        "meanWidth": 304.64,
+        "yMin": 96.3,
+        "yMax": 746.58
+      },
+      {
+        "x": 134.37,
+        "items": 2,
+        "meanWidth": 196.96,
+        "yMin": 665.22,
+        "yMax": 669.72
+      },
+      {
+        "x": 235.02,
+        "items": 1,
+        "meanWidth": 261.66,
+        "yMin": 630.78,
+        "yMax": 630.78
+      },
+      {
+        "x": 328.98,
+        "items": 4,
+        "meanWidth": 95.11,
+        "yMin": 50.58,
+        "yMax": 706.62
+      },
+      {
+        "x": 421.59,
+        "items": 2,
+        "meanWidth": 112.87,
+        "yMin": 513.54,
+        "yMax": 746.58
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 19.68,
+      "items": 1,
+      "meanWidth": 355.64,
+      "yMin": 559.26,
+      "yMax": 559.26
+    },
+    {
+      "x": 87.57,
+      "items": 45,
+      "meanWidth": 304.64,
+      "yMin": 96.3,
+      "yMax": 746.58
+    },
+    {
+      "x": 134.37,
+      "items": 2,
+      "meanWidth": 196.96,
+      "yMin": 665.22,
+      "yMax": 669.72
+    },
+    {
+      "x": 235.02,
+      "items": 1,
+      "meanWidth": 261.66,
+      "yMin": 630.78,
+      "yMax": 630.78
+    },
+    {
+      "x": 328.98,
+      "items": 4,
+      "meanWidth": 95.11,
+      "yMin": 50.58,
+      "yMax": 706.62
+    },
+    {
+      "x": 421.59,
+      "items": 2,
+      "meanWidth": 112.87,
+      "yMin": 513.54,
+      "yMax": 746.58
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 43,
+    "clusters": [
+      {
+        "x": 87.97,
+        "items": 36,
+        "share": 0.837
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.8372093023255814
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        19.68,
+        87.57
+      ],
+      "gap": 67.88999999999999
+    },
+    {
+      "between": [
+        87.57,
+        134.37
+      ],
+      "gap": 46.80000000000001
+    },
+    {
+      "between": [
+        134.37,
+        235.02
+      ],
+      "gap": 100.65
+    },
+    {
+      "between": [
+        235.02,
+        328.98
+      ],
+      "gap": 93.96000000000001
+    },
+    {
+      "between": [
+        328.98,
+        421.59
+      ],
+      "gap": 92.60999999999996
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "NIST SP 800-207",
+      "x": 72,
+      "y": 746.58,
+      "width": 77.33,
+      "height": 10.02,
+      "right": 149.33,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 149.33,
+      "y": 746.58,
+      "width": 22.57,
+      "height": 0,
+      "right": 171.9,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "ZERO TRUST ARCHITECTURE",
+      "x": 420.18,
+      "y": 746.58,
+      "width": 119.81,
+      "height": 10.02,
+      "right": 539.99,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 300,
+      "y": 50.58,
+      "width": 0,
+      "height": 0,
+      "right": 304,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "11",
+      "x": 300,
+      "y": 50.58,
+      "width": 12,
+      "height": 12,
+      "right": 312,
+      "visualLineId": 39,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 19.68,
+      "y": 559.26,
+      "width": 0,
+      "height": 0,
+      "right": 23.68,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207",
+      "x": 19.68,
+      "y": 559.26,
+      "width": 355.64,
+      "height": 9,
+      "right": 375.32,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "",
+      "x": 90,
+      "y": 706.62,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "•",
+      "x": 90,
+      "y": 706.62,
+      "width": 5.52,
+      "height": 12,
+      "right": 95.52,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": " ",
+      "x": 95.52,
+      "y": 706.62,
+      "width": 1.04,
+      "height": 0,
+      "right": 96.56,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "Enterprise public key infrastructure (PKI):",
+      "x": 108,
+      "y": 706.62,
+      "width": 222.7,
+      "height": 12,
+      "right": 330.7,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": " ",
+      "x": 330.7,
+      "y": 706.62,
+      "width": 0.25,
+      "height": 0,
+      "right": 330.95,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "This system is responsible for generating",
+      "x": 333.72,
+      "y": 706.62,
+      "width": 196.86,
+      "height": 12,
+      "right": 530.58,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "and logging certificates issued by the enterprise to resources, subjects, services and",
+      "x": 108,
+      "y": 692.82,
+      "width": 399,
+      "height": 12,
+      "right": 507,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "applications. This also includes the global certificate authority ecosystem and the Federal",
+      "x": 108,
+      "y": 679.02,
+      "width": 428.55,
+      "height": 12,
+      "right": 536.55,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "PKI,",
+      "x": 108,
+      "y": 665.22,
+      "width": 22.32,
+      "height": 12,
+      "right": 130.32,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "4",
+      "x": 130.86,
+      "y": 669.72,
+      "width": 3.99,
+      "height": 7.98,
+      "right": 134.85,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": " ",
+      "x": 134.85,
+      "y": 669.72,
+      "width": 0.38,
+      "height": 0,
+      "right": 135.23,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "which may or may not be integrated with the enterprise PKI. This could also be a",
+      "x": 137.88,
+      "y": 665.22,
+      "width": 389.93,
+      "height": 12,
+      "right": 527.81,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "PKI that is not built upon X.509 certificates.",
+      "x": 108,
+      "y": 651.42,
+      "width": 213,
+      "height": 12,
+      "right": 321,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "",
+      "x": 90,
+      "y": 630.78,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": "•",
+      "x": 90,
+      "y": 630.78,
+      "width": 5.52,
+      "height": 12,
+      "right": 95.52,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": " ",
+      "x": 95.52,
+      "y": 630.78,
+      "width": 1.04,
+      "height": 0,
+      "right": 96.56,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "ID management system:",
+      "x": 108,
+      "y": 630.78,
+      "width": 124,
+      "height": 12,
+      "right": 232,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": " ",
+      "x": 232,
+      "y": 630.78,
+      "width": 0.25,
+      "height": 0,
+      "right": 232.25,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "This is responsible for creating, storing, and managing",
+      "x": 235.02,
+      "y": 630.78,
+      "width": 261.66,
+      "height": 12,
+      "right": 496.68,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "enterprise user accounts and identity records (e.g., lightweight directory access protocol",
+      "x": 108,
+      "y": 616.98,
+      "width": 421.48,
+      "height": 12,
+      "right": 529.48,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "(LDAP) server). This system contains the necessary subject information (e.g., name,",
+      "x": 108,
+      "y": 603.18,
+      "width": 405.54,
+      "height": 12,
+      "right": 513.54,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "email address, certificates) and other enterprise characteristics such as role, access",
+      "x": 108,
+      "y": 589.38,
+      "width": 394.42,
+      "height": 12,
+      "right": 502.42,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "attributes, and assigned assets. This system often utilizes other systems (such as a PKI)",
+      "x": 108,
+      "y": 575.58,
+      "width": 417.51,
+      "height": 12,
+      "right": 525.51,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": "for artifacts associated with user accounts. This system may be part of a larger federated",
+      "x": 108,
+      "y": 561.78,
+      "width": 423.47,
+      "height": 12,
+      "right": 531.47,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "community and may include nonenterprise employees or links to nonenterprise assets for",
+      "x": 108,
+      "y": 547.98,
+      "width": 427.6,
+      "height": 12,
+      "right": 535.6,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "collaboration.",
+      "x": 108,
+      "y": 534.18,
+      "width": 66.3,
+      "height": 12,
+      "right": 174.3,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "",
+      "x": 90,
+      "y": 513.54,
+      "width": 0,
+      "height": 0,
+      "right": 94,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": "•",
+      "x": 90,
+      "y": 513.54,
+      "width": 5.52,
+      "height": 12,
+      "right": 95.52,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": " ",
+      "x": 95.52,
+      "y": 513.54,
+      "width": 1.04,
+      "height": 0,
+      "right": 96.56,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": "Security information and event management (SIEM) system:",
+      "x": 108,
+      "y": 513.54,
+      "width": 311.98,
+      "height": 12,
+      "right": 419.98,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": " ",
+      "x": 419.98,
+      "y": 513.54,
+      "width": 0.25,
+      "height": 0,
+      "right": 420.23,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "This collects security-",
+      "x": 423,
+      "y": 513.54,
+      "width": 105.94,
+      "height": 12,
+      "right": 528.94,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": "centric information for later analysis. This data is then used to refine policies and warn of",
+      "x": 108,
+      "y": 499.74,
+      "width": 429.16,
+      "height": 12,
+      "right": 537.16,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "possible attacks against enterprise assets.",
+      "x": 108,
+      "y": 485.94,
+      "width": 196.98,
+      "height": 12,
+      "right": 304.98,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": "",
+      "x": 72,
+      "y": 461.04,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "3.1",
+      "x": 72,
+      "y": 461.04,
+      "width": 15.28,
+      "height": 10.98,
+      "right": 87.28,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 87.28,
+      "y": 461.04,
+      "width": 1.23,
+      "height": 0,
+      "right": 88.52,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "Variations of Zero Trust Architecture Approaches",
+      "x": 100.8,
+      "y": 461.04,
+      "width": 258.5,
+      "height": 10.98,
+      "right": 359.3,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "",
+      "x": 72,
+      "y": 435.48,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "There are several ways that an enterprise can enact a ZTA for workflows. These approaches vary",
+      "x": 72,
+      "y": 435.48,
+      "width": 465.78,
+      "height": 12,
+      "right": 537.78,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": "in the components used and in the main source of policy rules for an organization. Each",
+      "x": 72,
+      "y": 421.68,
+      "width": 421.14,
+      "height": 12,
+      "right": 493.14,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": "approach implements all the tenets of ZT (see Section",
+      "x": 72,
+      "y": 407.88,
+      "width": 258.6,
+      "height": 12,
+      "right": 330.6,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": " ",
+      "x": 330.6,
+      "y": 407.88,
+      "width": 0.25,
+      "height": 0,
+      "right": 330.85,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "2.1",
+      "x": 333.6,
+      "y": 407.88,
+      "width": 15,
+      "height": 12,
+      "right": 348.6,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": ") but may use one or two (or one",
+      "x": 348.6,
+      "y": 407.88,
+      "width": 156.59,
+      "height": 12,
+      "right": 505.18,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "component) as the main driver of policies. A full ZT solution will include elements of all three",
+      "x": 72,
+      "y": 394.08,
+      "width": 454.31,
+      "height": 12,
+      "right": 526.31,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "approaches. The approaches include enhanced identity governance–driven, logical micro-",
+      "x": 72,
+      "y": 380.28,
+      "width": 430.48,
+      "height": 12,
+      "right": 502.48,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "segmentation, and network-based segmentation.",
+      "x": 72,
+      "y": 366.48,
+      "width": 231,
+      "height": 12,
+      "right": 303,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": "",
+      "x": 72,
+      "y": 340.68,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "Certain approaches lend themselves to some use cases more than others. An organization looking",
+      "x": 72,
+      "y": 340.68,
+      "width": 467.22,
+      "height": 12,
+      "right": 539.22,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "to develop a ZTA for its enterprise may find that its chosen use case and existing policies point",
+      "x": 72,
+      "y": 326.88,
+      "width": 456.16,
+      "height": 12,
+      "right": 528.16,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": "to one approach over others. That does not mean the other approaches would not work but rather",
+      "x": 72,
+      "y": 313.08,
+      "width": 464.2,
+      "height": 12,
+      "right": 536.2,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": "that other approaches may be more difficult to implement and may require more fundamental",
+      "x": 72,
+      "y": 299.28,
+      "width": 448.18,
+      "height": 12,
+      "right": 520.18,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "changes to how the enterprise currently conducts business flows.",
+      "x": 72,
+      "y": 285.48,
+      "width": 310.86,
+      "height": 12,
+      "right": 382.86,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "",
+      "x": 72,
+      "y": 260.58,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "3.1.1",
+      "x": 72,
+      "y": 260.58,
+      "width": 24.46,
+      "height": 10.98,
+      "right": 96.46,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": " ",
+      "x": 96.46,
+      "y": 260.58,
+      "width": 1.05,
+      "height": 0,
+      "right": 97.51,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "ZTA Using Enhanced Identity Governance",
+      "x": 108,
+      "y": 260.58,
+      "width": 219.32,
+      "height": 10.98,
+      "right": 327.32,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": "",
+      "x": 72,
+      "y": 235.02,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "The enhanced identity governance approach to developing a ZTA uses the identity of actors as",
+      "x": 72,
+      "y": 235.02,
+      "width": 453.77,
+      "height": 12,
+      "right": 525.77,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "the key component of policy creation. If it were not for subjects requesting access to enterprise",
+      "x": 72,
+      "y": 221.22,
+      "width": 455.2,
+      "height": 12,
+      "right": 527.2,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": "resources, there would be no need to create access polices. For this approach, enterprise resource",
+      "x": 72,
+      "y": 207.42,
+      "width": 464.87,
+      "height": 12,
+      "right": 536.87,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "access policies are based on identity and assigned attributes. The primary requirement for",
+      "x": 72,
+      "y": 193.62,
+      "width": 429.45,
+      "height": 12,
+      "right": 501.45,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": "resource access is based on the access privileges granted to the given subject. Other factors such",
+      "x": 72,
+      "y": 179.82,
+      "width": 461.82,
+      "height": 12,
+      "right": 533.82,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "as device used, asset status, and environmental factors may alter the final confidence level",
+      "x": 72,
+      "y": 166.02,
+      "width": 432.81,
+      "height": 12,
+      "right": 504.81,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "calculation (and ultimate access authorization) or tailor the result in some way, such as granting",
+      "x": 72,
+      "y": 152.22,
+      "width": 459.54,
+      "height": 12,
+      "right": 531.54,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "only partial access to a given data source based on network location. Individual resources or PEP",
+      "x": 72,
+      "y": 138.42,
+      "width": 465.85,
+      "height": 12,
+      "right": 537.85,
+      "visualLineId": 37,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "",
+      "x": 72,
+      "y": 99.3,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": "4",
+      "x": 72,
+      "y": 99.3,
+      "width": 3,
+      "height": 6,
+      "right": 75,
+      "visualLineId": 38,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": " ",
+      "x": 75,
+      "y": 99.3,
+      "width": 0.25,
+      "height": 0,
+      "right": 75.25,
+      "visualLineId": 38,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "https://www.idmanagement.gov/topics/fpki/",
+      "x": 78,
+      "y": 96.3,
+      "width": 159.04,
+      "height": 9,
+      "right": 237.04,
+      "visualLineId": 38,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 746.58,
+      "height": 12,
+      "text": "NIST SP 800-207 ZERO TRUST ARCHITECTURE",
+      "itemIndexes": [
+        0,
+        1,
+        2
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 1,
+      "y": 706.62,
+      "height": 12,
+      "text": "• Enterprise public key infrastructure (PKI): This system is responsible for generating",
+      "itemIndexes": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 2,
+      "y": 692.82,
+      "height": 12,
+      "text": "and logging certificates issued by the enterprise to resources, subjects, services and",
+      "itemIndexes": [
+        13
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 3,
+      "y": 679.02,
+      "height": 12,
+      "text": "applications. This also includes the global certificate authority ecosystem and the Federal",
+      "itemIndexes": [
+        14
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 4,
+      "y": 667.47,
+      "height": 12,
+      "text": "PKI, 4 which may or may not be integrated with the enterprise PKI. This could also be a",
+      "itemIndexes": [
+        15,
+        16,
+        17,
+        18
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 5,
+      "y": 651.42,
+      "height": 12,
+      "text": "PKI that is not built upon X.509 certificates.",
+      "itemIndexes": [
+        19
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 6,
+      "y": 630.78,
+      "height": 12,
+      "text": "• ID management system: This is responsible for creating, storing, and managing",
+      "itemIndexes": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 7,
+      "y": 616.98,
+      "height": 12,
+      "text": "enterprise user accounts and identity records (e.g., lightweight directory access protocol",
+      "itemIndexes": [
+        26
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 8,
+      "y": 603.18,
+      "height": 12,
+      "text": "(LDAP) server). This system contains the necessary subject information (e.g., name,",
+      "itemIndexes": [
+        27
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 9,
+      "y": 589.38,
+      "height": 12,
+      "text": "email address, certificates) and other enterprise characteristics such as role, access",
+      "itemIndexes": [
+        28
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 10,
+      "y": 575.58,
+      "height": 12,
+      "text": "attributes, and assigned assets. This system often utilizes other systems (such as a PKI)",
+      "itemIndexes": [
+        29
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 11,
+      "y": 560.52,
+      "height": 12,
+      "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207 for artifacts associated with user accounts. This system may be part of a larger federated",
+      "itemIndexes": [
+        6,
+        30
+      ],
+      "firstX": 19.68
+    },
+    {
+      "lineId": 12,
+      "y": 547.98,
+      "height": 12,
+      "text": "community and may include nonenterprise employees or links to nonenterprise assets for",
+      "itemIndexes": [
+        31
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 13,
+      "y": 534.18,
+      "height": 12,
+      "text": "collaboration.",
+      "itemIndexes": [
+        32
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 14,
+      "y": 513.54,
+      "height": 12,
+      "text": "• Security information and event management (SIEM) system: This collects security-",
+      "itemIndexes": [
+        34,
+        35,
+        36,
+        37,
+        38
+      ],
+      "firstX": 90
+    },
+    {
+      "lineId": 15,
+      "y": 499.74,
+      "height": 12,
+      "text": "centric information for later analysis. This data is then used to refine policies and warn of",
+      "itemIndexes": [
+        39
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 16,
+      "y": 485.94,
+      "height": 12,
+      "text": "possible attacks against enterprise assets.",
+      "itemIndexes": [
+        40
+      ],
+      "firstX": 108
+    },
+    {
+      "lineId": 17,
+      "y": 461.04,
+      "height": 12,
+      "text": "3.1 Variations of Zero Trust Architecture Approaches",
+      "itemIndexes": [
+        42,
+        43,
+        44
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 18,
+      "y": 435.48,
+      "height": 12,
+      "text": "There are several ways that an enterprise can enact a ZTA for workflows. These approaches vary",
+      "itemIndexes": [
+        46
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 19,
+      "y": 421.68,
+      "height": 12,
+      "text": "in the components used and in the main source of policy rules for an organization. Each",
+      "itemIndexes": [
+        47
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 20,
+      "y": 407.88,
+      "height": 12,
+      "text": "approach implements all the tenets of ZT (see Section 2.1 ) but may use one or two (or one",
+      "itemIndexes": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 21,
+      "y": 394.08,
+      "height": 12,
+      "text": "component) as the main driver of policies. A full ZT solution will include elements of all three",
+      "itemIndexes": [
+        52
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 22,
+      "y": 380.28,
+      "height": 12,
+      "text": "approaches. The approaches include enhanced identity governance–driven, logical micro-",
+      "itemIndexes": [
+        53
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 23,
+      "y": 366.48,
+      "height": 12,
+      "text": "segmentation, and network-based segmentation.",
+      "itemIndexes": [
+        54
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 24,
+      "y": 340.68,
+      "height": 12,
+      "text": "Certain approaches lend themselves to some use cases more than others. An organization looking",
+      "itemIndexes": [
+        56
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 25,
+      "y": 326.88,
+      "height": 12,
+      "text": "to develop a ZTA for its enterprise may find that its chosen use case and existing policies point",
+      "itemIndexes": [
+        57
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 26,
+      "y": 313.08,
+      "height": 12,
+      "text": "to one approach over others. That does not mean the other approaches would not work but rather",
+      "itemIndexes": [
+        58
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 27,
+      "y": 299.28,
+      "height": 12,
+      "text": "that other approaches may be more difficult to implement and may require more fundamental",
+      "itemIndexes": [
+        59
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 28,
+      "y": 285.48,
+      "height": 12,
+      "text": "changes to how the enterprise currently conducts business flows.",
+      "itemIndexes": [
+        60
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 29,
+      "y": 260.58,
+      "height": 12,
+      "text": "3.1.1 ZTA Using Enhanced Identity Governance",
+      "itemIndexes": [
+        62,
+        63,
+        64
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 30,
+      "y": 235.02,
+      "height": 12,
+      "text": "The enhanced identity governance approach to developing a ZTA uses the identity of actors as",
+      "itemIndexes": [
+        66
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 31,
+      "y": 221.22,
+      "height": 12,
+      "text": "the key component of policy creation. If it were not for subjects requesting access to enterprise",
+      "itemIndexes": [
+        67
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 32,
+      "y": 207.42,
+      "height": 12,
+      "text": "resources, there would be no need to create access polices. For this approach, enterprise resource",
+      "itemIndexes": [
+        68
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 33,
+      "y": 193.62,
+      "height": 12,
+      "text": "access policies are based on identity and assigned attributes. The primary requirement for",
+      "itemIndexes": [
+        69
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 34,
+      "y": 179.82,
+      "height": 12,
+      "text": "resource access is based on the access privileges granted to the given subject. Other factors such",
+      "itemIndexes": [
+        70
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 35,
+      "y": 166.02,
+      "height": 12,
+      "text": "as device used, asset status, and environmental factors may alter the final confidence level",
+      "itemIndexes": [
+        71
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 36,
+      "y": 152.22,
+      "height": 12,
+      "text": "calculation (and ultimate access authorization) or tailor the result in some way, such as granting",
+      "itemIndexes": [
+        72
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 37,
+      "y": 138.42,
+      "height": 12,
+      "text": "only partial access to a given data source based on network location. Individual resources or PEP",
+      "itemIndexes": [
+        73
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 38,
+      "y": 98.3,
+      "height": 12,
+      "text": "4 https://www.idmanagement.gov/topics/fpki/",
+      "itemIndexes": [
+        75,
+        76,
+        77
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 39,
+      "y": 50.58,
+      "height": 12,
+      "text": "11",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 300
+    }
+  ]
+}

@@ -1,7 +1,27 @@
 import { create } from "zustand";
+import type { ContextRecord, ContextRuntimeStatus, StoredSource } from "@/lib/context/types";
+import { isPdfSource } from "@/lib/context/types";
+import { indexContext } from "@/lib/context/chunk-index";
+import { runtimeFromPack } from "@/lib/context/hydrate";
+import { pdfWorkPending } from "@/lib/context/source-write";
+import { addPdfFilesToContext, planPdfBatch } from "@/lib/document/pdf/add-files";
+import { canServeSnapshot, resumePdfWork, type IngestProgress } from "@/lib/document/pdf/ingest-flow";
+import {
+  migrateLegacyPack,
+  persistActiveContextId,
+  readActiveContextId,
+  readSavedPack,
+} from "@/lib/context/migration";
+import { getContextRepository, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
+import type { NormalizedDocument } from "@/lib/document/types";
+import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
+import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
+import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { NORTHSTAR } from "@/lib/repo/northstar";
-import type { Card, Chunk, HeardEvent, Hit, RepoPack, Utterance } from "@/lib/repo/types";
-import { packFromFiles, preferredOpenFile, prunePack } from "@/lib/repo/folder";
+import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
+import { isDocumentHit } from "@/lib/repo/types";
+import { refinePayload, shouldRefine } from "@/lib/search/refine-payload";
+import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import { localCard } from "@/lib/search/local-card";
 import type { Gate } from "@/lib/search/question";
@@ -20,9 +40,15 @@ import { contentWords, normalizeSpokenQuestion } from "@/lib/search/spoken";
 import { subjectTerms } from "@/lib/search/subject";
 import { threadAlive, threadFrom, withdrawReplay, type ThreadContext } from "@/lib/search/thread";
 
+export { readSavedPack };
+
 const SESSION_KEY = "ground.session";
-const PACK_KEY = "ground.pack";
 const HERO_QUERY = "Why does that retry three times?";
+const WEAK_PACK = "This pack is mostly CI/config. Open the src folder, not the repo root.";
+
+function packWarning(weak: boolean, files: number): string | null {
+  return weak && files > 0 ? WEAK_PACK : null;
+}
 
 type SessionWire = {
   card: Card | null;
@@ -39,29 +65,17 @@ function persist(partial: SessionWire) {
   }
 }
 
-function persistPack(pack: RepoPack) {
-  try {
-    localStorage.setItem(PACK_KEY, JSON.stringify(pack));
-  } catch {
-    /* ignore quota */
-  }
-}
-
-export function readSavedPack(): RepoPack | null {
-  try {
-    const raw = localStorage.getItem(PACK_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as RepoPack;
-    if (!parsed?.id || !Array.isArray(parsed.files) || parsed.files.length === 0) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
 type GroundState = {
   pack: RepoPack;
-  chunks: Chunk[];
+  chunks: IndexedChunk[];
+  contexts: ContextRecord[];
+  activeContextId: string | null;
+  contextStatus: ContextRuntimeStatus;
+  contextError: string | null;
+  hydrationEpoch: number;
+  sources: StoredSource[];
+  contextUpdating: boolean;
+  ingestProgress: IngestProgress | null;
   /** Words the loaded material contains. Drives the question gate. */
   vocab: Set<string>;
   armed: boolean;
@@ -89,6 +103,8 @@ type GroundState = {
   handledId: string | null;
   card: Card | null;
   openFile: string | null;
+  openDocument: DocumentOpenTarget | null;
+  openPdfSource: (sourceId: string) => void;
   ledger: Array<{ query: string; say: string | null; at: number }>;
   /** Structured context for the open thread. See thread.ts. */
   thread: ThreadContext | null;
@@ -100,11 +116,15 @@ type GroundState = {
   setTypedQuery: (q: string) => void;
   setHeardQuestion: (q: string | null) => void;
   setOpenFile: (path: string | null) => void;
+  setOpenDocument: (target: DocumentOpenTarget | null) => void;
+  openDocumentCitation: (cite: DocumentCitation) => void;
   setLiveDraft: (text: string, role?: "them" | "you") => void;
   setHearLevel: (level: number) => void;
   setAsrStatus: (status: GroundState["asrStatus"]) => void;
   setAsrNote: (note: string) => void;
   setListenError: (text: string | null, blocked?: GroundState["listenBlocked"]) => void;
+  boot: () => Promise<void>;
+  activateContext: (id: string) => Promise<void>;
   hydratePack: (pack: RepoPack) => void;
   playMeeting: () => void;
   stopMeeting: () => void;
@@ -119,11 +139,94 @@ type GroundState = {
   clearThem: () => void;
   lastWindow: (ms?: number) => string;
   loadFolder: (list: FileList | File[]) => Promise<void>;
+  addPdfFiles: (list: FileList | File[]) => Promise<void>;
   resetPack: () => void;
 };
 
 const playTimeouts: number[] = [];
 let searchEpoch = 0;
+let hydrationEpoch = 0;
+const contextWriteLocks = new Map<string, Promise<unknown>>();
+
+function withContextWrite<T>(contextId: string, work: () => Promise<T>): Promise<T> {
+  const previous = contextWriteLocks.get(contextId) ?? Promise.resolve();
+  const next = previous.catch(() => undefined).then(work);
+  contextWriteLocks.set(
+    contextId,
+    next.then(
+      () => undefined,
+      () => undefined,
+    ),
+  );
+  return next;
+}
+
+function nextHydrationEpoch(): number {
+  hydrationEpoch += 1;
+  return hydrationEpoch;
+}
+
+function searchIsLive(): boolean {
+  return useGround.getState().contextStatus === "ready";
+}
+
+function clearSessionOnSwitch(): Pick<
+  GroundState,
+  | "thread"
+  | "card"
+  | "ledger"
+  | "heardQuestion"
+  | "handledId"
+  | "openFile"
+  | "openDocument"
+  | "liveDraft"
+  | "ingestProgress"
+> {
+  syncViewerBlobPins(null, null);
+  return {
+    thread: null,
+    card: null,
+    ledger: [],
+    heardQuestion: null,
+    handledId: null,
+    openFile: null,
+    openDocument: null,
+    liveDraft: "",
+    ingestProgress: null,
+  };
+}
+
+function applyCard(card: Card | null, openDocument: DocumentOpenTarget | null) {
+  if (openDocument && !openDocument.evidenceId) {
+    syncViewerBlobPins(card, openDocument);
+    return { card, openDocument };
+  }
+  const next = card && openDocument && evidenceForOpenTarget(card, openDocument) ? openDocument : null;
+  syncViewerBlobPins(card, next);
+  return { card, openDocument: next };
+}
+
+/**
+ * The file a Card should open in the repo pane, if any of its citations names
+ * one. Commit citations name history rather than a location, so they leave the
+ * pane where it was instead of jumping it somewhere arbitrary.
+ */
+function firstCitedPath(card: Card): string | null {
+  for (const cite of card.citations) if (cite.kind === "file") return cite.path;
+  return null;
+}
+
+async function documentsForHits(hits: Hit[]): Promise<Map<string, NormalizedDocument>> {
+  const documents = new Map<string, NormalizedDocument>();
+  if (!hits.some(isDocumentHit)) return documents;
+  const repo = getContextRepository();
+  for (const hit of hits) {
+    if (!isDocumentHit(hit) || documents.has(hit.sourceId)) continue;
+    const document = await repo.getNormalizedDocument(hit.sourceId, hit.contentHash);
+    if (document) documents.set(hit.sourceId, document);
+  }
+  return documents;
+}
 
 function windowText(utterances: Utterance[], ms = 15000): string {
   const cutoff = Date.now() - ms;
@@ -189,16 +292,7 @@ function isTyping(): boolean {
 }
 
 function hitPayload(hits: Hit[]) {
-  return hits.map((h) => ({
-    kind: h.kind,
-    path: h.path,
-    startLine: h.startLine,
-    text: h.text,
-    sha: h.sha,
-    pr: h.pr,
-    author: h.author,
-    message: h.message,
-  }));
+  return refinePayload(hits);
 }
 
 const NORTHSTAR_CHUNKS = buildChunks(NORTHSTAR);
@@ -206,6 +300,14 @@ const NORTHSTAR_CHUNKS = buildChunks(NORTHSTAR);
 export const useGround = create<GroundState>((set, get) => ({
   pack: NORTHSTAR,
   chunks: NORTHSTAR_CHUNKS,
+  contexts: [],
+  activeContextId: null,
+  contextStatus: "booting",
+  contextError: null,
+  hydrationEpoch: 0,
+  sources: [],
+  contextUpdating: false,
+  ingestProgress: null,
   vocab: packVocabulary(NORTHSTAR_CHUNKS),
   armed: false,
   listening: false,
@@ -230,6 +332,7 @@ export const useGround = create<GroundState>((set, get) => ({
   handledId: null,
   card: null,
   openFile: "src/exporter/retry.ts",
+  openDocument: null,
   ledger: [],
   thread: null,
   arm: () => {
@@ -261,7 +364,46 @@ export const useGround = create<GroundState>((set, get) => ({
   setSharingCall: (value) => set({ sharingCall: value }),
   setTypedQuery: (q) => set({ typedQuery: q }),
   setHeardQuestion: (q) => set({ heardQuestion: q }),
-  setOpenFile: (path) => set({ openFile: path }),
+  setOpenFile: (path) =>
+    set((s) => {
+      syncViewerBlobPins(s.card, null);
+      return { openFile: path, openDocument: null };
+    }),
+  setOpenDocument: (target) =>
+    set((s) => {
+      syncViewerBlobPins(s.card, target);
+      return { openDocument: target };
+    }),
+  openPdfSource: (sourceId) =>
+    set((s) => {
+      const source = s.sources.find((row) => row.id === sourceId);
+      if (!source || !isPdfSource(source)) return s;
+      const target = {
+        sourceId: source.id,
+        contentHash: source.contentHash,
+        page: 1,
+        evidenceId: "",
+      };
+      syncViewerBlobPins(s.card, target);
+      return { openDocument: target, openFile: null };
+    }),
+  openDocumentCitation: (cite) =>
+    set((s) => {
+      const resolved = resolveDocumentOpen(s.card, cite);
+      if (!resolved.target) {
+        syncViewerBlobPins(s.card, null);
+        return {
+          openDocument: {
+            sourceId: cite.sourceId,
+            contentHash: "",
+            page: cite.page,
+            evidenceId: cite.evidenceId ?? "",
+          },
+        };
+      }
+      syncViewerBlobPins(s.card, resolved.target);
+      return { openDocument: resolved.target };
+    }),
   setLiveDraft: (text, role) =>
     set((s) => ({
       liveDraft: !text || text === "…" ? text : cleanCaption(text),
@@ -276,22 +418,155 @@ export const useGround = create<GroundState>((set, get) => ({
       listenBlocked: text ? (blocked ?? get().listenBlocked) : null,
       listening: text ? false : get().listening,
     }),
-  hydratePack: (pack) => {
-    const { pack: next, weak } = prunePack(pack);
-    const use = next.files.length > 0 ? next : pack;
-    persistPack(use);
-    const chunks = buildChunks(use);
+  boot: async () => {
+    const epoch = nextHydrationEpoch();
     set({
-      pack: use,
-      chunks,
-      vocab: packVocabulary(chunks),
-      openFile: preferredOpenFile(use) ?? use.files[0]?.path ?? null,
-      card: null,
-      // Different material, so nothing a pointer could still be pointing at.
+      contextStatus: "booting",
+      contextError: null,
+      hydrationEpoch: epoch,
+    });
+    try {
+      const migration = await migrateLegacyPack();
+      if (epoch !== hydrationEpoch) return;
+      const contexts = await listStoredContexts();
+      if (epoch !== hydrationEpoch) return;
+      set({ contexts });
+      if (migration.kind === "failed") {
+        set({
+          contextStatus: "error",
+          contextError: migration.error,
+        });
+        return;
+      }
+      const remembered = readActiveContextId();
+      const target =
+        contexts.find((item) => item.id === remembered) ??
+        (migration.kind === "migrated" ? migration.context : null) ??
+        contexts[0] ??
+        null;
+      if (!target) {
+        persistActiveContextId(null);
+        set({
+          activeContextId: null,
+          contextStatus: "ready",
+          contextError: null,
+        });
+        return;
+      }
+      await get().activateContext(target.id);
+    } catch {
+      if (epoch !== hydrationEpoch) return;
+      set({
+        contextStatus: "error",
+        contextError: "Could not open saved contexts.",
+      });
+    }
+  },
+  activateContext: async (id) => {
+    const epoch = nextHydrationEpoch();
+    searchEpoch += 1;
+    set({
+      contextStatus: "hydrating",
+      contextError: null,
+      contextUpdating: false,
+      hydrationEpoch: epoch,
+      ...clearSessionOnSwitch(),
+    });
+    persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
+    try {
+      await withContextWrite(id, async () => {
+        const repo = getContextRepository();
+        const sources = await repo.listSources(id);
+        if (epoch !== hydrationEpoch) return;
+        const serveNow = canServeSnapshot(sources);
+        const pending = pdfWorkPending(sources);
+
+        if (serveNow) {
+          const runtime = await indexContext(repo, id, {
+            isCancelled: () => epoch !== hydrationEpoch,
+          });
+          if (epoch !== hydrationEpoch || runtime.cancelled) return;
+          persistActiveContextId(id);
+          const contexts = await listStoredContexts();
+          if (epoch !== hydrationEpoch) return;
+          set({
+            activeContextId: id,
+            contexts,
+            sources,
+            pack: runtime.pack,
+            chunks: runtime.chunks,
+            vocab: runtime.vocab,
+            openFile: runtime.openFile,
+            contextStatus: "ready",
+            contextUpdating: pending,
+            contextError: null,
+            folderError: packWarning(runtime.weak, runtime.pack.files.length),
+          });
+          if (!pending) return;
+        }
+
+        const finished = await resumePdfWork(repo, id, {
+          isCancelled: () => epoch !== hydrationEpoch,
+          onProgress: (progress) => {
+            if (epoch !== hydrationEpoch || get().activeContextId !== id) return;
+            set({ ingestProgress: progress, contextUpdating: serveNow, sources: get().sources });
+          },
+        });
+        if (epoch !== hydrationEpoch) return;
+        persistActiveContextId(id);
+        const contexts = await listStoredContexts();
+        const liveSources = finished.sources;
+        if (epoch !== hydrationEpoch) return;
+        if (!finished.runtime) {
+          if (serveNow) {
+            set({ contextUpdating: false, ingestProgress: null, sources: liveSources });
+            return;
+          }
+          set({
+            activeContextId: id,
+            contexts,
+            sources: liveSources,
+            contextStatus: "hydrating",
+            contextUpdating: false,
+            ingestProgress: null,
+          });
+          return;
+        }
+        set({
+          activeContextId: id,
+          contexts,
+          sources: liveSources,
+          pack: finished.runtime.pack,
+          chunks: finished.runtime.chunks,
+          vocab: finished.runtime.vocab,
+          openFile: get().openDocument ? get().openFile : finished.runtime.openFile,
+          contextStatus: "ready",
+          contextUpdating: false,
+          ingestProgress: null,
+          contextError: null,
+          folderError: packWarning(finished.runtime.weak, finished.runtime.pack.files.length),
+        });
+      });
+    } catch {
+      if (epoch !== hydrationEpoch) return;
+      set({
+        contextStatus: "error",
+        contextError: "Could not load that context.",
+        contextUpdating: false,
+      });
+    }
+  },
+  hydratePack: (pack) => {
+    const runtime = runtimeFromPack(pack);
+    searchEpoch += 1;
+    set({
+      pack: runtime.pack,
+      chunks: runtime.chunks,
+      vocab: runtime.vocab,
+      openFile: runtime.openFile,
+      ...applyCard(null, null),
       thread: null,
-      folderError: weak
-        ? "This pack is mostly CI/config. Open the src folder, not the repo root."
-        : null,
+      folderError: packWarning(runtime.weak, runtime.pack.files.length),
     });
   },
   playMeeting: () => {
@@ -308,7 +583,7 @@ export const useGround = create<GroundState>((set, get) => ({
           text: "Design review armed. Questions search themselves — the Card is what you say.",
         },
       ],
-      card: null,
+      ...applyCard(null, null),
     });
     const started = Date.now();
     for (const beat of DESIGN_REVIEW) {
@@ -411,7 +686,7 @@ export const useGround = create<GroundState>((set, get) => ({
     set({ heardQuestion: decision.question, handledId: decision.candidateId });
     if (isTyping()) return;
     set({ typedQuery: decision.question });
-    if (state.autoAnswer) {
+    if (state.autoAnswer && searchIsLive()) {
       void get().search(decision.question, { fast: true, resolved: decision.verdict === "follow-up" });
     }
   },
@@ -425,65 +700,209 @@ export const useGround = create<GroundState>((set, get) => ({
     })),
   lastWindow: (ms = 15000) => windowText(get().utterances, ms),
   loadFolder: async (list) => {
-    set({ loadingFolder: true, folderError: null });
+    const epoch = nextHydrationEpoch();
+    searchEpoch += 1;
+    set({
+      loadingFolder: true,
+      folderError: null,
+      contextStatus: "hydrating",
+      contextError: null,
+      hydrationEpoch: epoch,
+      ...clearSessionOnSwitch(),
+    });
     try {
       const { pack: raw, skipped } = await packFromFiles(list);
-      const { pack, weak } = prunePack(raw);
-      if (pack.files.length === 0) {
+      if (raw.files.length === 0) {
+        if (epoch !== hydrationEpoch) return;
         set({
           loadingFolder: false,
+          contextStatus: "ready",
           folderError: "No readable source files in that folder. Pick src or a service folder, not CI or dist.",
         });
         return;
       }
-      persistPack(pack);
-      const sample = pack.files
+      const { context } = await persistPackAsContext(raw);
+      if (epoch !== hydrationEpoch) return;
+      const hydrated = await indexContext(getContextRepository(), context.id, {
+        isCancelled: () => epoch !== hydrationEpoch,
+      });
+      if (epoch !== hydrationEpoch || hydrated.cancelled) return;
+      persistActiveContextId(context.id);
+      const contexts = await listStoredContexts();
+      const sources = await getContextRepository().listSources(context.id);
+      if (epoch !== hydrationEpoch) return;
+      const sample = hydrated.pack.files
         .slice(0, 3)
         .map((f) => f.path)
         .join(", ");
-      const chunks = buildChunks(pack);
       set({
-        pack,
-        chunks,
-        vocab: packVocabulary(chunks),
+        contexts,
+        activeContextId: context.id,
+        sources,
+        pack: hydrated.pack,
+        chunks: hydrated.chunks,
+        vocab: hydrated.vocab,
         loadingFolder: false,
-        openFile: preferredOpenFile(pack) ?? pack.files[0]?.path ?? null,
-        card: null,
-        thread: null,
-        folderError: weak
-          ? "This pack is mostly CI/config. Open the src folder, not the repo root."
-          : null,
+        openFile: hydrated.openFile,
+        contextStatus: "ready",
+        contextUpdating: false,
+        ingestProgress: null,
+        contextError: null,
+        folderError: hydrated.weak ? WEAK_PACK : null,
       });
       get().appendUtterance({
         at: Date.now(),
         speaker: "MeetHint",
         role: "system",
-        text: weak
-          ? `Loaded ${pack.name}, but these look like CI files. Open the src folder, then Search.`
-          : `Loaded ${pack.name} — ${pack.files.length} files${skipped ? `, skipped ${skipped}` : ""}. ${sample ? `Keeping ${sample}. ` : ""}Share the call or type a question — the Card is what you say.`,
+        text: hydrated.weak
+          ? `Loaded ${hydrated.pack.name}, but these look like CI files. Open the src folder, then Search.`
+          : `Loaded ${hydrated.pack.name} — ${hydrated.pack.files.length} files${skipped ? `, skipped ${skipped}` : ""}. ${sample ? `Keeping ${sample}. ` : ""}Share the call or type a question — the Card is what you say.`,
       });
     } catch {
-      set({ loadingFolder: false, folderError: "Could not read that folder." });
+      if (epoch !== hydrationEpoch) return;
+      set({
+        loadingFolder: false,
+        contextStatus: "error",
+        contextError: "Could not save that folder.",
+        folderError: "Could not read that folder.",
+      });
+    }
+  },
+  addPdfFiles: async (list) => {
+    const files = [...list];
+    if (files.length === 0) return;
+    const repo = getContextRepository();
+    const existingId = get().activeContextId;
+    const existingSources = existingId ? await repo.listSources(existingId) : [];
+    const preview = await planPdfBatch(files, existingSources);
+    const rejectNote = preview.rejected.map((item) => `${item.path}: ${item.note}`).join(" ");
+
+    if (preview.accepted.length === 0) {
+      set({ folderError: rejectNote || "No PDF files could be added." });
+      return;
+    }
+
+    let contextId = existingId;
+    const created = !existingId;
+    const hadSnapshot = Boolean(existingId) && canServeSnapshot(existingSources);
+    if (!contextId) {
+      const createdContext = await repo.createContext({ name: preview.contextName });
+      contextId = createdContext.id;
+    }
+    const epoch = created ? nextHydrationEpoch() : get().hydrationEpoch;
+    if (created) {
+      searchEpoch += 1;
+      persistActiveContextId(contextId);
+      const contexts = await listStoredContexts();
+      set({
+        activeContextId: contextId,
+        contexts,
+        contextStatus: "hydrating",
+        contextUpdating: false,
+        contextError: null,
+        folderError: rejectNote || null,
+        hydrationEpoch: epoch,
+        ...clearSessionOnSwitch(),
+      });
+    } else {
+      set({
+        contextUpdating: hadSnapshot,
+        contextStatus: hadSnapshot ? "ready" : "hydrating",
+        folderError: rejectNote || get().folderError,
+      });
+    }
+
+    const targetId = contextId;
+    try {
+      const outcome = await withContextWrite(targetId, () =>
+        addPdfFilesToContext(repo, files, targetId, {
+          isCancelled: () => get().hydrationEpoch !== epoch,
+          onProgress: (progress) => {
+            if (get().activeContextId !== targetId) return;
+            void repo.listSources(targetId).then((sources) => {
+              if (get().activeContextId !== targetId) return;
+              set({ ingestProgress: progress, sources, contextUpdating: hadSnapshot });
+            });
+          },
+        }),
+      );
+
+      if (outcome.quotaFailed) {
+        if (get().hydrationEpoch !== epoch && created) return;
+        if (get().activeContextId && get().activeContextId !== targetId) return;
+        set({
+          folderError: "Could not save that PDF. Existing material is unchanged.",
+          contextUpdating: false,
+          ingestProgress: null,
+          contextStatus: outcome.hadSnapshot ? "ready" : get().contextStatus,
+        });
+        return;
+      }
+
+      const finished = outcome.ingest;
+      const contexts = await listStoredContexts();
+      if (get().hydrationEpoch !== epoch) return;
+      if (get().activeContextId && get().activeContextId !== targetId) return;
+
+      if (!finished?.runtime) {
+        set({
+          activeContextId: targetId,
+          sources: finished?.sources ?? [],
+          contexts,
+          contextUpdating: false,
+          ingestProgress: null,
+        });
+        return;
+      }
+
+      persistActiveContextId(targetId);
+      set({
+        activeContextId: targetId,
+        contexts,
+        sources: finished.sources,
+        pack: finished.runtime.pack,
+        chunks: finished.runtime.chunks,
+        vocab: finished.runtime.vocab,
+        openFile: get().openDocument ? get().openFile : finished.runtime.openFile,
+        contextStatus: "ready",
+        contextUpdating: false,
+        ingestProgress: null,
+        contextError: null,
+        folderError: rejectNote || packWarning(finished.runtime.weak, finished.runtime.pack.files.length),
+      });
+    } catch {
+      if (created && get().hydrationEpoch !== epoch) return;
+      set({
+        folderError: "Could not add those PDFs.",
+        contextUpdating: false,
+        ingestProgress: null,
+        contextStatus: hadSnapshot ? "ready" : "error",
+        contextError: hadSnapshot ? null : "Could not add those PDFs.",
+      });
     }
   },
   resetPack: () => {
-    try {
-      localStorage.removeItem(PACK_KEY);
-    } catch {
-      /* ignore */
-    }
+    const epoch = nextHydrationEpoch();
+    searchEpoch += 1;
+    persistActiveContextId(null);
     set({
       pack: NORTHSTAR,
       chunks: NORTHSTAR_CHUNKS,
       vocab: packVocabulary(NORTHSTAR_CHUNKS),
-      openFile: "src/exporter/retry.ts",
-      card: null,
-      thread: null,
+      sources: [],
+      activeContextId: null,
+      contextStatus: "ready",
+      contextUpdating: false,
+      contextError: null,
+      hydrationEpoch: epoch,
       folderError: null,
+      ...clearSessionOnSwitch(),
+      openFile: "src/exporter/retry.ts",
     });
   },
   search: async (explicit, opts) => {
     const state = get();
+    if (state.contextStatus !== "ready") return;
     const typed = state.typedQuery.trim();
     const fromRoom = liveQuestionFromTranscript(
       state.utterances
@@ -498,14 +917,17 @@ export const useGround = create<GroundState>((set, get) => ({
     const fast = Boolean(opts?.fast);
     if (!query) {
       set({
-        card: {
-          say: null,
-          reason: "No question in the transcript yet. Ask about this repo — or type it.",
-          citations: [],
-          query: "",
-          latencyMs: 0,
-          source: "local",
-        },
+        ...applyCard(
+          {
+            say: null,
+            reason: "No question in the transcript yet. Ask about this repo — or type it.",
+            citations: [],
+            query: "",
+            latencyMs: 0,
+            source: "local",
+          },
+          null,
+        ),
       });
       return;
     }
@@ -516,15 +938,18 @@ export const useGround = create<GroundState>((set, get) => ({
     // room said.
     const canonical = normalizeSpokenQuestion(query).canonical;
     const hits = retrieve(canonical, state.chunks);
-    const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile);
+    const documents = await documentsForHits(hits);
+    const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
+      document: (sourceId) => documents.get(sourceId),
+    });
     const resolved = Boolean(opts?.resolved);
     const fallback = withdrawReplay(composed, state.thread, resolved);
     set((s) => ({
       searching: false,
       refining: !fast,
       typedQuery: explicit ?? s.typedQuery,
-      card: fallback,
-      openFile: fallback.citations[0]?.path ?? s.openFile,
+      ...applyCard(fallback, s.openDocument),
+      openFile: firstCitedPath(fallback) ?? s.openFile,
       ledger: [{ query, say: fallback.say, at: Date.now() }, ...s.ledger].slice(0, 12),
       thread: nextThread(s.thread, { query, canonical, card: fallback, pack: s.pack, resolved }),
     }));
@@ -536,6 +961,10 @@ export const useGround = create<GroundState>((set, get) => ({
     });
 
     if (fast) return;
+    if (!shouldRefine(hits, fallback)) {
+      set({ refining: false });
+      return;
+    }
 
     void (async () => {
       try {
@@ -551,8 +980,8 @@ export const useGround = create<GroundState>((set, get) => ({
         const latencyMs = Math.round(performance.now() - t0);
         const card: Card = { ...remote, query, latencyMs };
         set((s) => ({
-          card,
-          openFile: card.citations[0]?.path ?? s.openFile,
+          ...applyCard(card, s.openDocument),
+          openFile: firstCitedPath(card) ?? s.openFile,
           ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger.slice(1)].slice(0, 12),
           // The thread tracks what was actually said, so the replay guard
           // compares against this line and not the local draft it replaced.

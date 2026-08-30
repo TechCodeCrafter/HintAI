@@ -1,0 +1,81 @@
+{
+  "phase": "4A.9.3",
+  "note": "Production buildDocumentChunks must match accepted 4A.9.2 counts. Chunker version unchanged.",
+  "frozenTotal": 7917,
+  "afterTotal": 7917,
+  "equal": true,
+  "perFile": [
+    {
+      "file": "attention.pdf",
+      "frozen92": 304,
+      "after": 304,
+      "equal": true
+    },
+    {
+      "file": "bert.pdf",
+      "frozen92": 325,
+      "after": 325,
+      "equal": true
+    },
+    {
+      "file": "bitcoin.pdf",
+      "frozen92": 227,
+      "after": 227,
+      "equal": true
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "frozen92": 922,
+      "after": 922,
+      "equal": true
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "frozen92": 30,
+      "after": 30,
+      "equal": true
+    },
+    {
+      "file": "lora.pdf",
+      "frozen92": 529,
+      "after": 529,
+      "equal": true
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "frozen92": 138,
+      "after": 138,
+      "equal": true
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "frozen92": 1200,
+      "after": 1200,
+      "equal": true
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "frozen92": 2104,
+      "after": 2104,
+      "equal": true
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "frozen92": 689,
+      "after": 689,
+      "equal": true
+    },
+    {
+      "file": "resnet.pdf",
+      "frozen92": 804,
+      "after": 804,
+      "equal": true
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "frozen92": 645,
+      "after": 645,
+      "equal": true
+    }
+  ]
+}

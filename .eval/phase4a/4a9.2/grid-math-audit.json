@@ -1,0 +1,442 @@
+[
+  {
+    "file": "attention.pdf",
+    "page": 5,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "attention.pdf",
+    "page": 6,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "attention.pdf",
+    "page": 8,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "attention.pdf",
+    "page": 9,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "attention.pdf",
+    "page": 14,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "attention.pdf",
+    "page": 15,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "bert.pdf",
+    "page": 7,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "bert.pdf",
+    "page": 15,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "bitcoin.pdf",
+    "page": 7,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 1,
+    "gridKind": "table",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 2,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 3,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 4,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 5,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 6,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 7,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 8,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 9,
+    "gridKind": "table",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 10,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 11,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 12,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 13,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 15,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 16,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 17,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 18,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 19,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 20,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 21,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 22,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 23,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 24,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 25,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 26,
+    "gridKind": "table",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 27,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "page": 28,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 4,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 6,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 7,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 8,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 10,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 11,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 12,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 19,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 20,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 21,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 22,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 23,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 24,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 25,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "lora.pdf",
+    "page": 26,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 23,
+    "gridKind": "math",
+    "afterIndex": "skipped",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 5,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 11,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 12,
+    "gridKind": "math",
+    "afterIndex": "full",
+    "beforeIndex": "skipped",
+    "denseGeometric": true
+  }
+]
