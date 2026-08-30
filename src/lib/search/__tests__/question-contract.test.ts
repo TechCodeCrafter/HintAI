@@ -282,7 +282,8 @@ test("enumeration: unbounded which-items still needs multiple members", () => {
 
 test("claim-level: chunk subject elsewhere does not admit a claim that lacks it", () => {
   const contract = buildQuestionContract("What does LoRA freeze?", [LORA]);
-  assert.ok(contract.subject.requiredTerms.includes("freeze"));
+  assert.equal(contract.requiredVerb, "freeze");
+  assert.ok(contract.subject.optionalTerms.includes("freeze"));
   assert.equal(claimFitsContract("LoRA injects low-rank matrices.", contract), false);
   assert.equal(claimFitsContract("LoRA freezes the pre-trained model weights.", contract), true);
 });
@@ -312,7 +313,7 @@ test("localCard: scanned selector does not speak from another PDF", () => {
   });
   const scanned = SCANNED;
   const documents = [ready, scanned];
-  const chunks = documents.flatMap(buildDocumentChunks);
+  const chunks = documents.flatMap((document) => buildDocumentChunks(document));
   const ctx = {
     document: (id: string) => documents.find((item) => item.sourceId === id),
     documents,
@@ -328,9 +329,99 @@ test("localCard: scanned selector does not speak from another PDF", () => {
   assert.equal(card.say, null);
 });
 
+test("clause completeness: dependent conjunctive tail is not a standalone action answer", () => {
+  const freeze = buildQuestionContract("What does the method freeze?", [LORA]);
+  assert.equal(freeze.requiredVerb, "freeze");
+  assert.equal(claimFitsContract("freeze the MLP modules", freeze), false);
+  assert.equal(
+    claimFitsContract(
+      "freeze the MLP modules",
+      freeze,
+      "We limit our study to adapting attention weights and freeze the MLP modules.",
+    ),
+    false,
+  );
+  assert.equal(
+    claimFitsContract("tasks and freeze the MLP modules both for simplicity", freeze),
+    false,
+  );
+});
+
+test("clause completeness: self-contained subject-relation-object remains eligible", () => {
+  const freeze = buildQuestionContract("What does LoRA freeze?", [LORA]);
+  assert.equal(claimFitsContract("We freeze the pre-trained model weights.", freeze), true);
+  assert.equal(claimFitsContract("LoRA freezes the pre-trained model weights.", freeze), true);
+});
+
+test("clause completeness: full coordinated sentence keeps first-action conservatism", () => {
+  const freeze = buildQuestionContract("What does the method freeze?", [LORA]);
+  assert.equal(
+    claimFitsContract(
+      "We limit our study to only adapting the attention weights and freeze the MLP modules.",
+      freeze,
+    ),
+    false,
+  );
+});
+
+test("clause completeness: leading And with an explicit subject is not a tail", () => {
+  const store = buildQuestionContract("Where is the token stored?", CORPUS);
+  assert.equal(store.requiredRelation?.verb, "store");
+  assert.equal(store.requiredRelation?.preposition, "in");
+  assert.equal(claimFitsContract("And the controller stores the token in memory.", store), true);
+});
+
+test("relation frame: implement-on is not a relative-clause implement", () => {
+  const implement = buildQuestionContract("Which interpreter did they implement on?", [LORA]);
+  assert.equal(implement.requiredVerb, "implement");
+  assert.equal(implement.requiredRelation?.preposition, "on");
+  assert.equal(implement.answerExpectation, "naming");
+  assert.equal(implement.requestedEntityType, "interpreter");
+  assert.equal(claimFitsContract("native code which implements the required bytecodes", implement), false);
+  assert.equal(
+    claimFitsContract("We implemented the tracing system on SpiderMonkey.", implement),
+    true,
+  );
+});
+
+test("relation frame: store-in needs the location complement", () => {
+  const where = buildQuestionContract("Where is customer data stored?", CORPUS);
+  assert.equal(where.requiredRelation?.verb, "store");
+  assert.equal(where.requiredRelation?.preposition, "in");
+  assert.equal(claimFitsContract("The service stores customer data in Canada.", where), true);
+  assert.equal(claimFitsContract("The service stores customer data.", where), false);
+});
+
+test("relative clause: required verb only under which/that/who is not the main relation", () => {
+  const implement = buildQuestionContract("Which interpreter did they implement on?", [LORA]);
+  assert.equal(
+    claimFitsContract("Inline threading copies native code which implement the required bytecodes.", implement),
+    false,
+  );
+  const store = buildQuestionContract("Where is customer data stored?", CORPUS);
+  assert.equal(claimFitsContract("the module that stores temporary values", store), false);
+  assert.equal(
+    claimFitsContract("The service stores customer data in Canada, which handles retries.", store),
+    true,
+  );
+});
+
+test("naming: which-entity needs the named instance in the asked relation", () => {
+  const implement = buildQuestionContract("Which interpreter did they implement on?", [LORA]);
+  assert.equal(
+    claimFitsContract(
+      "Inline threading copies chunks of interpreter native code into a native code cache.",
+      implement,
+    ),
+    false,
+  );
+  assert.equal(claimFitsContract("We implemented the tracing system on SpiderMonkey.", implement), true);
+  assert.equal(claimFitsContract("We implemented the recorder on Inline.", implement), false);
+});
+
 test("localCard: LoRA salary does not speak a patent-disclose sentence", () => {
   const documents = [LORA, NIST207];
-  const chunks = documents.flatMap(buildDocumentChunks);
+  const chunks = documents.flatMap((document) => buildDocumentChunks(document));
   const ctx = {
     document: (id: string) => documents.find((item) => item.sourceId === id),
     documents,

@@ -1,0 +1,211 @@
+[
+  {
+    "file": "cisa-ransomware.pdf",
+    "listLike": 135,
+    "listBlocks": 48,
+    "listItems": 84,
+    "unassignedListLike": 51,
+    "heavyPages": [
+      {
+        "page": 30,
+        "lines": 36,
+        "regions": 6,
+        "gridKind": "none",
+        "blocks": 27,
+        "kinds": {
+          "list": 4,
+          "list-item": 12,
+          "paragraph": 6,
+          "unknown": 5
+        },
+        "listLikeLines": 15,
+        "listBlocks": 4,
+        "listItemBlocks": 12,
+        "unassignedListLike": 3,
+        "captions": 0,
+        "furniture": 0,
+        "math": 0,
+        "paragraphs": 6,
+        "headings": 0,
+        "unknown": 5
+      },
+      {
+        "page": 10,
+        "lines": 44,
+        "regions": 6,
+        "gridKind": "none",
+        "blocks": 19,
+        "kinds": {
+          "paragraph": 11,
+          "list": 1,
+          "list-item": 1,
+          "unknown": 6
+        },
+        "listLikeLines": 12,
+        "listBlocks": 1,
+        "listItemBlocks": 1,
+        "unassignedListLike": 11,
+        "captions": 0,
+        "furniture": 0,
+        "math": 0,
+        "paragraphs": 11,
+        "headings": 0,
+        "unknown": 6
+      },
+      {
+        "page": 2,
+        "lines": 36,
+        "regions": 3,
+        "gridKind": "none",
+        "blocks": 18,
+        "kinds": {
+          "list": 2,
+          "list-item": 10,
+          "paragraph": 3,
+          "heading": 1,
+          "unknown": 2
+        },
+        "listLikeLines": 10,
+        "listBlocks": 2,
+        "listItemBlocks": 10,
+        "unassignedListLike": 0,
+        "captions": 0,
+        "furniture": 0,
+        "math": 0,
+        "paragraphs": 3,
+        "headings": 1,
+        "unknown": 2
+      },
+      {
+        "page": 4,
+        "lines": 45,
+        "regions": 6,
+        "gridKind": "none",
+        "blocks": 18,
+        "kinds": {
+          "paragraph": 7,
+          "list": 3,
+          "list-item": 6,
+          "unknown": 2
+        },
+        "listLikeLines": 8,
+        "listBlocks": 3,
+        "listItemBlocks": 6,
+        "unassignedListLike": 2,
+        "captions": 0,
+        "furniture": 0,
+        "math": 0,
+        "paragraphs": 7,
+        "headings": 0,
+        "unknown": 2
+      }
+    ]
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "listLike": 150,
+    "listBlocks": 55,
+    "listItems": 102,
+    "unassignedListLike": 48,
+    "heavyPages": [
+      {
+        "page": 14,
+        "lines": 35,
+        "regions": 6,
+        "gridKind": "none",
+        "blocks": 21,
+        "kinds": {
+          "furniture": 2,
+          "caption": 1,
+          "paragraph": 4,
+          "unknown": 14
+        },
+        "listLikeLines": 11,
+        "listBlocks": 0,
+        "listItemBlocks": 0,
+        "unassignedListLike": 11,
+        "captions": 1,
+        "furniture": 2,
+        "math": 0,
+        "paragraphs": 4,
+        "headings": 0,
+        "unknown": 14
+      },
+      {
+        "page": 16,
+        "lines": 38,
+        "regions": 5,
+        "gridKind": "none",
+        "blocks": 22,
+        "kinds": {
+          "furniture": 2,
+          "list": 1,
+          "list-item": 1,
+          "heading": 2,
+          "paragraph": 7,
+          "unknown": 9
+        },
+        "listLikeLines": 9,
+        "listBlocks": 1,
+        "listItemBlocks": 1,
+        "unassignedListLike": 8,
+        "captions": 0,
+        "furniture": 2,
+        "math": 0,
+        "paragraphs": 7,
+        "headings": 2,
+        "unknown": 9
+      },
+      {
+        "page": 37,
+        "lines": 41,
+        "regions": 6,
+        "gridKind": "none",
+        "blocks": 20,
+        "kinds": {
+          "furniture": 2,
+          "list": 2,
+          "list-item": 8,
+          "heading": 1,
+          "paragraph": 6,
+          "unknown": 1
+        },
+        "listLikeLines": 8,
+        "listBlocks": 2,
+        "listItemBlocks": 8,
+        "unassignedListLike": 0,
+        "captions": 0,
+        "furniture": 2,
+        "math": 0,
+        "paragraphs": 6,
+        "headings": 1,
+        "unknown": 1
+      },
+      {
+        "page": 49,
+        "lines": 39,
+        "regions": 6,
+        "gridKind": "none",
+        "blocks": 26,
+        "kinds": {
+          "furniture": 3,
+          "list": 2,
+          "list-item": 5,
+          "heading": 3,
+          "paragraph": 8,
+          "unknown": 5
+        },
+        "listLikeLines": 8,
+        "listBlocks": 2,
+        "listItemBlocks": 5,
+        "unassignedListLike": 3,
+        "captions": 0,
+        "furniture": 3,
+        "math": 0,
+        "paragraphs": 8,
+        "headings": 3,
+        "unknown": 5
+      }
+    ]
+  }
+]

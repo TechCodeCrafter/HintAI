@@ -1,0 +1,3525 @@
+{
+  "sourceId": "cs229-notes.pdf",
+  "filename": "cs229-notes.pdf",
+  "byteSize": 357392,
+  "pageCount": 28,
+  "extractedCharacterCount": 2035,
+  "readiness": "ready",
+  "pageReadiness": [
+    {
+      "page": 1,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 2,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 3,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 4,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 5,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 6,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 7,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 8,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 9,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 10,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 11,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 12,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 13,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 14,
+      "index": "isolated-lines",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 15,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 16,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 17,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 18,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 19,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 20,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 21,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 22,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 23,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 24,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 25,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 26,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 27,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    },
+    {
+      "page": 28,
+      "index": "skipped",
+      "readingOrder": "uncertain"
+    }
+  ],
+  "totals": {
+    "singleColumn": 0,
+    "twoColumn": 0,
+    "uncertain": 28,
+    "full": 0,
+    "isolated": 1,
+    "skipped": 27,
+    "denseGrid": 27,
+    "twoDominantProsePages": 1
+  },
+  "itemCountPerPage": [
+    73,
+    157,
+    211,
+    304,
+    275,
+    125,
+    185,
+    278,
+    488,
+    294,
+    518,
+    222,
+    366,
+    153,
+    264,
+    270,
+    373,
+    238,
+    196,
+    267,
+    362,
+    182,
+    245,
+    236,
+    433,
+    455,
+    425,
+    141
+  ],
+  "visualLineCountPerPage": [
+    30,
+    29,
+    37,
+    43,
+    36,
+    38,
+    34,
+    35,
+    50,
+    38,
+    42,
+    43,
+    39,
+    33,
+    47,
+    32,
+    39,
+    40,
+    33,
+    35,
+    40,
+    36,
+    33,
+    38,
+    37,
+    45,
+    47,
+    16
+  ],
+  "newlineBlocksPerPage": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    28,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "chunkCountPerPage": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    27,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "totalChunks": 27,
+  "averageChunksPerPage": 0.9642857142857143,
+  "averageChunksPerIndexedPage": 27,
+  "maxChunksPerPage": 27,
+  "exceeds200": false,
+  "headerFooterCandidates": [],
+  "headerFooterNearMiss": [],
+  "pages": [
+    {
+      "page": 1,
+      "itemCount": 73,
+      "visualLineCount": 30,
+      "usefulItemCount": 43,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 114.37,
+          "items": 5,
+          "meanWidth": 235.68,
+          "yMin": 294.47,
+          "yMax": 488.71
+        },
+        {
+          "x": 211.44,
+          "items": 17,
+          "meanWidth": 31.45,
+          "yMin": 115.8,
+          "yMax": 605.93
+        },
+        {
+          "x": 254.57,
+          "items": 9,
+          "meanWidth": 15.15,
+          "yMin": 115.8,
+          "yMax": 395.29
+        },
+        {
+          "x": 302.16,
+          "items": 11,
+          "meanWidth": 22.27,
+          "yMin": 60.31,
+          "yMax": 570.44
+        },
+        {
+          "x": 352.85,
+          "items": 9,
+          "meanWidth": 11.9,
+          "yMin": 115.8,
+          "yMax": 395.29
+        },
+        {
+          "x": 391.45,
+          "items": 2,
+          "meanWidth": 9.51,
+          "yMin": 115.8,
+          "yMax": 115.8
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 216,
+          "count": 17
+        },
+        {
+          "x": 252,
+          "count": 9
+        },
+        {
+          "x": 360,
+          "count": 9
+        },
+        {
+          "x": 288,
+          "count": 8
+        },
+        {
+          "x": 108,
+          "count": 4
+        },
+        {
+          "x": 324,
+          "count": 3
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 40.39,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 114.37,
+          "items": 5,
+          "share": 0.5
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 114.4:5, 211.4:17, 254.6:9, 302.2:11, 352.8:9, 391.5:2)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 2,
+      "itemCount": 157,
+      "visualLineCount": 29,
+      "usefulItemCount": 61,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 120.91,
+          "items": 28,
+          "meanWidth": 170.56,
+          "yMin": 201.56,
+          "yMax": 691.11
+        },
+        {
+          "x": 176.26,
+          "items": 3,
+          "meanWidth": 123.54,
+          "yMin": 230.45,
+          "yMax": 452
+        },
+        {
+          "x": 229.21,
+          "items": 16,
+          "meanWidth": 24.97,
+          "yMin": 201.56,
+          "yMax": 596.46
+        },
+        {
+          "x": 288.54,
+          "items": 10,
+          "meanWidth": 90.69,
+          "yMin": 303.09,
+          "yMax": 596.46
+        },
+        {
+          "x": 326.39,
+          "items": 8,
+          "meanWidth": 45.94,
+          "yMin": 201.56,
+          "yMax": 582.02
+        },
+        {
+          "x": 377.84,
+          "items": 18,
+          "meanWidth": 31.2,
+          "yMin": 244.9,
+          "yMax": 629.69
+        },
+        {
+          "x": 454.16,
+          "items": 22,
+          "meanWidth": 11.28,
+          "yMin": 244.9,
+          "yMax": 610.91
+        },
+        {
+          "x": 492,
+          "items": 6,
+          "meanWidth": 5.4,
+          "yMin": 524.23,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 19
+        },
+        {
+          "x": 468,
+          "count": 13
+        },
+        {
+          "x": 360,
+          "count": 10
+        },
+        {
+          "x": 288,
+          "count": 10
+        },
+        {
+          "x": 216,
+          "count": 10
+        },
+        {
+          "x": 144,
+          "count": 9
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 53.16,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 114.99,
+          "items": 17,
+          "share": 0.567
+        },
+        {
+          "x": 304.75,
+          "items": 7,
+          "share": 0.233
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 120.9:28, 176.3:3, 229.2:16, 288.5:10, 326.4:8, 377.8:18, 454.2:22, 492.0:6)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 3,
+      "itemCount": 211,
+      "visualLineCount": 37,
+      "usefulItemCount": 58,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 117.45,
+          "items": 29,
+          "meanWidth": 171.03,
+          "yMin": 90.2,
+          "yMax": 654.25
+        },
+        {
+          "x": 175.43,
+          "items": 6,
+          "meanWidth": 91.02,
+          "yMin": 90.2,
+          "yMax": 556.26
+        },
+        {
+          "x": 216.58,
+          "items": 12,
+          "meanWidth": 38.26,
+          "yMin": 178.03,
+          "yMax": 541.42
+        },
+        {
+          "x": 270.69,
+          "items": 28,
+          "meanWidth": 25.93,
+          "yMin": 126.84,
+          "yMax": 560.6
+        },
+        {
+          "x": 321.41,
+          "items": 24,
+          "meanWidth": 5.69,
+          "yMin": 138.88,
+          "yMax": 541.42
+        },
+        {
+          "x": 376.46,
+          "items": 35,
+          "meanWidth": 22.91,
+          "yMin": 90.2,
+          "yMax": 556.26
+        },
+        {
+          "x": 417.8,
+          "items": 4,
+          "meanWidth": 44.28,
+          "yMin": 88.41,
+          "yMax": 418.1
+        },
+        {
+          "x": 464.83,
+          "items": 7,
+          "meanWidth": 7.77,
+          "yMin": 431.19,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 24
+        },
+        {
+          "x": 324,
+          "count": 24
+        },
+        {
+          "x": 396,
+          "count": 18
+        },
+        {
+          "x": 252,
+          "count": 17
+        },
+        {
+          "x": 360,
+          "count": 17
+        },
+        {
+          "x": 216,
+          "count": 12
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 42.28,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 114.24,
+          "items": 20,
+          "share": 0.571
+        },
+        {
+          "x": 187.29,
+          "items": 6,
+          "share": 0.171
+        },
+        {
+          "x": 371.15,
+          "items": 4,
+          "share": 0.114
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 117.5:29, 175.4:6, 216.6:12, 270.7:28, 321.4:24, 376.5:35, 417.8:4, 464.8:7)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 4,
+      "itemCount": 304,
+      "visualLineCount": 43,
+      "usefulItemCount": 49,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 117.57,
+          "items": 29,
+          "meanWidth": 180,
+          "yMin": 210.52,
+          "yMax": 654.25
+        },
+        {
+          "x": 208.81,
+          "items": 26,
+          "meanWidth": 37.12,
+          "yMin": 177.31,
+          "yMax": 600.8
+        },
+        {
+          "x": 274.57,
+          "items": 62,
+          "meanWidth": 14.19,
+          "yMin": 88.41,
+          "yMax": 610.91
+        },
+        {
+          "x": 340.96,
+          "items": 70,
+          "meanWidth": 15.35,
+          "yMin": 88.41,
+          "yMax": 639.8
+        },
+        {
+          "x": 408.82,
+          "items": 28,
+          "meanWidth": 17.61,
+          "yMin": 116.39,
+          "yMax": 639.8
+        },
+        {
+          "x": 485.28,
+          "items": 5,
+          "meanWidth": 11.39,
+          "yMin": 297.19,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 38
+        },
+        {
+          "x": 288,
+          "count": 37
+        },
+        {
+          "x": 360,
+          "count": 32
+        },
+        {
+          "x": 252,
+          "count": 25
+        },
+        {
+          "x": 108,
+          "count": 23
+        },
+        {
+          "x": 216,
+          "count": 20
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 29.64,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.51,
+          "items": 21,
+          "share": 0.568
+        },
+        {
+          "x": 220.94,
+          "items": 5,
+          "share": 0.135
+        },
+        {
+          "x": 376.44,
+          "items": 5,
+          "share": 0.135
+        },
+        {
+          "x": 309.9,
+          "items": 4,
+          "share": 0.108
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 117.6:29, 208.8:26, 274.6:62, 341.0:70, 408.8:28, 485.3:5)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 5,
+      "itemCount": 275,
+      "visualLineCount": 36,
+      "usefulItemCount": 52,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 118.05,
+          "items": 34,
+          "meanWidth": 172.51,
+          "yMin": 90.2,
+          "yMax": 654.25
+        },
+        {
+          "x": 167.65,
+          "items": 2,
+          "meanWidth": 216.23,
+          "yMin": 114.11,
+          "yMax": 459.04
+        },
+        {
+          "x": 218.3,
+          "items": 14,
+          "meanWidth": 31.88,
+          "yMin": 102.16,
+          "yMax": 628.87
+        },
+        {
+          "x": 272.83,
+          "items": 62,
+          "meanWidth": 24.9,
+          "yMin": 102.16,
+          "yMax": 638.55
+        },
+        {
+          "x": 323.99,
+          "items": 21,
+          "meanWidth": 28.69,
+          "yMin": 90.2,
+          "yMax": 628.87
+        },
+        {
+          "x": 373.07,
+          "items": 48,
+          "meanWidth": 9.09,
+          "yMin": 114.11,
+          "yMax": 638.55
+        },
+        {
+          "x": 431.09,
+          "items": 13,
+          "meanWidth": 18.44,
+          "yMin": 90.2,
+          "yMax": 658.58
+        },
+        {
+          "x": 481.69,
+          "items": 3,
+          "meanWidth": 17.71,
+          "yMin": 176.12,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 288,
+          "count": 33
+        },
+        {
+          "x": 360,
+          "count": 30
+        },
+        {
+          "x": 252,
+          "count": 29
+        },
+        {
+          "x": 108,
+          "count": 25
+        },
+        {
+          "x": 324,
+          "count": 21
+        },
+        {
+          "x": 396,
+          "count": 18
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 35.87,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.02,
+          "items": 23,
+          "share": 0.561
+        },
+        {
+          "x": 274.78,
+          "items": 6,
+          "share": 0.146
+        },
+        {
+          "x": 409.76,
+          "items": 5,
+          "share": 0.122
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 118.1:34, 167.6:2, 218.3:14, 272.8:62, 324.0:21, 373.1:48, 431.1:13, 481.7:3)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 6,
+      "itemCount": 125,
+      "visualLineCount": 38,
+      "usefulItemCount": 49,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 112.32,
+          "items": 14,
+          "meanWidth": 204.13,
+          "yMin": 287.08,
+          "yMax": 654.25
+        },
+        {
+          "x": 148.43,
+          "items": 4,
+          "meanWidth": 62.62,
+          "yMin": 301.53,
+          "yMax": 344.87
+        },
+        {
+          "x": 201,
+          "items": 33,
+          "meanWidth": 22.3,
+          "yMin": 108.41,
+          "yMax": 579.5
+        },
+        {
+          "x": 249.96,
+          "items": 4,
+          "meanWidth": 17.65,
+          "yMin": 108.41,
+          "yMax": 414.1
+        },
+        {
+          "x": 308.28,
+          "items": 17,
+          "meanWidth": 24.87,
+          "yMin": 103.32,
+          "yMax": 625.35
+        },
+        {
+          "x": 374.86,
+          "items": 9,
+          "meanWidth": 20.26,
+          "yMin": 108.41,
+          "yMax": 414.1
+        },
+        {
+          "x": 435.3,
+          "items": 4,
+          "meanWidth": 32.64,
+          "yMin": 301.53,
+          "yMax": 639.8
+        },
+        {
+          "x": 485.22,
+          "items": 2,
+          "meanWidth": 14.18,
+          "yMin": 388.2,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 216,
+          "count": 18
+        },
+        {
+          "x": 180,
+          "count": 15
+        },
+        {
+          "x": 108,
+          "count": 14
+        },
+        {
+          "x": 324,
+          "count": 9
+        },
+        {
+          "x": 288,
+          "count": 8
+        },
+        {
+          "x": 360,
+          "count": 5
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 42.74,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 112.8,
+          "items": 9,
+          "share": 0.529
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 112.3:14, 148.4:4, 201.0:33, 250.0:4, 308.3:17, 374.9:9, 435.3:4, 485.2:2)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 7,
+      "itemCount": 185,
+      "visualLineCount": 34,
+      "usefulItemCount": 46,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 121.52,
+          "items": 34,
+          "meanWidth": 203.56,
+          "yMin": 111.75,
+          "yMax": 654.25
+        },
+        {
+          "x": 179.54,
+          "items": 5,
+          "meanWidth": 11.5,
+          "yMin": 547.65,
+          "yMax": 639.8
+        },
+        {
+          "x": 230.41,
+          "items": 25,
+          "meanWidth": 43.91,
+          "yMin": 214.89,
+          "yMax": 639.8
+        },
+        {
+          "x": 302.15,
+          "items": 34,
+          "meanWidth": 17.4,
+          "yMin": 135.66,
+          "yMax": 639.8
+        },
+        {
+          "x": 360.16,
+          "items": 19,
+          "meanWidth": 3.93,
+          "yMin": 385.75,
+          "yMax": 511.5
+        },
+        {
+          "x": 398.35,
+          "items": 2,
+          "meanWidth": 36.78,
+          "yMin": 316.01,
+          "yMax": 501.82
+        },
+        {
+          "x": 465.49,
+          "items": 12,
+          "meanWidth": 16.83,
+          "yMin": 214.89,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 23
+        },
+        {
+          "x": 288,
+          "count": 20
+        },
+        {
+          "x": 360,
+          "count": 19
+        },
+        {
+          "x": 216,
+          "count": 16
+        },
+        {
+          "x": 324,
+          "count": 14
+        },
+        {
+          "x": 144,
+          "count": 11
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 49.83,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 114.04,
+          "items": 24,
+          "share": 0.774
+        },
+        {
+          "x": 229.19,
+          "items": 4,
+          "share": 0.129
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 121.5:34, 179.5:5, 230.4:25, 302.1:34, 360.2:19, 398.3:2, 465.5:12)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 8,
+      "itemCount": 278,
+      "visualLineCount": 35,
+      "usefulItemCount": 62,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 110.85,
+          "items": 20,
+          "meanWidth": 167.59,
+          "yMin": 123.38,
+          "yMax": 654.25
+        },
+        {
+          "x": 147.89,
+          "items": 10,
+          "meanWidth": 84.8,
+          "yMin": 123.38,
+          "yMax": 654.25
+        },
+        {
+          "x": 211.4,
+          "items": 26,
+          "meanWidth": 18.39,
+          "yMin": 123.38,
+          "yMax": 488.8
+        },
+        {
+          "x": 248.54,
+          "items": 24,
+          "meanWidth": 19.39,
+          "yMin": 166.72,
+          "yMax": 488.8
+        },
+        {
+          "x": 307.86,
+          "items": 48,
+          "meanWidth": 12.26,
+          "yMin": 137.82,
+          "yMax": 484.46
+        },
+        {
+          "x": 365.33,
+          "items": 46,
+          "meanWidth": 24.43,
+          "yMin": 137.82,
+          "yMax": 627.96
+        },
+        {
+          "x": 450.72,
+          "items": 8,
+          "meanWidth": 19.2,
+          "yMin": 137.82,
+          "yMax": 599.07
+        },
+        {
+          "x": 490.08,
+          "items": 3,
+          "meanWidth": 9.32,
+          "yMin": 166.72,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 360,
+          "count": 34
+        },
+        {
+          "x": 324,
+          "count": 26
+        },
+        {
+          "x": 252,
+          "count": 24
+        },
+        {
+          "x": 288,
+          "count": 22
+        },
+        {
+          "x": 108,
+          "count": 20
+        },
+        {
+          "x": 216,
+          "count": 20
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 26.95,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 121.53,
+          "items": 20,
+          "share": 0.606
+        },
+        {
+          "x": 366.47,
+          "items": 7,
+          "share": 0.212
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 110.9:20, 147.9:10, 211.4:26, 248.5:24, 307.9:48, 365.3:46, 450.7:8, 490.1:3)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 9,
+      "itemCount": 488,
+      "visualLineCount": 50,
+      "usefulItemCount": 25,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 110.85,
+          "items": 6,
+          "meanWidth": 115.55,
+          "yMin": 250.85,
+          "yMax": 654.25
+        },
+        {
+          "x": 178.4,
+          "items": 19,
+          "meanWidth": 7.38,
+          "yMin": 222.89,
+          "yMax": 562.74
+        },
+        {
+          "x": 239.06,
+          "items": 83,
+          "meanWidth": 14.78,
+          "yMin": 90.2,
+          "yMax": 643.39
+        },
+        {
+          "x": 308.02,
+          "items": 157,
+          "meanWidth": 7.2,
+          "yMin": 90.2,
+          "yMax": 637.31
+        },
+        {
+          "x": 371.98,
+          "items": 73,
+          "meanWidth": 6.41,
+          "yMin": 140.75,
+          "yMax": 643.39
+        },
+        {
+          "x": 433.29,
+          "items": 18,
+          "meanWidth": 7.25,
+          "yMin": 178.41,
+          "yMax": 340.41
+        },
+        {
+          "x": 493.54,
+          "items": 1,
+          "meanWidth": 5.85,
+          "yMin": 691.11,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 87
+        },
+        {
+          "x": 288,
+          "count": 70
+        },
+        {
+          "x": 252,
+          "count": 50
+        },
+        {
+          "x": 360,
+          "count": 48
+        },
+        {
+          "x": 216,
+          "count": 33
+        },
+        {
+          "x": 396,
+          "count": 25
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 8.42,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 110.85,
+          "items": 6,
+          "share": 0.6
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 7; sizes 110.9:6, 178.4:19, 239.1:83, 308.0:157, 372.0:73, 433.3:18, 493.5:1)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 10,
+      "itemCount": 294,
+      "visualLineCount": 38,
+      "usefulItemCount": 53,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 123.89,
+          "items": 41,
+          "meanWidth": 148.87,
+          "yMin": 90.2,
+          "yMax": 654.25
+        },
+        {
+          "x": 179.53,
+          "items": 10,
+          "meanWidth": 92.07,
+          "yMin": 179.87,
+          "yMax": 639.8
+        },
+        {
+          "x": 216.8,
+          "items": 17,
+          "meanWidth": 8.92,
+          "yMin": 179.87,
+          "yMax": 644.14
+        },
+        {
+          "x": 273.25,
+          "items": 54,
+          "meanWidth": 15.64,
+          "yMin": 114.11,
+          "yMax": 644.14
+        },
+        {
+          "x": 341.52,
+          "items": 61,
+          "meanWidth": 10.33,
+          "yMin": 171.67,
+          "yMax": 658.58
+        },
+        {
+          "x": 402.18,
+          "items": 18,
+          "meanWidth": 30.48,
+          "yMin": 138.02,
+          "yMax": 654.25
+        },
+        {
+          "x": 481.13,
+          "items": 9,
+          "meanWidth": 7.31,
+          "yMin": 288.61,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 288,
+          "count": 34
+        },
+        {
+          "x": 324,
+          "count": 33
+        },
+        {
+          "x": 360,
+          "count": 28
+        },
+        {
+          "x": 108,
+          "count": 27
+        },
+        {
+          "x": 252,
+          "count": 20
+        },
+        {
+          "x": 216,
+          "count": 17
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 32.44,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 117.43,
+          "items": 22,
+          "share": 0.667
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 123.9:41, 179.5:10, 216.8:17, 273.3:54, 341.5:61, 402.2:18, 481.1:9)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 11,
+      "itemCount": 518,
+      "visualLineCount": 42,
+      "usefulItemCount": 62,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 126.57,
+          "items": 47,
+          "meanWidth": 54.86,
+          "yMin": 128.49,
+          "yMax": 654.25
+        },
+        {
+          "x": 203,
+          "items": 68,
+          "meanWidth": 27.24,
+          "yMin": 128.49,
+          "yMax": 658.58
+        },
+        {
+          "x": 266.33,
+          "items": 100,
+          "meanWidth": 19.07,
+          "yMin": 85.42,
+          "yMax": 654.25
+        },
+        {
+          "x": 342.57,
+          "items": 91,
+          "meanWidth": 7.26,
+          "yMin": 99.26,
+          "yMax": 615.25
+        },
+        {
+          "x": 400.4,
+          "items": 55,
+          "meanWidth": 10.97,
+          "yMin": 159.17,
+          "yMax": 625.35
+        },
+        {
+          "x": 475.65,
+          "items": 19,
+          "meanWidth": 11.75,
+          "yMin": 340.8,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 252,
+          "count": 61
+        },
+        {
+          "x": 360,
+          "count": 46
+        },
+        {
+          "x": 396,
+          "count": 45
+        },
+        {
+          "x": 324,
+          "count": 45
+        },
+        {
+          "x": 216,
+          "count": 40
+        },
+        {
+          "x": 288,
+          "count": 39
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 15.89,
+      "twoDominantProse": true,
+      "proseClusters": [
+        {
+          "x": 118.44,
+          "items": 13,
+          "share": 0.406
+        },
+        {
+          "x": 229.28,
+          "items": 8,
+          "share": 0.25
+        },
+        {
+          "x": 386.36,
+          "items": 5,
+          "share": 0.156
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 126.6:47, 203.0:68, 266.3:100, 342.6:91, 400.4:55, 475.7:19)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 12,
+      "itemCount": 222,
+      "visualLineCount": 43,
+      "usefulItemCount": 62,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 118.88,
+          "items": 50,
+          "meanWidth": 160.33,
+          "yMin": 95.8,
+          "yMax": 654.25
+        },
+        {
+          "x": 177.36,
+          "items": 6,
+          "meanWidth": 31.65,
+          "yMin": 110.25,
+          "yMax": 567.57
+        },
+        {
+          "x": 243.85,
+          "items": 28,
+          "meanWidth": 47.18,
+          "yMin": 110.25,
+          "yMax": 654.25
+        },
+        {
+          "x": 306.51,
+          "items": 27,
+          "meanWidth": 14.74,
+          "yMin": 139.14,
+          "yMax": 414.68
+        },
+        {
+          "x": 371.64,
+          "items": 27,
+          "meanWidth": 25.37,
+          "yMin": 139.14,
+          "yMax": 414.68
+        },
+        {
+          "x": 452.87,
+          "items": 17,
+          "meanWidth": 6.53,
+          "yMin": 252.91,
+          "yMax": 524.23
+        },
+        {
+          "x": 493.04,
+          "items": 4,
+          "meanWidth": 5.17,
+          "yMin": 254.71,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 40
+        },
+        {
+          "x": 252,
+          "count": 23
+        },
+        {
+          "x": 360,
+          "count": 22
+        },
+        {
+          "x": 288,
+          "count": 14
+        },
+        {
+          "x": 324,
+          "count": 13
+        },
+        {
+          "x": 144,
+          "count": 10
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 54.6,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.28,
+          "items": 26,
+          "share": 0.667
+        },
+        {
+          "x": 350.7,
+          "items": 6,
+          "share": 0.154
+        },
+        {
+          "x": 245.32,
+          "items": 5,
+          "share": 0.128
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 118.9:50, 177.4:6, 243.8:28, 306.5:27, 371.6:27, 452.9:17, 493.0:4)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 13,
+      "itemCount": 366,
+      "visualLineCount": 39,
+      "usefulItemCount": 62,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 125.3,
+          "items": 61,
+          "meanWidth": 118.99,
+          "yMin": 90.2,
+          "yMax": 654.25
+        },
+        {
+          "x": 180.66,
+          "items": 27,
+          "meanWidth": 18.21,
+          "yMin": 90.2,
+          "yMax": 485.52
+        },
+        {
+          "x": 244.68,
+          "items": 51,
+          "meanWidth": 10.22,
+          "yMin": 90.2,
+          "yMax": 509.79
+        },
+        {
+          "x": 288.35,
+          "items": 26,
+          "meanWidth": 6.72,
+          "yMin": 90.2,
+          "yMax": 489.86
+        },
+        {
+          "x": 335.58,
+          "items": 49,
+          "meanWidth": 20.75,
+          "yMin": 90.2,
+          "yMax": 596.46
+        },
+        {
+          "x": 393.27,
+          "items": 20,
+          "meanWidth": 18.31,
+          "yMin": 102.16,
+          "yMax": 325.01
+        },
+        {
+          "x": 462.31,
+          "items": 37,
+          "meanWidth": 6.88,
+          "yMin": 90.2,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 252,
+          "count": 39
+        },
+        {
+          "x": 324,
+          "count": 34
+        },
+        {
+          "x": 108,
+          "count": 33
+        },
+        {
+          "x": 144,
+          "count": 28
+        },
+        {
+          "x": 180,
+          "count": 27
+        },
+        {
+          "x": 288,
+          "count": 26
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 28.4,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.52,
+          "items": 22,
+          "share": 0.647
+        },
+        {
+          "x": 320.31,
+          "items": 4,
+          "share": 0.118
+        },
+        {
+          "x": 395.1,
+          "items": 4,
+          "share": 0.118
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 125.3:61, 180.7:27, 244.7:51, 288.4:26, 335.6:49, 393.3:20, 462.3:37)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 14,
+      "itemCount": 153,
+      "visualLineCount": 33,
+      "usefulItemCount": 63,
+      "readingOrder": "uncertain",
+      "index": "isolated-lines",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 120.13,
+          "items": 44,
+          "meanWidth": 168.97,
+          "yMin": 94.71,
+          "yMax": 654.25
+        },
+        {
+          "x": 197.14,
+          "items": 11,
+          "meanWidth": 102.17,
+          "yMin": 109.16,
+          "yMax": 596.46
+        },
+        {
+          "x": 277.95,
+          "items": 15,
+          "meanWidth": 86.38,
+          "yMin": 247.6,
+          "yMax": 639.8
+        },
+        {
+          "x": 353.14,
+          "items": 13,
+          "meanWidth": 50.28,
+          "yMin": 218.71,
+          "yMax": 639.8
+        },
+        {
+          "x": 450.28,
+          "items": 13,
+          "meanWidth": 28.36,
+          "yMin": 92.92,
+          "yMax": 639.8
+        },
+        {
+          "x": 491.4,
+          "items": 5,
+          "meanWidth": 5.81,
+          "yMin": 138.05,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 33
+        },
+        {
+          "x": 144,
+          "count": 11
+        },
+        {
+          "x": 288,
+          "count": 10
+        },
+        {
+          "x": 360,
+          "count": 7
+        },
+        {
+          "x": 432,
+          "count": 7
+        },
+        {
+          "x": 216,
+          "count": 7
+        }
+      ],
+      "newlineBlocks": 28,
+      "chunkCount": 27,
+      "averageItemWidth": 72.82,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.95,
+          "items": 26,
+          "share": 0.578
+        },
+        {
+          "x": 283.69,
+          "items": 7,
+          "share": 0.156
+        },
+        {
+          "x": 193.27,
+          "items": 5,
+          "share": 0.111
+        },
+        {
+          "x": 365.22,
+          "items": 5,
+          "share": 0.111
+        }
+      ],
+      "earliestSkip": null,
+      "whyNotTwoColumn": [
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 120.1:44, 197.1:11, 278.0:15, 353.1:13, 450.3:13, 491.4:5)",
+        "fallback: left/right of mid both have ≥2 lines and start-x spread 376.8 > 35% width → uncertain (not two-column)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": true,
+      "skipped": false
+    },
+    {
+      "page": 15,
+      "itemCount": 264,
+      "visualLineCount": 47,
+      "usefulItemCount": 49,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 124.87,
+          "items": 25,
+          "meanWidth": 124.99,
+          "yMin": 202.15,
+          "yMax": 654.25
+        },
+        {
+          "x": 201.37,
+          "items": 39,
+          "meanWidth": 10.35,
+          "yMin": 175.91,
+          "yMax": 613.49
+        },
+        {
+          "x": 253.35,
+          "items": 18,
+          "meanWidth": 8.99,
+          "yMin": 90.2,
+          "yMax": 613.49
+        },
+        {
+          "x": 305.27,
+          "items": 60,
+          "meanWidth": 12.22,
+          "yMin": 90.2,
+          "yMax": 618.43
+        },
+        {
+          "x": 359.71,
+          "items": 16,
+          "meanWidth": 16.47,
+          "yMin": 106.31,
+          "yMax": 621.58
+        },
+        {
+          "x": 409.8,
+          "items": 23,
+          "meanWidth": 18.89,
+          "yMin": 106.31,
+          "yMax": 654.25
+        },
+        {
+          "x": 467.97,
+          "items": 3,
+          "meanWidth": 6.98,
+          "yMin": 654.25,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 288,
+          "count": 32
+        },
+        {
+          "x": 216,
+          "count": 28
+        },
+        {
+          "x": 324,
+          "count": 28
+        },
+        {
+          "x": 252,
+          "count": 18
+        },
+        {
+          "x": 108,
+          "count": 16
+        },
+        {
+          "x": 360,
+          "count": 16
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 22.06,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 117.7,
+          "items": 12,
+          "share": 0.6
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 124.9:25, 201.4:39, 253.3:18, 305.3:60, 359.7:16, 409.8:23, 468.0:3)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 16,
+      "itemCount": 270,
+      "visualLineCount": 32,
+      "usefulItemCount": 29,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 114.15,
+          "items": 16,
+          "meanWidth": 267.05,
+          "yMin": 137.82,
+          "yMax": 654.25
+        },
+        {
+          "x": 183.83,
+          "items": 7,
+          "meanWidth": 6.52,
+          "yMin": 246.33,
+          "yMax": 400.7
+        },
+        {
+          "x": 237.62,
+          "items": 57,
+          "meanWidth": 16.51,
+          "yMin": 137.82,
+          "yMax": 555.62
+        },
+        {
+          "x": 287.18,
+          "items": 42,
+          "meanWidth": 5.35,
+          "yMin": 246.33,
+          "yMax": 555.62
+        },
+        {
+          "x": 342.06,
+          "items": 55,
+          "meanWidth": 9.2,
+          "yMin": 152.26,
+          "yMax": 555.62
+        },
+        {
+          "x": 402.73,
+          "items": 24,
+          "meanWidth": 12.44,
+          "yMin": 181.15,
+          "yMax": 654.25
+        },
+        {
+          "x": 487.69,
+          "items": 1,
+          "meanWidth": 11.71,
+          "yMin": 691.11,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 288,
+          "count": 42
+        },
+        {
+          "x": 252,
+          "count": 35
+        },
+        {
+          "x": 360,
+          "count": 29
+        },
+        {
+          "x": 324,
+          "count": 26
+        },
+        {
+          "x": 216,
+          "count": 22
+        },
+        {
+          "x": 396,
+          "count": 17
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 24.14,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 114.15,
+          "items": 16,
+          "share": 0.762
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 7; sizes 114.1:16, 183.8:7, 237.6:57, 287.2:42, 342.1:55, 402.7:24, 487.7:1)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 17,
+      "itemCount": 373,
+      "visualLineCount": 39,
+      "usefulItemCount": 37,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 121.5,
+          "items": 30,
+          "meanWidth": 133.96,
+          "yMin": 99.48,
+          "yMax": 654.25
+        },
+        {
+          "x": 203.84,
+          "items": 56,
+          "meanWidth": 16.75,
+          "yMin": 99.48,
+          "yMax": 638.49
+        },
+        {
+          "x": 251.57,
+          "items": 34,
+          "meanWidth": 25.79,
+          "yMin": 124.08,
+          "yMax": 621.63
+        },
+        {
+          "x": 311.06,
+          "items": 77,
+          "meanWidth": 6.13,
+          "yMin": 124.09,
+          "yMax": 629.72
+        },
+        {
+          "x": 366.04,
+          "items": 50,
+          "meanWidth": 10.79,
+          "yMin": 99.48,
+          "yMax": 638.49
+        },
+        {
+          "x": 429.34,
+          "items": 6,
+          "meanWidth": 6.05,
+          "yMin": 588.77,
+          "yMax": 593.71
+        },
+        {
+          "x": 472.38,
+          "items": 7,
+          "meanWidth": 7.23,
+          "yMin": 578.78,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 47
+        },
+        {
+          "x": 360,
+          "count": 38
+        },
+        {
+          "x": 252,
+          "count": 34
+        },
+        {
+          "x": 216,
+          "count": 33
+        },
+        {
+          "x": 288,
+          "count": 30
+        },
+        {
+          "x": 180,
+          "count": 23
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 19.64,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 111.28,
+          "items": 14,
+          "share": 0.609
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 121.5:30, 203.8:56, 251.6:34, 311.1:77, 366.0:50, 429.3:6, 472.4:7)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 18,
+      "itemCount": 238,
+      "visualLineCount": 40,
+      "usefulItemCount": 64,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 116.44,
+          "items": 40,
+          "meanWidth": 179.01,
+          "yMin": 90.62,
+          "yMax": 654.25
+        },
+        {
+          "x": 174.67,
+          "items": 5,
+          "meanWidth": 47.48,
+          "yMin": 173.02,
+          "yMax": 429.12
+        },
+        {
+          "x": 213.7,
+          "items": 5,
+          "meanWidth": 61.81,
+          "yMin": 176.16,
+          "yMax": 414.68
+        },
+        {
+          "x": 250.11,
+          "items": 20,
+          "meanWidth": 25.99,
+          "yMin": 133.96,
+          "yMax": 414.68
+        },
+        {
+          "x": 310.91,
+          "items": 32,
+          "meanWidth": 13.72,
+          "yMin": 105.07,
+          "yMax": 472.46
+        },
+        {
+          "x": 382.45,
+          "items": 36,
+          "meanWidth": 17.03,
+          "yMin": 105.07,
+          "yMax": 458.02
+        },
+        {
+          "x": 445.23,
+          "items": 18,
+          "meanWidth": 10.5,
+          "yMin": 119.51,
+          "yMax": 498.75
+        },
+        {
+          "x": 491.2,
+          "items": 3,
+          "meanWidth": 7.86,
+          "yMin": 176.16,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 33
+        },
+        {
+          "x": 252,
+          "count": 20
+        },
+        {
+          "x": 324,
+          "count": 19
+        },
+        {
+          "x": 396,
+          "count": 19
+        },
+        {
+          "x": 360,
+          "count": 17
+        },
+        {
+          "x": 288,
+          "count": 13
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 45.46,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 115.2,
+          "items": 25,
+          "share": 0.714
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 116.4:40, 174.7:5, 213.7:5, 250.1:20, 310.9:32, 382.5:36, 445.2:18, 491.2:3)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 19,
+      "itemCount": 196,
+      "visualLineCount": 33,
+      "usefulItemCount": 53,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 123.55,
+          "items": 38,
+          "meanWidth": 147.17,
+          "yMin": 201.21,
+          "yMax": 654.25
+        },
+        {
+          "x": 174.77,
+          "items": 3,
+          "meanWidth": 85.03,
+          "yMin": 380.09,
+          "yMax": 394.54
+        },
+        {
+          "x": 220.56,
+          "items": 3,
+          "meanWidth": 16.42,
+          "yMin": 380.09,
+          "yMax": 380.09
+        },
+        {
+          "x": 274.52,
+          "items": 36,
+          "meanWidth": 35.68,
+          "yMin": 215.66,
+          "yMax": 625.35
+        },
+        {
+          "x": 334.66,
+          "items": 43,
+          "meanWidth": 17.07,
+          "yMin": 320.32,
+          "yMax": 639.8
+        },
+        {
+          "x": 407.34,
+          "items": 18,
+          "meanWidth": 28.65,
+          "yMin": 380.09,
+          "yMax": 639.8
+        },
+        {
+          "x": 475.25,
+          "items": 2,
+          "meanWidth": 24.15,
+          "yMin": 215.66,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 30
+        },
+        {
+          "x": 108,
+          "count": 23
+        },
+        {
+          "x": 288,
+          "count": 20
+        },
+        {
+          "x": 252,
+          "count": 16
+        },
+        {
+          "x": 144,
+          "count": 15
+        },
+        {
+          "x": 360,
+          "count": 13
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 44.13,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.27,
+          "items": 21,
+          "share": 0.568
+        },
+        {
+          "x": 273.35,
+          "items": 7,
+          "share": 0.189
+        },
+        {
+          "x": 413.05,
+          "items": 5,
+          "share": 0.135
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 123.6:38, 174.8:3, 220.6:3, 274.5:36, 334.7:43, 407.3:18, 475.2:2)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 20,
+      "itemCount": 267,
+      "visualLineCount": 35,
+      "usefulItemCount": 82,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 122.94,
+          "items": 57,
+          "meanWidth": 116.05,
+          "yMin": 90.69,
+          "yMax": 654.25
+        },
+        {
+          "x": 175.83,
+          "items": 6,
+          "meanWidth": 114.74,
+          "yMin": 191.51,
+          "yMax": 556.11
+        },
+        {
+          "x": 236.85,
+          "items": 37,
+          "meanWidth": 23.26,
+          "yMin": 148.18,
+          "yMax": 585.01
+        },
+        {
+          "x": 304.46,
+          "items": 38,
+          "meanWidth": 43.68,
+          "yMin": 90.69,
+          "yMax": 589.35
+        },
+        {
+          "x": 359.59,
+          "items": 10,
+          "meanWidth": 20.8,
+          "yMin": 278.19,
+          "yMax": 391.27
+        },
+        {
+          "x": 396.12,
+          "items": 16,
+          "meanWidth": 30.87,
+          "yMin": 191.51,
+          "yMax": 570.56
+        },
+        {
+          "x": 444.19,
+          "items": 15,
+          "meanWidth": 15.86,
+          "yMin": 205.96,
+          "yMax": 636.84
+        },
+        {
+          "x": 487.69,
+          "items": 1,
+          "meanWidth": 11.71,
+          "yMin": 691.11,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 36
+        },
+        {
+          "x": 144,
+          "count": 21
+        },
+        {
+          "x": 252,
+          "count": 20
+        },
+        {
+          "x": 324,
+          "count": 20
+        },
+        {
+          "x": 288,
+          "count": 18
+        },
+        {
+          "x": 216,
+          "count": 17
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 41.79,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 120.23,
+          "items": 27,
+          "share": 0.6
+        },
+        {
+          "x": 282.3,
+          "items": 5,
+          "share": 0.111
+        },
+        {
+          "x": 333.54,
+          "items": 5,
+          "share": 0.111
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 122.9:57, 175.8:6, 236.8:37, 304.5:38, 359.6:10, 396.1:16, 444.2:15, 487.7:1)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 21,
+      "itemCount": 362,
+      "visualLineCount": 40,
+      "usefulItemCount": 59,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 122.63,
+          "items": 36,
+          "meanWidth": 115.03,
+          "yMin": 123.64,
+          "yMax": 654.25
+        },
+        {
+          "x": 197.91,
+          "items": 31,
+          "meanWidth": 35.32,
+          "yMin": 147.55,
+          "yMax": 627.85
+        },
+        {
+          "x": 268.77,
+          "items": 61,
+          "meanWidth": 14.7,
+          "yMin": 147.55,
+          "yMax": 632.78
+        },
+        {
+          "x": 340.86,
+          "items": 55,
+          "meanWidth": 17.33,
+          "yMin": 147.55,
+          "yMax": 610.41
+        },
+        {
+          "x": 411.51,
+          "items": 30,
+          "meanWidth": 14.67,
+          "yMin": 159.5,
+          "yMax": 610.41
+        },
+        {
+          "x": 474.91,
+          "items": 23,
+          "meanWidth": 8.24,
+          "yMin": 147.55,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 252,
+          "count": 35
+        },
+        {
+          "x": 360,
+          "count": 28
+        },
+        {
+          "x": 324,
+          "count": 27
+        },
+        {
+          "x": 288,
+          "count": 26
+        },
+        {
+          "x": 108,
+          "count": 25
+        },
+        {
+          "x": 396,
+          "count": 18
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 22.49,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 113.43,
+          "items": 16,
+          "share": 0.593
+        },
+        {
+          "x": 192.07,
+          "items": 4,
+          "share": 0.148
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 122.6:36, 197.9:31, 268.8:61, 340.9:55, 411.5:30, 474.9:23)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 22,
+      "itemCount": 182,
+      "visualLineCount": 36,
+      "usefulItemCount": 48,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 8,
+      "clusters": [
+        {
+          "x": 120.86,
+          "items": 37,
+          "meanWidth": 213.71,
+          "yMin": 90.2,
+          "yMax": 654.25
+        },
+        {
+          "x": 174.36,
+          "items": 5,
+          "meanWidth": 73.3,
+          "yMin": 119.09,
+          "yMax": 157.44
+        },
+        {
+          "x": 240.38,
+          "items": 19,
+          "meanWidth": 21.41,
+          "yMin": 462.99,
+          "yMax": 629.6
+        },
+        {
+          "x": 285.64,
+          "items": 22,
+          "meanWidth": 18.03,
+          "yMin": 90.2,
+          "yMax": 629.6
+        },
+        {
+          "x": 350.62,
+          "items": 20,
+          "meanWidth": 23.68,
+          "yMin": 104.65,
+          "yMax": 564.8
+        },
+        {
+          "x": 396.14,
+          "items": 8,
+          "meanWidth": 31.84,
+          "yMin": 104.65,
+          "yMax": 559.87
+        },
+        {
+          "x": 447.38,
+          "items": 11,
+          "meanWidth": 24.14,
+          "yMin": 90.2,
+          "yMax": 368.14
+        },
+        {
+          "x": 490.58,
+          "items": 4,
+          "meanWidth": 8,
+          "yMin": 90.2,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 25
+        },
+        {
+          "x": 288,
+          "count": 22
+        },
+        {
+          "x": 360,
+          "count": 14
+        },
+        {
+          "x": 252,
+          "count": 12
+        },
+        {
+          "x": 144,
+          "count": 12
+        },
+        {
+          "x": 396,
+          "count": 8
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 57.07,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 117.62,
+          "items": 25,
+          "share": 0.758
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 120.9:37, 174.4:5, 240.4:19, 285.6:22, 350.6:20, 396.1:8, 447.4:11, 490.6:4)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 23,
+      "itemCount": 245,
+      "visualLineCount": 33,
+      "usefulItemCount": 60,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 123.57,
+          "items": 37,
+          "meanWidth": 174.28,
+          "yMin": 125.69,
+          "yMax": 654.25
+        },
+        {
+          "x": 196.49,
+          "items": 24,
+          "meanWidth": 50.1,
+          "yMin": 140.13,
+          "yMax": 654.25
+        },
+        {
+          "x": 250.88,
+          "items": 23,
+          "meanWidth": 35.49,
+          "yMin": 169.02,
+          "yMax": 654.25
+        },
+        {
+          "x": 310.4,
+          "items": 41,
+          "meanWidth": 12.52,
+          "yMin": 169.02,
+          "yMax": 625.35
+        },
+        {
+          "x": 360.65,
+          "items": 11,
+          "meanWidth": 25.89,
+          "yMin": 262.17,
+          "yMax": 625.35
+        },
+        {
+          "x": 410.35,
+          "items": 20,
+          "meanWidth": 20.66,
+          "yMin": 288.58,
+          "yMax": 625.35
+        },
+        {
+          "x": 476.66,
+          "items": 15,
+          "meanWidth": 8.93,
+          "yMin": 331.91,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 24
+        },
+        {
+          "x": 252,
+          "count": 23
+        },
+        {
+          "x": 108,
+          "count": 22
+        },
+        {
+          "x": 288,
+          "count": 17
+        },
+        {
+          "x": 144,
+          "count": 15
+        },
+        {
+          "x": 180,
+          "count": 13
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 41.31,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 116.57,
+          "items": 24,
+          "share": 0.632
+        },
+        {
+          "x": 257.53,
+          "items": 4,
+          "share": 0.105
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 123.6:37, 196.5:24, 250.9:23, 310.4:41, 360.6:11, 410.3:20, 476.7:15)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 24,
+      "itemCount": 236,
+      "visualLineCount": 38,
+      "usefulItemCount": 65,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 6,
+      "substantialClusterCount": 6,
+      "clusters": [
+        {
+          "x": 116.78,
+          "items": 39,
+          "meanWidth": 183.96,
+          "yMin": 93.48,
+          "yMax": 654.25
+        },
+        {
+          "x": 190.31,
+          "items": 30,
+          "meanWidth": 49.47,
+          "yMin": 117.39,
+          "yMax": 617.63
+        },
+        {
+          "x": 275.19,
+          "items": 24,
+          "meanWidth": 42.19,
+          "yMin": 223.19,
+          "yMax": 617.63
+        },
+        {
+          "x": 343.87,
+          "items": 39,
+          "meanWidth": 14.96,
+          "yMin": 117.39,
+          "yMax": 574.3
+        },
+        {
+          "x": 411.5,
+          "items": 22,
+          "meanWidth": 20.23,
+          "yMin": 223.19,
+          "yMax": 578.63
+        },
+        {
+          "x": 471.35,
+          "items": 17,
+          "meanWidth": 8.69,
+          "yMin": 223.19,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 108,
+          "count": 32
+        },
+        {
+          "x": 360,
+          "count": 20
+        },
+        {
+          "x": 180,
+          "count": 19
+        },
+        {
+          "x": 324,
+          "count": 19
+        },
+        {
+          "x": 288,
+          "count": 15
+        },
+        {
+          "x": 468,
+          "count": 14
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 47.12,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 115.05,
+          "items": 26,
+          "share": 0.634
+        },
+        {
+          "x": 191.63,
+          "items": 6,
+          "share": 0.146
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 116.8:39, 190.3:30, 275.2:24, 343.9:39, 411.5:22, 471.4:17)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 25,
+      "itemCount": 433,
+      "visualLineCount": 37,
+      "usefulItemCount": 73,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 131.48,
+          "items": 72,
+          "meanWidth": 62.3,
+          "yMin": 238.52,
+          "yMax": 654.25
+        },
+        {
+          "x": 177.06,
+          "items": 30,
+          "meanWidth": 36.79,
+          "yMin": 267.41,
+          "yMax": 596.46
+        },
+        {
+          "x": 231.36,
+          "items": 51,
+          "meanWidth": 21.42,
+          "yMin": 267.41,
+          "yMax": 596.46
+        },
+        {
+          "x": 308.74,
+          "items": 52,
+          "meanWidth": 17.77,
+          "yMin": 296.3,
+          "yMax": 610.91
+        },
+        {
+          "x": 385.39,
+          "items": 52,
+          "meanWidth": 16.36,
+          "yMin": 251.17,
+          "yMax": 567.57
+        },
+        {
+          "x": 429.65,
+          "items": 25,
+          "meanWidth": 10.92,
+          "yMin": 252.96,
+          "yMax": 536.89
+        },
+        {
+          "x": 477.47,
+          "items": 39,
+          "meanWidth": 7.56,
+          "yMin": 251.17,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 144,
+          "count": 42
+        },
+        {
+          "x": 396,
+          "count": 32
+        },
+        {
+          "x": 324,
+          "count": 31
+        },
+        {
+          "x": 108,
+          "count": 30
+        },
+        {
+          "x": 180,
+          "count": 30
+        },
+        {
+          "x": 216,
+          "count": 30
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 21.59,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 119.38,
+          "items": 15,
+          "share": 0.536
+        },
+        {
+          "x": 360.85,
+          "items": 4,
+          "share": 0.143
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 131.5:72, 177.1:30, 231.4:51, 308.7:52, 385.4:52, 429.7:25, 477.5:39)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 26,
+      "itemCount": 455,
+      "visualLineCount": 45,
+      "usefulItemCount": 44,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 110.85,
+          "items": 8,
+          "meanWidth": 182.67,
+          "yMin": 125.87,
+          "yMax": 654.25
+        },
+        {
+          "x": 163.11,
+          "items": 7,
+          "meanWidth": 26.39,
+          "yMin": 321.77,
+          "yMax": 633.07
+        },
+        {
+          "x": 241.63,
+          "items": 92,
+          "meanWidth": 7.17,
+          "yMin": 99.29,
+          "yMax": 639.18
+        },
+        {
+          "x": 285.69,
+          "items": 68,
+          "meanWidth": 11.29,
+          "yMin": 97.5,
+          "yMax": 639.18
+        },
+        {
+          "x": 335.14,
+          "items": 143,
+          "meanWidth": 6.88,
+          "yMin": 85.77,
+          "yMax": 639.18
+        },
+        {
+          "x": 406.64,
+          "items": 21,
+          "meanWidth": 13.58,
+          "yMin": 265.65,
+          "yMax": 572.01
+        },
+        {
+          "x": 486.07,
+          "items": 2,
+          "meanWidth": 13.33,
+          "yMin": 203.07,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 91
+        },
+        {
+          "x": 288,
+          "count": 68
+        },
+        {
+          "x": 252,
+          "count": 59
+        },
+        {
+          "x": 360,
+          "count": 52
+        },
+        {
+          "x": 216,
+          "count": 33
+        },
+        {
+          "x": 396,
+          "count": 14
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 10.97,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 113.36,
+          "items": 7,
+          "share": 0.778
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 110.9:8, 163.1:7, 241.6:92, 285.7:68, 335.1:143, 406.6:21, 486.1:2)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 27,
+      "itemCount": 425,
+      "visualLineCount": 47,
+      "usefulItemCount": 48,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 7,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 131.35,
+          "items": 35,
+          "meanWidth": 71.15,
+          "yMin": 87.54,
+          "yMax": 654.25
+        },
+        {
+          "x": 179,
+          "items": 8,
+          "meanWidth": 17.97,
+          "yMin": 89.23,
+          "yMax": 609.12
+        },
+        {
+          "x": 219.55,
+          "items": 12,
+          "meanWidth": 15.16,
+          "yMin": 105.47,
+          "yMax": 615.25
+        },
+        {
+          "x": 280.78,
+          "items": 90,
+          "meanWidth": 14.23,
+          "yMin": 119.92,
+          "yMax": 654.25
+        },
+        {
+          "x": 336.68,
+          "items": 122,
+          "meanWidth": 6.55,
+          "yMin": 105.47,
+          "yMax": 654.25
+        },
+        {
+          "x": 407.48,
+          "items": 30,
+          "meanWidth": 17.79,
+          "yMin": 105.47,
+          "yMax": 654.25
+        },
+        {
+          "x": 482.12,
+          "items": 11,
+          "meanWidth": 12.54,
+          "yMin": 442.39,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 76
+        },
+        {
+          "x": 288,
+          "count": 62
+        },
+        {
+          "x": 360,
+          "count": 46
+        },
+        {
+          "x": 252,
+          "count": 28
+        },
+        {
+          "x": 144,
+          "count": 20
+        },
+        {
+          "x": 396,
+          "count": 18
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 14.26,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 117.68,
+          "items": 10,
+          "share": 0.588
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 131.4:35, 179.0:8, 219.6:12, 280.8:90, 336.7:122, 407.5:30, 482.1:11)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    },
+    {
+      "page": 28,
+      "itemCount": 141,
+      "visualLineCount": 16,
+      "usefulItemCount": 18,
+      "readingOrder": "uncertain",
+      "index": "skipped",
+      "layoutReadingOrder": "uncertain",
+      "pageWidth": 612,
+      "pageHeight": 792,
+      "clusterCount": 8,
+      "substantialClusterCount": 7,
+      "clusters": [
+        {
+          "x": 115.1,
+          "items": 11,
+          "meanWidth": 172.41,
+          "yMin": 451.07,
+          "yMax": 654.25
+        },
+        {
+          "x": 203.82,
+          "items": 19,
+          "meanWidth": 20.64,
+          "yMin": 479.96,
+          "yMax": 629.69
+        },
+        {
+          "x": 250.24,
+          "items": 12,
+          "meanWidth": 12.82,
+          "yMin": 518.14,
+          "yMax": 625.35
+        },
+        {
+          "x": 288.74,
+          "items": 17,
+          "meanWidth": 20.91,
+          "yMin": 465.52,
+          "yMax": 625.35
+        },
+        {
+          "x": 337.67,
+          "items": 31,
+          "meanWidth": 8.72,
+          "yMin": 465.52,
+          "yMax": 581
+        },
+        {
+          "x": 394.55,
+          "items": 9,
+          "meanWidth": 3.82,
+          "yMin": 549.75,
+          "yMax": 552.56
+        },
+        {
+          "x": 444.34,
+          "items": 8,
+          "meanWidth": 8.86,
+          "yMin": 494.41,
+          "yMax": 494.41
+        },
+        {
+          "x": 487.69,
+          "items": 1,
+          "meanWidth": 11.71,
+          "yMin": 691.11,
+          "yMax": 691.11
+        }
+      ],
+      "dominantX": [
+        {
+          "x": 324,
+          "count": 18
+        },
+        {
+          "x": 288,
+          "count": 17
+        },
+        {
+          "x": 360,
+          "count": 13
+        },
+        {
+          "x": 216,
+          "count": 12
+        },
+        {
+          "x": 252,
+          "count": 12
+        },
+        {
+          "x": 108,
+          "count": 10
+        }
+      ],
+      "newlineBlocks": 0,
+      "chunkCount": 0,
+      "averageItemWidth": 23.09,
+      "twoDominantProse": false,
+      "proseClusters": [
+        {
+          "x": 115.9,
+          "items": 6,
+          "share": 0.667
+        }
+      ],
+      "earliestSkip": "dense-grid",
+      "whyNotTwoColumn": [
+        "dense-grid detector fired first",
+        "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 115.1:11, 203.8:19, 250.2:12, 288.7:17, 337.7:31, 394.5:9, 444.3:8, 487.7:1)"
+      ],
+      "mappingErrors": [],
+      "classifiedAs": "uncertain",
+      "isolatedLines": false,
+      "skipped": true
+    }
+  ]
+}

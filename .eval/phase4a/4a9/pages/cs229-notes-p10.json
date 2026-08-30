@@ -1,0 +1,4028 @@
+{
+  "file": "cs229-notes.pdf",
+  "page": 10,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "skipped",
+    "earliestSkip": "dense-grid",
+    "whyNotTwoColumn": [
+      "dense-grid detector fired first",
+      "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 123.9:41, 179.5:10, 216.8:17, 273.3:54, 341.5:61, 402.2:18, 481.1:9)"
+    ],
+    "clusterCount": 7,
+    "substantialClusterCount": 7,
+    "clusters": [
+      {
+        "x": 123.89,
+        "items": 41,
+        "meanWidth": 148.87,
+        "yMin": 90.2,
+        "yMax": 654.25
+      },
+      {
+        "x": 179.53,
+        "items": 10,
+        "meanWidth": 92.07,
+        "yMin": 179.87,
+        "yMax": 639.8
+      },
+      {
+        "x": 216.8,
+        "items": 17,
+        "meanWidth": 8.92,
+        "yMin": 179.87,
+        "yMax": 644.14
+      },
+      {
+        "x": 273.25,
+        "items": 54,
+        "meanWidth": 15.64,
+        "yMin": 114.11,
+        "yMax": 644.14
+      },
+      {
+        "x": 341.52,
+        "items": 61,
+        "meanWidth": 10.33,
+        "yMin": 171.67,
+        "yMax": 658.58
+      },
+      {
+        "x": 402.18,
+        "items": 18,
+        "meanWidth": 30.48,
+        "yMin": 138.02,
+        "yMax": 654.25
+      },
+      {
+        "x": 481.13,
+        "items": 9,
+        "meanWidth": 7.31,
+        "yMin": 288.61,
+        "yMax": 691.11
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 123.89,
+      "items": 41,
+      "meanWidth": 148.87,
+      "yMin": 90.2,
+      "yMax": 654.25
+    },
+    {
+      "x": 179.53,
+      "items": 10,
+      "meanWidth": 92.07,
+      "yMin": 179.87,
+      "yMax": 639.8
+    },
+    {
+      "x": 216.8,
+      "items": 17,
+      "meanWidth": 8.92,
+      "yMin": 179.87,
+      "yMax": 644.14
+    },
+    {
+      "x": 273.25,
+      "items": 54,
+      "meanWidth": 15.64,
+      "yMin": 114.11,
+      "yMax": 644.14
+    },
+    {
+      "x": 341.52,
+      "items": 61,
+      "meanWidth": 10.33,
+      "yMin": 171.67,
+      "yMax": 658.58
+    },
+    {
+      "x": 402.18,
+      "items": 18,
+      "meanWidth": 30.48,
+      "yMin": 138.02,
+      "yMax": 654.25
+    },
+    {
+      "x": 481.13,
+      "items": 9,
+      "meanWidth": 7.31,
+      "yMin": 288.61,
+      "yMax": 691.11
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 33,
+    "clusters": [
+      {
+        "x": 117.43,
+        "items": 22,
+        "share": 0.667
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.6666666666666666
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        123.89,
+        179.53
+      ],
+      "gap": 55.64
+    },
+    {
+      "between": [
+        179.53,
+        216.8
+      ],
+      "gap": 37.27000000000001
+    },
+    {
+      "between": [
+        216.8,
+        273.25
+      ],
+      "gap": 56.44999999999999
+    },
+    {
+      "between": [
+        273.25,
+        341.52
+      ],
+      "gap": 68.26999999999998
+    },
+    {
+      "between": [
+        341.52,
+        402.18
+      ],
+      "gap": 60.660000000000025
+    },
+    {
+      "between": [
+        402.18,
+        481.13
+      ],
+      "gap": 78.94999999999999
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "10",
+      "x": 487.69,
+      "y": 691.11,
+      "width": 11.71,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "In the third step, we used the fact that",
+      "x": 110.85,
+      "y": 654.25,
+      "width": 211.37,
+      "height": 11.96,
+      "right": 322.22,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": " ",
+      "x": 322.22,
+      "y": 654.25,
+      "width": 5.19,
+      "height": 0,
+      "right": 327.41,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "a",
+      "x": 327.41,
+      "y": 654.25,
+      "width": 6.14,
+      "height": 11.96,
+      "right": 333.56,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "T",
+      "x": 333.56,
+      "y": 658.58,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 338.49,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": " ",
+      "x": 338.49,
+      "y": 658.58,
+      "width": 1.67,
+      "height": 0,
+      "right": 340.16,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "b",
+      "x": 340.16,
+      "y": 654.25,
+      "width": 4.98,
+      "height": 11.96,
+      "right": 345.14,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": " ",
+      "x": 345.14,
+      "y": 654.25,
+      "width": 5.51,
+      "height": 0,
+      "right": 350.65,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "=",
+      "x": 350.65,
+      "y": 654.25,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 359.76,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": " ",
+      "x": 359.76,
+      "y": 654.25,
+      "width": 5.51,
+      "height": 0,
+      "right": 365.27,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "b",
+      "x": 365.27,
+      "y": 654.25,
+      "width": 4.98,
+      "height": 11.96,
+      "right": 370.24,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "T",
+      "x": 370.24,
+      "y": 658.58,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 375.18,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": " ",
+      "x": 375.18,
+      "y": 658.58,
+      "width": 1.67,
+      "height": 0,
+      "right": 376.85,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "a",
+      "x": 376.85,
+      "y": 654.25,
+      "width": 6.14,
+      "height": 11.96,
+      "right": 382.99,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": ", and in the fifth step",
+      "x": 382.99,
+      "y": 654.25,
+      "width": 116.41,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "used the facts",
+      "x": 110.85,
+      "y": 639.8,
+      "width": 71.19,
+      "height": 11.96,
+      "right": 182.04,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": " ",
+      "x": 182.04,
+      "y": 639.8,
+      "width": 4.15,
+      "height": 0,
+      "right": 186.19,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": "∇",
+      "x": 186.19,
+      "y": 639.8,
+      "width": 9.96,
+      "height": 11.96,
+      "right": 196.15,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "x",
+      "x": 196.15,
+      "y": 638.01,
+      "width": 4.77,
+      "height": 7.97,
+      "right": 200.92,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "b",
+      "x": 201.42,
+      "y": 639.8,
+      "width": 4.98,
+      "height": 11.96,
+      "right": 206.39,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "T",
+      "x": 206.39,
+      "y": 644.14,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 211.32,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": " ",
+      "x": 211.32,
+      "y": 644.14,
+      "width": 1.67,
+      "height": 0,
+      "right": 213,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "x",
+      "x": 213,
+      "y": 639.8,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 219.65,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": " ",
+      "x": 219.65,
+      "y": 639.8,
+      "width": 3.74,
+      "height": 0,
+      "right": 223.39,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "=",
+      "x": 223.39,
+      "y": 639.8,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 232.5,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": " ",
+      "x": 232.5,
+      "y": 639.8,
+      "width": 3.74,
+      "height": 0,
+      "right": 236.24,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "b",
+      "x": 236.24,
+      "y": 639.8,
+      "width": 4.98,
+      "height": 11.96,
+      "right": 241.21,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": " ",
+      "x": 241.21,
+      "y": 639.8,
+      "width": 4.15,
+      "height": 0,
+      "right": 245.36,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "and",
+      "x": 245.36,
+      "y": 639.8,
+      "width": 18.86,
+      "height": 11.96,
+      "right": 264.22,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": " ",
+      "x": 264.22,
+      "y": 639.8,
+      "width": 4.15,
+      "height": 0,
+      "right": 268.37,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": "∇",
+      "x": 268.37,
+      "y": 639.8,
+      "width": 9.96,
+      "height": 11.96,
+      "right": 278.33,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "x",
+      "x": 278.33,
+      "y": 638.01,
+      "width": 4.77,
+      "height": 7.97,
+      "right": 283.1,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "x",
+      "x": 283.6,
+      "y": 639.8,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 290.25,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "T",
+      "x": 290.25,
+      "y": 644.14,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 295.18,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": " ",
+      "x": 295.18,
+      "y": 644.14,
+      "width": 1.67,
+      "height": 0,
+      "right": 296.86,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": "Ax",
+      "x": 296.86,
+      "y": 639.8,
+      "width": 15.43,
+      "height": 11.96,
+      "right": 312.28,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": " ",
+      "x": 312.28,
+      "y": 639.8,
+      "width": 3.74,
+      "height": 0,
+      "right": 316.02,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": "= 2",
+      "x": 316.02,
+      "y": 639.8,
+      "width": 18.7,
+      "height": 11.96,
+      "right": 334.73,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "Ax",
+      "x": 334.72,
+      "y": 639.8,
+      "width": 15.43,
+      "height": 11.96,
+      "right": 350.15,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": " ",
+      "x": 350.15,
+      "y": 639.8,
+      "width": 4.15,
+      "height": 0,
+      "right": 354.3,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "for symmetric matrix",
+      "x": 354.3,
+      "y": 639.8,
+      "width": 109.49,
+      "height": 11.96,
+      "right": 463.79,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": " ",
+      "x": 463.79,
+      "y": 639.8,
+      "width": 4.15,
+      "height": 0,
+      "right": 467.94,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "A",
+      "x": 467.94,
+      "y": 639.8,
+      "width": 8.78,
+      "height": 11.96,
+      "right": 476.71,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 476.71,
+      "y": 639.8,
+      "width": 4.15,
+      "height": 0,
+      "right": 480.86,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "(for",
+      "x": 480.86,
+      "y": 639.8,
+      "width": 18.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "more details, see Section 4.3 of “Linear Algebra Review and Reference”). To",
+      "x": 110.85,
+      "y": 625.35,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "minimize",
+      "x": 110.85,
+      "y": 610.91,
+      "width": 46.18,
+      "height": 11.96,
+      "right": 157.03,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 157.03,
+      "y": 610.91,
+      "width": 2.83,
+      "height": 0,
+      "right": 159.86,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": "J",
+      "x": 159.86,
+      "y": 610.91,
+      "width": 6.47,
+      "height": 11.96,
+      "right": 166.33,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": ", we set its derivatives to zero, and obtain the",
+      "x": 167.43,
+      "y": 610.91,
+      "width": 225.75,
+      "height": 11.96,
+      "right": 393.18,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": " ",
+      "x": 393.18,
+      "y": 610.91,
+      "width": 2.83,
+      "height": 0,
+      "right": 396.01,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "normal equations",
+      "x": 396.01,
+      "y": 610.91,
+      "width": 100.14,
+      "height": 11.96,
+      "right": 496.15,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": ":",
+      "x": 496.15,
+      "y": 610.91,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "",
+      "x": 268.71,
+      "y": 586.62,
+      "width": 0,
+      "height": 0,
+      "right": 272.71,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "X",
+      "x": 268.71,
+      "y": 586.62,
+      "width": 9.71,
+      "height": 11.96,
+      "right": 278.42,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": "T",
+      "x": 279.36,
+      "y": 591.56,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 284.29,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": " ",
+      "x": 284.29,
+      "y": 591.56,
+      "width": 1.67,
+      "height": 0,
+      "right": 285.97,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "Xθ",
+      "x": 285.97,
+      "y": 586.62,
+      "width": 16.11,
+      "height": 11.96,
+      "right": 302.08,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": " ",
+      "x": 302.08,
+      "y": 586.62,
+      "width": 3.64,
+      "height": 0,
+      "right": 305.72,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": "=",
+      "x": 305.72,
+      "y": 586.62,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 314.83,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": " ",
+      "x": 314.83,
+      "y": 586.62,
+      "width": 3.32,
+      "height": 0,
+      "right": 318.15,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "X",
+      "x": 318.15,
+      "y": 586.62,
+      "width": 9.71,
+      "height": 11.96,
+      "right": 327.86,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "T",
+      "x": 328.8,
+      "y": 591.56,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 333.73,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": " ",
+      "x": 333.73,
+      "y": 591.56,
+      "width": 1.55,
+      "height": 0,
+      "right": 335.28,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "~",
+      "x": 335.28,
+      "y": 586.62,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 341.13,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": "y",
+      "x": 335.41,
+      "y": 586.62,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 341.12,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "",
+      "x": 110.85,
+      "y": 562.33,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "Thus, the value of",
+      "x": 110.85,
+      "y": 562.33,
+      "width": 98.47,
+      "height": 11.96,
+      "right": 209.33,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": " ",
+      "x": 209.33,
+      "y": 562.33,
+      "width": 5.66,
+      "height": 0,
+      "right": 214.98,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "θ",
+      "x": 214.98,
+      "y": 562.33,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 220.44,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": " ",
+      "x": 220.44,
+      "y": 562.33,
+      "width": 5.99,
+      "height": 0,
+      "right": 226.43,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "that minimizes",
+      "x": 226.43,
+      "y": 562.33,
+      "width": 77.92,
+      "height": 11.96,
+      "right": 304.35,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": " ",
+      "x": 304.35,
+      "y": 562.33,
+      "width": 5.66,
+      "height": 0,
+      "right": 310.01,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "J",
+      "x": 310.01,
+      "y": 562.33,
+      "width": 6.47,
+      "height": 11.96,
+      "right": 316.48,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "(",
+      "x": 317.59,
+      "y": 562.33,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 322.14,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": "θ",
+      "x": 322.14,
+      "y": 562.33,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 327.6,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": ") is given in closed form by the",
+      "x": 327.92,
+      "y": 562.33,
+      "width": 171.48,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "equation",
+      "x": 110.85,
+      "y": 547.89,
+      "width": 43.9,
+      "height": 11.96,
+      "right": 154.75,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "",
+      "x": 254.5,
+      "y": 533.44,
+      "width": 0,
+      "height": 0,
+      "right": 258.5,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": "θ",
+      "x": 254.5,
+      "y": 533.44,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 259.96,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": " ",
+      "x": 259.96,
+      "y": 533.44,
+      "width": 3.65,
+      "height": 0,
+      "right": 263.6,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "= (",
+      "x": 263.6,
+      "y": 533.44,
+      "width": 16.98,
+      "height": 11.96,
+      "right": 280.59,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "X",
+      "x": 280.58,
+      "y": 533.44,
+      "width": 9.71,
+      "height": 11.96,
+      "right": 290.3,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": "T",
+      "x": 291.24,
+      "y": 538.38,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 296.17,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": " ",
+      "x": 296.17,
+      "y": 538.38,
+      "width": 1.67,
+      "height": 0,
+      "right": 297.84,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": "X",
+      "x": 297.84,
+      "y": 533.44,
+      "width": 9.71,
+      "height": 11.96,
+      "right": 307.56,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": ")",
+      "x": 308.5,
+      "y": 533.44,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 313.05,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": "−",
+      "x": 313.05,
+      "y": 538.38,
+      "width": 6.59,
+      "height": 7.97,
+      "right": 319.64,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "1",
+      "x": 319.64,
+      "y": 538.38,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 323.87,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": "X",
+      "x": 324.37,
+      "y": 533.44,
+      "width": 9.71,
+      "height": 11.96,
+      "right": 334.08,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "T",
+      "x": 335.02,
+      "y": 538.38,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 339.95,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": " ",
+      "x": 339.95,
+      "y": 538.38,
+      "width": 1.55,
+      "height": 0,
+      "right": 341.5,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": "~",
+      "x": 341.5,
+      "y": 533.44,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 347.35,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": "y.",
+      "x": 341.63,
+      "y": 533.44,
+      "width": 9.39,
+      "height": 11.96,
+      "right": 351.02,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": "3",
+      "x": 351.02,
+      "y": 537.78,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 355.25,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": "",
+      "x": 110.85,
+      "y": 493.82,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": "3",
+      "x": 110.85,
+      "y": 493.82,
+      "width": 9.68,
+      "height": 17.22,
+      "right": 120.54,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": " ",
+      "x": 120.54,
+      "y": 493.82,
+      "width": 19.37,
+      "height": 0,
+      "right": 139.9,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": "Probabilistic interpretation",
+      "x": 139.9,
+      "y": 493.82,
+      "width": 231.21,
+      "height": 17.22,
+      "right": 371.11,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 99,
+      "str": "",
+      "x": 110.85,
+      "y": 467.53,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 100,
+      "str": "When faced with a regression problem, why might linear regression, and",
+      "x": 110.85,
+      "y": 467.53,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 101,
+      "str": "specifically why might the least-squares cost function",
+      "x": 110.85,
+      "y": 453.09,
+      "width": 283.22,
+      "height": 11.96,
+      "right": 394.08,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 102,
+      "str": " ",
+      "x": 394.08,
+      "y": 453.09,
+      "width": 5.7,
+      "height": 0,
+      "right": 399.77,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 103,
+      "str": "J",
+      "x": 399.77,
+      "y": 453.09,
+      "width": 6.47,
+      "height": 11.96,
+      "right": 406.24,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 104,
+      "str": ", be a reasonable",
+      "x": 407.35,
+      "y": 453.09,
+      "width": 92.06,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 105,
+      "str": "choice? In this section, we will give a set of probabilistic assumptions, under",
+      "x": 110.85,
+      "y": 438.64,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 106,
+      "str": "which least-squares regression is derived as a very natural algorithm.",
+      "x": 110.85,
+      "y": 424.2,
+      "width": 352.61,
+      "height": 11.96,
+      "right": 463.47,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 107,
+      "str": "Let us assume that the target variables and the inputs are related via the",
+      "x": 128.41,
+      "y": 409.75,
+      "width": 370.99,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 108,
+      "str": "equation",
+      "x": 110.85,
+      "y": 395.3,
+      "width": 43.9,
+      "height": 11.96,
+      "right": 154.75,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 109,
+      "str": "",
+      "x": 258.52,
+      "y": 380.86,
+      "width": 0,
+      "height": 0,
+      "right": 262.52,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 110,
+      "str": "y",
+      "x": 258.52,
+      "y": 380.86,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 264.22,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 111,
+      "str": "(",
+      "x": 264.65,
+      "y": 385.8,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 267.95,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 112,
+      "str": "i",
+      "x": 267.95,
+      "y": 385.8,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 270.83,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 113,
+      "str": ")",
+      "x": 270.83,
+      "y": 385.8,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 274.12,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 114,
+      "str": " ",
+      "x": 274.12,
+      "y": 385.8,
+      "width": 3.82,
+      "height": 0,
+      "right": 277.94,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 115,
+      "str": "=",
+      "x": 277.94,
+      "y": 380.86,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 287.05,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 116,
+      "str": " ",
+      "x": 287.05,
+      "y": 380.86,
+      "width": 3.32,
+      "height": 0,
+      "right": 290.37,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 117,
+      "str": "θ",
+      "x": 290.37,
+      "y": 380.86,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 295.82,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 118,
+      "str": "T",
+      "x": 296.15,
+      "y": 385.8,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 301.08,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 119,
+      "str": " ",
+      "x": 301.08,
+      "y": 385.8,
+      "width": 1.67,
+      "height": 0,
+      "right": 302.75,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 120,
+      "str": "x",
+      "x": 302.75,
+      "y": 380.86,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 309.4,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 121,
+      "str": "(",
+      "x": 309.4,
+      "y": 385.8,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 312.7,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 122,
+      "str": "i",
+      "x": 312.7,
+      "y": 385.8,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 315.58,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 123,
+      "str": ")",
+      "x": 315.58,
+      "y": 385.8,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 318.87,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 124,
+      "str": " ",
+      "x": 318.87,
+      "y": 385.8,
+      "width": 3.15,
+      "height": 0,
+      "right": 322.03,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 125,
+      "str": "+",
+      "x": 322.03,
+      "y": 380.86,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 331.13,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 126,
+      "str": " ",
+      "x": 331.13,
+      "y": 380.86,
+      "width": 2.66,
+      "height": 0,
+      "right": 333.79,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 127,
+      "str": "\u000f",
+      "x": 333.79,
+      "y": 380.86,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 338.52,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 128,
+      "str": "(",
+      "x": 338.52,
+      "y": 385.8,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 341.81,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 129,
+      "str": "i",
+      "x": 341.81,
+      "y": 385.8,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 344.69,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 130,
+      "str": ")",
+      "x": 344.69,
+      "y": 385.8,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 347.99,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 131,
+      "str": ",",
+      "x": 348.48,
+      "y": 380.86,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 351.74,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 132,
+      "str": "",
+      "x": 110.85,
+      "y": 360.84,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 133,
+      "str": "where",
+      "x": 110.85,
+      "y": 360.84,
+      "width": 29.92,
+      "height": 11.96,
+      "right": 140.77,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 134,
+      "str": " ",
+      "x": 140.77,
+      "y": 360.84,
+      "width": 4.71,
+      "height": 0,
+      "right": 145.48,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 135,
+      "str": "\u000f",
+      "x": 145.48,
+      "y": 360.84,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 150.2,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 136,
+      "str": "(",
+      "x": 150.2,
+      "y": 365.18,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 153.5,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 137,
+      "str": "i",
+      "x": 153.5,
+      "y": 365.18,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 156.38,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 138,
+      "str": ")",
+      "x": 156.38,
+      "y": 365.18,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 159.67,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 139,
+      "str": " ",
+      "x": 159.67,
+      "y": 365.18,
+      "width": 5.2,
+      "height": 0,
+      "right": 164.88,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 140,
+      "str": "is an error term that captures either unmodeled effects (such as",
+      "x": 164.88,
+      "y": 360.84,
+      "width": 334.51,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 141,
+      "str": "if there are some features very pertinent to predicting housing price, but",
+      "x": 110.85,
+      "y": 346.4,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 142,
+      "str": "that we’d left out of the regression), or random noise. Let us further assume",
+      "x": 110.85,
+      "y": 331.95,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 143,
+      "str": "that the",
+      "x": 110.85,
+      "y": 317.51,
+      "width": 41.98,
+      "height": 11.96,
+      "right": 152.83,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 144,
+      "str": " ",
+      "x": 152.83,
+      "y": 317.51,
+      "width": 4.26,
+      "height": 0,
+      "right": 157.09,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 145,
+      "str": "\u000f",
+      "x": 157.09,
+      "y": 317.51,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 161.82,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 146,
+      "str": "(",
+      "x": 161.82,
+      "y": 321.84,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 165.11,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 147,
+      "str": "i",
+      "x": 165.11,
+      "y": 321.84,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 167.99,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 148,
+      "str": ")",
+      "x": 167.99,
+      "y": 321.84,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 171.29,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 149,
+      "str": " ",
+      "x": 171.29,
+      "y": 321.84,
+      "width": 4.76,
+      "height": 0,
+      "right": 176.04,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 150,
+      "str": "are distributed IID (independently and identically distributed)",
+      "x": 176.04,
+      "y": 317.51,
+      "width": 323.36,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 151,
+      "str": "according to a Gaussian distribution (also called a Normal distribution) with",
+      "x": 110.85,
+      "y": 303.06,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 152,
+      "str": "mean zero and some variance",
+      "x": 110.85,
+      "y": 288.61,
+      "width": 152.66,
+      "height": 11.96,
+      "right": 263.51,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 153,
+      "str": " ",
+      "x": 263.51,
+      "y": 288.61,
+      "width": 4.58,
+      "height": 0,
+      "right": 268.1,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 154,
+      "str": "σ",
+      "x": 268.1,
+      "y": 288.61,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 274.75,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 155,
+      "str": "2",
+      "x": 275.18,
+      "y": 292.95,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 279.41,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 156,
+      "str": ".",
+      "x": 279.91,
+      "y": 288.61,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 283.16,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 157,
+      "str": " ",
+      "x": 283.16,
+      "y": 288.61,
+      "width": 7.23,
+      "height": 0,
+      "right": 290.4,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 158,
+      "str": "We can write this assumption as “",
+      "x": 290.4,
+      "y": 288.61,
+      "width": 180.55,
+      "height": 11.96,
+      "right": 470.94,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 159,
+      "str": "\u000f",
+      "x": 470.93,
+      "y": 288.61,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 475.66,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 160,
+      "str": "(",
+      "x": 475.66,
+      "y": 292.95,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 478.96,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 161,
+      "str": "i",
+      "x": 478.95,
+      "y": 292.95,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 481.84,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 162,
+      "str": ")",
+      "x": 481.84,
+      "y": 292.95,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 485.13,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 163,
+      "str": " ",
+      "x": 485.13,
+      "y": 292.95,
+      "width": 4.97,
+      "height": 0,
+      "right": 490.1,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 164,
+      "str": "∼",
+      "x": 490.1,
+      "y": 288.61,
+      "width": 9.3,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 165,
+      "str": "N",
+      "x": 110.85,
+      "y": 274.17,
+      "width": 9.81,
+      "height": 11.96,
+      "right": 120.66,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 166,
+      "str": " ",
+      "x": 120.66,
+      "y": 274.17,
+      "width": 1.76,
+      "height": 0,
+      "right": 122.42,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 167,
+      "str": "(0",
+      "x": 122.42,
+      "y": 274.17,
+      "width": 10.41,
+      "height": 11.96,
+      "right": 132.83,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 168,
+      "str": ", σ",
+      "x": 132.83,
+      "y": 274.17,
+      "width": 11.9,
+      "height": 11.96,
+      "right": 144.73,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 169,
+      "str": "2",
+      "x": 145.16,
+      "y": 278.51,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 149.39,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 170,
+      "str": ").” I.e., the density of",
+      "x": 149.89,
+      "y": 274.17,
+      "width": 111.92,
+      "height": 11.96,
+      "right": 261.81,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 171,
+      "str": " ",
+      "x": 261.81,
+      "y": 274.17,
+      "width": 3.9,
+      "height": 0,
+      "right": 265.71,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 172,
+      "str": "\u000f",
+      "x": 265.71,
+      "y": 274.17,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 270.44,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 173,
+      "str": "(",
+      "x": 270.44,
+      "y": 278.51,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 273.73,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 174,
+      "str": "i",
+      "x": 273.73,
+      "y": 278.51,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 276.61,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 175,
+      "str": ")",
+      "x": 276.61,
+      "y": 278.51,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 279.91,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 176,
+      "str": " ",
+      "x": 279.91,
+      "y": 278.51,
+      "width": 4.4,
+      "height": 0,
+      "right": 284.31,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 177,
+      "str": "is given by",
+      "x": 284.31,
+      "y": 274.17,
+      "width": 54.69,
+      "height": 11.96,
+      "right": 339,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 178,
+      "str": "",
+      "x": 223.77,
+      "y": 241.94,
+      "width": 0,
+      "height": 0,
+      "right": 227.77,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 179,
+      "str": "p",
+      "x": 223.77,
+      "y": 241.94,
+      "width": 5.87,
+      "height": 11.96,
+      "right": 229.64,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 180,
+      "str": "(",
+      "x": 229.64,
+      "y": 241.94,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 234.2,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 181,
+      "str": "\u000f",
+      "x": 234.2,
+      "y": 241.94,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 238.92,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 182,
+      "str": "(",
+      "x": 238.92,
+      "y": 246.87,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 242.22,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 183,
+      "str": "i",
+      "x": 242.22,
+      "y": 246.87,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 245.1,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 184,
+      "str": ")",
+      "x": 245.1,
+      "y": 246.87,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 248.39,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 185,
+      "str": ") =",
+      "x": 248.89,
+      "y": 241.94,
+      "width": 16.98,
+      "height": 11.96,
+      "right": 265.87,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 186,
+      "str": " ",
+      "x": 265.87,
+      "y": 241.94,
+      "width": 16.57,
+      "height": 0,
+      "right": 282.44,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 187,
+      "str": "1",
+      "x": 282.44,
+      "y": 250.02,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 288.3,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 188,
+      "str": "",
+      "x": 270.38,
+      "y": 242.3,
+      "width": 0,
+      "height": 0,
+      "right": 274.38,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 189,
+      "str": "√",
+      "x": 270.38,
+      "y": 242.3,
+      "width": 9.96,
+      "height": 11.96,
+      "right": 280.35,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 190,
+      "str": "2",
+      "x": 280.35,
+      "y": 232.41,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 286.2,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 191,
+      "str": "πσ",
+      "x": 286.2,
+      "y": 232.41,
+      "width": 13.72,
+      "height": 11.96,
+      "right": 299.92,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 192,
+      "str": " ",
+      "x": 299.92,
+      "y": 232.41,
+      "width": 3.62,
+      "height": 0,
+      "right": 303.54,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 193,
+      "str": "exp",
+      "x": 303.54,
+      "y": 241.94,
+      "width": 17.88,
+      "height": 11.96,
+      "right": 321.42,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 194,
+      "str": "",
+      "x": 323.42,
+      "y": 258.79,
+      "width": 0,
+      "height": 0,
+      "right": 327.42,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 195,
+      "str": "(",
+      "x": 323.42,
+      "y": 258.79,
+      "width": 8.8,
+      "height": 11.96,
+      "right": 332.22,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 196,
+      "str": "",
+      "x": 332.22,
+      "y": 241.94,
+      "width": 0,
+      "height": 0,
+      "right": 336.22,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 197,
+      "str": "−",
+      "x": 332.22,
+      "y": 241.94,
+      "width": 9.3,
+      "height": 11.96,
+      "right": 341.52,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 198,
+      "str": "(",
+      "x": 342.71,
+      "y": 250.02,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 347.26,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 199,
+      "str": "\u000f",
+      "x": 347.26,
+      "y": 250.02,
+      "width": 4.73,
+      "height": 11.96,
+      "right": 351.99,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 200,
+      "str": "(",
+      "x": 351.99,
+      "y": 254.36,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 355.28,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 201,
+      "str": "i",
+      "x": 355.28,
+      "y": 254.36,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 358.17,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 202,
+      "str": ")",
+      "x": 358.17,
+      "y": 254.36,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 361.46,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 203,
+      "str": ")",
+      "x": 361.96,
+      "y": 250.02,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 366.51,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 204,
+      "str": "2",
+      "x": 366.51,
+      "y": 254.36,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 370.74,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 205,
+      "str": "",
+      "x": 348.14,
+      "y": 233.74,
+      "width": 0,
+      "height": 0,
+      "right": 352.14,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 206,
+      "str": "2",
+      "x": 348.14,
+      "y": 233.74,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 354,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 207,
+      "str": "σ",
+      "x": 354,
+      "y": 233.74,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 360.65,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 208,
+      "str": "2",
+      "x": 361.08,
+      "y": 237.19,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 365.31,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 209,
+      "str": "",
+      "x": 372.44,
+      "y": 258.79,
+      "width": 0,
+      "height": 0,
+      "right": 376.44,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 210,
+      "str": ")",
+      "x": 372.44,
+      "y": 258.79,
+      "width": 8.8,
+      "height": 11.96,
+      "right": 381.24,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 211,
+      "str": "",
+      "x": 383.23,
+      "y": 241.94,
+      "width": 0,
+      "height": 0,
+      "right": 387.23,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 212,
+      "str": ".",
+      "x": 383.23,
+      "y": 241.94,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 386.48,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 213,
+      "str": "",
+      "x": 110.85,
+      "y": 211.44,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 214,
+      "str": "This implies that",
+      "x": 110.85,
+      "y": 211.44,
+      "width": 87.93,
+      "height": 11.96,
+      "right": 198.78,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 215,
+      "str": "",
+      "x": 185.07,
+      "y": 179.87,
+      "width": 0,
+      "height": 0,
+      "right": 189.07,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 216,
+      "str": "p",
+      "x": 185.07,
+      "y": 179.87,
+      "width": 5.87,
+      "height": 11.96,
+      "right": 190.94,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 217,
+      "str": "(",
+      "x": 190.94,
+      "y": 179.87,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 195.5,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 218,
+      "str": "y",
+      "x": 195.49,
+      "y": 179.87,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 201.2,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 219,
+      "str": "(",
+      "x": 201.63,
+      "y": 184.81,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 204.93,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 220,
+      "str": "i",
+      "x": 204.92,
+      "y": 184.81,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 207.81,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 221,
+      "str": ")",
+      "x": 207.81,
+      "y": 184.81,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 211.1,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 222,
+      "str": "|",
+      "x": 211.6,
+      "y": 179.87,
+      "width": 3.32,
+      "height": 11.96,
+      "right": 214.92,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 223,
+      "str": "x",
+      "x": 214.92,
+      "y": 179.87,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 221.57,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 224,
+      "str": "(",
+      "x": 221.57,
+      "y": 184.81,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 224.87,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 225,
+      "str": "i",
+      "x": 224.87,
+      "y": 184.81,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 227.75,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 226,
+      "str": ")",
+      "x": 227.75,
+      "y": 184.81,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 231.04,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 227,
+      "str": ";",
+      "x": 231.54,
+      "y": 179.87,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 234.79,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 228,
+      "str": " ",
+      "x": 234.79,
+      "y": 179.87,
+      "width": 1.99,
+      "height": 0,
+      "right": 236.78,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 229,
+      "str": "θ",
+      "x": 236.78,
+      "y": 179.87,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 242.24,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 230,
+      "str": ") =",
+      "x": 242.56,
+      "y": 179.87,
+      "width": 16.98,
+      "height": 11.96,
+      "right": 259.55,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 231,
+      "str": " ",
+      "x": 259.55,
+      "y": 179.87,
+      "width": 16.57,
+      "height": 0,
+      "right": 276.12,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 232,
+      "str": "1",
+      "x": 276.12,
+      "y": 187.96,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 281.97,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 233,
+      "str": "",
+      "x": 264.06,
+      "y": 180.23,
+      "width": 0,
+      "height": 0,
+      "right": 268.06,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 234,
+      "str": "√",
+      "x": 264.06,
+      "y": 180.23,
+      "width": 9.96,
+      "height": 11.96,
+      "right": 274.02,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 235,
+      "str": "2",
+      "x": 274.02,
+      "y": 170.34,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 279.88,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 236,
+      "str": "πσ",
+      "x": 279.88,
+      "y": 170.34,
+      "width": 13.72,
+      "height": 11.96,
+      "right": 293.6,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 237,
+      "str": " ",
+      "x": 293.6,
+      "y": 170.34,
+      "width": 3.62,
+      "height": 0,
+      "right": 297.21,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 238,
+      "str": "exp",
+      "x": 297.21,
+      "y": 179.87,
+      "width": 17.88,
+      "height": 11.96,
+      "right": 315.1,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 239,
+      "str": "",
+      "x": 317.09,
+      "y": 196.73,
+      "width": 0,
+      "height": 0,
+      "right": 321.09,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 240,
+      "str": "(",
+      "x": 317.09,
+      "y": 196.73,
+      "width": 8.8,
+      "height": 11.96,
+      "right": 325.89,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 241,
+      "str": "",
+      "x": 325.89,
+      "y": 179.87,
+      "width": 0,
+      "height": 0,
+      "right": 329.89,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 242,
+      "str": "−",
+      "x": 325.89,
+      "y": 179.87,
+      "width": 9.3,
+      "height": 11.96,
+      "right": 335.19,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 243,
+      "str": "(",
+      "x": 336.39,
+      "y": 187.96,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 340.94,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 244,
+      "str": "y",
+      "x": 340.94,
+      "y": 187.96,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 346.65,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 245,
+      "str": "(",
+      "x": 347.07,
+      "y": 192.3,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 350.37,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 246,
+      "str": "i",
+      "x": 350.37,
+      "y": 192.3,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 353.25,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 247,
+      "str": ")",
+      "x": 353.25,
+      "y": 192.3,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 356.54,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 248,
+      "str": " ",
+      "x": 356.54,
+      "y": 192.3,
+      "width": 3.15,
+      "height": 0,
+      "right": 359.7,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 249,
+      "str": "−",
+      "x": 359.7,
+      "y": 187.96,
+      "width": 9.3,
+      "height": 11.96,
+      "right": 369,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 250,
+      "str": " ",
+      "x": 369,
+      "y": 187.96,
+      "width": 2.66,
+      "height": 0,
+      "right": 371.65,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 251,
+      "str": "θ",
+      "x": 371.65,
+      "y": 187.96,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 377.11,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 252,
+      "str": "T",
+      "x": 377.43,
+      "y": 192.3,
+      "width": 4.93,
+      "height": 7.97,
+      "right": 382.37,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 253,
+      "str": " ",
+      "x": 382.37,
+      "y": 192.3,
+      "width": 1.67,
+      "height": 0,
+      "right": 384.04,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 254,
+      "str": "x",
+      "x": 384.04,
+      "y": 187.96,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 390.69,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 255,
+      "str": "(",
+      "x": 390.69,
+      "y": 192.3,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 393.98,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 256,
+      "str": "i",
+      "x": 393.98,
+      "y": 192.3,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 396.87,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 257,
+      "str": ")",
+      "x": 396.87,
+      "y": 192.3,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 400.16,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 258,
+      "str": ")",
+      "x": 400.66,
+      "y": 187.96,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 405.21,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 259,
+      "str": "2",
+      "x": 405.21,
+      "y": 192.3,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 409.45,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 260,
+      "str": "",
+      "x": 364.33,
+      "y": 171.67,
+      "width": 0,
+      "height": 0,
+      "right": 368.33,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 261,
+      "str": "2",
+      "x": 364.33,
+      "y": 171.67,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 370.18,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 262,
+      "str": "σ",
+      "x": 370.18,
+      "y": 171.67,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 376.84,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 263,
+      "str": "2",
+      "x": 377.27,
+      "y": 175.13,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 381.5,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 264,
+      "str": "",
+      "x": 411.14,
+      "y": 196.73,
+      "width": 0,
+      "height": 0,
+      "right": 415.14,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 265,
+      "str": ")",
+      "x": 411.14,
+      "y": 196.73,
+      "width": 8.8,
+      "height": 11.96,
+      "right": 419.94,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 266,
+      "str": "",
+      "x": 421.93,
+      "y": 179.87,
+      "width": 0,
+      "height": 0,
+      "right": 425.93,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 267,
+      "str": ".",
+      "x": 421.93,
+      "y": 179.87,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 425.18,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 268,
+      "str": "",
+      "x": 124.32,
+      "y": 153.59,
+      "width": 0,
+      "height": 0,
+      "right": 128.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 269,
+      "str": "3",
+      "x": 124.32,
+      "y": 153.59,
+      "width": 3.97,
+      "height": 6.97,
+      "right": 128.29,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 270,
+      "str": "Note that in the above step, we are implicitly assuming that",
+      "x": 128.79,
+      "y": 149.98,
+      "width": 271.93,
+      "height": 9.96,
+      "right": 400.72,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 271,
+      "str": " ",
+      "x": 400.72,
+      "y": 149.98,
+      "width": 4.1,
+      "height": 0,
+      "right": 404.82,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 272,
+      "str": "X",
+      "x": 404.82,
+      "y": 149.98,
+      "width": 8.25,
+      "height": 9.96,
+      "right": 413.08,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 273,
+      "str": "T",
+      "x": 413.86,
+      "y": 153.59,
+      "width": 4.71,
+      "height": 6.97,
+      "right": 418.56,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 274,
+      "str": " ",
+      "x": 418.56,
+      "y": 153.59,
+      "width": 1.57,
+      "height": 0,
+      "right": 420.13,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 275,
+      "str": "X",
+      "x": 420.13,
+      "y": 149.98,
+      "width": 8.25,
+      "height": 9.96,
+      "right": 428.39,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 276,
+      "str": " ",
+      "x": 428.39,
+      "y": 149.98,
+      "width": 4.88,
+      "height": 0,
+      "right": 433.27,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 277,
+      "str": "is an invertible",
+      "x": 433.27,
+      "y": 149.98,
+      "width": 66.13,
+      "height": 9.96,
+      "right": 499.4,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 278,
+      "str": "matrix.",
+      "x": 110.85,
+      "y": 138.02,
+      "width": 31.85,
+      "height": 9.96,
+      "right": 142.71,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 279,
+      "str": " ",
+      "x": 142.71,
+      "y": 138.02,
+      "width": 9.22,
+      "height": 0,
+      "right": 151.92,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 280,
+      "str": "This can be checked before calculating the inverse.",
+      "x": 151.92,
+      "y": 138.02,
+      "width": 232.18,
+      "height": 9.96,
+      "right": 384.11,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 281,
+      "str": " ",
+      "x": 384.11,
+      "y": 138.02,
+      "width": 9.23,
+      "height": 0,
+      "right": 393.33,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 282,
+      "str": "If either the number of",
+      "x": 393.33,
+      "y": 138.02,
+      "width": 106.06,
+      "height": 9.96,
+      "right": 499.39,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 283,
+      "str": "linearly independent examples is fewer than the number of features, or if the features",
+      "x": 110.85,
+      "y": 126.07,
+      "width": 388.54,
+      "height": 9.96,
+      "right": 499.4,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 284,
+      "str": "are not linearly independent, then",
+      "x": 110.85,
+      "y": 114.11,
+      "width": 150.44,
+      "height": 9.96,
+      "right": 261.29,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 285,
+      "str": " ",
+      "x": 261.29,
+      "y": 114.11,
+      "width": 3.74,
+      "height": 0,
+      "right": 265.03,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 286,
+      "str": "X",
+      "x": 265.03,
+      "y": 114.11,
+      "width": 8.25,
+      "height": 9.96,
+      "right": 273.29,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 287,
+      "str": "T",
+      "x": 274.07,
+      "y": 117.73,
+      "width": 4.71,
+      "height": 6.97,
+      "right": 278.77,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 288,
+      "str": " ",
+      "x": 278.77,
+      "y": 117.73,
+      "width": 1.57,
+      "height": 0,
+      "right": 280.35,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 289,
+      "str": "X",
+      "x": 280.35,
+      "y": 114.11,
+      "width": 8.25,
+      "height": 9.96,
+      "right": 288.6,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 290,
+      "str": " ",
+      "x": 288.6,
+      "y": 114.11,
+      "width": 4.52,
+      "height": 0,
+      "right": 293.12,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 291,
+      "str": "will not be invertible. Even in such cases, it is",
+      "x": 293.12,
+      "y": 114.11,
+      "width": 206.27,
+      "height": 9.96,
+      "right": 499.39,
+      "visualLineId": 35,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 292,
+      "str": "possible to “fix” the situation with additional techniques, which we skip here for the sake",
+      "x": 110.85,
+      "y": 102.16,
+      "width": 388.54,
+      "height": 9.96,
+      "right": 499.4,
+      "visualLineId": 36,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 293,
+      "str": "of simplicty.",
+      "x": 110.85,
+      "y": 90.2,
+      "width": 52.63,
+      "height": 9.96,
+      "right": 163.49,
+      "visualLineId": 37,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 691.11,
+      "height": 11.96,
+      "text": "10",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 487.69
+    },
+    {
+      "lineId": 1,
+      "y": 655.49,
+      "height": 12,
+      "text": "In the third step, we used the fact that a T b = b T a , and in the fifth step",
+      "itemIndexes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 2,
+      "y": 640.26,
+      "height": 12,
+      "text": "used the facts ∇ x b T x = b and ∇ x x T Ax = 2 Ax for symmetric matrix A (for",
+      "itemIndexes": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 3,
+      "y": 625.35,
+      "height": 11.96,
+      "text": "more details, see Section 4.3 of “Linear Algebra Review and Reference”). To",
+      "itemIndexes": [
+        45
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 4,
+      "y": 610.91,
+      "height": 12,
+      "text": "minimize J , we set its derivatives to zero, and obtain the normal equations :",
+      "itemIndexes": [
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 5,
+      "y": 588.27,
+      "height": 12,
+      "text": "X T Xθ = X T ~ y",
+      "itemIndexes": [
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65
+      ],
+      "firstX": 268.71
+    },
+    {
+      "lineId": 6,
+      "y": 562.33,
+      "height": 12,
+      "text": "Thus, the value of θ that minimizes J ( θ ) is given in closed form by the",
+      "itemIndexes": [
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 7,
+      "y": 547.89,
+      "height": 11.96,
+      "text": "equation",
+      "itemIndexes": [
+        77
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 8,
+      "y": 535.56,
+      "height": 12,
+      "text": "θ = ( X T X ) − 1 X T ~ y. 3",
+      "itemIndexes": [
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94
+      ],
+      "firstX": 254.5
+    },
+    {
+      "lineId": 9,
+      "y": 493.82,
+      "height": 17.22,
+      "text": "3 Probabilistic interpretation",
+      "itemIndexes": [
+        96,
+        97,
+        98
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 10,
+      "y": 467.53,
+      "height": 11.96,
+      "text": "When faced with a regression problem, why might linear regression, and",
+      "itemIndexes": [
+        100
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 11,
+      "y": 453.09,
+      "height": 12,
+      "text": "specifically why might the least-squares cost function J , be a reasonable",
+      "itemIndexes": [
+        101,
+        102,
+        103,
+        104
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 12,
+      "y": 438.64,
+      "height": 11.96,
+      "text": "choice? In this section, we will give a set of probabilistic assumptions, under",
+      "itemIndexes": [
+        105
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 13,
+      "y": 424.2,
+      "height": 11.96,
+      "text": "which least-squares regression is derived as a very natural algorithm.",
+      "itemIndexes": [
+        106
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 14,
+      "y": 409.75,
+      "height": 11.96,
+      "text": "Let us assume that the target variables and the inputs are related via the",
+      "itemIndexes": [
+        107
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 15,
+      "y": 395.3,
+      "height": 11.96,
+      "text": "equation",
+      "itemIndexes": [
+        108
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 16,
+      "y": 383.78,
+      "height": 12,
+      "text": "y ( i ) = θ T x ( i ) + \u000f ( i ) ,",
+      "itemIndexes": [
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131
+      ],
+      "firstX": 258.52
+    },
+    {
+      "lineId": 17,
+      "y": 363.01,
+      "height": 12,
+      "text": "where \u000f ( i ) is an error term that captures either unmodeled effects (such as",
+      "itemIndexes": [
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 18,
+      "y": 346.4,
+      "height": 11.96,
+      "text": "if there are some features very pertinent to predicting housing price, but",
+      "itemIndexes": [
+        141
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 19,
+      "y": 331.95,
+      "height": 11.96,
+      "text": "that we’d left out of the regression), or random noise. Let us further assume",
+      "itemIndexes": [
+        142
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 20,
+      "y": 319.68,
+      "height": 12,
+      "text": "that the \u000f ( i ) are distributed IID (independently and identically distributed)",
+      "itemIndexes": [
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 21,
+      "y": 303.06,
+      "height": 11.96,
+      "text": "according to a Gaussian distribution (also called a Normal distribution) with",
+      "itemIndexes": [
+        151
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 22,
+      "y": 290.28,
+      "height": 12,
+      "text": "mean zero and some variance σ 2 . We can write this assumption as “ \u000f ( i ) ∼",
+      "itemIndexes": [
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 23,
+      "y": 275.84,
+      "height": 12,
+      "text": "N (0 , σ 2 ).” I.e., the density of \u000f ( i ) is given by",
+      "itemIndexes": [
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 24,
+      "y": 255.84,
+      "height": 11.96,
+      "text": "( ( i ) 2 )",
+      "itemIndexes": [
+        195,
+        200,
+        201,
+        202,
+        204,
+        210
+      ],
+      "firstX": 323.42
+    },
+    {
+      "lineId": 25,
+      "y": 248.67,
+      "height": 11.96,
+      "text": "( i ) 1 ( \u000f )",
+      "itemIndexes": [
+        182,
+        183,
+        184,
+        187,
+        198,
+        199,
+        203
+      ],
+      "firstX": 238.92
+    },
+    {
+      "lineId": 26,
+      "y": 241.5,
+      "height": 12,
+      "text": "p ( \u000f ) = √ exp − 2 .",
+      "itemIndexes": [
+        179,
+        180,
+        181,
+        185,
+        186,
+        189,
+        193,
+        197,
+        208,
+        212
+      ],
+      "firstX": 223.77
+    },
+    {
+      "lineId": 27,
+      "y": 232.94,
+      "height": 12,
+      "text": "2 πσ 2 σ",
+      "itemIndexes": [
+        190,
+        191,
+        192,
+        206,
+        207
+      ],
+      "firstX": 280.35
+    },
+    {
+      "lineId": 28,
+      "y": 211.44,
+      "height": 11.96,
+      "text": "This implies that",
+      "itemIndexes": [
+        214
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 29,
+      "y": 191.01,
+      "height": 12,
+      "text": "1 ( ( y ( i ) − θ T x ( i ) ) 2 )",
+      "itemIndexes": [
+        232,
+        240,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        265
+      ],
+      "firstX": 276.12
+    },
+    {
+      "lineId": 30,
+      "y": 181.37,
+      "height": 12,
+      "text": "p ( y ( i ) | x ( i ) ; θ ) = √ exp − .",
+      "itemIndexes": [
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        234,
+        238,
+        242,
+        267
+      ],
+      "firstX": 185.07
+    },
+    {
+      "lineId": 31,
+      "y": 171.58,
+      "height": 12,
+      "text": "2 πσ 2 σ 2",
+      "itemIndexes": [
+        235,
+        236,
+        237,
+        261,
+        262,
+        263
+      ],
+      "firstX": 274.02
+    },
+    {
+      "lineId": 32,
+      "y": 151.18,
+      "height": 12,
+      "text": "3 Note that in the above step, we are implicitly assuming that X T X is an invertible",
+      "itemIndexes": [
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277
+      ],
+      "firstX": 124.32
+    },
+    {
+      "lineId": 33,
+      "y": 138.02,
+      "height": 12,
+      "text": "matrix. This can be checked before calculating the inverse. If either the number of",
+      "itemIndexes": [
+        278,
+        279,
+        280,
+        281,
+        282
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 34,
+      "y": 126.07,
+      "height": 9.96,
+      "text": "linearly independent examples is fewer than the number of features, or if the features",
+      "itemIndexes": [
+        283
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 35,
+      "y": 115.02,
+      "height": 12,
+      "text": "are not linearly independent, then X T X will not be invertible. Even in such cases, it is",
+      "itemIndexes": [
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 36,
+      "y": 102.16,
+      "height": 9.96,
+      "text": "possible to “fix” the situation with additional techniques, which we skip here for the sake",
+      "itemIndexes": [
+        292
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 37,
+      "y": 90.2,
+      "height": 9.96,
+      "text": "of simplicty.",
+      "itemIndexes": [
+        293
+      ],
+      "firstX": 110.85
+    }
+  ]
+}

@@ -1,0 +1,3063 @@
+[
+  {
+    "file": "attention.pdf",
+    "pages": [
+      {
+        "page": 1,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 6,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 32,
+            "items": 1,
+            "meanWidth": 341.08,
+            "yMin": 237,
+            "yMax": 237
+          },
+          {
+            "x": 129.11,
+            "items": 38,
+            "meanWidth": 246.94,
+            "yMin": 52.12,
+            "yMax": 710.04
+          },
+          {
+            "x": 203.61,
+            "items": 5,
+            "meanWidth": 112.04,
+            "yMin": 316.49,
+            "yMax": 629.96
+          },
+          {
+            "x": 248.14,
+            "items": 8,
+            "meanWidth": 82.37,
+            "yMin": 438.4,
+            "yMax": 682.14
+          },
+          {
+            "x": 292.26,
+            "items": 2,
+            "meanWidth": 24.28,
+            "yMin": 397.22,
+            "yMax": 552.92
+          },
+          {
+            "x": 335.67,
+            "items": 6,
+            "meanWidth": 58.01,
+            "yMin": 452.93,
+            "yMax": 549.3
+          },
+          {
+            "x": 409.27,
+            "items": 6,
+            "meanWidth": 55.02,
+            "yMin": 488.4,
+            "yMax": 552.92
+          },
+          {
+            "x": 455.84,
+            "items": 1,
+            "meanWidth": 4.08,
+            "yMin": 502.92,
+            "yMax": 502.92
+          },
+          {
+            "x": 493.13,
+            "items": 1,
+            "meanWidth": 4.08,
+            "yMin": 552.92,
+            "yMax": 552.92
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 6 !== 2 (total clusters 9; sizes 32.0:1, 129.1:38, 203.6:5, 248.1:8, 292.3:2, 335.7:6, 409.3:6, 455.8:1, 493.1:1)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 251.8 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 2,
+        "readingOrder": "single-column",
+        "index": "full",
+        "substantialClusterCount": 6,
+        "clusterCount": 6,
+        "clusters": [
+          {
+            "x": 109.01,
+            "items": 52,
+            "meanWidth": 306.21,
+            "yMin": 72,
+            "yMax": 710.04
+          },
+          {
+            "x": 147.04,
+            "items": 7,
+            "meanWidth": 30.04,
+            "yMin": 81.42,
+            "yMax": 603.51
+          },
+          {
+            "x": 190.26,
+            "items": 3,
+            "meanWidth": 105.96,
+            "yMin": 81.42,
+            "yMax": 82.91
+          },
+          {
+            "x": 254.44,
+            "items": 5,
+            "meanWidth": 10.42,
+            "yMin": 92.32,
+            "yMax": 93.82
+          },
+          {
+            "x": 315.72,
+            "items": 12,
+            "meanWidth": 27.14,
+            "yMin": 42.11,
+            "yMax": 603.51
+          },
+          {
+            "x": 424.03,
+            "items": 9,
+            "meanWidth": 18.98,
+            "yMin": 103.23,
+            "yMax": 603.51
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 109.0:52, 147.0:7, 190.3:3, 254.4:5, 315.7:12, 424.0:9)"
+        ]
+      },
+      {
+        "page": 3,
+        "readingOrder": "single-column",
+        "index": "full",
+        "substantialClusterCount": 6,
+        "clusterCount": 6,
+        "clusters": [
+          {
+            "x": 107.93,
+            "items": 21,
+            "meanWidth": 266.65,
+            "yMin": 72,
+            "yMax": 347.65
+          },
+          {
+            "x": 150.75,
+            "items": 6,
+            "meanWidth": 91.38,
+            "yMin": 102.89,
+            "yMax": 301.36
+          },
+          {
+            "x": 217.21,
+            "items": 6,
+            "meanWidth": 79.66,
+            "yMin": 127.35,
+            "yMax": 379.7
+          },
+          {
+            "x": 275.1,
+            "items": 5,
+            "meanWidth": 18.86,
+            "yMin": 42.11,
+            "yMax": 237.75
+          },
+          {
+            "x": 328.29,
+            "items": 10,
+            "meanWidth": 54.14,
+            "yMin": 192.81,
+            "yMax": 281.38
+          },
+          {
+            "x": 452.44,
+            "items": 2,
+            "meanWidth": 2.96,
+            "yMin": 127.35,
+            "yMax": 127.35
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 107.9:21, 150.7:6, 217.2:6, 275.1:5, 328.3:10, 452.4:2)"
+        ]
+      },
+      {
+        "page": 4,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 115.17,
+            "items": 41,
+            "meanWidth": 166.71,
+            "yMin": 72,
+            "yMax": 713.25
+          },
+          {
+            "x": 205.97,
+            "items": 16,
+            "meanWidth": 55.56,
+            "yMin": 72,
+            "yMax": 403.76
+          },
+          {
+            "x": 248.68,
+            "items": 12,
+            "meanWidth": 62.37,
+            "yMin": 72,
+            "yMax": 403.76
+          },
+          {
+            "x": 349.12,
+            "items": 26,
+            "meanWidth": 28.2,
+            "yMin": 42.11,
+            "yMax": 713.25
+          },
+          {
+            "x": 392.35,
+            "items": 13,
+            "meanWidth": 16.17,
+            "yMin": 71,
+            "yMax": 354.64
+          },
+          {
+            "x": 442.76,
+            "items": 14,
+            "meanWidth": 20.9,
+            "yMin": 72,
+            "yMax": 354.64
+          },
+          {
+            "x": 496.01,
+            "items": 4,
+            "meanWidth": 5.64,
+            "yMin": 70.94,
+            "yMax": 311.23
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 115.2:41, 206.0:16, 248.7:12, 349.1:26, 392.3:13, 442.8:14, 496.0:4)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 343.9 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 5,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 125.68,
+            "items": 57,
+            "meanWidth": 181.75,
+            "yMin": 72,
+            "yMax": 710.04
+          },
+          {
+            "x": 197.46,
+            "items": 14,
+            "meanWidth": 56.06,
+            "yMin": 183.37,
+            "yMax": 636.62
+          },
+          {
+            "x": 248.74,
+            "items": 5,
+            "meanWidth": 48.97,
+            "yMin": 216.07,
+            "yMax": 636.62
+          },
+          {
+            "x": 288.95,
+            "items": 11,
+            "meanWidth": 18.34,
+            "yMin": 42.11,
+            "yMax": 636.62
+          },
+          {
+            "x": 342.72,
+            "items": 31,
+            "meanWidth": 19.2,
+            "yMin": 103.23,
+            "yMax": 636.62
+          },
+          {
+            "x": 406.15,
+            "items": 25,
+            "meanWidth": 13.95,
+            "yMin": 214.57,
+            "yMax": 640.73
+          },
+          {
+            "x": 482.03,
+            "items": 12,
+            "meanWidth": 7.45,
+            "yMin": 70.51,
+            "yMax": 582.31
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 125.7:57, 197.5:14, 248.7:5, 289.0:11, 342.7:31, 406.2:25, 482.0:12)"
+        ]
+      },
+      {
+        "page": 6,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 6,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 115.47,
+            "items": 56,
+            "meanWidth": 203.43,
+            "yMin": 72,
+            "yMax": 713.25
+          },
+          {
+            "x": 218.69,
+            "items": 7,
+            "meanWidth": 87.42,
+            "yMin": 406.92,
+            "yMax": 702.34
+          },
+          {
+            "x": 278.47,
+            "items": 53,
+            "meanWidth": 7.37,
+            "yMin": 42.11,
+            "yMax": 667.81
+          },
+          {
+            "x": 341.85,
+            "items": 40,
+            "meanWidth": 21.56,
+            "yMin": 82.91,
+            "yMax": 702.34
+          },
+          {
+            "x": 389.7,
+            "items": 8,
+            "meanWidth": 15.88,
+            "yMin": 239.67,
+            "yMax": 667.81
+          },
+          {
+            "x": 443,
+            "items": 31,
+            "meanWidth": 10.95,
+            "yMin": 241.17,
+            "yMax": 702.34
+          },
+          {
+            "x": 486.07,
+            "items": 1,
+            "meanWidth": 17.43,
+            "yMin": 516.37,
+            "yMax": 516.37
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 6 !== 2 (total clusters 7; sizes 115.5:56, 218.7:7, 278.5:53, 341.9:40, 389.7:8, 443.0:31, 486.1:1)"
+        ]
+      },
+      {
+        "page": 7,
+        "readingOrder": "single-column",
+        "index": "full",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 116.2,
+            "items": 58,
+            "meanWidth": 185.78,
+            "yMin": 72,
+            "yMax": 710.04
+          },
+          {
+            "x": 196.97,
+            "items": 27,
+            "meanWidth": 28.82,
+            "yMin": 119.68,
+            "yMax": 655.49
+          },
+          {
+            "x": 253.69,
+            "items": 12,
+            "meanWidth": 30.97,
+            "yMin": 164.97,
+            "yMax": 628.19
+          },
+          {
+            "x": 306.91,
+            "items": 28,
+            "meanWidth": 27.8,
+            "yMin": 42.11,
+            "yMax": 639.1
+          },
+          {
+            "x": 361.14,
+            "items": 7,
+            "meanWidth": 33.03,
+            "yMin": 164.97,
+            "yMax": 710.04
+          },
+          {
+            "x": 419.45,
+            "items": 14,
+            "meanWidth": 19.72,
+            "yMin": 141.5,
+            "yMax": 209.88
+          },
+          {
+            "x": 492.89,
+            "items": 3,
+            "meanWidth": 7.9,
+            "yMin": 164.97,
+            "yMax": 677.31
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 116.2:58, 197.0:27, 253.7:12, 306.9:28, 361.1:7, 419.5:14, 492.9:3)"
+        ]
+      },
+      {
+        "page": 8,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 119.52,
+            "items": 54,
+            "meanWidth": 185.58,
+            "yMin": 72,
+            "yMax": 713.25
+          },
+          {
+            "x": 198.76,
+            "items": 9,
+            "meanWidth": 88.03,
+            "yMin": 202.53,
+            "yMax": 511.14
+          },
+          {
+            "x": 282.49,
+            "items": 16,
+            "meanWidth": 18.43,
+            "yMin": 42.11,
+            "yMax": 670.62
+          },
+          {
+            "x": 338.18,
+            "items": 26,
+            "meanWidth": 23.65,
+            "yMin": 153.42,
+            "yMax": 686.53
+          },
+          {
+            "x": 396.45,
+            "items": 40,
+            "meanWidth": 11.01,
+            "yMin": 224.35,
+            "yMax": 686.53
+          },
+          {
+            "x": 444.32,
+            "items": 60,
+            "meanWidth": 8.25,
+            "yMin": 284.38,
+            "yMax": 670.62
+          },
+          {
+            "x": 497.16,
+            "items": 6,
+            "meanWidth": 3.82,
+            "yMin": 295.29,
+            "yMax": 355.31
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 119.5:54, 198.8:9, 282.5:16, 338.2:26, 396.4:40, 444.3:60, 497.2:6)"
+        ]
+      },
+      {
+        "page": 9,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 115.91,
+            "items": 42,
+            "meanWidth": 223.77,
+            "yMin": 72,
+            "yMax": 713.25
+          },
+          {
+            "x": 186.67,
+            "items": 13,
+            "meanWidth": 26.84,
+            "yMin": 411.3,
+            "yMax": 647.51
+          },
+          {
+            "x": 250.45,
+            "items": 20,
+            "meanWidth": 9.56,
+            "yMin": 152.35,
+            "yMax": 647.51
+          },
+          {
+            "x": 297.97,
+            "items": 18,
+            "meanWidth": 21.43,
+            "yMin": 42.11,
+            "yMax": 647.51
+          },
+          {
+            "x": 356.61,
+            "items": 9,
+            "meanWidth": 14.47,
+            "yMin": 411.3,
+            "yMax": 652.96
+          },
+          {
+            "x": 420.81,
+            "items": 48,
+            "meanWidth": 20.21,
+            "yMin": 303.69,
+            "yMax": 652.96
+          },
+          {
+            "x": 482.91,
+            "items": 15,
+            "meanWidth": 11.33,
+            "yMin": 411.3,
+            "yMax": 652.96
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 115.9:42, 186.7:13, 250.5:20, 298.0:18, 356.6:9, 420.8:48, 482.9:15)"
+        ]
+      },
+      {
+        "page": 10,
+        "readingOrder": "single-column",
+        "index": "full",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 113.65,
+            "items": 37,
+            "meanWidth": 246.04,
+            "yMin": 72,
+            "yMax": 713.25
+          },
+          {
+            "x": 172.87,
+            "items": 11,
+            "meanWidth": 97.85,
+            "yMin": 72,
+            "yMax": 668
+          },
+          {
+            "x": 211.15,
+            "items": 4,
+            "meanWidth": 90.01,
+            "yMin": 158.38,
+            "yMax": 690.22
+          },
+          {
+            "x": 288.96,
+            "items": 12,
+            "meanWidth": 84.15,
+            "yMin": 42.11,
+            "yMax": 678.91
+          },
+          {
+            "x": 326.86,
+            "items": 10,
+            "meanWidth": 55.51,
+            "yMin": 522.36,
+            "yMax": 690.22
+          },
+          {
+            "x": 428.67,
+            "items": 16,
+            "meanWidth": 26.32,
+            "yMin": 169.29,
+            "yMax": 690.22
+          },
+          {
+            "x": 480.74,
+            "items": 5,
+            "meanWidth": 8.76,
+            "yMin": 522.36,
+            "yMax": 522.36
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 113.7:37, 172.9:11, 211.1:4, 289.0:12, 326.9:10, 428.7:16, 480.7:5)"
+        ]
+      },
+      {
+        "page": 11,
+        "readingOrder": "single-column",
+        "index": "full",
+        "substantialClusterCount": 6,
+        "clusterCount": 6,
+        "clusters": [
+          {
+            "x": 120.76,
+            "items": 45,
+            "meanWidth": 228.7,
+            "yMin": 72,
+            "yMax": 710.04
+          },
+          {
+            "x": 205.6,
+            "items": 12,
+            "meanWidth": 124.86,
+            "yMin": 133.42,
+            "yMax": 688.22
+          },
+          {
+            "x": 269.46,
+            "items": 10,
+            "meanWidth": 74.85,
+            "yMin": 42.11,
+            "yMax": 688.22
+          },
+          {
+            "x": 382.78,
+            "items": 8,
+            "meanWidth": 57.74,
+            "yMin": 72,
+            "yMax": 626.8
+          },
+          {
+            "x": 434.52,
+            "items": 6,
+            "meanWidth": 60.38,
+            "yMin": 144.33,
+            "yMax": 565.38
+          },
+          {
+            "x": 484.56,
+            "items": 5,
+            "meanWidth": 15.21,
+            "yMin": 205.75,
+            "yMax": 668.42
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 120.8:45, 205.6:12, 269.5:10, 382.8:8, 434.5:6, 484.6:5)"
+        ]
+      },
+      {
+        "page": 12,
+        "readingOrder": "single-column",
+        "index": "full",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 122.07,
+            "items": 43,
+            "meanWidth": 245.76,
+            "yMin": 74.16,
+            "yMax": 710.04
+          },
+          {
+            "x": 194.54,
+            "items": 7,
+            "meanWidth": 137.01,
+            "yMin": 74.16,
+            "yMax": 619.43
+          },
+          {
+            "x": 276.76,
+            "items": 7,
+            "meanWidth": 90.03,
+            "yMin": 42.11,
+            "yMax": 699.13
+          },
+          {
+            "x": 346.77,
+            "items": 6,
+            "meanWidth": 47.48,
+            "yMin": 119.46,
+            "yMax": 585.04
+          },
+          {
+            "x": 386.9,
+            "items": 8,
+            "meanWidth": 95,
+            "yMin": 119.46,
+            "yMax": 699.13
+          },
+          {
+            "x": 434.43,
+            "items": 3,
+            "meanWidth": 69.57,
+            "yMin": 95.97,
+            "yMax": 380.36
+          },
+          {
+            "x": 492.1,
+            "items": 2,
+            "meanWidth": 12.53,
+            "yMin": 505.35,
+            "yMax": 664.74
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 122.1:43, 194.5:7, 276.8:7, 346.8:6, 386.9:8, 434.4:3, 492.1:2)"
+        ]
+      },
+      {
+        "page": 13,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 123.56,
+            "items": 12,
+            "meanWidth": 151.53,
+            "yMin": 439.33,
+            "yMax": 714.75
+          },
+          {
+            "x": 179.95,
+            "items": 8,
+            "meanWidth": 11.46,
+            "yMin": 534.19,
+            "yMax": 631.52
+          },
+          {
+            "x": 238.3,
+            "items": 12,
+            "meanWidth": 25.58,
+            "yMin": 505.65,
+            "yMax": 631.52
+          },
+          {
+            "x": 307.75,
+            "items": 13,
+            "meanWidth": 16.33,
+            "yMin": 42.11,
+            "yMax": 631.52
+          },
+          {
+            "x": 378.32,
+            "items": 12,
+            "meanWidth": 22.53,
+            "yMin": 512.14,
+            "yMax": 631.52
+          },
+          {
+            "x": 448.33,
+            "items": 12,
+            "meanWidth": 19.32,
+            "yMin": 525.1,
+            "yMax": 631.52
+          },
+          {
+            "x": 495,
+            "items": 4,
+            "meanWidth": 22.06,
+            "yMin": 528.55,
+            "yMax": 631.52
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 123.6:12, 180.0:8, 238.3:12, 307.7:13, 378.3:12, 448.3:12, 495.0:4)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 241.1 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 14,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 108,
+            "items": 5,
+            "meanWidth": 274.39,
+            "yMin": 148.34,
+            "yMax": 676.48
+          },
+          {
+            "x": 159.54,
+            "items": 20,
+            "meanWidth": 16.04,
+            "yMin": 237.97,
+            "yMax": 576.79
+          },
+          {
+            "x": 229.81,
+            "items": 20,
+            "meanWidth": 19.69,
+            "yMin": 216.49,
+            "yMax": 576.79
+          },
+          {
+            "x": 287.18,
+            "items": 13,
+            "meanWidth": 16.95,
+            "yMin": 42.11,
+            "yMax": 576.79
+          },
+          {
+            "x": 342.25,
+            "items": 20,
+            "meanWidth": 11.25,
+            "yMin": 241.64,
+            "yMax": 576.79
+          },
+          {
+            "x": 412.53,
+            "items": 20,
+            "meanWidth": 13.54,
+            "yMin": 229.6,
+            "yMax": 576.79
+          },
+          {
+            "x": 475.77,
+            "items": 16,
+            "meanWidth": 22.53,
+            "yMin": 230.64,
+            "yMax": 576.79
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 108.0:5, 159.5:20, 229.8:20, 287.2:13, 342.3:20, 412.5:20, 475.8:16)"
+        ]
+      },
+      {
+        "page": 15,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 107.55,
+            "items": 5,
+            "meanWidth": 280.72,
+            "yMin": 160.23,
+            "yMax": 662.2
+          },
+          {
+            "x": 158.26,
+            "items": 20,
+            "meanWidth": 15.99,
+            "yMin": 223.34,
+            "yMax": 562.23
+          },
+          {
+            "x": 228.35,
+            "items": 20,
+            "meanWidth": 19.63,
+            "yMin": 202.03,
+            "yMax": 562.23
+          },
+          {
+            "x": 285.69,
+            "items": 13,
+            "meanWidth": 16.91,
+            "yMin": 42.11,
+            "yMax": 562.23
+          },
+          {
+            "x": 340.49,
+            "items": 20,
+            "meanWidth": 11.22,
+            "yMin": 226.98,
+            "yMax": 562.23
+          },
+          {
+            "x": 410.57,
+            "items": 20,
+            "meanWidth": 13.5,
+            "yMin": 215.04,
+            "yMax": 562.23
+          },
+          {
+            "x": 473.65,
+            "items": 16,
+            "meanWidth": 22.47,
+            "yMin": 216.06,
+            "yMax": 562.23
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 107.5:5, 158.3:20, 228.3:20, 285.7:13, 340.5:20, 410.6:20, 473.6:16)"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "bert.pdf",
+    "pages": [
+      {
+        "page": 1,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 32,
+            "items": 1,
+            "meanWidth": 353.3,
+            "yMin": 232,
+            "yMax": 232
+          },
+          {
+            "x": 86.56,
+            "items": 48,
+            "meanWidth": 159.31,
+            "yMin": 78.92,
+            "yMax": 760.2
+          },
+          {
+            "x": 165.6,
+            "items": 12,
+            "meanWidth": 49.01,
+            "yMin": 393.12,
+            "yMax": 608.39
+          },
+          {
+            "x": 228.23,
+            "items": 5,
+            "meanWidth": 84.64,
+            "yMin": 492.87,
+            "yMax": 744.26
+          },
+          {
+            "x": 308.18,
+            "items": 42,
+            "meanWidth": 187.84,
+            "yMin": 78.92,
+            "yMax": 701.88
+          },
+          {
+            "x": 378.76,
+            "items": 8,
+            "meanWidth": 46.08,
+            "yMin": 173.77,
+            "yMax": 701.88
+          },
+          {
+            "x": 450.39,
+            "items": 9,
+            "meanWidth": 37.15,
+            "yMin": 173.77,
+            "yMax": 581.29
+          },
+          {
+            "x": 499.05,
+            "items": 5,
+            "meanWidth": 22.12,
+            "yMin": 119.57,
+            "yMax": 581.29
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 32.0:1, 86.6:48, 165.6:12, 228.2:5, 308.2:42, 378.8:8, 450.4:9, 499.0:5)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 275.3 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 2,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 77.51,
+            "items": 51,
+            "meanWidth": 173.57,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 164.14,
+            "items": 7,
+            "meanWidth": 97.06,
+            "yMin": 187.32,
+            "yMax": 482.05
+          },
+          {
+            "x": 216,
+            "items": 3,
+            "meanWidth": 44.39,
+            "yMin": 255.06,
+            "yMax": 768.12
+          },
+          {
+            "x": 269.64,
+            "items": 3,
+            "meanWidth": 20.63,
+            "yMin": 255.06,
+            "yMax": 713.93
+          },
+          {
+            "x": 308.4,
+            "items": 51,
+            "meanWidth": 187.07,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 348.73,
+            "items": 2,
+            "meanWidth": 176.82,
+            "yMin": 133.12,
+            "yMax": 713.93
+          },
+          {
+            "x": 389.31,
+            "items": 4,
+            "meanWidth": 136.24,
+            "yMin": 78.92,
+            "yMax": 754.57
+          },
+          {
+            "x": 502.52,
+            "items": 1,
+            "meanWidth": 23.03,
+            "yMin": 256.75,
+            "yMax": 256.75
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 77.5:51, 164.1:7, 216.0:3, 269.6:3, 308.4:51, 348.7:2, 389.3:4, 502.5:1)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 246.2 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 3,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 82.67,
+            "items": 51,
+            "meanWidth": 142.01,
+            "yMin": 78.92,
+            "yMax": 761.63
+          },
+          {
+            "x": 143.23,
+            "items": 12,
+            "meanWidth": 17.43,
+            "yMin": 241.87,
+            "yMax": 738.13
+          },
+          {
+            "x": 199.46,
+            "items": 27,
+            "meanWidth": 17.71,
+            "yMin": 78.92,
+            "yMax": 761.63
+          },
+          {
+            "x": 251.5,
+            "items": 7,
+            "meanWidth": 15.03,
+            "yMin": 214.77,
+            "yMax": 738.13
+          },
+          {
+            "x": 312.01,
+            "items": 42,
+            "meanWidth": 133.64,
+            "yMin": 78.92,
+            "yMax": 763.26
+          },
+          {
+            "x": 363.48,
+            "items": 15,
+            "meanWidth": 29.53,
+            "yMin": 89.8,
+            "yMax": 763.42
+          },
+          {
+            "x": 414.43,
+            "items": 27,
+            "meanWidth": 24.46,
+            "yMin": 89.8,
+            "yMax": 738.13
+          },
+          {
+            "x": 465.02,
+            "items": 19,
+            "meanWidth": 21.52,
+            "yMin": 89.8,
+            "yMax": 759.2
+          },
+          {
+            "x": 504.75,
+            "items": 15,
+            "meanWidth": 4.01,
+            "yMin": 89.8,
+            "yMax": 738.13
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 82.7:51, 143.2:12, 199.5:27, 251.5:7, 312.0:42, 363.5:15, 414.4:27, 465.0:19, 504.8:15)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 251.4 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 4,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 78.41,
+            "items": 62,
+            "meanWidth": 146.25,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 143.83,
+            "items": 4,
+            "meanWidth": 61.66,
+            "yMin": 159.58,
+            "yMax": 591.45
+          },
+          {
+            "x": 181.47,
+            "items": 8,
+            "meanWidth": 72.12,
+            "yMin": 159.58,
+            "yMax": 713.93
+          },
+          {
+            "x": 231.98,
+            "items": 13,
+            "meanWidth": 35.29,
+            "yMin": 186.68,
+            "yMax": 768.12
+          },
+          {
+            "x": 309.34,
+            "items": 63,
+            "meanWidth": 133.31,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 378.44,
+            "items": 18,
+            "meanWidth": 76.51,
+            "yMin": 88.89,
+            "yMax": 537.79
+          },
+          {
+            "x": 452.6,
+            "items": 18,
+            "meanWidth": 41.58,
+            "yMin": 172.71,
+            "yMax": 632.63
+          },
+          {
+            "x": 503.12,
+            "items": 6,
+            "meanWidth": 21.28,
+            "yMin": 122.47,
+            "yMax": 362.39
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 78.4:62, 143.8:4, 181.5:8, 232.0:13, 309.3:63, 378.4:18, 452.6:18, 503.1:6)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 235.3 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 5,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 72.27,
+            "items": 40,
+            "meanWidth": 185.88,
+            "yMin": 78.92,
+            "yMax": 649.88
+          },
+          {
+            "x": 124.76,
+            "items": 16,
+            "meanWidth": 49.63,
+            "yMin": 119.57,
+            "yMax": 768.49
+          },
+          {
+            "x": 201.1,
+            "items": 27,
+            "meanWidth": 16.45,
+            "yMin": 119.57,
+            "yMax": 767.26
+          },
+          {
+            "x": 263.88,
+            "items": 24,
+            "meanWidth": 12.22,
+            "yMin": 133.12,
+            "yMax": 766.49
+          },
+          {
+            "x": 313.78,
+            "items": 58,
+            "meanWidth": 105.54,
+            "yMin": 78.92,
+            "yMax": 767.16
+          },
+          {
+            "x": 380.55,
+            "items": 33,
+            "meanWidth": 27.96,
+            "yMin": 78.92,
+            "yMax": 766.49
+          },
+          {
+            "x": 438.95,
+            "items": 21,
+            "meanWidth": 15.47,
+            "yMin": 127.92,
+            "yMax": 767.16
+          },
+          {
+            "x": 508.57,
+            "items": 7,
+            "meanWidth": 11.49,
+            "yMin": 78.92,
+            "yMax": 454.42
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 72.3:40, 124.8:16, 201.1:27, 263.9:24, 313.8:58, 380.5:33, 439.0:21, 508.6:7)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 247.9 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 6,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 79.72,
+            "items": 60,
+            "meanWidth": 143.69,
+            "yMin": 78.92,
+            "yMax": 766.79
+          },
+          {
+            "x": 170.53,
+            "items": 21,
+            "meanWidth": 33.46,
+            "yMin": 88.8,
+            "yMax": 766.79
+          },
+          {
+            "x": 233.02,
+            "items": 20,
+            "meanWidth": 34,
+            "yMin": 88.8,
+            "yMax": 766.79
+          },
+          {
+            "x": 306.48,
+            "items": 56,
+            "meanWidth": 124.33,
+            "yMin": 78.92,
+            "yMax": 766.79
+          },
+          {
+            "x": 370,
+            "items": 32,
+            "meanWidth": 35.91,
+            "yMin": 331.74,
+            "yMax": 766.79
+          },
+          {
+            "x": 429.31,
+            "items": 10,
+            "meanWidth": 28.81,
+            "yMin": 139.63,
+            "yMax": 766.79
+          },
+          {
+            "x": 490.41,
+            "items": 52,
+            "meanWidth": 9.17,
+            "yMin": 372.39,
+            "yMax": 766.79
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 79.7:60, 170.5:21, 233.0:20, 306.5:56, 370.0:32, 429.3:10, 490.4:52)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 235.3 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 7,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 86.7,
+            "items": 62,
+            "meanWidth": 89.51,
+            "yMin": 78.92,
+            "yMax": 768.18
+          },
+          {
+            "x": 130.47,
+            "items": 7,
+            "meanWidth": 59.27,
+            "yMin": 120.08,
+            "yMax": 642.16
+          },
+          {
+            "x": 206.48,
+            "items": 44,
+            "meanWidth": 17.17,
+            "yMin": 147.17,
+            "yMax": 768.18
+          },
+          {
+            "x": 256.05,
+            "items": 44,
+            "meanWidth": 13,
+            "yMin": 131.99,
+            "yMax": 768.18
+          },
+          {
+            "x": 311.5,
+            "items": 49,
+            "meanWidth": 136.61,
+            "yMin": 78.92,
+            "yMax": 655.88
+          },
+          {
+            "x": 360.81,
+            "items": 21,
+            "meanWidth": 28.65,
+            "yMin": 235.82,
+            "yMax": 768.18
+          },
+          {
+            "x": 398.7,
+            "items": 10,
+            "meanWidth": 13.9,
+            "yMin": 398.96,
+            "yMax": 694.8
+          },
+          {
+            "x": 454.21,
+            "items": 29,
+            "meanWidth": 22.8,
+            "yMin": 78.92,
+            "yMax": 768.18
+          },
+          {
+            "x": 499.47,
+            "items": 3,
+            "meanWidth": 17.06,
+            "yMin": 181.07,
+            "yMax": 276.47
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 86.7:62, 130.5:7, 206.5:44, 256.0:44, 311.5:49, 360.8:21, 398.7:10, 454.2:29, 499.5:3)"
+        ]
+      },
+      {
+        "page": 8,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 76.11,
+            "items": 53,
+            "meanWidth": 155.75,
+            "yMin": 78.92,
+            "yMax": 758.22
+          },
+          {
+            "x": 143.13,
+            "items": 12,
+            "meanWidth": 50.61,
+            "yMin": 119.57,
+            "yMax": 758.22
+          },
+          {
+            "x": 190.67,
+            "items": 16,
+            "meanWidth": 18.75,
+            "yMin": 469.3,
+            "yMax": 768.18
+          },
+          {
+            "x": 253.99,
+            "items": 14,
+            "meanWidth": 17.58,
+            "yMin": 509.95,
+            "yMax": 758.22
+          },
+          {
+            "x": 308.4,
+            "items": 51,
+            "meanWidth": 196.76,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 411.45,
+            "items": 3,
+            "meanWidth": 106.7,
+            "yMin": 146.67,
+            "yMax": 378.49
+          },
+          {
+            "x": 494.57,
+            "items": 3,
+            "meanWidth": 22.94,
+            "yMin": 241.34,
+            "yMax": 254.89
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 76.1:53, 143.1:12, 190.7:16, 254.0:14, 308.4:51, 411.5:3, 494.6:3)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 235.3 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 9,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 7,
+        "clusterCount": 7,
+        "clusters": [
+          {
+            "x": 79.66,
+            "items": 58,
+            "meanWidth": 152.11,
+            "yMin": 82.51,
+            "yMax": 768.12
+          },
+          {
+            "x": 140.22,
+            "items": 14,
+            "meanWidth": 13.4,
+            "yMin": 147.43,
+            "yMax": 212.68
+          },
+          {
+            "x": 208.23,
+            "items": 15,
+            "meanWidth": 20.73,
+            "yMin": 147.43,
+            "yMax": 228.12
+          },
+          {
+            "x": 256.14,
+            "items": 9,
+            "meanWidth": 21.44,
+            "yMin": 118.38,
+            "yMax": 466.78
+          },
+          {
+            "x": 314.47,
+            "items": 52,
+            "meanWidth": 144.97,
+            "yMin": 92.47,
+            "yMax": 768.18
+          },
+          {
+            "x": 457.22,
+            "items": 17,
+            "meanWidth": 19.36,
+            "yMin": 119.57,
+            "yMax": 768.18
+          },
+          {
+            "x": 496.65,
+            "items": 14,
+            "meanWidth": 13.52,
+            "yMin": 119.57,
+            "yMax": 768.18
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 7 !== 2 (total clusters 7; sizes 79.7:58, 140.2:14, 208.2:15, 256.1:9, 314.5:52, 457.2:17, 496.7:14)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 252.5 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 10,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 84.1,
+            "items": 58,
+            "meanWidth": 131.4,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 141.81,
+            "items": 8,
+            "meanWidth": 74.93,
+            "yMin": 78.92,
+            "yMax": 747.95
+          },
+          {
+            "x": 199.69,
+            "items": 10,
+            "meanWidth": 55.75,
+            "yMin": 160.13,
+            "yMax": 747.95
+          },
+          {
+            "x": 255.89,
+            "items": 9,
+            "meanWidth": 27.21,
+            "yMin": 100.84,
+            "yMax": 715.07
+          },
+          {
+            "x": 316.75,
+            "items": 56,
+            "meanWidth": 143.88,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 363.08,
+            "items": 6,
+            "meanWidth": 103.11,
+            "yMin": 100.84,
+            "yMax": 560.12
+          },
+          {
+            "x": 418.14,
+            "items": 13,
+            "meanWidth": 63.67,
+            "yMin": 242.98,
+            "yMax": 757.16
+          },
+          {
+            "x": 486.72,
+            "items": 13,
+            "meanWidth": 28.14,
+            "yMin": 89.88,
+            "yMax": 746.21
+          },
+          {
+            "x": 523.05,
+            "items": 1,
+            "meanWidth": 2.49,
+            "yMin": 89.88,
+            "yMax": 89.88
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 84.1:58, 141.8:8, 199.7:10, 255.9:9, 316.8:56, 363.1:6, 418.1:13, 486.7:13, 523.1:1)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 246.2 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 11,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 83.74,
+            "items": 62,
+            "meanWidth": 126.75,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 141.68,
+            "items": 10,
+            "meanWidth": 85.45,
+            "yMin": 78.92,
+            "yMax": 735.25
+          },
+          {
+            "x": 198.16,
+            "items": 15,
+            "meanWidth": 60.83,
+            "yMin": 78.92,
+            "yMax": 716.17
+          },
+          {
+            "x": 267.2,
+            "items": 14,
+            "meanWidth": 15.34,
+            "yMin": 226.67,
+            "yMax": 694.25
+          },
+          {
+            "x": 316.32,
+            "items": 57,
+            "meanWidth": 130.04,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 355.01,
+            "items": 13,
+            "meanWidth": 66.84,
+            "yMin": 142.58,
+            "yMax": 535.44
+          },
+          {
+            "x": 396.85,
+            "items": 10,
+            "meanWidth": 60.87,
+            "yMin": 195.27,
+            "yMax": 682.55
+          },
+          {
+            "x": 449.34,
+            "items": 18,
+            "meanWidth": 53.33,
+            "yMin": 131.62,
+            "yMax": 757.16
+          },
+          {
+            "x": 501.94,
+            "items": 8,
+            "meanWidth": 19.2,
+            "yMin": 355.45,
+            "yMax": 724.29
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 83.7:62, 141.7:10, 198.2:15, 267.2:14, 316.3:57, 355.0:13, 396.8:10, 449.3:18, 501.9:8)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 246.2 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 12,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 85.09,
+            "items": 58,
+            "meanWidth": 136.03,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 155.74,
+            "items": 17,
+            "meanWidth": 60.79,
+            "yMin": 210.94,
+            "yMax": 658.75
+          },
+          {
+            "x": 212.49,
+            "items": 4,
+            "meanWidth": 37.39,
+            "yMin": 473.09,
+            "yMax": 516.93
+          },
+          {
+            "x": 258.72,
+            "items": 13,
+            "meanWidth": 21.48,
+            "yMin": 199.98,
+            "yMax": 768.12
+          },
+          {
+            "x": 318.2,
+            "items": 49,
+            "meanWidth": 126.46,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 367.69,
+            "items": 19,
+            "meanWidth": 50.88,
+            "yMin": 201.03,
+            "yMax": 665.41
+          },
+          {
+            "x": 430.61,
+            "items": 8,
+            "meanWidth": 18.97,
+            "yMin": 332.61,
+            "yMax": 524.09
+          },
+          {
+            "x": 470.12,
+            "items": 9,
+            "meanWidth": 15.36,
+            "yMin": 332.61,
+            "yMax": 524.09
+          },
+          {
+            "x": 506.71,
+            "items": 9,
+            "meanWidth": 14.65,
+            "yMin": 214.58,
+            "yMax": 537.64
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 85.1:58, 155.7:17, 212.5:4, 258.7:13, 318.2:49, 367.7:19, 430.6:8, 470.1:9, 506.7:9)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 278.9 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 13,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 72.38,
+            "items": 35,
+            "meanWidth": 188.62,
+            "yMin": 78.92,
+            "yMax": 650.87
+          },
+          {
+            "x": 122.45,
+            "items": 40,
+            "meanWidth": 20.9,
+            "yMin": 160.59,
+            "yMax": 767.74
+          },
+          {
+            "x": 174.34,
+            "items": 14,
+            "meanWidth": 18.47,
+            "yMin": 214.78,
+            "yMax": 753.42
+          },
+          {
+            "x": 234.02,
+            "items": 31,
+            "meanWidth": 14.79,
+            "yMin": 228.33,
+            "yMax": 767.35
+          },
+          {
+            "x": 307.5,
+            "items": 52,
+            "meanWidth": 114.04,
+            "yMin": 78.92,
+            "yMax": 753.42
+          },
+          {
+            "x": 380.03,
+            "items": 25,
+            "meanWidth": 32.89,
+            "yMin": 119.39,
+            "yMax": 765.2
+          },
+          {
+            "x": 426.96,
+            "items": 6,
+            "meanWidth": 25.34,
+            "yMin": 390.25,
+            "yMax": 753.53
+          },
+          {
+            "x": 467.03,
+            "items": 16,
+            "meanWidth": 12.73,
+            "yMin": 391.9,
+            "yMax": 753.42
+          },
+          {
+            "x": 508.15,
+            "items": 8,
+            "meanWidth": 10.49,
+            "yMin": 500.83,
+            "yMax": 728.6
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 72.4:35, 122.4:40, 174.3:14, 234.0:31, 307.5:52, 380.0:25, 427.0:6, 467.0:16, 508.2:8)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 252.3 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 14,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 81.71,
+            "items": 51,
+            "meanWidth": 163.31,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 132.78,
+            "items": 3,
+            "meanWidth": 28.78,
+            "yMin": 207.1,
+            "yMax": 485.43
+          },
+          {
+            "x": 183.63,
+            "items": 7,
+            "meanWidth": 63.1,
+            "yMin": 207.1,
+            "yMax": 768.12
+          },
+          {
+            "x": 246.26,
+            "items": 7,
+            "meanWidth": 22.23,
+            "yMin": 207.1,
+            "yMax": 485.43
+          },
+          {
+            "x": 311.58,
+            "items": 54,
+            "meanWidth": 149.45,
+            "yMin": 78.92,
+            "yMax": 768.12
+          },
+          {
+            "x": 360.5,
+            "items": 7,
+            "meanWidth": 122.17,
+            "yMin": 133.12,
+            "yMax": 566.33
+          },
+          {
+            "x": 431.51,
+            "items": 9,
+            "meanWidth": 37.22,
+            "yMin": 282.02,
+            "yMax": 647.63
+          },
+          {
+            "x": 513.79,
+            "items": 8,
+            "meanWidth": 10.23,
+            "yMin": 282.02,
+            "yMax": 579.88
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 81.7:51, 132.8:3, 183.6:7, 246.3:7, 311.6:54, 360.5:7, 431.5:9, 513.8:8)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 235.3 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 15,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 8,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 72.69,
+            "items": 20,
+            "meanWidth": 140.72,
+            "yMin": 78.92,
+            "yMax": 346.43
+          },
+          {
+            "x": 136.87,
+            "items": 35,
+            "meanWidth": 27.82,
+            "yMin": 106.02,
+            "yMax": 769.9
+          },
+          {
+            "x": 183.11,
+            "items": 16,
+            "meanWidth": 22.36,
+            "yMin": 380.9,
+            "yMax": 739.02
+          },
+          {
+            "x": 234.92,
+            "items": 53,
+            "meanWidth": 6.89,
+            "yMin": 230.16,
+            "yMax": 739.19
+          },
+          {
+            "x": 316.7,
+            "items": 34,
+            "meanWidth": 115.13,
+            "yMin": 78.92,
+            "yMax": 768.51
+          },
+          {
+            "x": 370,
+            "items": 28,
+            "meanWidth": 16.76,
+            "yMin": 259.71,
+            "yMax": 740.29
+          },
+          {
+            "x": 417.57,
+            "items": 7,
+            "meanWidth": 5.38,
+            "yMin": 467.4,
+            "yMax": 741.96
+          },
+          {
+            "x": 462.64,
+            "items": 14,
+            "meanWidth": 12.3,
+            "yMin": 109.72,
+            "yMax": 741.15
+          },
+          {
+            "x": 517.08,
+            "items": 1,
+            "meanWidth": 7.97,
+            "yMin": 286.7,
+            "yMax": 286.7
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 72.7:20, 136.9:35, 183.1:16, 234.9:53, 316.7:34, 370.0:28, 417.6:7, 462.6:14, 517.1:1)"
+        ]
+      },
+      {
+        "page": 16,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 85.08,
+            "items": 49,
+            "meanWidth": 106.1,
+            "yMin": 82.51,
+            "yMax": 768.12
+          },
+          {
+            "x": 144.84,
+            "items": 9,
+            "meanWidth": 57.66,
+            "yMin": 141.85,
+            "yMax": 634.04
+          },
+          {
+            "x": 199.01,
+            "items": 18,
+            "meanWidth": 25.1,
+            "yMin": 82.51,
+            "yMax": 634.04
+          },
+          {
+            "x": 257.41,
+            "items": 8,
+            "meanWidth": 18.72,
+            "yMin": 152.98,
+            "yMax": 634.04
+          },
+          {
+            "x": 313.04,
+            "items": 47,
+            "meanWidth": 120.87,
+            "yMin": 202.98,
+            "yMax": 768.12
+          },
+          {
+            "x": 359.96,
+            "items": 17,
+            "meanWidth": 28.1,
+            "yMin": 216.53,
+            "yMax": 606.98
+          },
+          {
+            "x": 401.02,
+            "items": 10,
+            "meanWidth": 33.25,
+            "yMin": 338.47,
+            "yMax": 741.02
+          },
+          {
+            "x": 455.26,
+            "items": 16,
+            "meanWidth": 29.81,
+            "yMin": 257.18,
+            "yMax": 741.02
+          },
+          {
+            "x": 495.09,
+            "items": 7,
+            "meanWidth": 16.65,
+            "yMin": 257.18,
+            "yMax": 581.8
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 85.1:49, 144.8:9, 199.0:18, 257.4:8, 313.0:47, 360.0:17, 401.0:10, 455.3:16, 495.1:7)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 247.4 > 35% width → uncertain (not two-column)"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "resnet.pdf",
+    "pages": [
+      {
+        "page": 1,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 10,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 52.13,
+            "items": 40,
+            "meanWidth": 203.15,
+            "yMin": 81,
+            "yMax": 538.22
+          },
+          {
+            "x": 130.84,
+            "items": 6,
+            "meanWidth": 124.3,
+            "yMin": 394.76,
+            "yMax": 675.07
+          },
+          {
+            "x": 192.31,
+            "items": 6,
+            "meanWidth": 69.02,
+            "yMin": 298.69,
+            "yMax": 630.54
+          },
+          {
+            "x": 274.32,
+            "items": 6,
+            "meanWidth": 23.42,
+            "yMin": 51.11,
+            "yMax": 613.81
+          },
+          {
+            "x": 312.63,
+            "items": 42,
+            "meanWidth": 159.22,
+            "yMin": 81,
+            "yMax": 630.54
+          },
+          {
+            "x": 356.22,
+            "items": 5,
+            "meanWidth": 82.93,
+            "yMin": 214.47,
+            "yMax": 497.32
+          },
+          {
+            "x": 394.87,
+            "items": 5,
+            "meanWidth": 29.78,
+            "yMin": 238.38,
+            "yMax": 523.48
+          },
+          {
+            "x": 432.26,
+            "items": 7,
+            "meanWidth": 12.54,
+            "yMin": 497.32,
+            "yMax": 630.54
+          },
+          {
+            "x": 493.12,
+            "items": 15,
+            "meanWidth": 28.34,
+            "yMin": 140.78,
+            "yMax": 546.3
+          },
+          {
+            "x": 537.33,
+            "items": 2,
+            "meanWidth": 4.43,
+            "yMin": 407.72,
+            "yMax": 497.32
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 52.1:40, 130.8:6, 192.3:6, 274.3:6, 312.6:42, 356.2:5, 394.9:5, 432.3:7, 493.1:15, 537.3:2)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 489.6 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 2,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 52.99,
+            "items": 46,
+            "meanWidth": 188.88,
+            "yMin": 81,
+            "yMax": 627.04
+          },
+          {
+            "x": 130.96,
+            "items": 31,
+            "meanWidth": 21.64,
+            "yMin": 81,
+            "yMax": 706.66
+          },
+          {
+            "x": 175.37,
+            "items": 15,
+            "meanWidth": 30.07,
+            "yMin": 81,
+            "yMax": 564.98
+          },
+          {
+            "x": 221.25,
+            "items": 14,
+            "meanWidth": 25.34,
+            "yMin": 81,
+            "yMax": 673.26
+          },
+          {
+            "x": 308.41,
+            "items": 53,
+            "meanWidth": 196.28,
+            "yMin": 51.11,
+            "yMax": 710.04
+          },
+          {
+            "x": 354.79,
+            "items": 3,
+            "meanWidth": 83.08,
+            "yMin": 116.86,
+            "yMax": 710.04
+          },
+          {
+            "x": 428.85,
+            "items": 7,
+            "meanWidth": 100.96,
+            "yMin": 273.19,
+            "yMax": 710.04
+          },
+          {
+            "x": 494.85,
+            "items": 6,
+            "meanWidth": 46.04,
+            "yMin": 81,
+            "yMax": 674.17
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 53.0:46, 131.0:31, 175.4:15, 221.2:14, 308.4:53, 354.8:3, 428.9:7, 494.8:6)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 258.8 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 3,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 9,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 55.82,
+            "items": 61,
+            "meanWidth": 146.64,
+            "yMin": 81,
+            "yMax": 710.04
+          },
+          {
+            "x": 106.83,
+            "items": 10,
+            "meanWidth": 46.43,
+            "yMin": 123.67,
+            "yMax": 517.24
+          },
+          {
+            "x": 144.3,
+            "items": 16,
+            "meanWidth": 23.52,
+            "yMin": 99.76,
+            "yMax": 698.08
+          },
+          {
+            "x": 194.26,
+            "items": 37,
+            "meanWidth": 12.86,
+            "yMin": 98.27,
+            "yMax": 698.08
+          },
+          {
+            "x": 264.52,
+            "items": 10,
+            "meanWidth": 10.24,
+            "yMin": 51.11,
+            "yMax": 553.1
+          },
+          {
+            "x": 311.91,
+            "items": 54,
+            "meanWidth": 167.86,
+            "yMin": 81,
+            "yMax": 710.04
+          },
+          {
+            "x": 355.14,
+            "items": 9,
+            "meanWidth": 48.58,
+            "yMin": 401.5,
+            "yMax": 698.08
+          },
+          {
+            "x": 416.76,
+            "items": 25,
+            "meanWidth": 36.25,
+            "yMin": 176.88,
+            "yMax": 698.08
+          },
+          {
+            "x": 478.68,
+            "items": 35,
+            "meanWidth": 20.73,
+            "yMin": 116.86,
+            "yMax": 674.17
+          },
+          {
+            "x": 533.5,
+            "items": 1,
+            "meanWidth": 11.62,
+            "yMin": 519.78,
+            "yMax": 519.78
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 9 !== 2 (total clusters 10; sizes 55.8:61, 106.8:10, 144.3:16, 194.3:37, 264.5:10, 311.9:54, 355.1:9, 416.8:25, 478.7:35, 533.5:1)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 270.7 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 4,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 8,
+        "clusters": [
+          {
+            "x": 71.25,
+            "items": 48,
+            "meanWidth": 40.98,
+            "yMin": 97.49,
+            "yMax": 708.19
+          },
+          {
+            "x": 155.46,
+            "items": 38,
+            "meanWidth": 26.64,
+            "yMin": 189.57,
+            "yMax": 708.19
+          },
+          {
+            "x": 228.98,
+            "items": 43,
+            "meanWidth": 26.12,
+            "yMin": 108.45,
+            "yMax": 708.19
+          },
+          {
+            "x": 310.58,
+            "items": 53,
+            "meanWidth": 184.16,
+            "yMin": 51.11,
+            "yMax": 710.04
+          },
+          {
+            "x": 355.71,
+            "items": 6,
+            "meanWidth": 71.67,
+            "yMin": 81,
+            "yMax": 314.32
+          },
+          {
+            "x": 396.29,
+            "items": 9,
+            "meanWidth": 43.01,
+            "yMin": 176.64,
+            "yMax": 710.04
+          },
+          {
+            "x": 446.97,
+            "items": 11,
+            "meanWidth": 22.62,
+            "yMin": 314.32,
+            "yMax": 590.49
+          },
+          {
+            "x": 499.79,
+            "items": 2,
+            "meanWidth": 45.31,
+            "yMin": 398.01,
+            "yMax": 590.49
+          }
+        ],
+        "twoDominantProse": false,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 71.2:48, 155.5:38, 229.0:43, 310.6:53, 355.7:6, 396.3:9, 447.0:11, 499.8:2)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 270.7 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 5,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 9,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 50.66,
+            "items": 22,
+            "meanWidth": 227.64,
+            "yMin": 81,
+            "yMax": 560.52
+          },
+          {
+            "x": 99.87,
+            "items": 11,
+            "meanWidth": 16.59,
+            "yMin": 315.7,
+            "yMax": 528.13
+          },
+          {
+            "x": 163.89,
+            "items": 39,
+            "meanWidth": 21.47,
+            "yMin": 239.56,
+            "yMax": 713.77
+          },
+          {
+            "x": 210.57,
+            "items": 43,
+            "meanWidth": 9.96,
+            "yMin": 239.56,
+            "yMax": 713.77
+          },
+          {
+            "x": 252.52,
+            "items": 39,
+            "meanWidth": 8.74,
+            "yMin": 188.6,
+            "yMax": 713.77
+          },
+          {
+            "x": 308.77,
+            "items": 117,
+            "meanWidth": 42.7,
+            "yMin": 51.11,
+            "yMax": 713.77
+          },
+          {
+            "x": 373.66,
+            "items": 77,
+            "meanWidth": 10.71,
+            "yMin": 225.51,
+            "yMax": 713.77
+          },
+          {
+            "x": 436.04,
+            "items": 74,
+            "meanWidth": 11.03,
+            "yMin": 273.33,
+            "yMax": 713.77
+          },
+          {
+            "x": 500.13,
+            "items": 4,
+            "meanWidth": 22.04,
+            "yMin": 99.93,
+            "yMax": 411.65
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 9 !== 2 (total clusters 9; sizes 50.7:22, 99.9:11, 163.9:39, 210.6:43, 252.5:39, 308.8:117, 373.7:77, 436.0:74, 500.1:4)"
+        ]
+      },
+      {
+        "page": 6,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 10,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 60.51,
+            "items": 38,
+            "meanWidth": 113.01,
+            "yMin": 81,
+            "yMax": 570.86
+          },
+          {
+            "x": 98.16,
+            "items": 14,
+            "meanWidth": 39.54,
+            "yMin": 81,
+            "yMax": 711.16
+          },
+          {
+            "x": 165.46,
+            "items": 21,
+            "meanWidth": 37.22,
+            "yMin": 148.2,
+            "yMax": 711.16
+          },
+          {
+            "x": 224.09,
+            "items": 44,
+            "meanWidth": 19.41,
+            "yMin": 81,
+            "yMax": 711.16
+          },
+          {
+            "x": 310.41,
+            "items": 53,
+            "meanWidth": 171.73,
+            "yMin": 51.11,
+            "yMax": 628.1
+          },
+          {
+            "x": 358.11,
+            "items": 10,
+            "meanWidth": 21.04,
+            "yMin": 118.86,
+            "yMax": 715.63
+          },
+          {
+            "x": 396.97,
+            "items": 8,
+            "meanWidth": 68.5,
+            "yMin": 139.71,
+            "yMax": 617.14
+          },
+          {
+            "x": 434.41,
+            "items": 4,
+            "meanWidth": 62.17,
+            "yMin": 118.86,
+            "yMax": 628.1
+          },
+          {
+            "x": 473.13,
+            "items": 9,
+            "meanWidth": 26.06,
+            "yMin": 344.36,
+            "yMax": 715.63
+          },
+          {
+            "x": 521.16,
+            "items": 6,
+            "meanWidth": 14.14,
+            "yMin": 284.59,
+            "yMax": 628.1
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 60.5:38, 98.2:14, 165.5:21, 224.1:44, 310.4:53, 358.1:10, 397.0:8, 434.4:4, 473.1:9, 521.2:6)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 258.8 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 7,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 53.88,
+            "items": 52,
+            "meanWidth": 170.32,
+            "yMin": 81,
+            "yMax": 710.04
+          },
+          {
+            "x": 121.54,
+            "items": 17,
+            "meanWidth": 49.01,
+            "yMin": 92.95,
+            "yMax": 625.89
+          },
+          {
+            "x": 200.2,
+            "items": 30,
+            "meanWidth": 19.07,
+            "yMin": 81,
+            "yMax": 673.71
+          },
+          {
+            "x": 244.82,
+            "items": 14,
+            "meanWidth": 20.63,
+            "yMin": 81,
+            "yMax": 523.35
+          },
+          {
+            "x": 313.33,
+            "items": 49,
+            "meanWidth": 152,
+            "yMin": 51.11,
+            "yMax": 649.21
+          },
+          {
+            "x": 390.45,
+            "items": 29,
+            "meanWidth": 31.16,
+            "yMin": 108.33,
+            "yMax": 710.22
+          },
+          {
+            "x": 434.92,
+            "items": 20,
+            "meanWidth": 28.97,
+            "yMin": 192.01,
+            "yMax": 661.58
+          },
+          {
+            "x": 489.62,
+            "items": 24,
+            "meanWidth": 19.69,
+            "yMin": 90.47,
+            "yMax": 710.22
+          },
+          {
+            "x": 526.3,
+            "items": 1,
+            "meanWidth": 18.82,
+            "yMin": 239.83,
+            "yMax": 239.83
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 53.9:52, 121.5:17, 200.2:30, 244.8:14, 313.3:49, 390.5:29, 434.9:20, 489.6:24, 526.3:1)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 270.7 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 8,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 8,
+        "clusterCount": 9,
+        "clusters": [
+          {
+            "x": 57.26,
+            "items": 48,
+            "meanWidth": 115.38,
+            "yMin": 81,
+            "yMax": 612.63
+          },
+          {
+            "x": 125.03,
+            "items": 25,
+            "meanWidth": 35.83,
+            "yMin": 128.89,
+            "yMax": 716.1
+          },
+          {
+            "x": 178.27,
+            "items": 11,
+            "meanWidth": 67.36,
+            "yMin": 152.8,
+            "yMax": 625.76
+          },
+          {
+            "x": 236.53,
+            "items": 30,
+            "meanWidth": 20.59,
+            "yMin": 140.84,
+            "yMax": 715.98
+          },
+          {
+            "x": 308.02,
+            "items": 45,
+            "meanWidth": 150.62,
+            "yMin": 51.11,
+            "yMax": 650.32
+          },
+          {
+            "x": 352.87,
+            "items": 11,
+            "meanWidth": 43.88,
+            "yMin": 433.3,
+            "yMax": 625.53
+          },
+          {
+            "x": 411.86,
+            "items": 30,
+            "meanWidth": 22.44,
+            "yMin": 224.56,
+            "yMax": 715.98
+          },
+          {
+            "x": 473.02,
+            "items": 17,
+            "meanWidth": 24.57,
+            "yMin": 140.87,
+            "yMax": 711.85
+          },
+          {
+            "x": 526.54,
+            "items": 1,
+            "meanWidth": 18.57,
+            "yMin": 520.09,
+            "yMax": 520.09
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 8 !== 2 (total clusters 9; sizes 57.3:48, 125.0:25, 178.3:11, 236.5:30, 308.0:45, 352.9:11, 411.9:30, 473.0:17, 526.5:1)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 335.6 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 9,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 10,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 64.19,
+            "items": 96,
+            "meanWidth": 89.03,
+            "yMin": 81,
+            "yMax": 710.04
+          },
+          {
+            "x": 110.67,
+            "items": 16,
+            "meanWidth": 59.77,
+            "yMin": 100.92,
+            "yMax": 674.67
+          },
+          {
+            "x": 172.47,
+            "items": 20,
+            "meanWidth": 57.06,
+            "yMin": 81,
+            "yMax": 684.13
+          },
+          {
+            "x": 220.34,
+            "items": 13,
+            "meanWidth": 29.49,
+            "yMin": 139.77,
+            "yMax": 556.13
+          },
+          {
+            "x": 265.59,
+            "items": 15,
+            "meanWidth": 15.88,
+            "yMin": 51.11,
+            "yMax": 664.21
+          },
+          {
+            "x": 321.67,
+            "items": 77,
+            "meanWidth": 95.28,
+            "yMin": 186.5,
+            "yMax": 710.04
+          },
+          {
+            "x": 377.71,
+            "items": 19,
+            "meanWidth": 53.05,
+            "yMin": 186.5,
+            "yMax": 710.04
+          },
+          {
+            "x": 429.13,
+            "items": 7,
+            "meanWidth": 50.24,
+            "yMin": 186.5,
+            "yMax": 690.11
+          },
+          {
+            "x": 479.69,
+            "items": 20,
+            "meanWidth": 37.59,
+            "yMin": 255.74,
+            "yMax": 700.57
+          },
+          {
+            "x": 535.96,
+            "items": 3,
+            "meanWidth": 8.49,
+            "yMin": 462.47,
+            "yMax": 620.87
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 64.2:96, 110.7:16, 172.5:20, 220.3:13, 265.6:15, 321.7:77, 377.7:19, 429.1:7, 479.7:20, 536.0:3)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 277.0 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 10,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 10,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 52.37,
+            "items": 56,
+            "meanWidth": 180.57,
+            "yMin": 81,
+            "yMax": 710.04
+          },
+          {
+            "x": 101.31,
+            "items": 2,
+            "meanWidth": 111.36,
+            "yMin": 289.9,
+            "yMax": 606.74
+          },
+          {
+            "x": 151.98,
+            "items": 5,
+            "meanWidth": 74.44,
+            "yMin": 242.08,
+            "yMax": 289.9
+          },
+          {
+            "x": 211.55,
+            "items": 4,
+            "meanWidth": 74.81,
+            "yMin": 254.04,
+            "yMax": 654.9
+          },
+          {
+            "x": 260.06,
+            "items": 11,
+            "meanWidth": 20.11,
+            "yMin": 51.11,
+            "yMax": 487.19
+          },
+          {
+            "x": 309.92,
+            "items": 51,
+            "meanWidth": 191.92,
+            "yMin": 81,
+            "yMax": 710.04
+          },
+          {
+            "x": 374.95,
+            "items": 9,
+            "meanWidth": 114.76,
+            "yMin": 188.6,
+            "yMax": 710.04
+          },
+          {
+            "x": 426.03,
+            "items": 3,
+            "meanWidth": 12.04,
+            "yMin": 81,
+            "yMax": 81
+          },
+          {
+            "x": 466.22,
+            "items": 6,
+            "meanWidth": 32.76,
+            "yMin": 81,
+            "yMax": 601.4
+          },
+          {
+            "x": 520.97,
+            "items": 8,
+            "meanWidth": 9.24,
+            "yMin": 81,
+            "yMax": 254.39
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 52.4:56, 101.3:2, 152.0:5, 211.6:4, 260.1:11, 309.9:51, 375.0:9, 426.0:3, 466.2:6, 521.0:8)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 270.7 > 35% width → uncertain (not two-column)"
+        ]
+      },
+      {
+        "page": 11,
+        "readingOrder": "uncertain",
+        "index": "skipped",
+        "substantialClusterCount": 10,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 51.09,
+            "items": 38,
+            "meanWidth": 178.12,
+            "yMin": 81,
+            "yMax": 576.52
+          },
+          {
+            "x": 98.11,
+            "items": 7,
+            "meanWidth": 46.99,
+            "yMin": 247.67,
+            "yMax": 576.52
+          },
+          {
+            "x": 143.24,
+            "items": 19,
+            "meanWidth": 64.28,
+            "yMin": 325.02,
+            "yMax": 711.55
+          },
+          {
+            "x": 204.43,
+            "items": 24,
+            "meanWidth": 12.24,
+            "yMin": 459.7,
+            "yMax": 576.52
+          },
+          {
+            "x": 248.4,
+            "items": 19,
+            "meanWidth": 29.32,
+            "yMin": 175.93,
+            "yMax": 576.52
+          },
+          {
+            "x": 309.89,
+            "items": 78,
+            "meanWidth": 65.23,
+            "yMin": 51.11,
+            "yMax": 711.55
+          },
+          {
+            "x": 382.06,
+            "items": 41,
+            "meanWidth": 18,
+            "yMin": 203.13,
+            "yMax": 711.55
+          },
+          {
+            "x": 432.1,
+            "items": 18,
+            "meanWidth": 17.41,
+            "yMin": 459.7,
+            "yMax": 687.74
+          },
+          {
+            "x": 487.72,
+            "items": 42,
+            "meanWidth": 17.18,
+            "yMin": 179.22,
+            "yMax": 576.52
+          },
+          {
+            "x": 532.44,
+            "items": 4,
+            "meanWidth": 6.38,
+            "yMin": 88.97,
+            "yMax": 576.52
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "dense-grid detector fired first",
+          "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 51.1:38, 98.1:7, 143.2:19, 204.4:24, 248.4:19, 309.9:78, 382.1:41, 432.1:18, 487.7:42, 532.4:4)"
+        ]
+      },
+      {
+        "page": 12,
+        "readingOrder": "uncertain",
+        "index": "isolated-lines",
+        "substantialClusterCount": 10,
+        "clusterCount": 10,
+        "clusters": [
+          {
+            "x": 54.65,
+            "items": 57,
+            "meanWidth": 144.18,
+            "yMin": 81,
+            "yMax": 712.27
+          },
+          {
+            "x": 100.48,
+            "items": 11,
+            "meanWidth": 59.4,
+            "yMin": 261.97,
+            "yMax": 712.27
+          },
+          {
+            "x": 141.16,
+            "items": 19,
+            "meanWidth": 45.8,
+            "yMin": 177.46,
+            "yMax": 712.27
+          },
+          {
+            "x": 179.69,
+            "items": 11,
+            "meanWidth": 54.45,
+            "yMin": 238.06,
+            "yMax": 712.27
+          },
+          {
+            "x": 239.9,
+            "items": 15,
+            "meanWidth": 25.68,
+            "yMin": 104.91,
+            "yMax": 712.27
+          },
+          {
+            "x": 309.64,
+            "items": 53,
+            "meanWidth": 182.86,
+            "yMin": 51.11,
+            "yMax": 688.13
+          },
+          {
+            "x": 350.62,
+            "items": 3,
+            "meanWidth": 143.68,
+            "yMin": 278.49,
+            "yMax": 705.9
+          },
+          {
+            "x": 412.53,
+            "items": 6,
+            "meanWidth": 71.09,
+            "yMin": 111.12,
+            "yMax": 254.58
+          },
+          {
+            "x": 459.88,
+            "items": 7,
+            "meanWidth": 28.65,
+            "yMin": 493.68,
+            "yMax": 711.55
+          },
+          {
+            "x": 507.03,
+            "items": 7,
+            "meanWidth": 18.72,
+            "yMin": 338.27,
+            "yMax": 700.04
+          }
+        ],
+        "twoDominantProse": true,
+        "whyNotTwoColumn": [
+          "substantial left-edge clusters 10 !== 2 (total clusters 10; sizes 54.6:57, 100.5:11, 141.2:19, 179.7:11, 239.9:15, 309.6:53, 350.6:3, 412.5:6, 459.9:7, 507.0:7)",
+          "fallback: left/right of mid both have ≥2 lines and start-x spread 270.7 > 35% width → uncertain (not two-column)"
+        ]
+      }
+    ]
+  }
+]

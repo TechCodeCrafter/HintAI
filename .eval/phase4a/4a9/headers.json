@@ -1,0 +1,97 @@
+[
+  {
+    "file": "attention.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "bert.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "bitcoin.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "detected": 1,
+    "samples": [
+      {
+        "text": "TLP:CLEAR",
+        "band": "header",
+        "pages": 31
+      }
+    ],
+    "nearMiss": []
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "lora.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "detected": 1,
+    "samples": [
+      {
+        "text": "NIST SP 800-207 ZERO TRUST ARCHITECTURE",
+        "band": "header",
+        "pages": 56
+      }
+    ],
+    "nearMiss": []
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "detected": 2,
+    "samples": [
+      {
+        "text": "NIST SP 800-63B DIGITAL IDENTITY GUIDELINES:",
+        "band": "header",
+        "pages": 76
+      },
+      {
+        "text": "AUTHENTICATION & LIFECYCLE MANAGEMENT",
+        "band": "header",
+        "pages": 76
+      }
+    ],
+    "nearMiss": []
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "resnet.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "detected": 0,
+    "samples": [],
+    "nearMiss": []
+  }
+]

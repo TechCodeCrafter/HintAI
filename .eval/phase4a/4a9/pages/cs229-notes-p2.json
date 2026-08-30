@@ -1,0 +1,2347 @@
+{
+  "file": "cs229-notes.pdf",
+  "page": 2,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "skipped",
+    "earliestSkip": "dense-grid",
+    "whyNotTwoColumn": [
+      "dense-grid detector fired first",
+      "substantial left-edge clusters 8 !== 2 (total clusters 8; sizes 120.9:28, 176.3:3, 229.2:16, 288.5:10, 326.4:8, 377.8:18, 454.2:22, 492.0:6)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 8,
+    "clusters": [
+      {
+        "x": 120.91,
+        "items": 28,
+        "meanWidth": 170.56,
+        "yMin": 201.56,
+        "yMax": 691.11
+      },
+      {
+        "x": 176.26,
+        "items": 3,
+        "meanWidth": 123.54,
+        "yMin": 230.45,
+        "yMax": 452
+      },
+      {
+        "x": 229.21,
+        "items": 16,
+        "meanWidth": 24.97,
+        "yMin": 201.56,
+        "yMax": 596.46
+      },
+      {
+        "x": 288.54,
+        "items": 10,
+        "meanWidth": 90.69,
+        "yMin": 303.09,
+        "yMax": 596.46
+      },
+      {
+        "x": 326.39,
+        "items": 8,
+        "meanWidth": 45.94,
+        "yMin": 201.56,
+        "yMax": 582.02
+      },
+      {
+        "x": 377.84,
+        "items": 18,
+        "meanWidth": 31.2,
+        "yMin": 244.9,
+        "yMax": 629.69
+      },
+      {
+        "x": 454.16,
+        "items": 22,
+        "meanWidth": 11.28,
+        "yMin": 244.9,
+        "yMax": 610.91
+      },
+      {
+        "x": 492,
+        "items": 6,
+        "meanWidth": 5.4,
+        "yMin": 524.23,
+        "yMax": 691.11
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 120.91,
+      "items": 28,
+      "meanWidth": 170.56,
+      "yMin": 201.56,
+      "yMax": 691.11
+    },
+    {
+      "x": 176.26,
+      "items": 3,
+      "meanWidth": 123.54,
+      "yMin": 230.45,
+      "yMax": 452
+    },
+    {
+      "x": 229.21,
+      "items": 16,
+      "meanWidth": 24.97,
+      "yMin": 201.56,
+      "yMax": 596.46
+    },
+    {
+      "x": 288.54,
+      "items": 10,
+      "meanWidth": 90.69,
+      "yMin": 303.09,
+      "yMax": 596.46
+    },
+    {
+      "x": 326.39,
+      "items": 8,
+      "meanWidth": 45.94,
+      "yMin": 201.56,
+      "yMax": 582.02
+    },
+    {
+      "x": 377.84,
+      "items": 18,
+      "meanWidth": 31.2,
+      "yMin": 244.9,
+      "yMax": 629.69
+    },
+    {
+      "x": 454.16,
+      "items": 22,
+      "meanWidth": 11.28,
+      "yMin": 244.9,
+      "yMax": 610.91
+    },
+    {
+      "x": 492,
+      "items": 6,
+      "meanWidth": 5.4,
+      "yMin": 524.23,
+      "yMax": 691.11
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 30,
+    "clusters": [
+      {
+        "x": 114.99,
+        "items": 17,
+        "share": 0.567
+      },
+      {
+        "x": 304.75,
+        "items": 7,
+        "share": 0.233
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 299.79,
+    "topShare": 0.8
+  },
+  "ySpanOverlap": 299.79,
+  "gutterCandidates": [
+    {
+      "between": [
+        120.91,
+        176.26
+      ],
+      "gap": 55.349999999999994
+    },
+    {
+      "between": [
+        176.26,
+        229.21
+      ],
+      "gap": 52.95000000000002
+    },
+    {
+      "between": [
+        229.21,
+        288.54
+      ],
+      "gap": 59.33000000000001
+    },
+    {
+      "between": [
+        288.54,
+        326.39
+      ],
+      "gap": 37.849999999999966
+    },
+    {
+      "between": [
+        326.39,
+        377.84
+      ],
+      "gap": 51.44999999999999
+    },
+    {
+      "between": [
+        377.84,
+        454.16
+      ],
+      "gap": 76.32000000000005
+    },
+    {
+      "between": [
+        454.16,
+        492
+      ],
+      "gap": 37.839999999999975
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "CS229 Fall 2018",
+      "x": 110.85,
+      "y": 691.11,
+      "width": 82.75,
+      "height": 11.96,
+      "right": 193.61,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 193.61,
+      "y": 691.11,
+      "width": 299.94,
+      "height": 0,
+      "right": 493.54,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "2",
+      "x": 493.54,
+      "y": 691.11,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "Given data like this, how can we learn to predict the prices of other houses",
+      "x": 128.41,
+      "y": 654.25,
+      "width": 370.98,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "in Portland, as a function of the size of their living areas?",
+      "x": 110.85,
+      "y": 639.8,
+      "width": 296.25,
+      "height": 11.96,
+      "right": 407.11,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "To establish notation for future use, we’ll use",
+      "x": 128.41,
+      "y": 625.35,
+      "width": 233.89,
+      "height": 11.96,
+      "right": 362.3,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": " ",
+      "x": 362.3,
+      "y": 625.35,
+      "width": 4.2,
+      "height": 0,
+      "right": 366.5,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "x",
+      "x": 366.5,
+      "y": 625.35,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 373.15,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "(",
+      "x": 373.15,
+      "y": 629.69,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 376.45,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "i",
+      "x": 376.45,
+      "y": 629.69,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 379.33,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": ")",
+      "x": 379.33,
+      "y": 629.69,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 382.62,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": " ",
+      "x": 382.62,
+      "y": 629.69,
+      "width": 4.69,
+      "height": 0,
+      "right": 387.31,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "to denote the “input”",
+      "x": 387.31,
+      "y": 625.35,
+      "width": 112.08,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "variables (living area in this example), also called input",
+      "x": 110.85,
+      "y": 610.91,
+      "width": 290.09,
+      "height": 11.96,
+      "right": 400.94,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": " ",
+      "x": 400.94,
+      "y": 610.91,
+      "width": 4.55,
+      "height": 0,
+      "right": 405.49,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "features",
+      "x": 405.49,
+      "y": 610.91,
+      "width": 46.42,
+      "height": 11.96,
+      "right": 451.91,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": ", and",
+      "x": 451.91,
+      "y": 610.91,
+      "width": 26.82,
+      "height": 11.96,
+      "right": 478.74,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": " ",
+      "x": 478.74,
+      "y": 610.91,
+      "width": 4.56,
+      "height": 0,
+      "right": 483.29,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "y",
+      "x": 483.29,
+      "y": 610.91,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 489,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "(",
+      "x": 489.43,
+      "y": 615.25,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 492.72,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "i",
+      "x": 492.72,
+      "y": 615.25,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 495.61,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": ")",
+      "x": 495.61,
+      "y": 615.25,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 498.9,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "",
+      "x": 110.85,
+      "y": 596.46,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "to denote the “output” or",
+      "x": 110.85,
+      "y": 596.46,
+      "width": 139.95,
+      "height": 11.96,
+      "right": 250.8,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": " ",
+      "x": 250.8,
+      "y": 596.46,
+      "width": 5.72,
+      "height": 0,
+      "right": 256.53,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "target",
+      "x": 256.53,
+      "y": 596.46,
+      "width": 35.35,
+      "height": 11.96,
+      "right": 291.88,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": " ",
+      "x": 291.88,
+      "y": 596.46,
+      "width": 5.72,
+      "height": 0,
+      "right": 297.6,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "variable that we are trying to predict",
+      "x": 297.6,
+      "y": 596.46,
+      "width": 201.8,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "(price).",
+      "x": 110.85,
+      "y": 582.02,
+      "width": 37.07,
+      "height": 11.96,
+      "right": 147.92,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": " ",
+      "x": 147.92,
+      "y": 582.02,
+      "width": 9.11,
+      "height": 0,
+      "right": 157.03,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": "A pair (",
+      "x": 157.03,
+      "y": 582.02,
+      "width": 43.89,
+      "height": 11.96,
+      "right": 200.92,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "x",
+      "x": 200.93,
+      "y": 582.02,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 207.58,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "(",
+      "x": 207.58,
+      "y": 586.36,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 210.87,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "i",
+      "x": 210.87,
+      "y": 586.36,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 213.75,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": ")",
+      "x": 213.75,
+      "y": 586.36,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 217.05,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": ", y",
+      "x": 217.55,
+      "y": 582.02,
+      "width": 10.96,
+      "height": 11.96,
+      "right": 228.5,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": "(",
+      "x": 228.93,
+      "y": 586.36,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 232.22,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": "i",
+      "x": 232.22,
+      "y": 586.36,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 235.1,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": ")",
+      "x": 235.1,
+      "y": 586.36,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 238.4,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": ") is called a",
+      "x": 238.89,
+      "y": 582.02,
+      "width": 63.15,
+      "height": 11.96,
+      "right": 302.05,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": " ",
+      "x": 302.05,
+      "y": 582.02,
+      "width": 5.2,
+      "height": 0,
+      "right": 307.25,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": "training example",
+      "x": 307.25,
+      "y": 582.02,
+      "width": 100.71,
+      "height": 11.96,
+      "right": 407.96,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": ", and the dataset",
+      "x": 407.96,
+      "y": 582.02,
+      "width": 91.44,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": "that we’ll be using to learn—a list of",
+      "x": 110.85,
+      "y": 567.57,
+      "width": 197.48,
+      "height": 11.96,
+      "right": 308.33,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": " ",
+      "x": 308.33,
+      "y": 567.57,
+      "width": 5.11,
+      "height": 0,
+      "right": 313.44,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "n",
+      "x": 313.44,
+      "y": 567.57,
+      "width": 6.99,
+      "height": 11.96,
+      "right": 320.43,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": " ",
+      "x": 320.43,
+      "y": 567.57,
+      "width": 5.11,
+      "height": 0,
+      "right": 325.54,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": "training examples",
+      "x": 325.54,
+      "y": 567.57,
+      "width": 91.99,
+      "height": 11.96,
+      "right": 417.53,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": " ",
+      "x": 417.53,
+      "y": 567.57,
+      "width": 5.1,
+      "height": 0,
+      "right": 422.63,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": "{",
+      "x": 422.63,
+      "y": 567.57,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 428.61,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "(",
+      "x": 428.61,
+      "y": 567.57,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 433.16,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "x",
+      "x": 433.16,
+      "y": 567.57,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 439.81,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "(",
+      "x": 439.81,
+      "y": 571.91,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 443.11,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "i",
+      "x": 443.11,
+      "y": 571.91,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 445.99,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": ")",
+      "x": 445.99,
+      "y": 571.91,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 449.29,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": ", y",
+      "x": 449.78,
+      "y": 567.57,
+      "width": 10.96,
+      "height": 11.96,
+      "right": 460.74,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "(",
+      "x": 461.16,
+      "y": 571.91,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 464.46,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "i",
+      "x": 464.46,
+      "y": 571.91,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 467.34,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": ")",
+      "x": 467.34,
+      "y": 571.91,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 470.63,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": ");",
+      "x": 471.13,
+      "y": 567.57,
+      "width": 7.8,
+      "height": 11.96,
+      "right": 478.94,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": " ",
+      "x": 478.94,
+      "y": 567.57,
+      "width": 1.99,
+      "height": 0,
+      "right": 480.93,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "i",
+      "x": 480.93,
+      "y": 567.57,
+      "width": 3.99,
+      "height": 11.96,
+      "right": 484.92,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": " ",
+      "x": 484.92,
+      "y": 567.57,
+      "width": 5.37,
+      "height": 0,
+      "right": 490.29,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": "=",
+      "x": 490.29,
+      "y": 567.57,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "1",
+      "x": 110.85,
+      "y": 553.13,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 116.71,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": ", . . . , n",
+      "x": 116.71,
+      "y": 553.13,
+      "width": 33.21,
+      "height": 11.96,
+      "right": 149.91,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "}",
+      "x": 149.91,
+      "y": 553.13,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 155.89,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "—is called a",
+      "x": 155.89,
+      "y": 553.13,
+      "width": 63.77,
+      "height": 11.96,
+      "right": 219.66,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": " ",
+      "x": 219.66,
+      "y": 553.13,
+      "width": 4.54,
+      "height": 0,
+      "right": 224.2,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "training set",
+      "x": 224.2,
+      "y": 553.13,
+      "width": 68.29,
+      "height": 11.96,
+      "right": 292.49,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": ". Note that the superscript “(",
+      "x": 292.49,
+      "y": 553.13,
+      "width": 157.42,
+      "height": 11.96,
+      "right": 449.91,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "i",
+      "x": 449.91,
+      "y": 553.13,
+      "width": 3.99,
+      "height": 11.96,
+      "right": 453.9,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": ")” in the",
+      "x": 453.9,
+      "y": 553.13,
+      "width": 45.49,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "notation is simply an index into the training set, and has nothing to do with",
+      "x": 110.85,
+      "y": 538.68,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "exponentiation. We will also use",
+      "x": 110.85,
+      "y": 524.23,
+      "width": 166.53,
+      "height": 11.96,
+      "right": 277.39,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": " ",
+      "x": 277.39,
+      "y": 524.23,
+      "width": 3.94,
+      "height": 0,
+      "right": 281.33,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": "X",
+      "x": 281.33,
+      "y": 524.23,
+      "width": 8.53,
+      "height": 11.96,
+      "right": 289.86,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": " ",
+      "x": 289.86,
+      "y": 524.23,
+      "width": 5.69,
+      "height": 0,
+      "right": 295.55,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "denote the space of input values, and",
+      "x": 295.55,
+      "y": 524.23,
+      "width": 190.94,
+      "height": 11.96,
+      "right": 486.49,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": " ",
+      "x": 486.49,
+      "y": 524.23,
+      "width": 3.94,
+      "height": 0,
+      "right": 490.42,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": "Y",
+      "x": 490.42,
+      "y": 524.23,
+      "width": 7.99,
+      "height": 11.96,
+      "right": 498.41,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "",
+      "x": 110.85,
+      "y": 509.79,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "the space of output values. In this example,",
+      "x": 110.85,
+      "y": 509.79,
+      "width": 225.21,
+      "height": 11.96,
+      "right": 336.07,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": " ",
+      "x": 336.07,
+      "y": 509.79,
+      "width": 3.9,
+      "height": 0,
+      "right": 339.96,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": "X",
+      "x": 339.96,
+      "y": 509.79,
+      "width": 8.53,
+      "height": 11.96,
+      "right": 348.49,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": " ",
+      "x": 348.49,
+      "y": 509.79,
+      "width": 5.07,
+      "height": 0,
+      "right": 353.56,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "=",
+      "x": 353.56,
+      "y": 509.79,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 362.67,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": " ",
+      "x": 362.67,
+      "y": 509.79,
+      "width": 3.32,
+      "height": 0,
+      "right": 365.99,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "Y",
+      "x": 365.99,
+      "y": 509.79,
+      "width": 7.99,
+      "height": 11.96,
+      "right": 373.98,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": " ",
+      "x": 373.98,
+      "y": 509.79,
+      "width": 4.3,
+      "height": 0,
+      "right": 378.28,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "=",
+      "x": 378.28,
+      "y": 509.79,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 387.39,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": " ",
+      "x": 387.39,
+      "y": 509.79,
+      "width": 3.32,
+      "height": 0,
+      "right": 390.71,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": "R",
+      "x": 390.71,
+      "y": 509.79,
+      "width": 8.63,
+      "height": 11.96,
+      "right": 399.34,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": ".",
+      "x": 399.34,
+      "y": 509.79,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 402.59,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": "To describe the supervised learning problem slightly more formally, our",
+      "x": 128.41,
+      "y": 495.34,
+      "width": 370.98,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": "goal is, given a training set, to learn a function",
+      "x": 110.85,
+      "y": 480.9,
+      "width": 241.68,
+      "height": 11.96,
+      "right": 352.54,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": " ",
+      "x": 352.54,
+      "y": 480.9,
+      "width": 3.97,
+      "height": 0,
+      "right": 356.5,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": "h",
+      "x": 356.5,
+      "y": 480.9,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 363.24,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": " ",
+      "x": 363.24,
+      "y": 480.9,
+      "width": 3.43,
+      "height": 0,
+      "right": 366.67,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 99,
+      "str": ":",
+      "x": 366.67,
+      "y": 480.9,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 369.92,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 100,
+      "str": " ",
+      "x": 369.92,
+      "y": 480.9,
+      "width": 3.43,
+      "height": 0,
+      "right": 373.35,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 101,
+      "str": "X 7 → Y",
+      "x": 373.35,
+      "y": 480.9,
+      "width": 42.26,
+      "height": 11.96,
+      "right": 415.61,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 102,
+      "str": " ",
+      "x": 410.43,
+      "y": 480.9,
+      "width": 4.95,
+      "height": 0,
+      "right": 415.38,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 103,
+      "str": "so that",
+      "x": 415.38,
+      "y": 480.9,
+      "width": 35.9,
+      "height": 11.96,
+      "right": 451.29,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 104,
+      "str": " ",
+      "x": 451.29,
+      "y": 480.9,
+      "width": 3.96,
+      "height": 0,
+      "right": 455.25,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 105,
+      "str": "h",
+      "x": 455.25,
+      "y": 480.9,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 461.99,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 106,
+      "str": "(",
+      "x": 461.99,
+      "y": 480.9,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 466.54,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 107,
+      "str": "x",
+      "x": 466.54,
+      "y": 480.9,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 473.19,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 108,
+      "str": ") is a",
+      "x": 473.19,
+      "y": 480.9,
+      "width": 26.2,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 109,
+      "str": "“good” predictor for the corresponding value of",
+      "x": 110.85,
+      "y": 466.45,
+      "width": 238.39,
+      "height": 11.96,
+      "right": 349.25,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 110,
+      "str": " ",
+      "x": 349.25,
+      "y": 466.45,
+      "width": 3.08,
+      "height": 0,
+      "right": 352.33,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 111,
+      "str": "y",
+      "x": 352.33,
+      "y": 466.45,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 358.03,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 112,
+      "str": ". For historical reasons, this",
+      "x": 358.46,
+      "y": 466.45,
+      "width": 140.93,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 113,
+      "str": "function",
+      "x": 110.85,
+      "y": 452,
+      "width": 41.95,
+      "height": 11.96,
+      "right": 152.8,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 114,
+      "str": " ",
+      "x": 152.8,
+      "y": 452,
+      "width": 4.19,
+      "height": 0,
+      "right": 156.99,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 115,
+      "str": "h",
+      "x": 156.99,
+      "y": 452,
+      "width": 6.74,
+      "height": 11.96,
+      "right": 163.73,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 116,
+      "str": " ",
+      "x": 163.73,
+      "y": 452,
+      "width": 4.19,
+      "height": 0,
+      "right": 167.92,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 117,
+      "str": "is called a",
+      "x": 167.92,
+      "y": 452,
+      "width": 51.37,
+      "height": 11.96,
+      "right": 219.29,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 118,
+      "str": " ",
+      "x": 219.29,
+      "y": 452,
+      "width": 4.2,
+      "height": 0,
+      "right": 223.49,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 119,
+      "str": "hypothesis",
+      "x": 223.49,
+      "y": 452,
+      "width": 61.95,
+      "height": 11.96,
+      "right": 285.45,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 120,
+      "str": ". Seen pictorially, the process is therefore",
+      "x": 285.44,
+      "y": 452,
+      "width": 213.96,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 121,
+      "str": "like this:",
+      "x": 110.85,
+      "y": 437.56,
+      "width": 43.64,
+      "height": 11.96,
+      "right": 154.49,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 122,
+      "str": "Training",
+      "x": 282.31,
+      "y": 403.6,
+      "width": 36.83,
+      "height": 10.69,
+      "right": 319.14,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 123,
+      "str": "set",
+      "x": 293.01,
+      "y": 391.2,
+      "width": 11.88,
+      "height": 10.69,
+      "right": 304.89,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 124,
+      "str": "",
+      "x": 234.73,
+      "y": 288.55,
+      "width": 0,
+      "height": 0,
+      "right": 238.73,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 125,
+      "str": "house.)",
+      "x": 234.73,
+      "y": 288.55,
+      "width": 18.71,
+      "height": 6.42,
+      "right": 253.44,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 126,
+      "str": "(living area of",
+      "x": 233.13,
+      "y": 296.67,
+      "width": 36.35,
+      "height": 6.42,
+      "right": 269.47,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 127,
+      "str": "",
+      "x": 280.18,
+      "y": 351.85,
+      "width": 0,
+      "height": 0,
+      "right": 284.18,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 128,
+      "str": "Learning",
+      "x": 280.18,
+      "y": 351.85,
+      "width": 38.6,
+      "height": 10.69,
+      "right": 318.78,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 129,
+      "str": "algorithm",
+      "x": 280.18,
+      "y": 339.45,
+      "width": 41.59,
+      "height": 10.69,
+      "right": 321.76,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 130,
+      "str": "h",
+      "x": 297.28,
+      "y": 303.09,
+      "width": 5.35,
+      "height": 10.69,
+      "right": 302.63,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 131,
+      "str": " ",
+      "x": 302.63,
+      "y": 303.09,
+      "width": 56.25,
+      "height": 0,
+      "right": 358.88,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 132,
+      "str": "predicted y",
+      "x": 329.36,
+      "y": 305.23,
+      "width": 47.81,
+      "height": 10.69,
+      "right": 377.17,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 133,
+      "str": "x",
+      "x": 250.24,
+      "y": 305.23,
+      "width": 5.35,
+      "height": 10.69,
+      "right": 255.58,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 134,
+      "str": " ",
+      "x": 255.58,
+      "y": 305.23,
+      "width": 155.25,
+      "height": 0,
+      "right": 410.83,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 135,
+      "str": "(predicted price)",
+      "x": 329.36,
+      "y": 296.67,
+      "width": 42.58,
+      "height": 6.42,
+      "right": 371.94,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 136,
+      "str": "of house)",
+      "x": 329.36,
+      "y": 288.55,
+      "width": 24.05,
+      "height": 6.42,
+      "right": 353.42,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 137,
+      "str": "",
+      "x": 128.41,
+      "y": 259.34,
+      "width": 0,
+      "height": 0,
+      "right": 132.41,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 138,
+      "str": "When the target variable that we’re trying to predict is continuous, such",
+      "x": 128.41,
+      "y": 259.34,
+      "width": 370.98,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 139,
+      "str": "as in our housing example, we call the learning problem a",
+      "x": 110.85,
+      "y": 244.9,
+      "width": 295.09,
+      "height": 11.96,
+      "right": 405.94,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 140,
+      "str": " ",
+      "x": 405.94,
+      "y": 244.9,
+      "width": 3.81,
+      "height": 0,
+      "right": 409.75,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 141,
+      "str": "regression",
+      "x": 409.75,
+      "y": 244.9,
+      "width": 58.53,
+      "height": 11.96,
+      "right": 468.28,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 142,
+      "str": " ",
+      "x": 468.28,
+      "y": 244.9,
+      "width": 3.8,
+      "height": 0,
+      "right": 472.08,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 143,
+      "str": "prob-",
+      "x": 472.08,
+      "y": 244.9,
+      "width": 27.32,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 144,
+      "str": "lem.",
+      "x": 110.85,
+      "y": 230.45,
+      "width": 21.46,
+      "height": 11.96,
+      "right": 132.32,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 145,
+      "str": " ",
+      "x": 132.32,
+      "y": 230.45,
+      "width": 7.7,
+      "height": 0,
+      "right": 140.02,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 146,
+      "str": "When",
+      "x": 140.02,
+      "y": 230.45,
+      "width": 30.24,
+      "height": 11.96,
+      "right": 170.25,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 147,
+      "str": " ",
+      "x": 170.25,
+      "y": 230.45,
+      "width": 4.74,
+      "height": 0,
+      "right": 174.99,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 148,
+      "str": "y",
+      "x": 174.99,
+      "y": 230.45,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 180.7,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 149,
+      "str": " ",
+      "x": 180.7,
+      "y": 230.45,
+      "width": 5.17,
+      "height": 0,
+      "right": 185.87,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 150,
+      "str": "can take on only a small number of discrete values (such as",
+      "x": 185.87,
+      "y": 230.45,
+      "width": 313.53,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 151,
+      "str": "if, given the living area, we wanted to predict if a dwelling is a house or an",
+      "x": 110.85,
+      "y": 216,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 152,
+      "str": "apartment, say), we call it a",
+      "x": 110.85,
+      "y": 201.56,
+      "width": 144.44,
+      "height": 11.96,
+      "right": 255.29,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 153,
+      "str": " ",
+      "x": 255.29,
+      "y": 201.56,
+      "width": 3.9,
+      "height": 0,
+      "right": 259.19,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 154,
+      "str": "classification",
+      "x": 259.19,
+      "y": 201.56,
+      "width": 73.75,
+      "height": 11.96,
+      "right": 332.95,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 155,
+      "str": " ",
+      "x": 332.95,
+      "y": 201.56,
+      "width": 3.9,
+      "height": 0,
+      "right": 336.85,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 156,
+      "str": "problem.",
+      "x": 336.85,
+      "y": 201.56,
+      "width": 44.88,
+      "height": 11.96,
+      "right": 381.72,
+      "visualLineId": 28,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 691.11,
+      "height": 12,
+      "text": "CS229 Fall 2018 2",
+      "itemIndexes": [
+        0,
+        1,
+        2
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 1,
+      "y": 654.25,
+      "height": 11.96,
+      "text": "Given data like this, how can we learn to predict the prices of other houses",
+      "itemIndexes": [
+        3
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 2,
+      "y": 639.8,
+      "height": 11.96,
+      "text": "in Portland, as a function of the size of their living areas?",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 3,
+      "y": 627.52,
+      "height": 12,
+      "text": "To establish notation for future use, we’ll use x ( i ) to denote the “input”",
+      "itemIndexes": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 4,
+      "y": 612.36,
+      "height": 12,
+      "text": "variables (living area in this example), also called input features , and y ( i )",
+      "itemIndexes": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 5,
+      "y": 596.46,
+      "height": 12,
+      "text": "to denote the “output” or target variable that we are trying to predict",
+      "itemIndexes": [
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 6,
+      "y": 583.75,
+      "height": 12,
+      "text": "(price). A pair ( x ( i ) , y ( i ) ) is called a training example , and the dataset",
+      "itemIndexes": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 7,
+      "y": 568.81,
+      "height": 12,
+      "text": "that we’ll be using to learn—a list of n training examples { ( x ( i ) , y ( i ) ); i =",
+      "itemIndexes": [
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 8,
+      "y": 553.13,
+      "height": 12,
+      "text": "1 , . . . , n } —is called a training set . Note that the superscript “( i )” in the",
+      "itemIndexes": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 9,
+      "y": 538.68,
+      "height": 11.96,
+      "text": "notation is simply an index into the training set, and has nothing to do with",
+      "itemIndexes": [
+        73
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 10,
+      "y": 524.23,
+      "height": 12,
+      "text": "exponentiation. We will also use X denote the space of input values, and Y",
+      "itemIndexes": [
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 11,
+      "y": 509.79,
+      "height": 12,
+      "text": "the space of output values. In this example, X = Y = R .",
+      "itemIndexes": [
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 12,
+      "y": 495.34,
+      "height": 11.96,
+      "text": "To describe the supervised learning problem slightly more formally, our",
+      "itemIndexes": [
+        94
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 13,
+      "y": 480.9,
+      "height": 12,
+      "text": "goal is, given a training set, to learn a function h : X 7 → Y so that h ( x ) is a",
+      "itemIndexes": [
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 14,
+      "y": 466.45,
+      "height": 12,
+      "text": "“good” predictor for the corresponding value of y . For historical reasons, this",
+      "itemIndexes": [
+        109,
+        110,
+        111,
+        112
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 15,
+      "y": 452,
+      "height": 12,
+      "text": "function h is called a hypothesis . Seen pictorially, the process is therefore",
+      "itemIndexes": [
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 16,
+      "y": 437.56,
+      "height": 11.96,
+      "text": "like this:",
+      "itemIndexes": [
+        121
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 17,
+      "y": 403.6,
+      "height": 10.69,
+      "text": "Training",
+      "itemIndexes": [
+        122
+      ],
+      "firstX": 282.31
+    },
+    {
+      "lineId": 18,
+      "y": 391.2,
+      "height": 10.69,
+      "text": "set",
+      "itemIndexes": [
+        123
+      ],
+      "firstX": 293.01
+    },
+    {
+      "lineId": 19,
+      "y": 351.85,
+      "height": 10.69,
+      "text": "Learning",
+      "itemIndexes": [
+        128
+      ],
+      "firstX": 280.18
+    },
+    {
+      "lineId": 20,
+      "y": 339.45,
+      "height": 10.69,
+      "text": "algorithm",
+      "itemIndexes": [
+        129
+      ],
+      "firstX": 280.18
+    },
+    {
+      "lineId": 21,
+      "y": 304.37,
+      "height": 12,
+      "text": "x h predicted y",
+      "itemIndexes": [
+        133,
+        134,
+        130,
+        131,
+        132
+      ],
+      "firstX": 250.24
+    },
+    {
+      "lineId": 22,
+      "y": 296.67,
+      "height": 6.42,
+      "text": "(living area of (predicted price)",
+      "itemIndexes": [
+        126,
+        135
+      ],
+      "firstX": 233.13
+    },
+    {
+      "lineId": 23,
+      "y": 288.55,
+      "height": 6.42,
+      "text": "house.) of house)",
+      "itemIndexes": [
+        125,
+        136
+      ],
+      "firstX": 234.73
+    },
+    {
+      "lineId": 24,
+      "y": 259.34,
+      "height": 11.96,
+      "text": "When the target variable that we’re trying to predict is continuous, such",
+      "itemIndexes": [
+        138
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 25,
+      "y": 244.9,
+      "height": 12,
+      "text": "as in our housing example, we call the learning problem a regression prob-",
+      "itemIndexes": [
+        139,
+        140,
+        141,
+        142,
+        143
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 26,
+      "y": 230.45,
+      "height": 12,
+      "text": "lem. When y can take on only a small number of discrete values (such as",
+      "itemIndexes": [
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 27,
+      "y": 216,
+      "height": 11.96,
+      "text": "if, given the living area, we wanted to predict if a dwelling is a house or an",
+      "itemIndexes": [
+        151
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 28,
+      "y": 201.56,
+      "height": 12,
+      "text": "apartment, say), we call it a classification problem.",
+      "itemIndexes": [
+        152,
+        153,
+        154,
+        155,
+        156
+      ],
+      "firstX": 110.85
+    }
+  ]
+}

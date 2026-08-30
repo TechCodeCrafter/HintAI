@@ -1,0 +1,386 @@
+[
+  {
+    "id": "cs229-hypothesis",
+    "q": "What does he call the function we learn?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-regression",
+    "q": "When is it a regression problem?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-classification",
+    "q": "When do they call it a classification problem?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-cost",
+    "q": "How do they measure how close the hypothesis is?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-lms",
+    "q": "What does LMS stand for?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-batch",
+    "q": "What is batch gradient descent?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-normal",
+    "q": "So what's the closed form for theta again?",
+    "layer": "G-thread-reference",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cs229-followup-gd",
+    "q": "And the other way besides gradient descent?",
+    "layer": "G-thread-reference",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cisa-what",
+    "q": "What is ransomware according to the guide?",
+    "layer": "A-source-reference",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cisa-double",
+    "q": "What do they call encrypting plus threatening to leak data?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cisa-parts",
+    "q": "What are the two primary resources in the guide?",
+    "layer": "A-source-reference",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "cisa-backups",
+    "q": "What kind of backups do they recommend?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "attn-arch",
+    "q": "What architecture do they propose?",
+    "layer": "I-eval-span",
+    "after": "SPOKE-EVAL-SPAN-I",
+    "citedPath": "attention.pdf",
+    "say": "We propose a new simple network architecture, the Transformer,"
+  },
+  {
+    "id": "attn-bleu-de",
+    "q": "What BLEU did they get on English-to-German?",
+    "layer": "I-eval-span",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "attn-encoder-n",
+    "q": "How many identical layers is the encoder?",
+    "layer": "B-subject",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "attn-dmodel",
+    "q": "What dimension do the sub-layers produce?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "attn-why-scale",
+    "q": "Why do they scale the dot products?",
+    "layer": "B-subject",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "attn-dropout",
+    "q": "What dropout rate for the base model?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "bert-stands",
+    "q": "What does BERT stand for?",
+    "layer": "H-parser-damage",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "bert-glue",
+    "q": "What GLUE score did they report?",
+    "layer": "D-answer-type",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "bert-base",
+    "q": "What are the BERT BASE sizes?",
+    "layer": "B-subject",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "bert-nsp",
+    "q": "How is the next sentence task generated?",
+    "layer": "C-predicate-relation",
+    "after": "SPOKE-WRONG",
+    "citedPath": "bert.pdf",
+    "say": "In order This step to train a model that understands sentence relationships, we pre-train for a binarized next sentence prediction task that can be trivially generated from any monolingual corpus."
+  },
+  {
+    "id": "resnet-depth",
+    "q": "How deep are the ImageNet residual nets?",
+    "layer": "D-answer-type",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "resnet-error",
+    "q": "What ImageNet test error did the ensemble get?",
+    "layer": "I-eval-span",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "lora-what",
+    "q": "What does LoRA freeze?",
+    "layer": "C-predicate-relation",
+    "after": "SPOKE-WRONG",
+    "citedPath": "lora.pdf",
+    "say": "Tasks and freeze the MLP modules (so they are not trained in downstream tasks) both for simplicity"
+  },
+  {
+    "id": "lora-reduce",
+    "q": "How much can LoRA cut trainable parameters vs GPT-3 175B?",
+    "layer": "D-answer-type",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "lora-rank",
+    "q": "How small can the rank be?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "btc-header",
+    "q": "How big is a block header with no transactions?",
+    "layer": "B-subject",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "btc-rate",
+    "q": "How often do they suppose blocks are generated?",
+    "layer": "B-subject",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "btc-majority",
+    "q": "When is the network secure?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "btc-steps",
+    "q": "What is the first step to run the network?",
+    "layer": "F-enumeration",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "tm-what",
+    "q": "What compilation technique do they present?",
+    "layer": "I-eval-span",
+    "after": "HIT",
+    "citedPath": "tracemonkey.pdf",
+    "say": "We present an alternative compilation technique for dynamically-typed languages that identifies frequently executed loop traces at run-time and then generates machine code on the fly that is specialized for the actual dynamic types occurring on each path through the loop."
+  },
+  {
+    "id": "tm-name",
+    "q": "What do they call the resulting VM?",
+    "layer": "I-eval-span",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "tm-loops",
+    "q": "Why operate at the granularity of loops?",
+    "layer": "H-parser-damage",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "tm-nested",
+    "q": "How do they solve nested loops?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "tm-base",
+    "q": "Which interpreter did they implement on?",
+    "layer": "C-predicate-relation",
+    "after": "SPOKE-WRONG",
+    "citedPath": "tracemonkey.pdf",
+    "say": "Inline threading (15) copies chunks of interpreter native code which implement the required bytecodes into a native code cache, thus acting as a simple per-method JIT compiler that eliminates the dispatch overhead."
+  },
+  {
+    "id": "nist145-def",
+    "q": "How does NIST define cloud computing?",
+    "layer": "A-source-reference",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "nist145-counts",
+    "q": "How many essential characteristics and service models?",
+    "layer": "I-eval-span",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "nist145-hybrid",
+    "q": "What is a hybrid cloud?",
+    "layer": "I-eval-span",
+    "after": "SPOKE-EVAL-SPAN-I",
+    "citedPath": "nist-800-145.pdf",
+    "say": "Hybrid cloud. The cloud infrastructure is"
+  },
+  {
+    "id": "zta-mfa",
+    "q": "What authentication do they expect for some resources?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "omb-pillars",
+    "q": "What are the five CISA pillars they align to?",
+    "layer": "F-enumeration",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "omb-encrypt",
+    "q": "What traffic must agencies encrypt?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "63b-withdrawn",
+    "q": "What happened to SP 800-63B?",
+    "layer": "A-source-reference",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "63b-aal1",
+    "q": "What does AAL1 provide?",
+    "layer": "I-eval-span",
+    "after": "SPOKE-EVAL-SPAN-I",
+    "citedPath": "nist-800-63b.pdf",
+    "say": "Authenticator Assurance Level 1 : AAL1 provides some assurance that the claimant controls an"
+  },
+  {
+    "id": "63b-password",
+    "q": "What is a memorized secret commonly called?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "63b-complexity",
+    "q": "Should they impose other password complexity rules?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "63b-aal3",
+    "q": "What authenticator can satisfy AAL3 by itself?",
+    "layer": "E-shared-vocabulary",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  },
+  {
+    "id": "63b-pii",
+    "q": "When self-asserted PII is online, what AAL do agencies select?",
+    "layer": "C-predicate-relation",
+    "after": "SILENCE",
+    "citedPath": null,
+    "say": null
+  }
+]

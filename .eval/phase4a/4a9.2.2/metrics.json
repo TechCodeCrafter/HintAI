@@ -1,0 +1,16 @@
+{
+  "questions": 126,
+  "spoken": 15,
+  "wrongIntent": 0.031746031746031744,
+  "wrongIntentCount": "4/126",
+  "unsupported": 0,
+  "unsupportedCount": "0/15",
+  "fabricatedProvenance": 0,
+  "pageCitationAccuracy": 1,
+  "evidenceLocationAccuracy": 1,
+  "answerableHitRate": 0.12359550561797752,
+  "answerableHitCount": "11/89",
+  "falseSilence": 0.8314606741573034,
+  "falseSilenceCount": "74/89",
+  "unanswerableSpoke": 0
+}

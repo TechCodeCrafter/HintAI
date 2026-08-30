@@ -22,7 +22,14 @@ import { retrieve } from "../src/lib/search/retrieve.ts";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const RELEASE = `${ROOT}.eval/phase4a/release/`;
-const OUT = `${ROOT}.eval/phase4a/4a8.1/`;
+const OUT_ARG = process.argv.find((arg) => arg.startsWith("--out="))?.slice(6);
+const OUT = OUT_ARG
+  ? OUT_ARG.startsWith("/")
+    ? OUT_ARG.endsWith("/")
+      ? OUT_ARG
+      : `${OUT_ARG}/`
+    : `${ROOT}${OUT_ARG.endsWith("/") ? OUT_ARG : `${OUT_ARG}/`}`
+  : `${ROOT}.eval/phase4a/4a8.1/`;
 const CORPUS = `${RELEASE}corpus`;
 const EVAL_SPAN_I = new Set([
   "attn-arch",

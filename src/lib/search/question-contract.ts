@@ -41,7 +41,15 @@ export type AnswerExpectation =
   | "contact"
   | "enumeration"
   | "failure"
+  | "naming"
   | "other";
+
+/** Asked action plus a complement that changes the relation when present. */
+export type RequiredRelation = {
+  verb: string;
+  particle?: string;
+  preposition?: string;
+};
 
 export type SourceResolvedBy = "filename" | "title" | "author" | "document-type" | "thread" | "unresolved";
 
@@ -79,6 +87,10 @@ export type QuestionContract = {
   whenPredicative?: string;
   /** "What does X freeze" / "How do they solve" — the asked relation verb. */
   requiredVerb?: string;
+  /** Verb plus a complement ("implement on") when the question supplies one. */
+  requiredRelation?: RequiredRelation;
+  /** "Which interpreter" — type is in the question, not required in the claim. */
+  requestedEntityType?: string;
 };
 
 export type ContractTimings = {
@@ -155,7 +167,11 @@ export function buildQuestionContract(
   const selector = resolveSourceSelector(q, identities, thread);
   const predicate = predicateOf(q, shape);
   const enumeration = enumerationOf(q, predicate);
-  const answerExpectation = expectationOf(shape, predicate, enumeration);
+  const relation = questionRelation(q);
+  const entityType = requestedEntityOf(q, predicate, enumeration);
+  const answerExpectation = entityType
+    ? "naming"
+    : expectationOf(shape, predicate, enumeration);
   const needsThreadSource = threadPointer(q) && threadDocumentIds(thread, identities).length !== 1;
 
   const selectorTokens = new Set((selector?.raw ?? "").toLowerCase().split(/[^a-z0-9]+/).filter((token) => token.length > 2));
@@ -184,6 +200,19 @@ export function buildQuestionContract(
       if (!selectorTokens.has(term) && !FRAMING.has(term)) required.push(term);
     }
   }
+  if (entityType) {
+    const index = required.indexOf(entityType);
+    if (index >= 0) required.splice(index, 1);
+    optional.push(entityType);
+  }
+  if (relation?.verb) {
+    for (let i = required.length - 1; i >= 0; i -= 1) {
+      if (isRelationVerbToken(required[i] ?? "", relation.verb)) {
+        optional.push(required[i] ?? "");
+        required.splice(i, 1);
+      }
+    }
+  }
 
   lastTimings = { ...lastTimings, constructMs: nowMs() - started };
   return {
@@ -196,7 +225,9 @@ export function buildQuestionContract(
     needsThreadSource,
     needsDefinitionCopula: /\bwhat(?:'s| is) (?:a |an |the )?[a-z]/.test(q) && !/\bwhat does\b/.test(q),
     whenPredicative: whenAdjective(q),
-    requiredVerb: questionVerb(q),
+    requiredVerb: relation?.verb ?? questionVerb(q),
+    requiredRelation: relation,
+    requestedEntityType: entityType,
   };
 }
 
@@ -229,21 +260,25 @@ export function contractBlocksAll(contract: QuestionContract): string | null {
   return null;
 }
 
-export function claimFitsContract(claim: string, contract: QuestionContract): boolean {
+export function claimFitsContract(
+  claim: string,
+  contract: QuestionContract,
+  containing?: string,
+): boolean {
   const started = nowMs();
-  const ok = claimFits(claim, contract);
+  const ok = claimFits(claim, contract, containing);
   lastTimings = { ...lastTimings, admitMs: nowMs() - started };
   return ok;
 }
 
-function claimFits(claim: string, contract: QuestionContract): boolean {
+function claimFits(claim: string, contract: QuestionContract, containing?: string): boolean {
   if (contract.shape === "absence") return false;
   if (brokenSpokenEdge(claim)) return false;
   for (const term of contract.subject.requiredTerms) {
     if (!documentMentions(claim, term)) return false;
   }
   if (contract.predicate && !predicateFits(claim, contract.predicate.kind)) return false;
-  if (!expectationFits(claim, contract.answerExpectation, contract.shape)) return false;
+  if (!expectationFits(claim, contract, containing)) return false;
   if (contract.enumeration?.requested && !enumerationFits(claim, contract.enumeration.expectedCount)) return false;
   if (contract.needsDefinitionCopula && !definitionalClaim(claim, contract.subject.requiredTerms)) return false;
   if (contract.whenPredicative === "class-condition") {
@@ -253,7 +288,8 @@ function claimFits(claim: string, contract: QuestionContract): boolean {
   } else if (contract.whenPredicative && !new RegExp(`\\bis\\s+${contract.whenPredicative}\\b`, "i").test(claim)) {
     return false;
   }
-  if (contract.requiredVerb && !verbFitsClaim(claim, contract.requiredVerb)) return false;
+  const relation = contract.requiredRelation ?? (contract.requiredVerb ? { verb: contract.requiredVerb } : undefined);
+  if (relation && !relationFitsClaim(claim, relation, containing)) return false;
   return true;
 }
 
@@ -266,7 +302,7 @@ function definitionalClaim(claim: string, required: string[]): boolean {
 }
 
 const SENTENCE_STARTER =
-  /^(The|This|That|Then|They|Thus|There|These|Those|When|What|With|From|After|Also|Once|Each|Both|Such|Note|Next|First|Last|Most|Some|Many|Only|Just|Over|Like|Even|More|Here|Data|We|In|On|If|As|An|A|To|For|By|Our|Its|No|Not|One|Two|How|Why|Who|Where|Let|Let’s|Lets)\b/;
+  /^(The|This|That|Then|They|Thus|There|These|Those|When|What|With|From|After|Also|Once|Each|Both|Such|Note|Next|First|Last|Most|Some|Many|Only|Just|Over|Like|Even|More|Here|Data|We|In|On|If|As|An|A|To|For|By|Our|Its|No|Not|One|Two|How|Why|Who|Where|Let|Let’s|Lets|And|But|Or|Nor|Yet|So)\b/;
 
 /** Generic smashed-column leftovers. Not a parser repair. */
 function brokenSpokenEdge(claim: string): boolean {
@@ -280,23 +316,81 @@ function brokenSpokenEdge(claim: string): boolean {
   return false;
 }
 
+const RELATION_PREP = new Set(["on", "in", "at", "to", "for", "from", "with", "into", "onto", "upon"]);
+
+const PREP_ALIASES: Record<string, string[]> = {
+  on: ["on", "onto", "upon"],
+  in: ["in", "at", "inside", "within", "into"],
+  at: ["at", "in"],
+  to: ["to", "into"],
+  for: ["for"],
+  from: ["from"],
+  with: ["with"],
+};
+
+const COORD = "and|but|or|nor|yet|so|then";
+
+const LOCAL_SUBJECT =
+  /^(we|they|it|he|she|i|you|the|this|that|these|those|our|their|its|a|an|administrators|operators|authors|researchers|users|system|model|method|controller|service|paper|work|study)\b/i;
+
 function questionVerb(q: string): string | undefined {
+  return questionRelation(q)?.verb;
+}
+
+function questionRelation(q: string): RequiredRelation | undefined {
+  const whichDid = q.match(
+    /\bwhich \w+(?: \w+)? did (?:they|we|you) (\w+)(?:\s+(on|in|at|to|for|from|with))?\s*\??$/,
+  );
+  if (whichDid) {
+    return { verb: whichDid[1] as string, preposition: whichDid[2] };
+  }
   const afterDoes = q.match(/\bwhat does\b(.+)/);
   if (afterDoes) {
     const tokens = (afterDoes[1] ?? "").split(/[^a-z0-9]+/).filter(Boolean);
     const verb = [...tokens].reverse().find((token) => ASK_VERBS.has(token) && token !== "say" && token !== "tell");
-    if (verb) return verb;
+    if (verb) {
+      const afterVerb = (afterDoes[1] ?? "").toLowerCase().split(new RegExp(`\\b${verb}\\b`)).pop() ?? "";
+      const prep = afterVerb.trim().split(/[^a-z]+/).find(Boolean);
+      return { verb, preposition: prep && RELATION_PREP.has(prep) ? prep : undefined };
+    }
   }
-  const whatDoThey = q.match(/\bwhat (?:(?:a|an|the) )?(?:\w+ ){1,3}do they (\w+)/);
-  if (whatDoThey) return whatDoThey[1];
-  const howDo = q.match(/\bhow do (?:they|we|you) (\w+)/);
-  if (howDo) return howDo[1];
-  const whichDid = q.match(/\bwhich \w+(?: \w+)? did (?:they|we|you) (\w+)/);
-  if (whichDid) return whichDid[1];
+  const whatDoThey = q.match(
+    /\bwhat (?:(?:a|an|the) )?(?:\w+ ){1,3}do they (\w+)(?:\s+(on|in|at|to|for|from|with)\b)?/,
+  );
+  if (whatDoThey) return { verb: whatDoThey[1] as string, preposition: whatDoThey[2] };
+  const howDo = q.match(/\bhow do (?:they|we|you) (\w+)(?:\s+(on|in|at|to|for|from|with)\b)?/);
+  if (howDo) return { verb: howDo[1] as string, preposition: howDo[2] };
+  if (/\bwhere\b/.test(q) && /\bstore/.test(q)) {
+    return { verb: "store", preposition: "in" };
+  }
   return undefined;
 }
 
-const ACTION_VERB = /\b(limit|study|freeze|freezes|frozen|adapt|propose|proposed|present|presented|implement|implemented|solve|solved|solving|solution|operate|operates|provide|provides|require|prevent|use|store|define|cover|representing|encode|encodes)\b/i;
+function isRelationVerbToken(term: string, verb: string): boolean {
+  if (term === verb) return true;
+  if (term === `${verb}s` || term === `${verb}ed` || term === `${verb}d`) return true;
+  if (verb === "store" && (term === "stored" || term === "stores")) return true;
+  if (verb === "freeze" && (term === "freezes" || term === "frozen")) return true;
+  if (verb === "implement" && (term === "implemented" || term === "implements")) return true;
+  return false;
+}
+
+function requestedEntityOf(
+  q: string,
+  predicate: { kind: PredicateKind } | undefined,
+  enumeration: { requested: boolean },
+): string | undefined {
+  if (enumeration.requested) return undefined;
+  if (predicate?.kind === "recommendation" || predicate?.kind === "requirement") return undefined;
+  if (/\bwhich of\b/.test(q)) return undefined;
+  const match = q.match(/\bwhich ((?:gpu |sso |database |password )?)([a-z]{3,})\b/);
+  if (!match) return undefined;
+  const noun = match[2] ?? "";
+  if (noun === "isolation" || noun === "levels") return undefined;
+  return noun || undefined;
+}
+
+const ACTION_VERB = /\b(limit|study|freeze|freezes|frozen|adapt|propose|proposed|present|presented|implement|implemented|solve|solved|solving|solution|operate|operates|provide|provides|require|prevent|use|store|stores|stored|define|cover|representing|encode|encodes)\b/i;
 
 const VERB_CANON: Record<string, string> = {
   freezes: "freeze",
@@ -311,6 +405,8 @@ const VERB_CANON: Record<string, string> = {
   provides: "provide",
   representing: "represent",
   encodes: "encode",
+  stores: "store",
+  stored: "store",
 };
 
 function firstActionVerb(claim: string): string | undefined {
@@ -320,7 +416,7 @@ function firstActionVerb(claim: string): string | undefined {
   return VERB_CANON[raw] ?? raw;
 }
 
-function verbFitsClaim(claim: string, verb: string): boolean {
+function verbStem(verb: string): string {
   const stem: Record<string, string> = {
     freeze: "freez",
     provide: "provid",
@@ -330,14 +426,138 @@ function verbFitsClaim(claim: string, verb: string): boolean {
     propose: "propos",
     operate: "operat",
     report: "report",
+    store: "store",
   };
-  if (!new RegExp(`\\b${stem[verb] ?? verb}`, "i").test(claim)) return false;
-  if (new RegExp(`\\b(can|may|might|could)\\s+(?:\\w+\\s+){0,3}${stem[verb] ?? verb}`, "i").test(claim)) {
+  return stem[verb] ?? verb;
+}
+
+function verbFitsClaim(claim: string, verb: string): boolean {
+  const stem = verbStem(verb);
+  if (!new RegExp(`\\b${stem}`, "i").test(claim)) return false;
+  if (new RegExp(`\\b(can|may|might|could)\\s+(?:\\w+\\s+){0,3}${stem}`, "i").test(claim)) {
     return false;
   }
   const first = firstActionVerb(claim);
   if (!first) return true;
   return first === verb;
+}
+
+function relationFitsClaim(claim: string, relation: RequiredRelation, containing?: string): boolean {
+  if (!verbFitsClaim(claim, relation.verb)) return false;
+  if (dependentConjunct(claim, relation.verb, containing)) return false;
+  if (verbOnlyInRelativeClause(claim, relation.verb)) return false;
+  if (relation.preposition && !prepositionAfterVerb(claim, relation.verb, relation.preposition)) return false;
+  if (relation.particle && !new RegExp(`\\b${verbStem(relation.verb)}\\w*\\s+${relation.particle}\\b`, "i").test(claim)) {
+    return false;
+  }
+  return true;
+}
+
+/** Coordinated tail without a local subject is not a standalone answer. */
+function dependentConjunct(claim: string, verb: string, containing?: string): boolean {
+  const trimmed = claim.trim();
+  const stem = verbStem(verb);
+  const verbRe = new RegExp(`\\b${stem}\\w*\\b`, "i");
+  const coordThenVerb = new RegExp(`^(?:${COORD})\\s+(?:(?:also|still|just|only|then)\\s+)?${stem}\\w*\\b`, "i");
+  const midCoordVerb = new RegExp(`\\b(?:${COORD})\\s+(?:(?:also|still|just|only|then)\\s+)?${stem}\\w*\\b`, "i");
+
+  if (coordThenVerb.test(trimmed)) return true;
+  if (/^(?:and|but|or|nor|yet|so|then)\s+/i.test(trimmed)) {
+    const afterCoord = trimmed.replace(/^(?:and|but|or|nor|yet|so|then)\s+/i, "");
+    if (verbRe.test(afterCoord) && !LOCAL_SUBJECT.test(afterCoord)) return true;
+  }
+  if (midCoordVerb.test(trimmed) && !subjectBeforeVerb(trimmed, stem)) return true;
+  if (startsWithVerbNoSubject(trimmed, stem)) return true;
+
+  const block = (containing ?? "").trim();
+  if (!block || block === trimmed) return false;
+  const needle = trimmed.slice(0, Math.min(40, trimmed.length)).toLowerCase();
+  const at = block.toLowerCase().indexOf(needle);
+  if (at <= 0) return false;
+  const before = block.slice(0, at);
+  if (!new RegExp(`\\b(?:${COORD})\\s*$`, "i").test(before)) return false;
+  const earlier = firstActionVerb(before);
+  if (earlier && earlier !== verb) return true;
+  return /\b(we|they|the|this|our|i)\b/i.test(before);
+}
+
+function startsWithVerbNoSubject(claim: string, stem: string): boolean {
+  return new RegExp(`^(?:(?:also|still|just|only|then)\\s+)?${stem}\\w*\\b`, "i").test(claim.trim());
+}
+
+function subjectBeforeVerb(claim: string, stem: string): boolean {
+  const match = new RegExp(`\\b${stem}\\w*\\b`, "i").exec(claim);
+  if (!match || match.index === undefined) return false;
+  const before = claim.slice(0, match.index);
+  if (new RegExp(`\\b(?:${COORD})\\s+(?:(?:also|still|just|only|then)\\s+)?$`, "i").test(before)) {
+    return false;
+  }
+  return LOCAL_SUBJECT.test(before.trim()) || /\b(we|they|the|this|that|our|it)\b/i.test(before);
+}
+
+function verbOnlyInRelativeClause(claim: string, verb: string): boolean {
+  const stem = verbStem(verb);
+  const re = new RegExp(`\\b${stem}\\w*\\b`, "gi");
+  let any = false;
+  let allRelative = true;
+  let match: RegExpExecArray | null = re.exec(claim);
+  while (match) {
+    any = true;
+    const before = claim.slice(Math.max(0, match.index - 56), match.index);
+    if (!/\b(which|that|who)\s+(?:\w+[,\s()]*){0,8}$/i.test(before)) allRelative = false;
+    match = re.exec(claim);
+  }
+  return any && allRelative;
+}
+
+function prepositionAfterVerb(claim: string, verb: string, prep: string): boolean {
+  const stem = verbStem(verb);
+  const aliases = (PREP_ALIASES[prep] ?? [prep]).join("|");
+  const matches = claim.matchAll(new RegExp(`\\b${stem}\\w*\\b`, "gi"));
+  for (const match of matches) {
+    const start = match.index ?? 0;
+    const before = claim.slice(Math.max(0, start - 56), start);
+    if (/\b(which|that|who)\s+(?:\w+[,\s()]*){0,8}$/i.test(before)) continue;
+    const window = claim.slice(start, start + 96).split(/[.!?]/)[0] ?? "";
+    if (new RegExp(`\\b${stem}\\w*\\b[^.?!]{0,80}\\b(?:${aliases})\\b`, "i").test(window)) return true;
+  }
+  return false;
+}
+
+const GENERIC_ENTITY = new Set(
+  `interpreter engine compiler bytecode bytecodes module service system jit vm ffi
+   cache native code codes method program function implementation implementations
+   threading dispatcher interpreter the a an this that these those its our their
+   simple per required`
+    .split(/\s+/)
+    .filter(Boolean),
+);
+
+function namedEntityAfterPrep(claim: string, verb: string, prep: string, entityType?: string): boolean {
+  const stem = verbStem(verb);
+  const aliases = (PREP_ALIASES[prep] ?? [prep]).join("|");
+  const matches = claim.matchAll(new RegExp(`\\b${stem}\\w*\\b`, "gi"));
+  for (const match of matches) {
+    const start = match.index ?? 0;
+    const before = claim.slice(Math.max(0, start - 56), start);
+    if (/\b(which|that|who)\s+(?:\w+[,\s()]*){0,8}$/i.test(before)) continue;
+    const window = claim.slice(start, start + 96).split(/[.!?]/)[0] ?? "";
+    const afterPrep = window.match(new RegExp(`\\b(?:${aliases})\\b\\s+(.+)$`, "i"));
+    if (!afterPrep) continue;
+    const tokens = (afterPrep[1] ?? "").split(/[^A-Za-z0-9]+/).filter(Boolean);
+    if (tokens.some((token) => looksNamedEntity(token, entityType))) return true;
+  }
+  return false;
+}
+
+function looksNamedEntity(token: string, entityType?: string): boolean {
+  const cleaned = token.replace(/[^A-Za-z0-9]/g, "");
+  if (cleaned.length < 2) return false;
+  if (entityType && cleaned.toLowerCase() === entityType) return false;
+  if (GENERIC_ENTITY.has(cleaned.toLowerCase())) return false;
+  if (/[A-Z][a-z]+[A-Z]/.test(cleaned)) return true;
+  if (/[A-Za-z]+\d|\d+[A-Za-z]/.test(cleaned)) return true;
+  return false;
 }
 
 function predicateFits(claim: string, kind: PredicateKind): boolean {
@@ -373,8 +593,8 @@ function predicateFits(claim: string, kind: PredicateKind): boolean {
   }
 }
 
-function expectationFits(claim: string, expectation: AnswerExpectation, shape: Shape): boolean {
-  switch (expectation) {
+function expectationFits(claim: string, contract: QuestionContract, containing?: string): boolean {
+  switch (contract.answerExpectation) {
     case "person":
       return OWNERSHIP.test(claim);
     case "location":
@@ -389,13 +609,26 @@ function expectationFits(claim: string, expectation: AnswerExpectation, shape: S
       return FAILURE.test(claim);
     case "enumeration":
       return enumerationFits(claim, undefined);
+    case "naming":
+      return namingExpectationFits(claim, contract, containing);
     case "procedure":
     case "definition":
     case "other":
-      return shape === "absence" ? false : true;
+      return contract.shape === "absence" ? false : true;
     default:
       return false;
   }
+}
+
+function namingExpectationFits(claim: string, contract: QuestionContract, _containing?: string): boolean {
+  const relation = contract.requiredRelation;
+  if (relation?.preposition) {
+    return namedEntityAfterPrep(claim, relation.verb, relation.preposition, contract.requestedEntityType);
+  }
+  if (NAMING.test(claim)) return true;
+  if (!contract.requestedEntityType) return false;
+  const tokens = claim.split(/[^A-Za-z0-9]+/).filter(Boolean);
+  return tokens.slice(1).some((token) => looksNamedEntity(token, contract.requestedEntityType));
 }
 
 function enumerationFits(claim: string, expectedCount?: number): boolean {

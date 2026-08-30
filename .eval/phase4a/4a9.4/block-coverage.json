@@ -1,0 +1,142 @@
+{
+  "listFates": {
+    "parent-contiguous": 195,
+    "member-groups": 3,
+    "item-only": 0,
+    "unsearchable": 6
+  },
+  "files": [
+    {
+      "file": "attention.pdf",
+      "paragraphs": 112,
+      "mappedParagraphs": 81,
+      "lists": 1,
+      "captions": 10,
+      "furnitureDropped": 0,
+      "unknownDropped": 157,
+      "mathDropped": 8,
+      "chunks": 93
+    },
+    {
+      "file": "bert.pdf",
+      "paragraphs": 196,
+      "mappedParagraphs": 196,
+      "lists": 5,
+      "captions": 8,
+      "furnitureDropped": 0,
+      "unknownDropped": 35,
+      "mathDropped": 0,
+      "chunks": 209
+    },
+    {
+      "file": "bitcoin.pdf",
+      "paragraphs": 81,
+      "mappedParagraphs": 67,
+      "lists": 13,
+      "captions": 0,
+      "furnitureDropped": 0,
+      "unknownDropped": 69,
+      "mathDropped": 14,
+      "chunks": 80
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "paragraphs": 236,
+      "mappedParagraphs": 229,
+      "lists": 45,
+      "captions": 2,
+      "furnitureDropped": 0,
+      "unknownDropped": 131,
+      "mathDropped": 1,
+      "chunks": 275
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "paragraphs": 141,
+      "mappedParagraphs": 9,
+      "lists": 2,
+      "captions": 0,
+      "furnitureDropped": 0,
+      "unknownDropped": 588,
+      "mathDropped": 84,
+      "chunks": 9
+    },
+    {
+      "file": "lora.pdf",
+      "paragraphs": 203,
+      "mappedParagraphs": 114,
+      "lists": 4,
+      "captions": 25,
+      "furnitureDropped": 0,
+      "unknownDropped": 574,
+      "mathDropped": 14,
+      "chunks": 127
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "paragraphs": 51,
+      "mappedParagraphs": 48,
+      "lists": 2,
+      "captions": 0,
+      "furnitureDropped": 0,
+      "unknownDropped": 13,
+      "mathDropped": 0,
+      "chunks": 50
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "paragraphs": 363,
+      "mappedParagraphs": 349,
+      "lists": 23,
+      "captions": 20,
+      "furnitureDropped": 70,
+      "unknownDropped": 115,
+      "mathDropped": 1,
+      "chunks": 567
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "paragraphs": 591,
+      "mappedParagraphs": 559,
+      "lists": 55,
+      "captions": 10,
+      "furnitureDropped": 169,
+      "unknownDropped": 338,
+      "mathDropped": 1,
+      "chunks": 715
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "paragraphs": 332,
+      "mappedParagraphs": 331,
+      "lists": 50,
+      "captions": 0,
+      "furnitureDropped": 0,
+      "unknownDropped": 74,
+      "mathDropped": 2,
+      "chunks": 381
+    },
+    {
+      "file": "resnet.pdf",
+      "paragraphs": 127,
+      "mappedParagraphs": 127,
+      "lists": 1,
+      "captions": 9,
+      "furnitureDropped": 0,
+      "unknownDropped": 50,
+      "mathDropped": 6,
+      "chunks": 137
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "paragraphs": 130,
+      "mappedParagraphs": 130,
+      "lists": 3,
+      "captions": 5,
+      "furnitureDropped": 0,
+      "unknownDropped": 37,
+      "mathDropped": 7,
+      "chunks": 138
+    }
+  ]
+}

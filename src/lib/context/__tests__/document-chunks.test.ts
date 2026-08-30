@@ -71,6 +71,27 @@ test("same PDF bytes and versions reuse stored document chunks", async () => {
   assert.ok(second.chunks.some(isDocumentChunk));
 });
 
+test("structure version mismatch rebuilds chunks from NormalizedDocument without Blob or PDF.js", async () => {
+  const repo = createMemoryRepository();
+  const context = await repo.createContext({ name: "notes" });
+  const blob = pdfBlob({
+    pages: [{ items: [{ str: "Serializable isolation prevents lost outcomes.", x: 72, y: 700 }] }],
+  });
+  const [source] = await repo.upsertSources(context.id, [{ path: "Lecture-08.pdf", kind: "pdf", blob }]);
+  assert.ok(isPdfSource(source));
+  await parseAndPersistPdf(repo, context.id, source);
+  await indexContext(repo, context.id);
+  repo.blobLoadCount = 0;
+  repo.normalizedLoadCount = 0;
+  resetPdfjsDocumentOpenCount();
+  const opens = pdfjsDocumentOpenCount();
+  const rebuilt = await indexContext(repo, context.id, { structureVersion: 99 });
+  assert.ok(rebuilt.report.rebuiltSourceCount >= 1);
+  assert.ok(repo.normalizedLoadCount >= 1);
+  assert.equal(repo.blobLoadCount, 0);
+  assert.equal(pdfjsDocumentOpenCount(), opens);
+});
+
 test("document chunker version bump rebuilds from IR without Blob or PDF.js", async () => {
   const repo = createMemoryRepository();
   const context = await repo.createContext({ name: "notes" });

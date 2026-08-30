@@ -1,3 +1,18 @@
+/**
+ * Phase 4A.9.4 block-aware DocumentChunks.
+ *
+ * A chunk is a contiguous slice of NormalizedPage.text. Never reconstruct
+ * text from items, never invent block-local offsets. Furniture, unknown,
+ * and pure math emit zero chunks.
+ */
+import type { DocumentBlock } from "./blocks.ts";
+import {
+  furnitureHint,
+  isFurnitureCandidate,
+  mappedRangeForItems,
+  normalizeFurnitureText,
+} from "./blocks.ts";
+import { deriveDocumentStructure, type DocumentStructure, type StructuredPage } from "./structure.ts";
 import type { DocumentChunk, NormalizedDocument, NormalizedPage } from "./types.ts";
 
 export const DOCUMENT_CHUNK_CAP = 1200;
@@ -12,34 +27,42 @@ export function documentChunkId(
   return `${sourceId}:p${page}:${startOffset}-${endOffset}:${contentHash}`;
 }
 
+export type ListChunkFate = "parent-contiguous" | "member-groups" | "item-only" | "unsearchable";
+
 /**
- * PDF pages → DocumentChunks. Never spans pages. Never goes through buildChunks.
- * Newlines in NormalizedPage.text are hard block boundaries (paragraph,
- * column, or isolated line). Blocks are never merged.
+ * PDF pages → DocumentChunks from safe mapped DocumentBlocks.
+ * Never spans pages. Never goes through buildChunks.
+ *
+ * When a page has no visual structure at all and its 4A.9.2 index is `full`,
+ * the accepted newline paragraph path is used. Isolated-line and unknown
+ * material are not searchable fallbacks.
  */
-export function buildDocumentChunks(document: NormalizedDocument): DocumentChunk[] {
+export function buildDocumentChunks(
+  document: NormalizedDocument,
+  structure?: DocumentStructure,
+): DocumentChunk[] {
   if (document.readiness !== "ready") return [];
+  const derived = asDocumentStructure(structure) ?? deriveDocumentStructure(document);
   const headingByPage = new Map<number, string>();
   for (const item of document.outline) {
     if (item.page && item.title.trim() && !headingByPage.has(item.page)) {
       headingByPage.set(item.page, item.title);
     }
   }
+  const furnitureTexts = classifiedFurnitureTexts(derived);
   const chunks: DocumentChunk[] = [];
   for (const page of document.pages) {
-    if (page.index === "skipped" || !page.text) continue;
-    const heading = headingByPage.get(page.pageNumber);
-    if (page.index === "isolated-lines") {
-      for (const block of pageBlocks(page)) {
-        const text = page.text.slice(block.start, block.end);
-        if (!isolatedLineEligible(text)) continue;
-        chunks.push(makeChunk(document, page, block.start, block.end, heading));
+    if (!page.text) continue;
+    const structured = derived.pages.find((entry) => entry.pageNumber === page.pageNumber);
+    const outlineHeading = headingByPage.get(page.pageNumber);
+    const banned = furnitureBannedRanges(page, structured, furnitureTexts);
+    if (!structured || structured.blocks.length === 0) {
+      if (page.index === "full") {
+        chunks.push(...legacyFullPageChunks(document, page, outlineHeading, banned));
       }
       continue;
     }
-    for (const block of pageBlocks(page)) {
-      chunks.push(...splitToCap(document, page, block.start, block.end, heading));
-    }
+    chunks.push(...chunksFromStructuredPage(document, page, structured, outlineHeading, banned));
   }
   return chunks;
 }
@@ -70,12 +93,15 @@ export function isUsableDocumentChunk(chunk: unknown): chunk is DocumentChunk {
 export function assertChunkMatchesPage(document: NormalizedDocument, chunk: DocumentChunk) {
   const page = document.pages.find((entry) => entry.pageNumber === chunk.page);
   if (!page) throw new Error(`chunk page ${chunk.page} missing`);
+  if (chunk.startOffset < 0 || chunk.endOffset > page.text.length || chunk.startOffset >= chunk.endOffset) {
+    throw new Error(`chunk offsets out of range on page ${chunk.page}`);
+  }
   if (page.text.slice(chunk.startOffset, chunk.endOffset) !== chunk.text) {
     throw new Error(`chunk text does not match page ${chunk.page} offsets`);
   }
 }
 
-/** Isolated-lines eligibility. Stricter than layout's lineIsUsable. */
+/** Isolated-lines eligibility. Kept for tests; 4A.9.4 does not emit isolated fallbacks. */
 export function isolatedLineEligible(text: string): boolean {
   const trimmed = text.trim();
   if (!trimmed) return false;
@@ -84,6 +110,201 @@ export function isolatedLineEligible(text: string): boolean {
   const words = trimmed.split(/\s+/).filter((word) => /[A-Za-z]{2,}/.test(word));
   if (words.length >= 4) return true;
   return words.length >= 3 && /[.!?]/.test(trimmed) && trimmed.length >= 16;
+}
+
+export function mappedBlockRange(
+  page: NormalizedPage,
+  block: DocumentBlock,
+): { start: number; end: number } | null {
+  if (block.page !== page.pageNumber) return null;
+  if (block.normStart === undefined || block.normEnd === undefined) return null;
+  if (block.normStart < 0 || block.normEnd > page.text.length || block.normStart >= block.normEnd) return null;
+  const text = page.text.slice(block.normStart, block.normEnd);
+  if (!text.trim()) return null;
+  if (crossesColumnBreak(page, block.normStart, block.normEnd)) return null;
+  return { start: block.normStart, end: block.normEnd };
+}
+
+function chunksFromStructuredPage(
+  document: NormalizedDocument,
+  page: NormalizedPage,
+  structured: StructuredPage,
+  outlineHeading: string | undefined,
+  banned: Array<{ start: number; end: number }>,
+): DocumentChunk[] {
+  if (structured.diagnostics.gridKind === "table") {
+    return structured.blocks.flatMap((block) => {
+      if (block.kind !== "caption") return [];
+      return emitMappedBlock(document, page, block, headingFor(page, structured, block, outlineHeading), banned);
+    });
+  }
+  const listed = new Set(structured.blocks.filter((block) => block.parentBlockId).map((block) => block.id));
+  const chunks: DocumentChunk[] = [];
+  for (const block of structured.blocks) {
+    if (block.kind === "furniture" || block.kind === "unknown" || block.kind === "math" || block.kind === "heading") {
+      continue;
+    }
+    if (block.kind === "list-item" && listed.has(block.id)) continue;
+    const heading = headingFor(page, structured, block, outlineHeading);
+    if (block.kind === "list") {
+      chunks.push(...emitList(document, page, structured, block, heading, banned));
+      continue;
+    }
+    if (block.kind === "paragraph" || block.kind === "prose" || block.kind === "caption" || block.kind === "list-item") {
+      if (block.kind === "caption" && !captionSearchable(page, block)) continue;
+      if (block.kind === "list-item" && !itemSearchable(page, block)) continue;
+      chunks.push(...emitMappedBlock(document, page, block, heading, banned));
+    }
+  }
+  return chunks;
+}
+
+function emitList(
+  document: NormalizedDocument,
+  page: NormalizedPage,
+  structured: StructuredPage,
+  list: DocumentBlock,
+  heading: string | undefined,
+  banned: Array<{ start: number; end: number }>,
+): DocumentChunk[] {
+  const items = structured.blocks.filter((block) => block.parentBlockId === list.id && block.kind === "list-item");
+  const parent = mappedBlockRange(page, list);
+  if (parent) {
+    if (parent.end - parent.start <= DOCUMENT_CHUNK_CAP) {
+      return emitRange(document, page, parent.start, parent.end, heading, banned);
+    }
+    const groups = groupListItems(page, items);
+    if (groups.length > 0) {
+      return groups.flatMap((range) => emitRange(document, page, range.start, range.end, heading, banned));
+    }
+    return emitRange(document, page, parent.start, parent.end, heading, banned);
+  }
+  return items.flatMap((item) => {
+    if (!itemSearchable(page, item)) return [];
+    return emitMappedBlock(document, page, item, heading, banned);
+  });
+}
+
+export function listChunkFate(
+  page: NormalizedPage,
+  list: DocumentBlock,
+  items: DocumentBlock[],
+): ListChunkFate {
+  const parent = mappedBlockRange(page, list);
+  if (parent) {
+    return parent.end - parent.start <= DOCUMENT_CHUNK_CAP ? "parent-contiguous" : "member-groups";
+  }
+  if (items.some((item) => mappedBlockRange(page, item) && itemSearchable(page, item))) return "item-only";
+  return "unsearchable";
+}
+
+function groupListItems(page: NormalizedPage, items: DocumentBlock[]): Array<{ start: number; end: number }> {
+  const mapped = items
+    .map((item) => mappedBlockRange(page, item))
+    .filter((range): range is { start: number; end: number } => Boolean(range))
+    .sort((a, b) => a.start - b.start);
+  const groups: Array<{ start: number; end: number }> = [];
+  let current: { start: number; end: number } | null = null;
+  for (const range of mapped) {
+    if (!current) {
+      current = { ...range };
+      continue;
+    }
+    if (range.end - current.start <= DOCUMENT_CHUNK_CAP && !crossesColumnBreak(page, current.start, range.end)) {
+      current.end = range.end;
+      continue;
+    }
+    groups.push(current);
+    current = { ...range };
+  }
+  if (current) groups.push(current);
+  return groups;
+}
+
+function emitMappedBlock(
+  document: NormalizedDocument,
+  page: NormalizedPage,
+  block: DocumentBlock,
+  heading: string | undefined,
+  banned: Array<{ start: number; end: number }>,
+): DocumentChunk[] {
+  const range = mappedBlockRange(page, block);
+  if (!range) return [];
+  return emitRange(document, page, range.start, range.end, heading, banned);
+}
+
+function emitRange(
+  document: NormalizedDocument,
+  page: NormalizedPage,
+  start: number,
+  end: number,
+  heading: string | undefined,
+  banned: Array<{ start: number; end: number }>,
+): DocumentChunk[] {
+  return subtractRanges(start, end, banned).flatMap((range) => {
+    if (crossesColumnBreak(page, range.start, range.end)) return [];
+    if (isFurnitureOnlySlice(page.text.slice(range.start, range.end))) return [];
+    if (!page.text.slice(range.start, range.end).trim()) return [];
+    if (range.end - range.start <= DOCUMENT_CHUNK_CAP) {
+      return [makeChunk(document, page, range.start, range.end, heading)];
+    }
+    return splitToCap(document, page, range.start, range.end, heading, banned);
+  });
+}
+
+function captionSearchable(page: NormalizedPage, block: DocumentBlock): boolean {
+  const range = mappedBlockRange(page, block);
+  if (!range) return false;
+  const text = page.text.slice(range.start, range.end).trim();
+  const words = text.split(/\s+/).filter((word) => /[A-Za-z]{2,}/.test(word));
+  return words.length >= 3 && text.length >= 16;
+}
+
+function itemSearchable(page: NormalizedPage, block: DocumentBlock): boolean {
+  const range = mappedBlockRange(page, block);
+  if (!range) return false;
+  const text = page.text.slice(range.start, range.end).trim();
+  const words = text.split(/\s+/).filter((word) => /[A-Za-z]{2,}/.test(word));
+  return words.length >= 2 && text.length >= 8;
+}
+
+function headingFor(
+  page: NormalizedPage,
+  structured: StructuredPage,
+  block: DocumentBlock,
+  outlineHeading: string | undefined,
+): string | undefined {
+  const nearby = structured.blocks.find(
+    (entry) =>
+      entry.kind === "heading" &&
+      entry.page === page.pageNumber &&
+      entry.normEnd !== undefined &&
+      block.normStart !== undefined &&
+      entry.normEnd <= block.normStart &&
+      block.normStart - entry.normEnd <= 80,
+  );
+  const fromBlock = nearby && nearby.normStart !== undefined && nearby.normEnd !== undefined
+    ? page.text.slice(nearby.normStart, nearby.normEnd).trim()
+    : "";
+  return outlineHeading ?? (fromBlock || undefined);
+}
+
+function crossesColumnBreak(page: NormalizedPage, start: number, end: number): boolean {
+  const br = page.columnBreakOffset;
+  return page.readingOrder === "two-column" && br !== undefined && start < br && end > br;
+}
+
+function legacyFullPageChunks(
+  document: NormalizedDocument,
+  page: NormalizedPage,
+  heading: string | undefined,
+  banned: Array<{ start: number; end: number }>,
+): DocumentChunk[] {
+  const chunks: DocumentChunk[] = [];
+  for (const block of pageBlocks(page)) {
+    chunks.push(...emitRange(document, page, block.start, block.end, heading, banned));
+  }
+  return chunks;
 }
 
 function pageBlocks(page: NormalizedPage): Array<{ start: number; end: number }> {
@@ -115,14 +336,132 @@ function splitToCap(
   start: number,
   end: number,
   heading: string | undefined,
+  banned: Array<{ start: number; end: number }> = [],
 ): DocumentChunk[] {
   if (end - start <= DOCUMENT_CHUNK_CAP) {
+    if (isFurnitureOnlySlice(page.text.slice(start, end))) return [];
     return [makeChunk(document, page, start, end, heading)];
   }
   const ranges = splitSentences(page.text, start, end).flatMap((range) =>
     range.end - range.start <= DOCUMENT_CHUNK_CAP ? [range] : splitWhitespace(page.text, range.start, range.end),
   );
-  return ranges.map((range) => makeChunk(document, page, range.start, range.end, heading));
+  return ranges.flatMap((range) => {
+    if (isFurnitureOnlySlice(page.text.slice(range.start, range.end))) return [];
+    if (overlapsBanned(range.start, range.end, banned)) return [];
+    return [makeChunk(document, page, range.start, range.end, heading)];
+  });
+}
+
+function asDocumentStructure(value: unknown): DocumentStructure | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const candidate = value as DocumentStructure;
+  if (!Array.isArray(candidate.pages)) return undefined;
+  return candidate;
+}
+
+function classifiedFurnitureTexts(structure: DocumentStructure): string[] {
+  return (structure.furnitureCandidates ?? [])
+    .filter((row) => {
+      const ySpread = row.yValues.length ? Math.max(...row.yValues) - Math.min(...row.yValues) : 0;
+      return isFurnitureCandidate({
+        text: row.text,
+        share: row.share,
+        pages: row.pages,
+        pageCount: row.pageCount,
+        ySpread,
+        hint: furnitureHint(row.text),
+      });
+    })
+    .map((row) => row.text);
+}
+
+function furnitureBannedRanges(
+  page: NormalizedPage,
+  structured: StructuredPage | undefined,
+  furnitureTexts: string[],
+): Array<{ start: number; end: number }> {
+  const banned: Array<{ start: number; end: number }> = [];
+  if (structured) {
+    for (const block of structured.blocks) {
+      if (block.kind !== "furniture") continue;
+      const mapped = mappedBlockRange(page, block);
+      if (mapped) banned.push(mapped);
+      const fromItems = mappedRangeForItems(page, block.itemIndexes);
+      if (fromItems) banned.push({ start: fromItems.normStart, end: fromItems.normEnd });
+    }
+  }
+  banned.push(...findFurnitureSpans(page.text, furnitureTexts));
+  banned.push(...nistBannerSpans(page.text));
+  return banned;
+}
+
+function findFurnitureSpans(pageText: string, furnitureTexts: string[]): Array<{ start: number; end: number }> {
+  const spans: Array<{ start: number; end: number }> = [];
+  for (const raw of furnitureTexts) {
+    const words = normalizeFurnitureText(raw)
+      .split(" ")
+      .filter((word) => word.length > 0);
+    if (words.length < 4) continue;
+    const re = new RegExp(words.map(escapeRegExp).join("\\s+"), "ig");
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(pageText))) {
+      spans.push({ start: match.index, end: match.index + match[0].length });
+    }
+  }
+  return spans;
+}
+
+function nistBannerSpans(pageText: string): Array<{ start: number; end: number }> {
+  const re = /this publication is available free of charge from:(?:\s*https?:\/\/\S+)?/gi;
+  const spans: Array<{ start: number; end: number }> = [];
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(pageText))) {
+    spans.push({ start: match.index, end: match.index + match[0].length });
+  }
+  return spans;
+}
+
+function subtractRanges(
+  start: number,
+  end: number,
+  banned: Array<{ start: number; end: number }>,
+): Array<{ start: number; end: number }> {
+  const cuts = banned
+    .filter((range) => range.start < end && range.end > start)
+    .map((range) => ({ start: Math.max(start, range.start), end: Math.min(end, range.end) }))
+    .sort((a, b) => a.start - b.start);
+  const merged: Array<{ start: number; end: number }> = [];
+  for (const cut of cuts) {
+    const last = merged[merged.length - 1];
+    if (!last || cut.start > last.end) merged.push({ ...cut });
+    else last.end = Math.max(last.end, cut.end);
+  }
+  const parts: Array<{ start: number; end: number }> = [];
+  let cursor = start;
+  for (const cut of merged) {
+    if (cut.start > cursor) parts.push({ start: cursor, end: cut.start });
+    cursor = Math.max(cursor, cut.end);
+  }
+  if (cursor < end) parts.push({ start: cursor, end });
+  return parts.filter((part) => part.end > part.start);
+}
+
+function overlapsBanned(start: number, end: number, banned: Array<{ start: number; end: number }>): boolean {
+  return banned.some((range) => range.start < end && range.end > start);
+}
+
+function isFurnitureOnlySlice(text: string): boolean {
+  if (!/this publication is available free of charge/i.test(text)) return false;
+  const stripped = text
+    .replace(/this publication is available free of charge from:(?:\s*https?:\/\/\S+)?/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const words = stripped.split(/\s+/).filter((word) => /[A-Za-z]{3,}/.test(word));
+  return words.length < 3;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function splitSentences(text: string, from: number, to: number): Array<{ start: number; end: number }> {

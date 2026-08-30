@@ -1,0 +1,557 @@
+{
+  "file": "nist-800-145.pdf",
+  "page": 2,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "two-column",
+    "index": "full",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [],
+    "clusterCount": 3,
+    "substantialClusterCount": 2,
+    "clusters": [
+      {
+        "x": 82.5,
+        "items": 2,
+        "meanWidth": 192.12,
+        "yMin": 493.44,
+        "yMax": 690.12
+      },
+      {
+        "x": 286.47,
+        "items": 13,
+        "meanWidth": 156.11,
+        "yMin": 161.28,
+        "yMax": 689.76
+      },
+      {
+        "x": 326.01,
+        "items": 1,
+        "meanWidth": 181.97,
+        "yMin": 493.44,
+        "yMax": 493.44
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 82.5,
+      "items": 2,
+      "meanWidth": 192.12,
+      "yMin": 493.44,
+      "yMax": 690.12
+    },
+    {
+      "x": 286.47,
+      "items": 13,
+      "meanWidth": 156.11,
+      "yMin": 161.28,
+      "yMax": 689.76
+    },
+    {
+      "x": 326.01,
+      "items": 1,
+      "meanWidth": 181.97,
+      "yMin": 493.44,
+      "yMax": 493.44
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 13,
+    "clusters": [
+      {
+        "x": 286.48,
+        "items": 12,
+        "share": 0.923
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.9230769230769231
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        82.5,
+        286.47
+      ],
+      "gap": 203.97000000000003
+    },
+    {
+      "between": [
+        286.47,
+        326.01
+      ],
+      "gap": 39.539999999999964
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "NIST Special Publication 800-145",
+      "x": 66.48,
+      "y": 690.12,
+      "width": 188.23,
+      "height": 12,
+      "right": 254.71,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 254.71,
+      "y": 690.12,
+      "width": 2.65,
+      "height": 0,
+      "right": 257.37,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "The NIST Definition of Cloud Computing",
+      "x": 286.56,
+      "y": 689.76,
+      "width": 267.7,
+      "height": 14.04,
+      "right": 554.26,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 286.56,
+      "y": 665.28,
+      "width": 0,
+      "height": 0,
+      "right": 290.56,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "Peter Mell",
+      "x": 286.56,
+      "y": 665.28,
+      "width": 56.74,
+      "height": 12,
+      "right": 343.3,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "Timothy Grance",
+      "x": 286.56,
+      "y": 647.28,
+      "width": 91.39,
+      "height": 12,
+      "right": 377.95,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "",
+      "x": 98.52,
+      "y": 493.44,
+      "width": 0,
+      "height": 0,
+      "right": 102.52,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "C O M P U T E R",
+      "x": 98.52,
+      "y": 493.44,
+      "width": 196.01,
+      "height": 21,
+      "right": 294.53,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": " ",
+      "x": 294.53,
+      "y": 493.44,
+      "width": 1.5,
+      "height": 0,
+      "right": 296.03,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "S E C U R I T Y",
+      "x": 326.01,
+      "y": 493.44,
+      "width": 181.97,
+      "height": 21,
+      "right": 507.98,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "",
+      "x": 286.32,
+      "y": 435.84,
+      "width": 0,
+      "height": 0,
+      "right": 290.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "Computer Security Division",
+      "x": 286.32,
+      "y": 435.84,
+      "width": 132.69,
+      "height": 11.04,
+      "right": 419.01,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "",
+      "x": 286.32,
+      "y": 423.12,
+      "width": 0,
+      "height": 0,
+      "right": 290.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "Information Technology Laboratory",
+      "x": 286.32,
+      "y": 423.12,
+      "width": 170.58,
+      "height": 11.04,
+      "right": 456.9,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "",
+      "x": 286.32,
+      "y": 410.52,
+      "width": 0,
+      "height": 0,
+      "right": 290.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "National Institute of Standards and Technology",
+      "x": 286.32,
+      "y": 410.52,
+      "width": 228.77,
+      "height": 11.04,
+      "right": 515.09,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "",
+      "x": 286.32,
+      "y": 397.81,
+      "width": 0,
+      "height": 0,
+      "right": 290.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": "Gaithersburg, MD 20899-8930",
+      "x": 286.32,
+      "y": 397.81,
+      "width": 148.69,
+      "height": 11.04,
+      "right": 435.01,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "",
+      "x": 286.32,
+      "y": 372.61,
+      "width": 0,
+      "height": 0,
+      "right": 290.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "September 2011",
+      "x": 286.32,
+      "y": 372.61,
+      "width": 81.49,
+      "height": 11.04,
+      "right": 367.81,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "",
+      "x": 286.56,
+      "y": 232.92,
+      "width": 0,
+      "height": 0,
+      "right": 290.56,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": "U.S. Department of Commerce",
+      "x": 286.56,
+      "y": 232.92,
+      "width": 130.02,
+      "height": 9,
+      "right": 416.59,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "",
+      "x": 286.56,
+      "y": 212.52,
+      "width": 0,
+      "height": 0,
+      "right": 290.56,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "Rebecca M. Blank, Acting Secretary",
+      "x": 286.56,
+      "y": 212.52,
+      "width": 160.11,
+      "height": 9.96,
+      "right": 446.67,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "",
+      "x": 286.56,
+      "y": 193.08,
+      "width": 0,
+      "height": 0,
+      "right": 290.56,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "National Institute of Standards and Technology",
+      "x": 286.56,
+      "y": 193.08,
+      "width": 202.24,
+      "height": 9,
+      "right": 488.8,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "",
+      "x": 286.56,
+      "y": 172.68,
+      "width": 0,
+      "height": 0,
+      "right": 290.56,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "Patrick D. Gallagher, Under Secretary for Standards and",
+      "x": 286.56,
+      "y": 172.68,
+      "width": 250.26,
+      "height": 9.96,
+      "right": 536.82,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "Technology and Director",
+      "x": 286.56,
+      "y": 161.28,
+      "width": 108.76,
+      "height": 9.96,
+      "right": 395.32,
+      "visualLineId": 13,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 690,
+      "height": 14.04,
+      "text": "NIST Special Publication 800-145 The NIST Definition of Cloud Computing",
+      "itemIndexes": [
+        0,
+        1,
+        2
+      ],
+      "firstX": 66.48
+    },
+    {
+      "lineId": 1,
+      "y": 665.28,
+      "height": 12,
+      "text": "Peter Mell",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 286.56
+    },
+    {
+      "lineId": 2,
+      "y": 647.28,
+      "height": 12,
+      "text": "Timothy Grance",
+      "itemIndexes": [
+        5
+      ],
+      "firstX": 286.56
+    },
+    {
+      "lineId": 3,
+      "y": 493.44,
+      "height": 21,
+      "text": "C O M P U T E R S E C U R I T Y",
+      "itemIndexes": [
+        7,
+        8,
+        9
+      ],
+      "firstX": 98.52
+    },
+    {
+      "lineId": 4,
+      "y": 435.84,
+      "height": 11.04,
+      "text": "Computer Security Division",
+      "itemIndexes": [
+        11
+      ],
+      "firstX": 286.32
+    },
+    {
+      "lineId": 5,
+      "y": 423.12,
+      "height": 11.04,
+      "text": "Information Technology Laboratory",
+      "itemIndexes": [
+        13
+      ],
+      "firstX": 286.32
+    },
+    {
+      "lineId": 6,
+      "y": 410.52,
+      "height": 11.04,
+      "text": "National Institute of Standards and Technology",
+      "itemIndexes": [
+        15
+      ],
+      "firstX": 286.32
+    },
+    {
+      "lineId": 7,
+      "y": 397.81,
+      "height": 11.04,
+      "text": "Gaithersburg, MD 20899-8930",
+      "itemIndexes": [
+        17
+      ],
+      "firstX": 286.32
+    },
+    {
+      "lineId": 8,
+      "y": 372.61,
+      "height": 11.04,
+      "text": "September 2011",
+      "itemIndexes": [
+        19
+      ],
+      "firstX": 286.32
+    },
+    {
+      "lineId": 9,
+      "y": 232.92,
+      "height": 9,
+      "text": "U.S. Department of Commerce",
+      "itemIndexes": [
+        21
+      ],
+      "firstX": 286.56
+    },
+    {
+      "lineId": 10,
+      "y": 212.52,
+      "height": 9.96,
+      "text": "Rebecca M. Blank, Acting Secretary",
+      "itemIndexes": [
+        23
+      ],
+      "firstX": 286.56
+    },
+    {
+      "lineId": 11,
+      "y": 193.08,
+      "height": 9,
+      "text": "National Institute of Standards and Technology",
+      "itemIndexes": [
+        25
+      ],
+      "firstX": 286.56
+    },
+    {
+      "lineId": 12,
+      "y": 172.68,
+      "height": 9.96,
+      "text": "Patrick D. Gallagher, Under Secretary for Standards and",
+      "itemIndexes": [
+        27
+      ],
+      "firstX": 286.56
+    },
+    {
+      "lineId": 13,
+      "y": 161.28,
+      "height": 9.96,
+      "text": "Technology and Director",
+      "itemIndexes": [
+        28
+      ],
+      "firstX": 286.56
+    }
+  ]
+}

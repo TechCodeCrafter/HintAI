@@ -1,0 +1,27 @@
+{
+  "phase": "4A.9.4",
+  "generatedAt": "2026-08-30T23:10:45.606Z",
+  "versions": {
+    "parser": 1,
+    "normalizer": 3,
+    "structure": 3,
+    "chunker": 2
+  },
+  "beforeTotal": 7917,
+  "afterTotal": 2781,
+  "reductionPct": 64.9,
+  "gates": {
+    "mappingErrorCount": 0,
+    "offsetErrors": 0,
+    "crossGutterChunks": 0,
+    "tableProseChunks": 0,
+    "furnitureOnlyChunks": 0,
+    "pdfjsDuringChunk": 0
+  },
+  "listFates": {
+    "parent-contiguous": 195,
+    "member-groups": 3,
+    "item-only": 0,
+    "unsearchable": 6
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "phase": "4A.9.3",
+  "frozen": "4A.9.2.2",
+  "metricsEqual": true,
+  "frozenMetrics": {
+    "questions": 126,
+    "spoken": 15,
+    "wrongIntent": 0.031746031746031744,
+    "wrongIntentCount": "4/126",
+    "unsupported": 0,
+    "unsupportedCount": "0/15",
+    "fabricatedProvenance": 0,
+    "pageCitationAccuracy": 1,
+    "evidenceLocationAccuracy": 1,
+    "answerableHitRate": 0.12359550561797752,
+    "answerableHitCount": "11/89",
+    "falseSilence": 0.8314606741573034,
+    "falseSilenceCount": "74/89",
+    "unanswerableSpoke": 0
+  },
+  "currentMetrics": {
+    "questions": 126,
+    "spoken": 15,
+    "wrongIntent": 0.031746031746031744,
+    "wrongIntentCount": "4/126",
+    "unsupported": 0,
+    "unsupportedCount": "0/15",
+    "fabricatedProvenance": 0,
+    "pageCitationAccuracy": 1,
+    "evidenceLocationAccuracy": 1,
+    "answerableHitRate": 0.12359550561797752,
+    "answerableHitCount": "11/89",
+    "falseSilence": 0.8314606741573034,
+    "falseSilenceCount": "74/89",
+    "unanswerableSpoke": 0
+  },
+  "spokenEqual": true,
+  "specials": {
+    "lora-what": { "spoke": false, "say": null },
+    "tm-base": { "spoke": false, "say": null },
+    "bert-nsp": {
+      "spoke": true,
+      "say": "In order This step to train a model that understands sentence relationships, we pre-train for a binarized next sentence prediction task that can be trivially generated from any monolingual corpus."
+    },
+    "resnet-degrade": {
+      "spoke": true,
+      "say": "Unexpectedly, such degradation is not caused by overfitting , and adding more layers to a suitably deep model leads to higher training error, as reported in [11, 42] and thoroughly verified by our experiments."
+    }
+  },
+  "rowDiffs": 0,
+  "diffs": [],
+  "equal": true
+}

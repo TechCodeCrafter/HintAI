@@ -1,0 +1,31 @@
+{
+  "phase": "4A.9.2.2",
+  "parserOrLayoutChanged": false,
+  "note": "This phase did not edit src/lib/document/pdf/, structure, or chunk.ts. The 4A.9.2 layout audit was not re-run because that script writes into .eval/phase4a/4a9.2/. Frozen 4A.9.2 metrics remain the layout proof.",
+  "frozen492": {
+    "uncertain": 222,
+    "singleColumn": 41,
+    "twoColumn": 63,
+    "isolated": 174,
+    "skipped": 48,
+    "full": 104,
+    "chunks": 7917,
+    "bertTwoColumn": "16/16",
+    "resnetTwoColumn": "11/12",
+    "tracemonkeyTwoColumn": "13/14",
+    "attentionCrossGutterJoins": 0,
+    "attentionFalseSingleColumn": 0,
+    "tableFlattened": 0,
+    "mappingErrors": 0
+  },
+  "sourceSha256": {
+    "src/lib/document/pdf/layout.ts": "13995cd84a903ccd7af39eb805344f0516c94b76c7d4de6f0419b080d53efe08",
+    "src/lib/document/pdf/normalize.ts": "c85cf69534d1b42c5d142f4cf5ec41aa4c54f3359334c98f957305b649b2cf67",
+    "src/lib/document/pdf/prose-regions.ts": "23e17acf29abeab61e695e82b802b705ac9b61ccdabafb434d8355750b901b98",
+    "src/lib/document/pdf/layout-geometry.ts": "181eae33f7906d999ecde078dc7855b946f74a437ecff0315f832309abfc2093",
+    "src/lib/document/chunk.ts": "ee278094114a9fba0a6a7d5e35685711121d6ee8734678a10ec5d3708273fd2b",
+    "src/lib/document/structure.ts": "88ca78231f8a4f570f66b5ae41800af4cedb50886e2b5050f128cffd6a31ce4c",
+    "src/lib/document/structure-diagnostics.ts": "fe61f6233011f472e97fd222f58446bf7fc082a56509ffae556e416ad1c25244",
+    "src/lib/context/index-versions.ts": "ff1f6b4b8232e86885841f316cc8178fc1d7767279523d6e56362550f5602a81"
+  }
+}

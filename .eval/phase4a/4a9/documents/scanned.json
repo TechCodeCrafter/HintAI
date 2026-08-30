@@ -1,0 +1,11 @@
+{
+  "sourceId": "scanned.pdf",
+  "filename": "scanned.pdf",
+  "byteSize": 21487,
+  "pageCount": 1,
+  "extractedCharacterCount": 0,
+  "readiness": "scanned",
+  "readinessNote": "This PDF appears to contain scanned pages. MeetHint cannot read scanned PDFs yet.",
+  "totalChunks": 0,
+  "pages": []
+}

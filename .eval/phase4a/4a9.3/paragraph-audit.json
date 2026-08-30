@@ -1,0 +1,1528 @@
+{
+  "pages": [
+    {
+      "file": "bert.pdf",
+      "page": 2,
+      "lines": 64,
+      "regions": 6,
+      "gridKind": "none",
+      "blocks": 15,
+      "kinds": {
+        "paragraph": 11,
+        "list": 1,
+        "list-item": 1,
+        "unknown": 2
+      },
+      "listLikeLines": 4,
+      "listBlocks": 1,
+      "listItemBlocks": 1,
+      "unassignedListLike": 3,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 11,
+      "headings": 0,
+      "unknown": 2,
+      "previews": [
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "sentence (Kiros et al., 2015), or denoising autoencoder derived objectives (Hill et al., 2016)."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "ELMo and its predecessor (Peters et al., 2017,"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "2018a) generalize traditional word embedding research along a different dimension. They extract"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 4,
+          "mapped": true,
+          "text": "right-to-left language model. The contextual representation of each token is the concatenation of the left-to-right and right-to-left representations. When integrating contextual w"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 4,
+          "mapped": true,
+          "text": "contextual representations through a task to predict a single word from both left and right context using LSTMs. Similar to ELMo, their model is feature-based and not deeply bidire"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "et al. (2018) shows that the cloze task can be used"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "As with the feature-based approaches, the first"
+        },
+        {
+          "kind": "list",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "• BERT advances the state of the art for eleven NLP tasks. The code and pre-trained models are available at https://github.com/"
+        },
+        {
+          "kind": "list-item",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": "bert.pdf:p2:block:list:0",
+          "lines": 3,
+          "mapped": true,
+          "text": "• BERT advances the state of the art for eleven NLP tasks. The code and pre-trained models are available at https://github.com/"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "like Radford et al. (2018), which uses unidirectional language models for pre-training, BERT uses masked language models to enable pre"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "is also in contrast to Peters et al. (2018a), which uses a shallow concatenation of independently trained left-to-right and right-to-left LMs."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "There is a long history of pre-training general lan"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "most widely-used approaches in this section."
+        },
+        {
+          "kind": "unknown",
+          "regionId": "bert.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "• We demonstrate the importance of bidirectional"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "bert.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "els."
+        }
+      ]
+    },
+    {
+      "file": "bert.pdf",
+      "page": 3,
+      "lines": 55,
+      "regions": 7,
+      "gridKind": "none",
+      "blocks": 17,
+      "kinds": {
+        "list": 1,
+        "list-item": 1,
+        "caption": 1,
+        "paragraph": 12,
+        "heading": 1,
+        "unknown": 1
+      },
+      "listLikeLines": 1,
+      "listBlocks": 1,
+      "listItemBlocks": 1,
+      "unassignedListLike": 0,
+      "captions": 1,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 12,
+      "headings": 1,
+      "unknown": 1,
+      "previews": [
+        {
+          "kind": "list",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "2017) and machine translation (McCann et al.,"
+        },
+        {
+          "kind": "list-item",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": "bert.pdf:p3:block:list:0",
+          "lines": 1,
+          "mapped": true,
+          "text": "2017) and machine translation (McCann et al.,"
+        },
+        {
+          "kind": "caption",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Figure 1: Overall pre-training and fine-tuning procedures for BERT. Apart from output layers, the same architec"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tures are used in both pre-training and fine-tuning. The same pre-trained model parameters are used to initialize"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "2018; Radford et al., 2018; Dai and Le, 2015)."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "There has also been work showing effective trans"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 4,
+          "mapped": true,
+          "text": "2017). Computer vision research has also demonstrated the importance of transfer learning from large pre-trained models, where an effective recipe is"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "geNet (Deng et al., 2009; Yosinski et al., 2014)."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tialized with the same pre-trained parameters. The"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "2http://nlp.seas.harvard.edu/2018/04/03/attention.html"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Model Architecture BERT’s model architec"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "coder based on the original implementation described in Vaswani et al. (2017) and released in"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 4,
+          "mapped": true,
+          "text": "of Transformers has become common and our implementation is almost identical to the original, we will omit an exhaustive background description of the model architecture and refer "
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "such as “The Annotated Transformer.” In this work, we denote the number of layers"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "H, and the number of self-attention heads as A.3"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p3:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "In all cases we set the feed-forward/filter size to be"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "bert.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tions/answers)."
+        }
+      ]
+    },
+    {
+      "file": "bert.pdf",
+      "page": 4,
+      "lines": 52,
+      "regions": 8,
+      "gridKind": "none",
+      "blocks": 3,
+      "kinds": {
+        "paragraph": 3
+      },
+      "listLikeLines": 1,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 1,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 3,
+      "headings": 0,
+      "unknown": 0,
+      "previews": [
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tion of this construction can be seen in Figure 2."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p4:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Task #2: Next Sentence Prediction (NSP)"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p4:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tence prediction task that can be trivially gener"
+        }
+      ]
+    },
+    {
+      "file": "bert.pdf",
+      "page": 5,
+      "lines": 63,
+      "regions": 5,
+      "gridKind": "none",
+      "blocks": 26,
+      "kinds": {
+        "caption": 1,
+        "heading": 12,
+        "paragraph": 10,
+        "unknown": 3
+      },
+      "listLikeLines": 1,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 1,
+      "captions": 1,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 10,
+      "headings": 12,
+      "unknown": 3,
+      "previews": [
+        {
+          "kind": "caption",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Figure 2: BERT input representation. The input embeddings are the sum of the token embeddings, the segmenta"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tion embeddings and the position embeddings."
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "shuffled sentence-level corpus such as the Billion"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "extract long contiguous sequences."
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "lows BERT to model many downstream tasks—"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "whether they involve single text or text pairs—by"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "swapping out the appropriate inputs and outputs."
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "For applications involving text pairs, a common"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "pattern is to independently encode text pairs be"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "fore applying bidirectional cross attention, such"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "as Parikh et al. (2016); Seo et al. (2017). BERT"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "these two stages, as encoding a concatenated text"
+        },
+        {
+          "kind": "heading",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "rectional cross attention between two sentences."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "are analogous to (1) sentence pairs in paraphras"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "tailment or sentiment analysis."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "In this section, we present BERT fine-tuning re"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p5:region:2",
+          "parent": null,
+          "lines": 6,
+          "mapped": true,
+          "text": "The General Language Understanding Evaluation (GLUE) benchmark (Wang et al., 2018a) is a collection of diverse natural language understanding tasks. Detailed descriptions of GLUE d"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "bert.pdf:p5:region:2",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "sequence (for single sentence or sentence pairs) as described in Section 3, and use the final hid"
+        }
+      ]
+    },
+    {
+      "file": "resnet.pdf",
+      "page": 2,
+      "lines": 55,
+      "regions": 8,
+      "gridKind": "none",
+      "blocks": 7,
+      "kinds": {
+        "heading": 1,
+        "paragraph": 5,
+        "unknown": 1
+      },
+      "listLikeLines": 0,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 0,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 5,
+      "headings": 1,
+      "unknown": 1,
+      "previews": [
+        {
+          "kind": "heading",
+          "regionId": "resnet.pdf:p2:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "2015 classification competition . The extremely deep rep"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p2:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "resentations also have excellent generalization performance"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p2:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "it is applicable in other vision and non-vision problems."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "weight layer"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "are comparably good or better than the constructed solution"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "In this paper, we address the degradation problem by"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p2:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "2"
+        }
+      ]
+    },
+    {
+      "file": "resnet.pdf",
+      "page": 3,
+      "lines": 58,
+      "regions": 8,
+      "gridKind": "none",
+      "blocks": 12,
+      "kinds": {
+        "paragraph": 11,
+        "unknown": 1
+      },
+      "listLikeLines": 1,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 1,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 11,
+      "headings": 0,
+      "unknown": 1,
+      "previews": [
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "connection and element-wise addition. We adopt the sec"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "The shortcut connections in Eqn.(1) introduce neither ex"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "Plain Network. Our plain baselines (Fig. 3, middle) are mainly inspired by the philosophy of VGG nets [41] (Fig. 3, left). The convolutional layers mostly have 3×3 filters and"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "feature map size, the layers have the same number of fil"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "convolutional layers that have a stride of 2. The network"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "layer baseline has 3.6 billion FLOPs (multiply-adds), which"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "explicitly let these layers approximate a residual function"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "F(x)+x. Although both forms should be able to asymptot"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "problem. If the optimal function is closer to an identity"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "by experiments (Fig. 7) that the learned residual functions in general have small responses, suggesting that identity mappings provide reasonable preconditioning."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "ers considered."
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p3:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3"
+        }
+      ]
+    },
+    {
+      "file": "resnet.pdf",
+      "page": 4,
+      "lines": 70,
+      "regions": 8,
+      "gridKind": "none",
+      "blocks": 30,
+      "kinds": {
+        "paragraph": 24,
+        "unknown": 6
+      },
+      "listLikeLines": 0,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 0,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 24,
+      "headings": 0,
+      "unknown": 6,
+      "previews": [
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "insert shortcut connections (Fig. 3, right) which turn the"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "network into its counterpart residual version. The identity"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "shortcuts (Eqn.(1)) can be directly used when the input and\noutput are of the same dimensions (solid line shortcuts in"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Fig. 3). When the dimensions increase (dotted line shortcuts"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "3x3 conv, 128 7x7 conv, 64, /2 7x7 conv, 64, /2\npool, /2 pool, /2 pool, /2"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "for increasing dimensions. This option introduces no extra"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3x3 conv, 256 3x3 conv, 64 3x3 conv, 64"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3x3 conv, 64 3x3 conv, 64"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "in [21, 41]. The image is resized with its shorter side ran-"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3x3 conv, 512 3x3 conv, 128 3x3 conv, 128"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "3x3 conv, 512 3x3 conv, 256 3x3 conv, 256\n3x3 conv, 512 3x3 conv, 256 3x3 conv, 256"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3x3 conv, 256 3x3 conv, 256"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3x3 conv, 256 3x3 conv, 256"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "pool, /2 3x3 conv, 512, /2 3x3 conv, 512, /2"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "4.1. ImageNet Classification"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3x3 conv, 512 3x3 conv, 512"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "fc 4096 fc 1000 fc 1000"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p4:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "more details and other variants."
+        }
+      ]
+    },
+    {
+      "file": "resnet.pdf",
+      "page": 5,
+      "lines": 62,
+      "regions": 8,
+      "gridKind": "math",
+      "blocks": 19,
+      "kinds": {
+        "math": 3,
+        "heading": 1,
+        "paragraph": 7,
+        "caption": 2,
+        "unknown": 6
+      },
+      "listLikeLines": 0,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 0,
+      "captions": 2,
+      "furniture": 0,
+      "math": 3,
+      "paragraphs": 7,
+      "headings": 1,
+      "unknown": 6,
+      "previews": [
+        {
+          "kind": "math",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "["
+        },
+        {
+          "kind": "math",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "["
+        },
+        {
+          "kind": "math",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "["
+        },
+        {
+          "kind": "heading",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Residual Networks. Next we evaluate 18-layer and 34-"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "1×1, 256 1×1, 256 1×1, 256"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "1×1, 512 1×1, 512 1×1, 512"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "1×1, 1024 1×1, 1024 1×1, 1024"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "1×1, 2048 1×1, 2048 1×1, 2048"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "(right). In the first comparison (Table 2 and Fig. 4 right), we use identity mapping for all shortcuts and zero-padding"
+        },
+        {
+          "kind": "caption",
+          "regionId": "resnet.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Table 1. Architectures for ImageNet. Building blocks are shown in brackets (see also Fig. 5), with the numbers of blocks stacked. Down"
+        },
+        {
+          "kind": "caption",
+          "regionId": "resnet.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Figure 4. Training on ImageNet . Thin curves denote training error, and bold curves denote validation error of the center crops. Left: plain"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "sampling is performed by conv3 1, conv4 1, and conv5 1 with a stride of 2."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "resnet.pdf:p5:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "networks of 18 and 34 layers. Right: ResNets of 18 and 34 layers. In this plot, the residual networks have no extra parameter compared to their plain counterparts."
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3×3 max pool, stride 2"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "["
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "18-layer"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "18-layer"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "resnet.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "0"
+        }
+      ]
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "page": 2,
+      "lines": 73,
+      "regions": 7,
+      "gridKind": "none",
+      "blocks": 18,
+      "kinds": {
+        "list": 2,
+        "list-item": 2,
+        "paragraph": 11,
+        "heading": 1,
+        "unknown": 2
+      },
+      "listLikeLines": 4,
+      "listBlocks": 2,
+      "listItemBlocks": 2,
+      "unassignedListLike": 2,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 11,
+      "headings": 1,
+      "unknown": 2,
+      "previews": [
+        {
+          "kind": "list",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "This paper makes the following contributions:\n• We explain an algorithm for dynamically forming trace trees to"
+        },
+        {
+          "kind": "list-item",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": "tracemonkey.pdf:p2:block:list:0",
+          "lines": 1,
+          "mapped": true,
+          "text": "• We explain an algorithm for dynamically forming trace trees to"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "a na¨ıve implementation, inner loops would become hot first, and the VM would start tracing there. When the inner loop exits, the VM would detect that a different branch was taken."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "on ever tracing outer loops. We solve the nested loop problem by recording"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "loop, but then it starts a new trace at the outer loop header. When the outer loop reaches the inner loop header, the system tries to call"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "the outer trace as normal. In this way, our system can trace any number of loops nested to any depth without causing excessive tail duplication."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "We implemented these techniques for an existing JavaScript in"
+        },
+        {
+          "kind": "list",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "2. Overview: Example Tracing Run"
+        },
+        {
+          "kind": "list-item",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": "tracemonkey.pdf:p2:block:list:1",
+          "lines": 1,
+          "mapped": true,
+          "text": "2. Overview: Example Tracing Run"
+        },
+        {
+          "kind": "heading",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "how TraceMonkey executes an example program. The example"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Record Enter"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "LIR Trace Compiled Trace"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "LIR Trace Compiled Trace"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "existing trace"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Compiled Trace"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "code interpreter. Every loop back edge is a potential trace point."
+        },
+        {
+          "kind": "unknown",
+          "regionId": "tracemonkey.pdf:p2:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "loop/exit"
+        },
+        {
+          "kind": "unknown",
+          "regionId": null,
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "finish at nested trace loop header loop edge with"
+        }
+      ]
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "page": 3,
+      "lines": 59,
+      "regions": 7,
+      "gridKind": "none",
+      "blocks": 13,
+      "kinds": {
+        "caption": 2,
+        "paragraph": 11
+      },
+      "listLikeLines": 0,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 0,
+      "captions": 2,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 11,
+      "headings": 0,
+      "unknown": 0,
+      "previews": [
+        {
+          "kind": "caption",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Figure 3. LIR snippet for sample program. This is the LIR recorded for line 5 of the sample program in Figure 1. The LIR encodes"
+        },
+        {
+          "kind": "caption",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "Figure 4. x86 snippet for sample program. This is the x86 code compiled from the LIR snippet in Figure 3. Most LIR instructions compile"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "v0 := ld state[748] // load primes from the trace activation record"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "st sp[0], v0 // store primes to interpreter stack"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "v1 := ld state[764] // load k from the trace activation record\nv2 := i2f(v1) // convert k from int to double"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "st sp[8], v1 // store k to interpreter stack\nst sp[16], 0 // store false to interpreter stack"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "v3 := ld v0[4] // load class word for primes\nv4 := and v3, -4 // mask out object class tag for primes\nv5 := eq v4, Array // test whether primes is an array"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "xf v5 // side exit if v5 is false"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "v6 := js_Array_set(v0, v2, false) // call function to set array element\nv7 := eq v6, 0 // test return value from call"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "xt v7 // side exit if js_Array_set returns false."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "the semantics in SSA form using temporary variables. The LIR also encodes all the stores that the interpreter would do to its data stack.\nSometimes these stores can be optimized aw"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 22,
+          "mapped": true,
+          "text": "mov edx, ebx(748) // load primes from the trace activation record\nmov edi(0), edx // (*) store primes to interpreter stack\nmov esi, ebx(764) // load k from the trace activation rec"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p3:region:0",
+          "parent": null,
+          "lines": 3,
+          "mapped": true,
+          "text": "to a single x86 instruction. Instructions marked with (*) would be omitted by an idealized compiler that knew that none of the side exits\nwould ever be taken. The 17 instructions g"
+        }
+      ]
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "page": 4,
+      "lines": 66,
+      "regions": 7,
+      "gridKind": "none",
+      "blocks": 4,
+      "kinds": {
+        "paragraph": 4
+      },
+      "listLikeLines": 1,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 1,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 4,
+      "headings": 0,
+      "unknown": 0,
+      "previews": [
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p4:region:3",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "LIR instruction. This is just an unconditional branch to the top of the trace. Such traces return only via guards."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p4:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "trace if necessary."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p4:region:3",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "All LIR primitives apply to operands of specific types. Thus,"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p4:region:0",
+          "parent": null,
+          "lines": 2,
+          "mapped": true,
+          "text": "ate on unboxed values in simple variables and arrays as much as possible."
+        }
+      ]
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "page": 5,
+      "lines": 68,
+      "regions": 5,
+      "gridKind": "none",
+      "blocks": 7,
+      "kinds": {
+        "paragraph": 5,
+        "unknown": 2
+      },
+      "listLikeLines": 0,
+      "listBlocks": 0,
+      "listItemBlocks": 0,
+      "unassignedListLike": 0,
+      "captions": 0,
+      "furniture": 0,
+      "math": 0,
+      "paragraphs": 5,
+      "headings": 0,
+      "unknown": 2,
+      "previews": [
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "trace we note the fact that the variable in question as been observed"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "which we call the “oracle”."
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "side exits. These traces are recorded much like root traces: there is"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p5:region:2",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "threshold, recording starts. Recording stops exactly as for the root"
+        },
+        {
+          "kind": "paragraph",
+          "regionId": "tracemonkey.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "then to an integer internally to the array implementation."
+        },
+        {
+          "kind": "unknown",
+          "regionId": "tracemonkey.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "3.2"
+        },
+        {
+          "kind": "unknown",
+          "regionId": "tracemonkey.pdf:p5:region:0",
+          "parent": null,
+          "lines": 1,
+          "mapped": true,
+          "text": "1"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "bert.pdf",
+      "paragraphs": 195,
+      "lists": 5,
+      "captions": 8,
+      "unknown": 29
+    },
+    {
+      "file": "resnet.pdf",
+      "paragraphs": 135,
+      "lists": 1,
+      "captions": 9,
+      "unknown": 42
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "paragraphs": 128,
+      "lists": 3,
+      "captions": 5,
+      "unknown": 39
+    }
+  ]
+}

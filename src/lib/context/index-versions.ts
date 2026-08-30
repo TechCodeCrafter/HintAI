@@ -11,6 +11,13 @@ export const PDFJS_DIST_VERSION = "6.3.289";
 /** Bump when the pdfjs-dist pin or extract options change. */
 export const PDF_PARSER_VERSION = 1;
 /** Bump when join / column / header / dehyphenation rules change. */
-export const DOCUMENT_NORMALIZER_VERSION = 2;
+export const DOCUMENT_NORMALIZER_VERSION = 3;
 /** Bump when PDF chunk boundaries change. Not part of evidence currentness. */
-export const DOCUMENT_CHUNKER_VERSION = 1;
+export const DOCUMENT_CHUNKER_VERSION = 2;
+/**
+ * Derived layout IR only. Bump when VisualLine / region-candidate identity
+ * or feature formulas change. Not part of evidence currentness.
+ * 4A.9.2: production layout consumes the same dominant-prose analysis.
+ * 4A.9.3: derived DocumentBlocks (paragraph/list/math/furniture). Not evidence.
+ */
+export const DOCUMENT_STRUCTURE_VERSION = 3;

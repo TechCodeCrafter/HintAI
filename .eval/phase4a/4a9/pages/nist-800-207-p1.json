@@ -1,0 +1,418 @@
+{
+  "file": "nist-800-207.pdf",
+  "page": 1,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "single-column",
+    "index": "full",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 3 !== 2 (total clusters 4; sizes 144.3:1, 261.7:3, 315.8:2, 465.0:4)"
+    ],
+    "clusterCount": 4,
+    "substantialClusterCount": 3,
+    "clusters": [
+      {
+        "x": 144.28,
+        "items": 1,
+        "meanWidth": 153.03,
+        "yMin": 280.32,
+        "yMax": 280.32
+      },
+      {
+        "x": 261.7,
+        "items": 3,
+        "meanWidth": 278.5,
+        "yMin": 376.56,
+        "yMax": 703.08
+      },
+      {
+        "x": 315.78,
+        "items": 2,
+        "meanWidth": 187.47,
+        "yMin": 280.32,
+        "yMax": 360.41
+      },
+      {
+        "x": 464.97,
+        "items": 4,
+        "meanWidth": 75.01,
+        "yMin": 481.02,
+        "yMax": 529.32
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 144.28,
+      "items": 1,
+      "meanWidth": 153.03,
+      "yMin": 280.32,
+      "yMax": 280.32
+    },
+    {
+      "x": 261.7,
+      "items": 3,
+      "meanWidth": 278.5,
+      "yMin": 376.56,
+      "yMax": 703.08
+    },
+    {
+      "x": 315.78,
+      "items": 2,
+      "meanWidth": 187.47,
+      "yMin": 280.32,
+      "yMax": 360.41
+    },
+    {
+      "x": 464.97,
+      "items": 4,
+      "meanWidth": 75.01,
+      "yMin": 481.02,
+      "yMax": 529.32
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 8,
+    "clusters": [
+      {
+        "x": 464.97,
+        "items": 4,
+        "share": 0.5
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.5
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        144.28,
+        261.7
+      ],
+      "gap": 117.41999999999999
+    },
+    {
+      "between": [
+        261.7,
+        315.78
+      ],
+      "gap": 54.079999999999984
+    },
+    {
+      "between": [
+        315.78,
+        464.97
+      ],
+      "gap": 149.19000000000005
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "NIST Special Publication 800-207",
+      "x": 252.78,
+      "y": 703.08,
+      "width": 287.25,
+      "height": 19.98,
+      "right": 540.03,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "",
+      "x": 266.4,
+      "y": 623.76,
+      "width": 0,
+      "height": 0,
+      "right": 270.4,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "Zero Trust Architecture",
+      "x": 266.4,
+      "y": 623.76,
+      "width": 274.17,
+      "height": 28.02,
+      "right": 540.57,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 479.7,
+      "y": 529.32,
+      "width": 0,
+      "height": 0,
+      "right": 483.7,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "Scott Rose",
+      "x": 479.7,
+      "y": 529.32,
+      "width": 60.27,
+      "height": 13.98,
+      "right": 539.97,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 451.8,
+      "y": 513.24,
+      "width": 0,
+      "height": 0,
+      "right": 455.8,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "Oliver Borchert",
+      "x": 451.8,
+      "y": 513.24,
+      "width": 88.19,
+      "height": 13.98,
+      "right": 539.99,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "",
+      "x": 470.39,
+      "y": 497.17,
+      "width": 0,
+      "height": 0,
+      "right": 474.39,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "Stu Mitchell",
+      "x": 470.39,
+      "y": 497.17,
+      "width": 69.59,
+      "height": 13.98,
+      "right": 539.98,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "",
+      "x": 457.98,
+      "y": 481.02,
+      "width": 0,
+      "height": 0,
+      "right": 461.98,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "Sean Connelly",
+      "x": 457.98,
+      "y": 481.02,
+      "width": 81.98,
+      "height": 13.98,
+      "right": 539.96,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "",
+      "x": 265.92,
+      "y": 376.56,
+      "width": 0,
+      "height": 0,
+      "right": 269.92,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "This publication is available free of charge from:",
+      "x": 265.92,
+      "y": 376.56,
+      "width": 274.07,
+      "height": 13.98,
+      "right": 539.98,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": "",
+      "x": 307.44,
+      "y": 360.41,
+      "width": 0,
+      "height": 0,
+      "right": 311.44,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "https://doi.org/10.6028/NIST.SP.800-207",
+      "x": 307.44,
+      "y": 360.41,
+      "width": 232.59,
+      "height": 13.98,
+      "right": 540.03,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "",
+      "x": 144.28,
+      "y": 280.32,
+      "width": 0,
+      "height": 0,
+      "right": 148.28,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "C O M P U T E R",
+      "x": 144.28,
+      "y": 280.32,
+      "width": 153.03,
+      "height": 15.92,
+      "right": 297.31,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": " ",
+      "x": 297.31,
+      "y": 280.32,
+      "width": 1.68,
+      "height": 0,
+      "right": 298.99,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "S E C U R I T Y",
+      "x": 324.12,
+      "y": 280.32,
+      "width": 142.35,
+      "height": 15.92,
+      "right": 466.47,
+      "visualLineId": 8,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 703.08,
+      "height": 19.98,
+      "text": "NIST Special Publication 800-207",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 252.78
+    },
+    {
+      "lineId": 1,
+      "y": 623.76,
+      "height": 28.02,
+      "text": "Zero Trust Architecture",
+      "itemIndexes": [
+        2
+      ],
+      "firstX": 266.4
+    },
+    {
+      "lineId": 2,
+      "y": 529.32,
+      "height": 13.98,
+      "text": "Scott Rose",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 479.7
+    },
+    {
+      "lineId": 3,
+      "y": 513.24,
+      "height": 13.98,
+      "text": "Oliver Borchert",
+      "itemIndexes": [
+        6
+      ],
+      "firstX": 451.8
+    },
+    {
+      "lineId": 4,
+      "y": 497.17,
+      "height": 13.98,
+      "text": "Stu Mitchell",
+      "itemIndexes": [
+        8
+      ],
+      "firstX": 470.39
+    },
+    {
+      "lineId": 5,
+      "y": 481.02,
+      "height": 13.98,
+      "text": "Sean Connelly",
+      "itemIndexes": [
+        10
+      ],
+      "firstX": 457.98
+    },
+    {
+      "lineId": 6,
+      "y": 376.56,
+      "height": 13.98,
+      "text": "This publication is available free of charge from:",
+      "itemIndexes": [
+        12
+      ],
+      "firstX": 265.92
+    },
+    {
+      "lineId": 7,
+      "y": 360.41,
+      "height": 13.98,
+      "text": "https://doi.org/10.6028/NIST.SP.800-207",
+      "itemIndexes": [
+        14
+      ],
+      "firstX": 307.44
+    },
+    {
+      "lineId": 8,
+      "y": 280.32,
+      "height": 15.92,
+      "text": "C O M P U T E R S E C U R I T Y",
+      "itemIndexes": [
+        16,
+        17,
+        18
+      ],
+      "firstX": 144.28
+    }
+  ]
+}

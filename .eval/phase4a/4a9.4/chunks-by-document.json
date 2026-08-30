@@ -1,0 +1,170 @@
+[
+  {
+    "file": "attention.pdf",
+    "before": 304,
+    "after": 93,
+    "reductionPct": 69.4,
+    "pages": 15,
+    "chunksPerPage": 6.2,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "bert.pdf",
+    "before": 325,
+    "after": 209,
+    "reductionPct": 35.7,
+    "pages": 16,
+    "chunksPerPage": 13.1,
+    "over200": true,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "bitcoin.pdf",
+    "before": 227,
+    "after": 80,
+    "reductionPct": 64.8,
+    "pages": 9,
+    "chunksPerPage": 8.9,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "before": 922,
+    "after": 275,
+    "reductionPct": 70.2,
+    "pages": 31,
+    "chunksPerPage": 8.9,
+    "over200": true,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "before": 30,
+    "after": 9,
+    "reductionPct": 70,
+    "pages": 28,
+    "chunksPerPage": 0.3,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "encrypted-sample.pdf",
+    "readiness": "unreadable",
+    "before": 0,
+    "after": 0
+  },
+  {
+    "file": "encrypted.pdf",
+    "readiness": "unreadable",
+    "before": 0,
+    "after": 0
+  },
+  {
+    "file": "irs-p15.pdf",
+    "readiness": "refused",
+    "before": 0,
+    "after": 0
+  },
+  {
+    "file": "lora.pdf",
+    "before": 529,
+    "after": 127,
+    "reductionPct": 76,
+    "pages": 26,
+    "chunksPerPage": 4.9,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "nist-800-12.pdf",
+    "readiness": "refused",
+    "before": 0,
+    "after": 0
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "before": 138,
+    "after": 50,
+    "reductionPct": 63.8,
+    "pages": 7,
+    "chunksPerPage": 7.1,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "before": 1200,
+    "after": 567,
+    "reductionPct": 52.8,
+    "pages": 59,
+    "chunksPerPage": 9.6,
+    "over200": true,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "before": 2104,
+    "after": 715,
+    "reductionPct": 66,
+    "pages": 80,
+    "chunksPerPage": 8.9,
+    "over200": true,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "before": 689,
+    "after": 381,
+    "reductionPct": 44.7,
+    "pages": 29,
+    "chunksPerPage": 13.1,
+    "over200": true,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "resnet.pdf",
+    "before": 804,
+    "after": 137,
+    "reductionPct": 83,
+    "pages": 12,
+    "chunksPerPage": 11.4,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  },
+  {
+    "file": "rfc9110.pdf",
+    "readiness": "refused",
+    "before": 0,
+    "after": 0
+  },
+  {
+    "file": "scanned.pdf",
+    "readiness": "scanned",
+    "before": 0,
+    "after": 0
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "before": 645,
+    "after": 138,
+    "reductionPct": 78.6,
+    "pages": 14,
+    "chunksPerPage": 9.9,
+    "over200": false,
+    "pdfjsDuringChunk": 0,
+    "offsetErrors": 0
+  }
+]

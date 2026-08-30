@@ -1,0 +1,50 @@
+{
+  "pdfCap": 200,
+  "contextCap": 800,
+  "over200": [
+    {
+      "file": "bert.pdf",
+      "chunks": 209
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "chunks": 275
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "chunks": 567
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "chunks": 715
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "chunks": 381
+    }
+  ],
+  "largest5": [
+    {
+      "file": "nist-800-63b.pdf",
+      "chunks": 715
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "chunks": 567
+    },
+    {
+      "file": "omb-m22-09.pdf",
+      "chunks": 381
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "chunks": 275
+    },
+    {
+      "file": "bert.pdf",
+      "chunks": 209
+    }
+  ],
+  "largest5Sum": 2147,
+  "wouldExceed800": true
+}

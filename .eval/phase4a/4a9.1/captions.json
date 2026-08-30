@@ -1,0 +1,814 @@
+[
+  {
+    "file": "attention.pdf",
+    "page": 3,
+    "lineId": "attention.pdf:p3:line:0",
+    "text": "Figure 1: The Transformer - model architecture.",
+    "y": 379.699
+  },
+  {
+    "file": "attention.pdf",
+    "page": 4,
+    "lineId": "attention.pdf:p4:line:1",
+    "text": "Figure 2: (left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several",
+    "y": 509.981
+  },
+  {
+    "file": "attention.pdf",
+    "page": 6,
+    "lineId": "attention.pdf:p6:line:0",
+    "text": "Table 1: Maximum path lengths, per-layer complexity and minimum number of sequential operations",
+    "y": 713.245
+  },
+  {
+    "file": "attention.pdf",
+    "page": 8,
+    "lineId": "attention.pdf:p8:line:0",
+    "text": "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-art models on the",
+    "y": 713.245
+  },
+  {
+    "file": "attention.pdf",
+    "page": 8,
+    "lineId": "attention.pdf:p8:line:38",
+    "text": "Table 2 summarizes our results and compares our translation quality and training costs to other model",
+    "y": 186.144
+  },
+  {
+    "file": "attention.pdf",
+    "page": 9,
+    "lineId": "attention.pdf:p9:line:0",
+    "text": "Table 3: Variations on the Transformer architecture. Unlisted values are identical to those of the base",
+    "y": 713.245
+  },
+  {
+    "file": "attention.pdf",
+    "page": 10,
+    "lineId": "attention.pdf:p10:line:0",
+    "text": "Table 4: The Transformer generalizes well to English constituency parsing (Results are on Section 23",
+    "y": 713.245
+  },
+  {
+    "file": "attention.pdf",
+    "page": 13,
+    "lineId": "attention.pdf:p13:line:9",
+    "text": "Figure 3: An example of the attention mechanism following long-distance dependencies in the",
+    "y": 472.058
+  },
+  {
+    "file": "attention.pdf",
+    "page": 14,
+    "lineId": "attention.pdf:p14:line:13",
+    "text": "Figure 4: Two attention heads, also in layer 5 of 6, apparently involved in anaphora resolution. Top:",
+    "y": 170.163
+  },
+  {
+    "file": "attention.pdf",
+    "page": 15,
+    "lineId": "attention.pdf:p15:line:13",
+    "text": "Figure 5: Many of the attention heads exhibit behaviour that seems related to the structure of the",
+    "y": 182.04600000000002
+  },
+  {
+    "file": "bert.pdf",
+    "page": 3,
+    "lineId": "bert.pdf:p3:line:8",
+    "text": "Figure 1: Overall pre-training and fine-tuning procedures for BERT. Apart from output layers, the same architec-",
+    "y": 575.278
+  },
+  {
+    "file": "bert.pdf",
+    "page": 5,
+    "lineId": "bert.pdf:p5:line:7",
+    "text": "Figure 2: BERT input representation. The input embeddings are the sum of the token embeddings, the segmenta-",
+    "y": 649.885
+  },
+  {
+    "file": "bert.pdf",
+    "page": 6,
+    "lineId": "bert.pdf:p6:line:7",
+    "text": "Table 1: GLUE Test results, scored by the evaluation server ( https://gluebenchmark.com/leaderboard ).",
+    "y": 669.59
+  },
+  {
+    "file": "bert.pdf",
+    "page": 7,
+    "lineId": "bert.pdf:p7:line:18",
+    "text": "Table 2: SQuAD 1.1 results. The BERT ensemble answer when s ˆ i,j > s null + τ , where the thresh-",
+    "y": 578.9300526315786
+  },
+  {
+    "file": "bert.pdf",
+    "page": 7,
+    "lineId": "bert.pdf:p7:line:36",
+    "text": "Table 3: SQuAD 2.0 results. We exclude entries that (SWAG) dataset contains 113k sentence-pair com-",
+    "y": 386.4167500000001
+  },
+  {
+    "file": "bert.pdf",
+    "page": 8,
+    "lineId": "bert.pdf:p8:line:9",
+    "text": "Table 5: Ablation over the pre-training tasks using the",
+    "y": 678.857
+  },
+  {
+    "file": "bert.pdf",
+    "page": 8,
+    "lineId": "bert.pdf:p8:line:29",
+    "text": "Table 6. In this table, we report the average Dev",
+    "y": 459.7840000000005
+  },
+  {
+    "file": "bert.pdf",
+    "page": 9,
+    "lineId": "bert.pdf:p9:line:15",
+    "text": "Table 7: CoNLL-2003 Named Entity Recognition re-",
+    "y": 598.165
+  },
+  {
+    "file": "bert.pdf",
+    "page": 9,
+    "lineId": "bert.pdf:p9:line:59",
+    "text": "Table 6: Ablation over BERT model size. #L = the izing these findings to deep bidirectional architec-",
+    "y": 118.974
+  },
+  {
+    "file": "bert.pdf",
+    "page": 13,
+    "lineId": "bert.pdf:p13:line:6",
+    "text": "Figure 3: Differences in pre-training model architectures. BERT uses a bidirectional Transformer. OpenAI GPT",
+    "y": 650.869
+  },
+  {
+    "file": "bert.pdf",
+    "page": 15,
+    "lineId": "bert.pdf:p15:line:13",
+    "text": "Figure 4: Illustrations of Fine-tuning BERT on Different Tasks.",
+    "y": 380.898
+  },
+  {
+    "file": "bert.pdf",
+    "page": 16,
+    "lineId": "bert.pdf:p16:line:6",
+    "text": "Figure 5 presents MNLI Dev accuracy after fine- we report both fine-tuning and feature-based ap-",
+    "y": 700.695
+  },
+  {
+    "file": "bert.pdf",
+    "page": 16,
+    "lineId": "bert.pdf:p16:line:51",
+    "text": "Figure 5: Ablation over number of training steps. This",
+    "y": 118.376
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 17,
+    "lineId": "cisa-ransomware.pdf:p17:line:1",
+    "text": "Figure 1: Example Network Diagram",
+    "y": 269.524
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 18,
+    "lineId": "cisa-ransomware.pdf:p18:line:1",
+    "text": "Figure 2: Flat (Unsegmented) Network Figure 3: Seg mented Network",
+    "y": 449.5230000000001
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "page": 29,
+    "lineId": "cisa-ransomware.pdf:p29:line:6",
+    "text": "Table 1: Response Contacts Information",
+    "y": 571.6809999999999
+  },
+  {
+    "file": "lora.pdf",
+    "page": 4,
+    "lineId": "lora.pdf:p4:line:6",
+    "text": "Table 1: Infernece latency of a single forward pass in GPT-2 medium measured in milliseconds, av-",
+    "y": 607.613
+  },
+  {
+    "file": "lora.pdf",
+    "page": 6,
+    "lineId": "lora.pdf:p6:line:16",
+    "text": "Table 2: RoBERTa base , RoBERTa large , and DeBERTa XXL with different adaptation methods on the",
+    "y": 500.881
+  },
+  {
+    "file": "lora.pdf",
+    "page": 7,
+    "lineId": "lora.pdf:p7:line:14",
+    "text": "Table 3: GPT-2 medium (M) and large (L) with different adaptation methods on the E2E NLG",
+    "y": 514.708
+  },
+  {
+    "file": "lora.pdf",
+    "page": 8,
+    "lineId": "lora.pdf:p8:line:11",
+    "text": "Table 4: Performance of different adaptation methods on GPT-3 175B. We report the logical form",
+    "y": 563.777
+  },
+  {
+    "file": "lora.pdf",
+    "page": 8,
+    "lineId": "lora.pdf:p8:line:40",
+    "text": "Figure 2: GPT-3 175B validation accuracy vs. number of trainable parameters of several adaptation",
+    "y": 196.14
+  },
+  {
+    "file": "lora.pdf",
+    "page": 10,
+    "lineId": "lora.pdf:p10:line:16",
+    "text": "Table 5: Validation accuracy on WikiSQL and MultiNLI after applying LoRA to different types of",
+    "y": 459.288
+  },
+  {
+    "file": "lora.pdf",
+    "page": 10,
+    "lineId": "lora.pdf:p10:line:34",
+    "text": "Table 6: Validation accuracy on WikiSQL and MultiNLI with different rank r . To our surprise, a",
+    "y": 189.6
+  },
+  {
+    "file": "lora.pdf",
+    "page": 10,
+    "lineId": "lora.pdf:p10:line:37",
+    "text": "Table 6 shows that, surprisingly, LoRA already performs competitively with a very small r (more",
+    "y": 145.249
+  },
+  {
+    "file": "lora.pdf",
+    "page": 11,
+    "lineId": "lora.pdf:p11:line:29",
+    "text": "Figure 3: Subspace similarity between column vectors of A r =8 and A r =64 for both ∆ W q and ∆ W v .",
+    "y": 383.89740000000006
+  },
+  {
+    "file": "lora.pdf",
+    "page": 12,
+    "lineId": "lora.pdf:p12:line:16",
+    "text": "Figure 4: Left and Middle: Normalized subspace similarity between the column vectors of A r =64",
+    "y": 564.468
+  },
+  {
+    "file": "lora.pdf",
+    "page": 12,
+    "lineId": "lora.pdf:p12:line:29",
+    "text": "Table 7: The Frobenius norm of U > W q V > where U and V are the left/right top r singular vector",
+    "y": 354.2813999999999
+  },
+  {
+    "file": "lora.pdf",
+    "page": 17,
+    "lineId": "lora.pdf:p17:line:3",
+    "text": "Table 8: Fine-tuning significantly outperforms few-shot learning on GPT-3 (Brown et al., 2020).",
+    "y": 648.129
+  },
+  {
+    "file": "lora.pdf",
+    "page": 17,
+    "lineId": "lora.pdf:p17:line:39",
+    "text": "Figure 5: Percentage slow-down of inference latency compared to the no-adapter ( r = 0 ) baseline.",
+    "y": 210.839
+  },
+  {
+    "file": "lora.pdf",
+    "page": 19,
+    "lineId": "lora.pdf:p19:line:42",
+    "text": "Table 9: The hyperparameters we used for RoBERTa on the GLUE benchmark.",
+    "y": 227.561
+  },
+  {
+    "file": "lora.pdf",
+    "page": 20,
+    "lineId": "lora.pdf:p20:line:12",
+    "text": "Table 10: The hyperparameters for DeBERTa XXL on tasks included in the GLUE benchmark.",
+    "y": 556.452
+  },
+  {
+    "file": "lora.pdf",
+    "page": 20,
+    "lineId": "lora.pdf:p20:line:30",
+    "text": "Table 11: The hyperparameters for GPT-2 LoRA on E2E, WebNLG and DART.",
+    "y": 308.538
+  },
+  {
+    "file": "lora.pdf",
+    "page": 21,
+    "lineId": "lora.pdf:p21:line:7",
+    "text": "Table 12: The training hyperparameters used for different GPT-3 adaption methods. We use the",
+    "y": 597.973
+  },
+  {
+    "file": "lora.pdf",
+    "page": 21,
+    "lineId": "lora.pdf:p21:line:41",
+    "text": "Table 13: GPT-2 with different adaptation methods on DART. The variances of MET and TER are",
+    "y": 88.224
+  },
+  {
+    "file": "lora.pdf",
+    "page": 22,
+    "lineId": "lora.pdf:p22:line:16",
+    "text": "Table 14: GPT-2 with different adaptation methods on WebNLG. The variances of MET and TER",
+    "y": 494.109
+  },
+  {
+    "file": "lora.pdf",
+    "page": 23,
+    "lineId": "lora.pdf:p23:line:31",
+    "text": "Table 15: Hyperparameter analysis of different adaptation approaches on WikiSQL and MNLI. Both",
+    "y": 311.268
+  },
+  {
+    "file": "lora.pdf",
+    "page": 23,
+    "lineId": "lora.pdf:p23:line:40",
+    "text": "Table 16: Validation accuracy of different methods on subsets of MNLI using GPT-3 175B. MNLI-",
+    "y": 176.014
+  },
+  {
+    "file": "lora.pdf",
+    "page": 24,
+    "lineId": "lora.pdf:p24:line:15",
+    "text": "Table 17: The hyperparameters used for different GPT-3 adaptation methods on MNLI(m)- n .",
+    "y": 517.577
+  },
+  {
+    "file": "lora.pdf",
+    "page": 25,
+    "lineId": "lora.pdf:p25:line:43",
+    "text": "Figure 6: Normalized subspace similarity between the column vectors of A r =8 and A r =64 for both",
+    "y": 330.46246153846147
+  },
+  {
+    "file": "lora.pdf",
+    "page": 26,
+    "lineId": "lora.pdf:p26:line:27",
+    "text": "Figure 7: Normalized subspace similarity between the column vectors of A r =64 from two randomly",
+    "y": 515.2347142857142
+  },
+  {
+    "file": "lora.pdf",
+    "page": 26,
+    "lineId": "lora.pdf:p26:line:42",
+    "text": "Table 18: Validation loss and test set metrics on E2E NLG Challenge achieved by LoRA with",
+    "y": 320.131
+  },
+  {
+    "file": "lora.pdf",
+    "page": 26,
+    "lineId": "lora.pdf:p26:line:61",
+    "text": "Figure 8: Normalized subspace similarity between the singular directions of W q and those of ∆ W q",
+    "y": 99.01849999999999
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:12",
+    "text": "Figure 1: Zero Trust Access ................................................................ ............................ 5",
+    "y": 483.65999999999997
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:13",
+    "text": "Figure 2: Core Zero Trust Logical Components ................................ .............................. 9",
+    "y": 463.86
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:14",
+    "text": "Figure 3: Device Agent/Gateway Model ........................................................................ 14",
+    "y": 444.06
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:15",
+    "text": "Figure 4: Enclave Gateway Model ................................................................................ 15",
+    "y": 424.26
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:16",
+    "text": "Figure 5: Resource Portal Model ................................................................................... 16",
+    "y": 404.46
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:17",
+    "text": "Figure 6: Application Sandboxes ................................................................................... 17",
+    "y": 384.66
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:18",
+    "text": "Figure 7: Trust Algorithm Input ...................................................................................... 18",
+    "y": 364.85999999999996
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:19",
+    "text": "Figure 8: Enterprise with Remote Employees ............................................................... 24",
+    "y": 345.06
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:20",
+    "text": "Figure 9: Multi-cloud Use Case ..................................................................................... 24",
+    "y": 325.26
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:21",
+    "text": "Figure 10: Enterprise with Nonemployee Access .......................................................... 25",
+    "y": 305.46
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:22",
+    "text": "Figure 11: Cross-Enterprise Collaboration .................................................................... 26",
+    "y": 285.66
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 9,
+    "lineId": "nist-800-207.pdf:p9:line:23",
+    "text": "Figure 12: ZTA Deployment Cycle ................................................................................ 37",
+    "y": 265.86
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 18,
+    "lineId": "nist-800-207.pdf:p18:line:11",
+    "text": "Figure 2: Core Zero Trust Logical Components",
+    "y": 361.02
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 23,
+    "lineId": "nist-800-207.pdf:p23:line:2",
+    "text": "Figure 3: Device Agent/Gateway Model",
+    "y": 520.26
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 24,
+    "lineId": "nist-800-207.pdf:p24:line:2",
+    "text": "Figure 4: Enclave Gateway Model",
+    "y": 502.26
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 25,
+    "lineId": "nist-800-207.pdf:p25:line:2",
+    "text": "Figure 5: Resource Portal Model",
+    "y": 488.82
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 26,
+    "lineId": "nist-800-207.pdf:p26:line:2",
+    "text": "Figure 6: Application Sandboxes",
+    "y": 504.9
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 27,
+    "lineId": "nist-800-207.pdf:p27:line:2",
+    "text": "Figure 7: Trust Algorithm Input",
+    "y": 453.42
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 33,
+    "lineId": "nist-800-207.pdf:p33:line:2",
+    "text": "Figure 8: Enterprise with Remote Employees",
+    "y": 491.22
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 33,
+    "lineId": "nist-800-207.pdf:p33:line:11",
+    "text": "Figure 9: Multi-cloud Use Case",
+    "y": 178.68
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 34,
+    "lineId": "nist-800-207.pdf:p34:line:17",
+    "text": "Figure 10: Enterprise with Nonemployee Access",
+    "y": 145.32
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 35,
+    "lineId": "nist-800-207.pdf:p35:line:18",
+    "text": "Figure 11: Cross-Enterprise Collaboration",
+    "y": 228.42
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "page": 46,
+    "lineId": "nist-800-207.pdf:p46:line:19",
+    "text": "Figure 12: ZTA Deployment Cycle",
+    "y": 88.02
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 10,
+    "lineId": "nist-800-63b.pdf:p10:line:5",
+    "text": "Table 2-1 Normative and Informative Sections of SP 800-63B ....................................... 3",
+    "y": 623.5200000000001
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 10,
+    "lineId": "nist-800-63b.pdf:p10:line:6",
+    "text": "Table 4-1 AAL Summary of Requirements .................................................................... 11",
+    "y": 603.84
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 10,
+    "lineId": "nist-800-63b.pdf:p10:line:7",
+    "text": "Table 8-1 Authenticator Threats .................................................................................... 41",
+    "y": 583.92
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 14,
+    "lineId": "nist-800-63b.pdf:p14:line:18",
+    "text": "Table 2-1 Normative and Informative Sections of SP 800-63B",
+    "y": 442.8
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 22,
+    "lineId": "nist-800-63b.pdf:p22:line:15",
+    "text": "Table 4-1 summarizes the requirements for each of the AALs:",
+    "y": 493.68
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 22,
+    "lineId": "nist-800-63b.pdf:p22:line:16",
+    "text": "Table 4-1 AAL Summary of Requirements",
+    "y": 470.64
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 50,
+    "lineId": "nist-800-63b.pdf:p50:line:20",
+    "text": "Table 7-1 - AAL Reauthentication Requirements",
+    "y": 394.08
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 52,
+    "lineId": "nist-800-63b.pdf:p52:line:25",
+    "text": "Table 8-1 Authenticator Threats",
+    "y": 317.76
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 56,
+    "lineId": "nist-800-63b.pdf:p56:line:21",
+    "text": "Table 8-2 Mitigating Authenticator Threats",
+    "y": 376.08
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 68,
+    "lineId": "nist-800-63b.pdf:p68:line:34",
+    "text": "Table 10-1 summarizes the usability considerations for typical usage and intermittent events for",
+    "y": 170.16
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "page": 69,
+    "lineId": "nist-800-63b.pdf:p69:line:7",
+    "text": "Table 10-1 - Usability Considerations Summary by Authenticator Type",
+    "y": 630.72
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 2,
+    "lineId": "resnet.pdf:p2:line:8",
+    "text": "Figure 2. Residual learning: a building block. the residual learning principle is generic, and we expect that",
+    "y": 626.6979999999999
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 4,
+    "lineId": "resnet.pdf:p4:line:61",
+    "text": "Figure 3. Example network architectures for ImageNet. Left : the 18-layer plain net is of a similar form. See Table 1 for de-",
+    "y": 152.37339999999995
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 5,
+    "lineId": "resnet.pdf:p5:line:21",
+    "text": "Table 1. Architectures for ImageNet. Building blocks are shown in brackets (see also Fig. 5), with the numbers of blocks stacked. Down-",
+    "y": 560.525
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 5,
+    "lineId": "resnet.pdf:p5:line:35",
+    "text": "Figure 4. Training on ImageNet . Thin curves denote training error, and bold curves denote validation error of the center crops. Left: plain",
+    "y": 392.829
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 5,
+    "lineId": "resnet.pdf:p5:line:42",
+    "text": "Table 2. Top-1 error (%, 10-crop testing) on ImageNet validation. layer residual nets ( ResNets ). The baseline architectures",
+    "y": 297.6311666666666
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 6,
+    "lineId": "resnet.pdf:p6:line:15",
+    "text": "Table 3. Error rates (%, 10-crop testing) on ImageNet validation. we investigate projection shortcuts (Eqn.(2)). In Table 3 we",
+    "y": 570.2071666666667
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 6,
+    "lineId": "resnet.pdf:p6:line:32",
+    "text": "Table 4. Error rates (%) of single-model results on the ImageNet ory/time complexity and model sizes. Identity shortcuts are",
+    "y": 389.3885
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 6,
+    "lineId": "resnet.pdf:p6:line:44",
+    "text": "Table 5. Error rates (%) of ensembles . The top-5 error is on the",
+    "y": 267.057
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 7,
+    "lineId": "resnet.pdf:p7:line:15",
+    "text": "Table 6. Classification error on the CIFAR-10 test set. All meth-",
+    "y": 532.029
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 8,
+    "lineId": "resnet.pdf:p8:line:17",
+    "text": "Figure 6. Training on CIFAR-10 . Dashed lines denote training error, and bold lines denote testing error. Left : plain networks. The error",
+    "y": 612.6260000000001
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 8,
+    "lineId": "resnet.pdf:p8:line:34",
+    "text": "Figure 7. Standard deviations (std) of layer responses on CIFAR- layer index (sorted by magnitude) 48.4 27.2",
+    "y": 460.4185964
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 8,
+    "lineId": "resnet.pdf:p8:line:48",
+    "text": "Fig. 7 shows that ResNets have generally smaller responses prove results, which we will study in the future.",
+    "y": 300.48500000000007
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 10,
+    "lineId": "resnet.pdf:p10:line:7",
+    "text": "Table 8 shows the results on the MS COCO validation",
+    "y": 661.176
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 11,
+    "lineId": "resnet.pdf:p11:line:9",
+    "text": "Table 9. Object detection improvements on MS COCO using Faster R-CNN and ResNet-101.",
+    "y": 601.955
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 11,
+    "lineId": "resnet.pdf:p11:line:14",
+    "text": "Table 10. Detection results on the PASCAL VOC 2007 test set. The baseline is the Faster R-CNN system. The system “baseline+++”",
+    "y": 529.811
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 11,
+    "lineId": "resnet.pdf:p11:line:20",
+    "text": "Table 11. Detection results on the PASCAL VOC 2012 test set ( http://host.robots.ox.ac.uk:8080/leaderboard/",
+    "y": 444.166
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 11,
+    "lineId": "resnet.pdf:p11:line:28",
+    "text": "Table 12. Our results (mAP, %) on the ImageNet detection dataset.",
+    "y": 334.093
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 12,
+    "lineId": "resnet.pdf:p12:line:8",
+    "text": "Table 14. Comparisons of localization error (%) on the ImageNet",
+    "y": 637.272
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 12,
+    "lineId": "resnet.pdf:p12:line:9",
+    "text": "Table 13. Localization error (%) on the ImageNet validation. In",
+    "y": 632.28
+  },
+  {
+    "file": "resnet.pdf",
+    "page": 12,
+    "lineId": "resnet.pdf:p12:line:76",
+    "text": "Table 13 compares the localization results. Following",
+    "y": 104.91000000000015
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 3,
+    "lineId": "tracemonkey.pdf:p3:line:13",
+    "text": "Figure 3. LIR snippet for sample program. This is the LIR recorded for line 5 of the sample program in Figure 1. The LIR encodes",
+    "y": 570.7786
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 3,
+    "lineId": "tracemonkey.pdf:p3:line:39",
+    "text": "Figure 4. x86 snippet for sample program. This is the x86 code compiled from the LIR snippet in Figure 3. Most LIR instructions compile",
+    "y": 282.0803
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 4,
+    "lineId": "tracemonkey.pdf:p4:line:59",
+    "text": "Figure 3 shows an example LIR trace. one more to get slot 2 from the vector. This is a vast simplification",
+    "y": 126.22665000000009
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 6,
+    "lineId": "tracemonkey.pdf:p6:line:64",
+    "text": "Figure 7 shows basic trace tree compilation (11) applied to a nested Later, the program might take the other branch at i 2 and then",
+    "y": 98.04658571428563
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 7,
+    "lineId": "tracemonkey.pdf:p7:line:17",
+    "text": "Figure 8. Control flow graph of a loop with two nested loops (left)",
+    "y": 578.7425000000001
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 7,
+    "lineId": "tracemonkey.pdf:p7:line:19",
+    "text": "Figure 7. Control flow graph of a nested loop with an if statement the two inner nested trace trees and places guards at their side exit",
+    "y": 559.6648500000001
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 10,
+    "lineId": "tracemonkey.pdf:p10:line:32",
+    "text": "Figure 11. Fraction of dynamic bytecodes executed by inter-",
+    "y": 484.73100000000005
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 11,
+    "lineId": "tracemonkey.pdf:p11:line:8",
+    "text": "Figure 10. Speedup vs. a baseline JavaScript interpreter (SpiderMonkey) for our trace-based JIT compiler, Apple’s SquirrelFish Extreme",
+    "y": 431.3179
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 12,
+    "lineId": "tracemonkey.pdf:p12:line:27",
+    "text": "Figure 13. Detailed trace recording statistics for the SunSpider benchmark set.",
+    "y": 429.1597
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "page": 13,
+    "lineId": "tracemonkey.pdf:p13:line:30",
+    "text": "Figure 12. Fraction of time spent on major VM activities. The",
+    "y": 484.3088
+  }
+]

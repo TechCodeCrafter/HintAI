@@ -1,4 +1,5 @@
 import { buildDocumentChunks, isUsableDocumentChunk } from "../document/chunk.ts";
+import { deriveDocumentStructure } from "../document/structure.ts";
 import { PDF_LIMITS } from "../document/pdf/limits.ts";
 import { READINESS_NOTES } from "../document/pdf/notes.ts";
 import { preferredOpenFile, prunePack } from "../repo/folder.ts";
@@ -18,6 +19,7 @@ import {
   CHUNKER_VERSION,
   DOCUMENT_CHUNKER_VERSION,
   DOCUMENT_NORMALIZER_VERSION,
+  DOCUMENT_STRUCTURE_VERSION,
   PDF_PARSER_VERSION,
   RETRIEVAL_INDEX_VERSION,
   STORED_CHUNK_SCHEMA,
@@ -31,6 +33,7 @@ export type IndexOptions = {
   documentChunkerVersion?: number;
   parserVersion?: number;
   normalizerVersion?: number;
+  structureVersion?: number;
   /**
    * Keep every persisted source. Folder import still prunes; the bench uses
    * this so a 1,000-file Context is actually 1,000 files.
@@ -141,7 +144,7 @@ function documentLedgerValid(
   ledger: IndexedSourceRecord,
   source: PdfStoredSource,
   contentHash: string,
-  versions: { parser: number; normalizer: number; documentChunker: number; index: number },
+  versions: { parser: number; normalizer: number; structure: number; documentChunker: number; index: number },
 ): boolean {
   return (
     ledger.sourceId === source.id &&
@@ -149,6 +152,7 @@ function documentLedgerValid(
     ledger.contentHash === contentHash &&
     ledger.parserVersion === versions.parser &&
     ledger.normalizerVersion === versions.normalizer &&
+    ledger.structureVersion === versions.structure &&
     ledger.documentChunkerVersion === versions.documentChunker &&
     ledger.indexVersion === versions.index &&
     Number.isFinite(ledger.chunkCount) &&
@@ -207,7 +211,7 @@ async function persistDocumentChunks(
   source: PdfStoredSource,
   contentHash: string,
   chunks: IndexedChunk[],
-  versions: { parser: number; normalizer: number; documentChunker: number; index: number },
+  versions: { parser: number; normalizer: number; structure: number; documentChunker: number; index: number },
 ): Promise<void> {
   const record: IndexedSourceRecord = {
     id: documentLedgerKey(source.contextId, source.id, contentHash),
@@ -220,6 +224,7 @@ async function persistDocumentChunks(
     chunkCount: chunks.length,
     parserVersion: versions.parser,
     normalizerVersion: versions.normalizer,
+    structureVersion: versions.structure,
     documentChunkerVersion: versions.documentChunker,
   };
   await repo.writeIndexed(record, chunks);
@@ -243,6 +248,7 @@ export async function indexContext(
   const versions = {
     parser: options.parserVersion ?? PDF_PARSER_VERSION,
     normalizer: options.normalizerVersion ?? DOCUMENT_NORMALIZER_VERSION,
+    structure: options.structureVersion ?? DOCUMENT_STRUCTURE_VERSION,
     documentChunker: options.documentChunkerVersion ?? DOCUMENT_CHUNKER_VERSION,
     index: indexVersion,
   };
@@ -351,7 +357,7 @@ async function indexPdfSource(
   repo: ContextRepository,
   source: PdfStoredSource,
   contentHash: string,
-  versions: { parser: number; normalizer: number; documentChunker: number; index: number },
+  versions: { parser: number; normalizer: number; structure: number; documentChunker: number; index: number },
   stats: ReturnType<typeof emptyIndexStats>,
   timings: { cacheReadMs: number; chunkBuildMs: number },
 ): Promise<IndexedChunk[]> {
@@ -396,7 +402,8 @@ async function indexPdfSource(
   }
 
   const buildStart = nowMs();
-  let chunks = buildDocumentChunks(document);
+  const structure = deriveDocumentStructure(document);
+  let chunks = buildDocumentChunks(document, structure);
   if (chunks.length > PDF_LIMITS.maxDocumentChunksPerPdf) {
     await repo.applyPdfParseResult(source.contextId, source.id, contentHash, {
       readiness: "refused",

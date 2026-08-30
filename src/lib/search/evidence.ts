@@ -95,6 +95,7 @@ export type CommitEvidence = {
  * Evidence that lives on a PDF page. No startLine/endLine — those are file
  * coordinates. Currentness reads cached NormalizedDocument items, not a reparse.
  */
+/** Never includes DocumentBlock.id — blocks are derived structure, not provenance. */
 export type DocumentEvidence = {
   kind: "document";
   id: string;

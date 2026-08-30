@@ -1,0 +1,2022 @@
+{
+  "file": "cs229-notes.pdf",
+  "page": 28,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "skipped",
+    "earliestSkip": "dense-grid",
+    "whyNotTwoColumn": [
+      "dense-grid detector fired first",
+      "substantial left-edge clusters 7 !== 2 (total clusters 8; sizes 115.1:11, 203.8:19, 250.2:12, 288.7:17, 337.7:31, 394.5:9, 444.3:8, 487.7:1)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 7,
+    "clusters": [
+      {
+        "x": 115.1,
+        "items": 11,
+        "meanWidth": 172.41,
+        "yMin": 451.07,
+        "yMax": 654.25
+      },
+      {
+        "x": 203.82,
+        "items": 19,
+        "meanWidth": 20.64,
+        "yMin": 479.96,
+        "yMax": 629.69
+      },
+      {
+        "x": 250.24,
+        "items": 12,
+        "meanWidth": 12.82,
+        "yMin": 518.14,
+        "yMax": 625.35
+      },
+      {
+        "x": 288.74,
+        "items": 17,
+        "meanWidth": 20.91,
+        "yMin": 465.52,
+        "yMax": 625.35
+      },
+      {
+        "x": 337.67,
+        "items": 31,
+        "meanWidth": 8.72,
+        "yMin": 465.52,
+        "yMax": 581
+      },
+      {
+        "x": 394.55,
+        "items": 9,
+        "meanWidth": 3.82,
+        "yMin": 549.75,
+        "yMax": 552.56
+      },
+      {
+        "x": 444.34,
+        "items": 8,
+        "meanWidth": 8.86,
+        "yMin": 494.41,
+        "yMax": 494.41
+      },
+      {
+        "x": 487.69,
+        "items": 1,
+        "meanWidth": 11.71,
+        "yMin": 691.11,
+        "yMax": 691.11
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 115.1,
+      "items": 11,
+      "meanWidth": 172.41,
+      "yMin": 451.07,
+      "yMax": 654.25
+    },
+    {
+      "x": 203.82,
+      "items": 19,
+      "meanWidth": 20.64,
+      "yMin": 479.96,
+      "yMax": 629.69
+    },
+    {
+      "x": 250.24,
+      "items": 12,
+      "meanWidth": 12.82,
+      "yMin": 518.14,
+      "yMax": 625.35
+    },
+    {
+      "x": 288.74,
+      "items": 17,
+      "meanWidth": 20.91,
+      "yMin": 465.52,
+      "yMax": 625.35
+    },
+    {
+      "x": 337.67,
+      "items": 31,
+      "meanWidth": 8.72,
+      "yMin": 465.52,
+      "yMax": 581
+    },
+    {
+      "x": 394.55,
+      "items": 9,
+      "meanWidth": 3.82,
+      "yMin": 549.75,
+      "yMax": 552.56
+    },
+    {
+      "x": 444.34,
+      "items": 8,
+      "meanWidth": 8.86,
+      "yMin": 494.41,
+      "yMax": 494.41
+    },
+    {
+      "x": 487.69,
+      "items": 1,
+      "meanWidth": 11.71,
+      "yMin": 691.11,
+      "yMax": 691.11
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 9,
+    "clusters": [
+      {
+        "x": 115.9,
+        "items": 6,
+        "share": 0.667
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.6666666666666666
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        115.1,
+        203.82
+      ],
+      "gap": 88.72
+    },
+    {
+      "between": [
+        203.82,
+        250.24
+      ],
+      "gap": 46.420000000000016
+    },
+    {
+      "between": [
+        250.24,
+        288.74
+      ],
+      "gap": 38.5
+    },
+    {
+      "between": [
+        288.74,
+        337.67
+      ],
+      "gap": 48.93000000000001
+    },
+    {
+      "between": [
+        337.67,
+        394.55
+      ],
+      "gap": 56.879999999999995
+    },
+    {
+      "between": [
+        394.55,
+        444.34
+      ],
+      "gap": 49.789999999999964
+    },
+    {
+      "between": [
+        444.34,
+        487.69
+      ],
+      "gap": 43.35000000000002
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "28",
+      "x": 487.69,
+      "y": 691.11,
+      "width": 11.71,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "Lastly, let’s discuss parameter fitting. Similar to our original derivation",
+      "x": 128.41,
+      "y": 654.25,
+      "width": 370.98,
+      "height": 11.96,
+      "right": 499.39,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "of ordinary least squares and logistic regression, if we have a training set of",
+      "x": 110.85,
+      "y": 639.8,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 110.85,
+      "y": 625.35,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "n",
+      "x": 110.85,
+      "y": 625.35,
+      "width": 6.99,
+      "height": 11.96,
+      "right": 117.84,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": " ",
+      "x": 117.84,
+      "y": 625.35,
+      "width": 4.02,
+      "height": 0,
+      "right": 121.86,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "examples",
+      "x": 121.86,
+      "y": 625.35,
+      "width": 46.57,
+      "height": 11.96,
+      "right": 168.43,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": " ",
+      "x": 168.43,
+      "y": 625.35,
+      "width": 4.02,
+      "height": 0,
+      "right": 172.45,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "{",
+      "x": 172.45,
+      "y": 625.35,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 178.42,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "(",
+      "x": 178.42,
+      "y": 625.35,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 182.98,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "x",
+      "x": 182.98,
+      "y": 625.35,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 189.63,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "(",
+      "x": 189.63,
+      "y": 629.69,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 192.92,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "i",
+      "x": 192.92,
+      "y": 629.69,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 195.8,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": ")",
+      "x": 195.8,
+      "y": 629.69,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 199.1,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": ", y",
+      "x": 199.6,
+      "y": 625.35,
+      "width": 10.96,
+      "height": 11.96,
+      "right": 210.55,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "(",
+      "x": 210.98,
+      "y": 629.69,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 214.27,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "i",
+      "x": 214.27,
+      "y": 629.69,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 217.15,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": ")",
+      "x": 217.15,
+      "y": 629.69,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 220.45,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": ");",
+      "x": 220.94,
+      "y": 625.35,
+      "width": 7.8,
+      "height": 11.96,
+      "right": 228.75,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": " ",
+      "x": 228.75,
+      "y": 625.35,
+      "width": 1.99,
+      "height": 0,
+      "right": 230.74,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "i",
+      "x": 230.74,
+      "y": 625.35,
+      "width": 3.99,
+      "height": 11.96,
+      "right": 234.74,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": " ",
+      "x": 234.74,
+      "y": 625.35,
+      "width": 3.52,
+      "height": 0,
+      "right": 238.26,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "= 1",
+      "x": 238.26,
+      "y": 625.35,
+      "width": 18.49,
+      "height": 11.96,
+      "right": 256.74,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": ", . . . , n",
+      "x": 256.74,
+      "y": 625.35,
+      "width": 33.21,
+      "height": 11.96,
+      "right": 289.94,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "}",
+      "x": 289.95,
+      "y": 625.35,
+      "width": 5.98,
+      "height": 11.96,
+      "right": 295.92,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": " ",
+      "x": 295.92,
+      "y": 625.35,
+      "width": 4.02,
+      "height": 0,
+      "right": 299.94,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "and would like to learn the parameters",
+      "x": 299.94,
+      "y": 625.35,
+      "width": 199.46,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "",
+      "x": 110.85,
+      "y": 610.91,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": "θ",
+      "x": 110.85,
+      "y": 610.91,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 116.31,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "i",
+      "x": 116.31,
+      "y": 609.12,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 119.19,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": " ",
+      "x": 119.19,
+      "y": 609.12,
+      "width": 4.4,
+      "height": 0,
+      "right": 123.59,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "of this model, we would begin by writing down the log-likelihood",
+      "x": 123.59,
+      "y": 610.91,
+      "width": 333.04,
+      "height": 11.96,
+      "right": 456.63,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": "",
+      "x": 195.61,
+      "y": 576.06,
+      "width": 0,
+      "height": 0,
+      "right": 199.61,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "`",
+      "x": 195.61,
+      "y": 576.06,
+      "width": 4.91,
+      "height": 11.96,
+      "right": 200.52,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": "(",
+      "x": 200.52,
+      "y": 576.06,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 205.07,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": "θ",
+      "x": 205.07,
+      "y": 576.06,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 210.53,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": ")",
+      "x": 210.85,
+      "y": 576.06,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 215.41,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": " ",
+      "x": 215.41,
+      "y": 576.06,
+      "width": 9.96,
+      "height": 0,
+      "right": 225.36,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "=",
+      "x": 225.36,
+      "y": 576.06,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 234.47,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": "",
+      "x": 250.5,
+      "y": 591.01,
+      "width": 0,
+      "height": 0,
+      "right": 254.5,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "n",
+      "x": 250.5,
+      "y": 591.01,
+      "width": 5.14,
+      "height": 7.97,
+      "right": 255.64,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": "∑",
+      "x": 244.44,
+      "y": 587.42,
+      "width": 17.27,
+      "height": 11.96,
+      "right": 261.7,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "",
+      "x": 246.22,
+      "y": 562.22,
+      "width": 0,
+      "height": 0,
+      "right": 250.22,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": "i",
+      "x": 246.22,
+      "y": 562.22,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 249.1,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "=1",
+      "x": 249.1,
+      "y": 562.22,
+      "width": 10.82,
+      "height": 7.97,
+      "right": 259.92,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": "",
+      "x": 263.7,
+      "y": 576.06,
+      "width": 0,
+      "height": 0,
+      "right": 267.7,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "log",
+      "x": 263.7,
+      "y": 576.06,
+      "width": 14.96,
+      "height": 11.96,
+      "right": 278.66,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 278.66,
+      "y": 576.06,
+      "width": 2.15,
+      "height": 0,
+      "right": 280.81,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": "p",
+      "x": 280.81,
+      "y": 576.06,
+      "width": 5.87,
+      "height": 11.96,
+      "right": 286.68,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": "(",
+      "x": 286.68,
+      "y": 576.06,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 291.24,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "y",
+      "x": 291.24,
+      "y": 576.06,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 296.94,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": "(",
+      "x": 297.37,
+      "y": 581,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 300.67,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "i",
+      "x": 300.67,
+      "y": 581,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 303.55,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": ")",
+      "x": 303.55,
+      "y": 581,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 306.84,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "|",
+      "x": 307.34,
+      "y": 576.06,
+      "width": 3.32,
+      "height": 11.96,
+      "right": 310.66,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": "x",
+      "x": 310.66,
+      "y": 576.06,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 317.31,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "(",
+      "x": 317.31,
+      "y": 581,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 320.61,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "i",
+      "x": 320.61,
+      "y": 581,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 323.49,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": ")",
+      "x": 323.49,
+      "y": 581,
+      "width": 3.29,
+      "height": 7.97,
+      "right": 326.78,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": ";",
+      "x": 327.28,
+      "y": 576.06,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 330.53,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": " ",
+      "x": 330.53,
+      "y": 576.06,
+      "width": 1.99,
+      "height": 0,
+      "right": 332.53,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "θ",
+      "x": 332.53,
+      "y": 576.06,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 337.98,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": ")",
+      "x": 338.31,
+      "y": 576.06,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 342.86,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": "=",
+      "x": 225.37,
+      "y": 531.98,
+      "width": 9.11,
+      "height": 11.96,
+      "right": 234.47,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "",
+      "x": 250.5,
+      "y": 546.93,
+      "width": 0,
+      "height": 0,
+      "right": 254.5,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": "n",
+      "x": 250.5,
+      "y": 546.93,
+      "width": 5.14,
+      "height": 7.97,
+      "right": 255.64,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "∑",
+      "x": 244.44,
+      "y": 543.34,
+      "width": 17.27,
+      "height": 11.96,
+      "right": 261.7,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "",
+      "x": 246.22,
+      "y": 518.14,
+      "width": 0,
+      "height": 0,
+      "right": 250.22,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": "i",
+      "x": 246.22,
+      "y": 518.14,
+      "width": 2.88,
+      "height": 7.97,
+      "right": 249.1,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "=1",
+      "x": 249.1,
+      "y": 518.14,
+      "width": 10.82,
+      "height": 7.97,
+      "right": 259.92,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": "",
+      "x": 263.7,
+      "y": 531.98,
+      "width": 0,
+      "height": 0,
+      "right": 267.7,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "log",
+      "x": 263.7,
+      "y": 531.98,
+      "width": 14.96,
+      "height": 11.96,
+      "right": 278.66,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "",
+      "x": 286.14,
+      "y": 546.93,
+      "width": 0,
+      "height": 0,
+      "right": 290.14,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "k",
+      "x": 286.14,
+      "y": 546.93,
+      "width": 4.41,
+      "height": 7.97,
+      "right": 290.55,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "∏",
+      "x": 280.81,
+      "y": 543.34,
+      "width": 15.28,
+      "height": 11.96,
+      "right": 296.09,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": "",
+      "x": 281.73,
+      "y": 517.88,
+      "width": 0,
+      "height": 0,
+      "right": 285.73,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": "l",
+      "x": 281.73,
+      "y": 517.88,
+      "width": 2.53,
+      "height": 7.97,
+      "right": 284.25,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "=1",
+      "x": 284.35,
+      "y": 517.88,
+      "width": 10.82,
+      "height": 7.97,
+      "right": 295.17,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "",
+      "x": 298.08,
+      "y": 552.42,
+      "width": 0,
+      "height": 0,
+      "right": 302.08,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": "(",
+      "x": 298.08,
+      "y": 552.42,
+      "width": 9.46,
+      "height": 11.96,
+      "right": 307.54,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": "",
+      "x": 323.65,
+      "y": 540.07,
+      "width": 0,
+      "height": 0,
+      "right": 327.65,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "e",
+      "x": 323.65,
+      "y": 540.07,
+      "width": 5.43,
+      "height": 11.96,
+      "right": 329.07,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "θ",
+      "x": 329.07,
+      "y": 544.41,
+      "width": 3.95,
+      "height": 7.97,
+      "right": 333.02,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": "T",
+      "x": 333.26,
+      "y": 547.22,
+      "width": 4.37,
+      "height": 5.98,
+      "right": 337.63,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": "l",
+      "x": 333.02,
+      "y": 541.63,
+      "width": 2.4,
+      "height": 5.98,
+      "right": 335.42,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": " ",
+      "x": 335.42,
+      "y": 541.63,
+      "width": 3.67,
+      "height": 0,
+      "right": 339.09,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "x",
+      "x": 339.09,
+      "y": 544.41,
+      "width": 4.77,
+      "height": 7.97,
+      "right": 343.86,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": "(",
+      "x": 343.86,
+      "y": 547.22,
+      "width": 2.88,
+      "height": 5.98,
+      "right": 346.74,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "i",
+      "x": 346.74,
+      "y": 547.22,
+      "width": 2.66,
+      "height": 5.98,
+      "right": 349.4,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": ")",
+      "x": 349.4,
+      "y": 547.22,
+      "width": 2.88,
+      "height": 5.98,
+      "right": 352.28,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "",
+      "x": 308.74,
+      "y": 530.33,
+      "width": 0,
+      "height": 0,
+      "right": 312.74,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": "∑",
+      "x": 308.74,
+      "y": 530.33,
+      "width": 12.62,
+      "height": 11.96,
+      "right": 321.36,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": "k",
+      "x": 321.36,
+      "y": 527.17,
+      "width": 4.41,
+      "height": 7.97,
+      "right": 325.77,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": "j",
+      "x": 321.36,
+      "y": 517.88,
+      "width": 3.42,
+      "height": 7.97,
+      "right": 324.78,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": "=1",
+      "x": 325.24,
+      "y": 517.88,
+      "width": 10.82,
+      "height": 7.97,
+      "right": 336.06,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": " ",
+      "x": 336.06,
+      "y": 517.88,
+      "width": 2.49,
+      "height": 0,
+      "right": 338.55,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": "e",
+      "x": 338.55,
+      "y": 521.36,
+      "width": 5.43,
+      "height": 11.96,
+      "right": 343.98,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": "θ",
+      "x": 343.98,
+      "y": 526.46,
+      "width": 3.95,
+      "height": 7.97,
+      "right": 347.93,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": "T",
+      "x": 348.16,
+      "y": 529.21,
+      "width": 4.37,
+      "height": 5.98,
+      "right": 352.53,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 99,
+      "str": "j",
+      "x": 347.93,
+      "y": 523.81,
+      "width": 3.06,
+      "height": 5.98,
+      "right": 350.99,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 100,
+      "str": " ",
+      "x": 350.99,
+      "y": 523.81,
+      "width": 3.01,
+      "height": 0,
+      "right": 354,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 101,
+      "str": "x",
+      "x": 354,
+      "y": 526.46,
+      "width": 4.77,
+      "height": 7.97,
+      "right": 358.77,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 102,
+      "str": "(",
+      "x": 358.77,
+      "y": 528.81,
+      "width": 2.88,
+      "height": 5.98,
+      "right": 361.65,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 103,
+      "str": "i",
+      "x": 361.65,
+      "y": 528.81,
+      "width": 2.66,
+      "height": 5.98,
+      "right": 364.31,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 104,
+      "str": ")",
+      "x": 364.31,
+      "y": 528.81,
+      "width": 2.88,
+      "height": 5.98,
+      "right": 367.19,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 105,
+      "str": "",
+      "x": 369.38,
+      "y": 552.42,
+      "width": 0,
+      "height": 0,
+      "right": 373.38,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 106,
+      "str": ")",
+      "x": 369.38,
+      "y": 552.42,
+      "width": 9.46,
+      "height": 11.96,
+      "right": 378.84,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 107,
+      "str": "1",
+      "x": 378.84,
+      "y": 549.75,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 383.08,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 108,
+      "str": "{",
+      "x": 383.08,
+      "y": 549.75,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 387.31,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 109,
+      "str": "y",
+      "x": 387.31,
+      "y": 549.75,
+      "width": 4.19,
+      "height": 7.97,
+      "right": 391.5,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 110,
+      "str": "(",
+      "x": 391.78,
+      "y": 552.56,
+      "width": 2.88,
+      "height": 5.98,
+      "right": 394.66,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 111,
+      "str": "i",
+      "x": 394.66,
+      "y": 552.56,
+      "width": 2.66,
+      "height": 5.98,
+      "right": 397.33,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 112,
+      "str": ")",
+      "x": 397.33,
+      "y": 552.56,
+      "width": 2.88,
+      "height": 5.98,
+      "right": 400.2,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 113,
+      "str": "=",
+      "x": 400.7,
+      "y": 549.75,
+      "width": 6.59,
+      "height": 7.97,
+      "right": 407.29,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 114,
+      "str": "l",
+      "x": 407.29,
+      "y": 549.75,
+      "width": 2.53,
+      "height": 7.97,
+      "right": 409.82,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 115,
+      "str": "}",
+      "x": 409.91,
+      "y": 549.75,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 414.15,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 116,
+      "str": "",
+      "x": 110.85,
+      "y": 494.41,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 117,
+      "str": "To obtain the second line above, we used the definition for",
+      "x": 110.85,
+      "y": 494.41,
+      "width": 310.05,
+      "height": 11.96,
+      "right": 420.9,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 118,
+      "str": " ",
+      "x": 420.9,
+      "y": 494.41,
+      "width": 4.86,
+      "height": 0,
+      "right": 425.76,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 119,
+      "str": "p",
+      "x": 425.76,
+      "y": 494.41,
+      "width": 5.87,
+      "height": 11.96,
+      "right": 431.64,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 120,
+      "str": "(",
+      "x": 431.64,
+      "y": 494.41,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 436.19,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 121,
+      "str": "y",
+      "x": 436.19,
+      "y": 494.41,
+      "width": 5.71,
+      "height": 11.96,
+      "right": 441.9,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 122,
+      "str": "|",
+      "x": 442.33,
+      "y": 494.41,
+      "width": 3.32,
+      "height": 11.96,
+      "right": 445.65,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 123,
+      "str": "x",
+      "x": 445.65,
+      "y": 494.41,
+      "width": 6.65,
+      "height": 11.96,
+      "right": 452.3,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 124,
+      "str": ";",
+      "x": 452.3,
+      "y": 494.41,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 455.55,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 125,
+      "str": " ",
+      "x": 455.55,
+      "y": 494.41,
+      "width": 1.99,
+      "height": 0,
+      "right": 457.54,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 126,
+      "str": "θ",
+      "x": 457.54,
+      "y": 494.41,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 463,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 127,
+      "str": ") given",
+      "x": 463.32,
+      "y": 494.41,
+      "width": 36.07,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 128,
+      "str": "in Equation (5).",
+      "x": 110.85,
+      "y": 479.96,
+      "width": 84.59,
+      "height": 11.96,
+      "right": 195.44,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 129,
+      "str": " ",
+      "x": 195.44,
+      "y": 479.96,
+      "width": 8.45,
+      "height": 0,
+      "right": 203.89,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 130,
+      "str": "We can now obtain the maximum likelihood estimate of",
+      "x": 203.89,
+      "y": 479.96,
+      "width": 295.51,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 131,
+      "str": "the parameters by maximizing",
+      "x": 110.85,
+      "y": 465.52,
+      "width": 158.71,
+      "height": 11.96,
+      "right": 269.56,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 132,
+      "str": " ",
+      "x": 269.56,
+      "y": 465.52,
+      "width": 4.87,
+      "height": 0,
+      "right": 274.43,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 133,
+      "str": "`",
+      "x": 274.43,
+      "y": 465.52,
+      "width": 4.91,
+      "height": 11.96,
+      "right": 279.34,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 134,
+      "str": "(",
+      "x": 279.34,
+      "y": 465.52,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 283.89,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 135,
+      "str": "θ",
+      "x": 283.89,
+      "y": 465.52,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 289.35,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 136,
+      "str": ") in terms of",
+      "x": 289.67,
+      "y": 465.52,
+      "width": 67.02,
+      "height": 11.96,
+      "right": 356.69,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 137,
+      "str": " ",
+      "x": 356.69,
+      "y": 465.52,
+      "width": 4.86,
+      "height": 0,
+      "right": 361.55,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 138,
+      "str": "θ",
+      "x": 361.55,
+      "y": 465.52,
+      "width": 5.46,
+      "height": 11.96,
+      "right": 367.01,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 139,
+      "str": ", using a method such as",
+      "x": 367.33,
+      "y": 465.52,
+      "width": 132.07,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 140,
+      "str": "gradient ascent or Newton’s method.",
+      "x": 110.85,
+      "y": 451.07,
+      "width": 188.72,
+      "height": 11.96,
+      "right": 299.58,
+      "visualLineId": 15,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 691.11,
+      "height": 11.96,
+      "text": "28",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 487.69
+    },
+    {
+      "lineId": 1,
+      "y": 654.25,
+      "height": 11.96,
+      "text": "Lastly, let’s discuss parameter fitting. Similar to our original derivation",
+      "itemIndexes": [
+        1
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 2,
+      "y": 639.8,
+      "height": 11.96,
+      "text": "of ordinary least squares and logistic regression, if we have a training set of",
+      "itemIndexes": [
+        2
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 3,
+      "y": 626.49,
+      "height": 12,
+      "text": "n examples { ( x ( i ) , y ( i ) ); i = 1 , . . . , n } and would like to learn the parameters",
+      "itemIndexes": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 4,
+      "y": 610.01,
+      "height": 12,
+      "text": "θ i of this model, we would begin by writing down the log-likelihood",
+      "itemIndexes": [
+        28,
+        29,
+        30,
+        31
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 5,
+      "y": 589.21,
+      "height": 11.96,
+      "text": "∑ n",
+      "itemIndexes": [
+        41,
+        40
+      ],
+      "firstX": 244.44
+    },
+    {
+      "lineId": 6,
+      "y": 577.35,
+      "height": 12,
+      "text": "` ( θ ) = log p ( y ( i ) | x ( i ) ; θ )",
+      "itemIndexes": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ],
+      "firstX": 195.61
+    },
+    {
+      "lineId": 7,
+      "y": 562.22,
+      "height": 7.97,
+      "text": "i =1",
+      "itemIndexes": [
+        43,
+        44
+      ],
+      "firstX": 246.22
+    },
+    {
+      "lineId": 8,
+      "y": 549.08,
+      "height": 11.96,
+      "text": "n k ( θ T x ( i ) ) 1 { y ( i ) = l }",
+      "itemIndexes": [
+        65,
+        73,
+        79,
+        82,
+        83,
+        86,
+        87,
+        88,
+        89,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115
+      ],
+      "firstX": 250.5
+    },
+    {
+      "lineId": 9,
+      "y": 542,
+      "height": 12,
+      "text": "∑ ∏ e l",
+      "itemIndexes": [
+        66,
+        74,
+        81,
+        84,
+        85
+      ],
+      "firstX": 244.44
+    },
+    {
+      "lineId": 10,
+      "y": 528.14,
+      "height": 12,
+      "text": "= log ∑ k θ j T x ( i )",
+      "itemIndexes": [
+        63,
+        71,
+        91,
+        92,
+        97,
+        99,
+        98,
+        100,
+        101,
+        102,
+        103,
+        104
+      ],
+      "firstX": 225.37
+    },
+    {
+      "lineId": 11,
+      "y": 518.38,
+      "height": 12,
+      "text": "i =1 l =1 j =1 e",
+      "itemIndexes": [
+        68,
+        69,
+        76,
+        77,
+        93,
+        94,
+        95,
+        96
+      ],
+      "firstX": 246.22
+    },
+    {
+      "lineId": 12,
+      "y": 494.41,
+      "height": 12,
+      "text": "To obtain the second line above, we used the definition for p ( y | x ; θ ) given",
+      "itemIndexes": [
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 13,
+      "y": 479.96,
+      "height": 12,
+      "text": "in Equation (5). We can now obtain the maximum likelihood estimate of",
+      "itemIndexes": [
+        128,
+        129,
+        130
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 14,
+      "y": 465.52,
+      "height": 12,
+      "text": "the parameters by maximizing ` ( θ ) in terms of θ , using a method such as",
+      "itemIndexes": [
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 15,
+      "y": 451.07,
+      "height": 11.96,
+      "text": "gradient ascent or Newton’s method.",
+      "itemIndexes": [
+        140
+      ],
+      "firstX": 110.85
+    }
+  ]
+}

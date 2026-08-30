@@ -1,111 +1,61 @@
 import type { PageReadingOrder, PdfTextItem } from "../types.ts";
-import { itemRight, itemX, itemY } from "./items.ts";
+import { itemRight, itemX } from "./items.ts";
+import {
+  groupVisualLines,
+  leftEdgeClusters,
+  visualLineText,
+  type LeftEdgeCluster,
+  type VisualLine,
+} from "./layout-geometry.ts";
+import {
+  findDominantProseRegions,
+  isTableLikeGrid,
+  itemsInColumn,
+  TWO_COL_GUTTER,
+  TWO_COL_MIN_LINES,
+  TWO_COL_MIN_SEP_RATIO,
+} from "./prose-regions.ts";
 
-export type VisualLine = {
-  y: number;
-  height: number;
-  items: PdfTextItem[];
-};
+export {
+  groupVisualLines,
+  isDenseGrid,
+  leftEdgeClusters,
+  visualLineText,
+  type LeftEdgeCluster,
+  type VisualLine,
+} from "./layout-geometry.ts";
 
-const LINE_TOLERANCE = 0.45;
-const TWO_COL_MIN_LINES = 2;
-const TWO_COL_GUTTER = 28;
-const TWO_COL_EDGE_BUCKET = 36;
+export {
+  classifyGridKind,
+  columnOfItem,
+  findDominantProseRegions,
+  isProseItem,
+  isTableLikeGrid,
+  itemOverflowsMid,
+  itemProseMass,
+  tightCrossGutterRisk,
+} from "./prose-regions.ts";
+
 const TWO_COL_MIN_CLUSTER_ITEMS = 2;
-const TWO_COL_MIN_SEP_RATIO = 0.18;
-const GRID_MIN_ITEMS = 12;
-const GRID_RECURRING = 3;
-const GRID_SHORT = 12;
-
-export function groupVisualLines(items: PdfTextItem[]): VisualLine[] {
-  const withText = items.filter((item) => item.str.length > 0);
-  const ordered = [...withText].sort((a, b) => itemY(b) - itemY(a) || itemX(a) - itemX(b));
-  const lines: VisualLine[] = [];
-  for (const item of ordered) {
-    const y = itemY(item);
-    const height = item.height > 0 ? item.height : 12;
-    const existing = lines.find((line) => Math.abs(line.y - y) <= Math.max(line.height, height) * LINE_TOLERANCE);
-    if (existing) {
-      const n = existing.items.length;
-      existing.items.push(item);
-      existing.y = (existing.y * n + y) / (n + 1);
-      existing.height = Math.max(existing.height, height);
-    } else {
-      lines.push({ y, height, items: [item] });
-    }
-  }
-  for (const line of lines) {
-    line.items.sort((a, b) => itemX(a) - itemX(b));
-  }
-  lines.sort((a, b) => b.y - a.y);
-  return lines;
-}
-
-export function visualLineText(line: VisualLine): string {
-  return line.items
-    .map((item) => item.str)
-    .join(" ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-export function isDenseGrid(items: PdfTextItem[]): boolean {
-  const tokens = items.filter((item) => item.str.trim().length > 0);
-  if (tokens.length < GRID_MIN_ITEMS) return false;
-  const bucket = (value: number) => Math.round(value / 8) * 8;
-  const xs = new Map<number, number>();
-  const ys = new Map<number, number>();
-  let short = 0;
-  for (const item of tokens) {
-    bump(xs, bucket(itemX(item)));
-    bump(ys, bucket(itemY(item)));
-    if (item.str.trim().length <= GRID_SHORT) short += 1;
-  }
-  const recurringX = [...xs.values()].filter((count) => count >= GRID_RECURRING).length;
-  const recurringY = [...ys.values()].filter((count) => count >= GRID_RECURRING).length;
-  return recurringX >= 3 && recurringY >= 3 && short / tokens.length >= 0.7;
-}
-
-export type LeftEdgeCluster = {
-  x: number;
-  items: PdfTextItem[];
-};
-
-/**
- * Cluster by left edge, not by itemRight. A left-column line that is slightly
- * wider than the column still belongs to that column.
- */
-export function leftEdgeClusters(items: PdfTextItem[]): LeftEdgeCluster[] {
-  const usable = items.filter((item) => item.str.trim().length > 0);
-  const buckets = new Map<number, PdfTextItem[]>();
-  for (const item of usable) {
-    const key = Math.round(itemX(item) / TWO_COL_EDGE_BUCKET) * TWO_COL_EDGE_BUCKET;
-    const list = buckets.get(key) ?? [];
-    list.push(item);
-    buckets.set(key, list);
-  }
-  const ordered = [...buckets.entries()].sort((a, b) => a[0] - b[0]);
-  const merged: LeftEdgeCluster[] = [];
-  for (const [, bucketItems] of ordered) {
-    const x = meanX(bucketItems);
-    const prev = merged[merged.length - 1];
-    if (prev && x - prev.x <= TWO_COL_EDGE_BUCKET) {
-      prev.items.push(...bucketItems);
-      prev.x = meanX(prev.items);
-    } else {
-      merged.push({ x, items: [...bucketItems] });
-    }
-  }
-  return merged;
-}
 
 export function detectReadingOrder(
   items: PdfTextItem[],
   pageWidth: number,
 ): { readingOrder: PageReadingOrder; left: VisualLine[]; right: VisualLine[]; lines: VisualLine[] } {
   const lines = groupVisualLines(items);
-  if (isDenseGrid(items)) {
+  if (isTableLikeGrid(items)) {
     return { readingOrder: "uncertain", left: [], right: [], lines };
+  }
+
+  const analysis = findDominantProseRegions(items, pageWidth);
+
+  if (analysis.twoDominantProse && analysis.splitX !== null) {
+    const left = groupVisualLines(itemsInColumn(items, analysis, "left"));
+    const right = groupVisualLines(itemsInColumn(items, analysis, "right"));
+    if (columnsAreConfident(left, right, analysis.splitX, pageWidth)) {
+      return { readingOrder: "two-column", left, right, lines: regionLines(left, right) };
+    }
+    return { readingOrder: "uncertain", left, right, lines: regionLines(left, right) };
   }
 
   const pair = twoColumnPair(leftEdgeClusters(items), pageWidth);
@@ -114,8 +64,14 @@ export function detectReadingOrder(
     const left = groupVisualLines(items.filter((item) => itemX(item) < splitX));
     const right = groupVisualLines(items.filter((item) => itemX(item) >= splitX));
     if (isConfidentTwoColumn(left, right, pair, pageWidth)) {
-      return { readingOrder: "two-column", left, right, lines };
+      return { readingOrder: "two-column", left, right, lines: regionLines(left, right) };
     }
+  }
+
+  if (analysis.refuseSingleColumn && analysis.splitX !== null) {
+    const left = groupVisualLines(itemsInColumn(items, analysis, "left"));
+    const right = groupVisualLines(itemsInColumn(items, analysis, "right"));
+    return { readingOrder: "uncertain", left, right, lines: regionLines(left, right) };
   }
 
   const mid = pageWidth / 2;
@@ -133,6 +89,10 @@ export function detectReadingOrder(
   return { readingOrder: "single-column", left: [], right: [], lines };
 }
 
+function regionLines(left: VisualLine[], right: VisualLine[]): VisualLine[] {
+  return [...left, ...right];
+}
+
 function twoColumnPair(
   clusters: LeftEdgeCluster[],
   pageWidth: number,
@@ -146,10 +106,10 @@ function twoColumnPair(
   return { left: first, right: second };
 }
 
-function isConfidentTwoColumn(
+function columnsAreConfident(
   left: VisualLine[],
   right: VisualLine[],
-  pair: { left: LeftEdgeCluster; right: LeftEdgeCluster },
+  splitX: number,
   pageWidth: number,
 ): boolean {
   if (left.length < TWO_COL_MIN_LINES || right.length < TWO_COL_MIN_LINES) return false;
@@ -160,19 +120,24 @@ function isConfidentTwoColumn(
   const overlap = Math.min(left[0].y, right[0].y) - Math.max(left[left.length - 1].y, right[right.length - 1].y);
   if (overlap <= 0) return false;
   if (overlap < 0.3 * Math.min(leftSpan, rightSpan)) return false;
-  const leftEdges = left.flatMap((line) => line.items.map(itemX));
-  const rightEdges = right.flatMap((line) => line.items.map(itemX));
-  if (Math.min(...rightEdges) - Math.max(...leftEdges) < TWO_COL_GUTTER) return false;
+  void splitX;
+  void pageWidth;
+  return true;
+}
+
+function isConfidentTwoColumn(
+  left: VisualLine[],
+  right: VisualLine[],
+  pair: { left: LeftEdgeCluster; right: LeftEdgeCluster },
+  pageWidth: number,
+): boolean {
+  if (!columnsAreConfident(left, right, (pair.left.x + pair.right.x) / 2, pageWidth)) return false;
   if (pair.right.x - pair.left.x < pageWidth * TWO_COL_MIN_SEP_RATIO) return false;
   return true;
 }
 
 function columnHasProse(lines: VisualLine[]): boolean {
   return lines.some((line) => visualLineText(line).split(/\s+/).filter(Boolean).length >= 4);
-}
-
-function meanX(items: PdfTextItem[]): number {
-  return items.reduce((sum, item) => sum + itemX(item), 0) / items.length;
 }
 
 export function shouldInsertSpace(prev: PdfTextItem, next: PdfTextItem): boolean {
@@ -199,8 +164,4 @@ export function lineIsUsable(text: string): boolean {
 function lineSpan(lines: VisualLine[]): number {
   if (lines.length === 0) return 0;
   return lines[0].y - lines[lines.length - 1].y;
-}
-
-function bump(map: Map<number, number>, key: number) {
-  map.set(key, (map.get(key) ?? 0) + 1);
 }

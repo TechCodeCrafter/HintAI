@@ -1,0 +1,77 @@
+{
+  "timings": {
+    "attention.pdf": {
+      "regionMs": 42.83516700000001,
+      "blockMs": 34.84129200000001,
+      "totalMs": 42.83516700000001,
+      "pages": 15
+    },
+    "bert.pdf": {
+      "regionMs": 103.28750000000002,
+      "blockMs": 69.75254100000006,
+      "totalMs": 103.28750000000002,
+      "pages": 16
+    },
+    "bitcoin.pdf": {
+      "regionMs": 0,
+      "blockMs": 0,
+      "totalMs": 13.68912499999999,
+      "pages": 9
+    },
+    "cisa-ransomware.pdf": {
+      "regionMs": 45.64666700000009,
+      "blockMs": 48.80229199999985,
+      "totalMs": 45.64666700000009,
+      "pages": 31
+    },
+    "cs229-notes.pdf": {
+      "regionMs": 77.23904199999993,
+      "blockMs": 75.65641700000015,
+      "totalMs": 77.23904199999993,
+      "pages": 28
+    },
+    "lora.pdf": {
+      "regionMs": 0,
+      "blockMs": 0,
+      "totalMs": 115.78800000000001,
+      "pages": 26
+    },
+    "nist-800-145.pdf": {
+      "regionMs": 5.5200840000002245,
+      "blockMs": 5.092999999999847,
+      "totalMs": 5.5200840000002245,
+      "pages": 7
+    },
+    "nist-800-207.pdf": {
+      "regionMs": 0,
+      "blockMs": 0,
+      "totalMs": 91.7829999999999,
+      "pages": 59
+    },
+    "nist-800-63b.pdf": {
+      "regionMs": 110.53404200000023,
+      "blockMs": 101.82900000000018,
+      "totalMs": 110.53404200000023,
+      "pages": 80
+    },
+    "omb-m22-09.pdf": {
+      "regionMs": 0,
+      "blockMs": 0,
+      "totalMs": 38.35849999999982,
+      "pages": 29
+    },
+    "resnet.pdf": {
+      "regionMs": 0,
+      "blockMs": 0,
+      "totalMs": 58.261708,
+      "pages": 12
+    },
+    "tracemonkey.pdf": {
+      "regionMs": 0,
+      "blockMs": 0,
+      "totalMs": 56.420708000000104,
+      "pages": 14
+    }
+  },
+  "note": "blockMs is a second derive from the already-loaded NormalizedDocument"
+}

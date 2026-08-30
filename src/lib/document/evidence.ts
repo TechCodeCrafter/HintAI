@@ -16,6 +16,9 @@ export function documentEvidenceId(
 /**
  * Map a page-normalized claim range onto PDF items. Fail closed.
  * Inserted segments are never source identity.
+ *
+ * DocumentStructure / DocumentBlock / VisualLine ids are derived layout
+ * helpers. They are never provenance. A Card must cite itemRanges, not a block id.
  */
 export function documentEvidenceFromRange(args: {
   document: NormalizedDocument;

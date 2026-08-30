@@ -129,7 +129,7 @@ test("two-column pages never merge left-end with right-start", () => {
   assert.ok(chunks.some((chunk) => chunk.text.includes("Predicate locks")));
 });
 
-test("isolated-lines never join neighbors and drop decorative fragments", () => {
+test("isolated-lines without visual structure do not emit fragment chunks", () => {
   const blocks = [
     "Serializable isolation prevents lost outcomes.",
     "18",
@@ -142,14 +142,11 @@ test("isolated-lines never join neighbors and drop decorative fragments", () => 
     pages: [page({ index: "isolated-lines", text: blocks.join("\n") })],
   });
   const chunks = assertAllChunks(doc);
-  assert.equal(chunks.some((chunk) => chunk.text.includes("\n")), false);
+  assert.equal(chunks.length, 0);
   assert.equal(isolatedLineEligible("18"), false);
   assert.equal(isolatedLineEligible("Fig."), false);
   assert.equal(isolatedLineEligible("A"), false);
-  assert.ok(chunks.some((chunk) => chunk.text.includes("Serializable isolation")));
-  assert.ok(chunks.some((chunk) => chunk.text.includes("Four meaningful words")));
-  assert.equal(chunks.some((chunk) => chunk.text.trim() === "18"), false);
-  assert.equal(chunks.some((chunk) => chunk.text.trim() === "Fig."), false);
+  assert.equal(isolatedLineEligible("Serializable isolation prevents lost outcomes."), true);
 });
 
 test("skipped pages produce zero chunks", () => {

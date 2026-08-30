@@ -26,6 +26,7 @@ import { highlightLine } from "@/lib/highlight";
 import { stopHear, toggleHear } from "@/lib/listen/call-share";
 import { useLiveListen } from "@/lib/listen/speech";
 import { PdfPane } from "@/components/pdf-pane";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
 import { citationText, citedPath, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
@@ -280,6 +281,7 @@ export function Cockpit() {
               <Minimize2 className="size-4" />
               <span className="hidden md:inline">{overlay ? "Cockpit" : "Overlay"}</span>
             </Button>
+            <ThemeToggle />
             {demo ? (
               <Button
                 variant="ghost"
@@ -292,15 +294,6 @@ export function Cockpit() {
                 <span className="hidden md:inline">{playing ? "Stop" : "Play review"}</span>
               </Button>
             ) : null}
-            <Button
-              size="sm"
-              disabled={!searchReady}
-              onClick={() => void search()}
-              className={cn("ml-auto hidden md:inline-flex", cueSearch && "ring-1 ring-accent/50")}
-            >
-              <Search className="size-4" />
-              Search
-            </Button>
           </div>
         </div>
       </header>
@@ -671,7 +664,10 @@ function RepoPane() {
             placeholder="Filter files"
             className="ground-input mx-2 mb-1 h-9 shrink-0 rounded-sm px-2.5 text-xs placeholder:text-faint"
           />
-          <ul ref={listRef} className="min-h-0 min-w-0 flex-1 space-y-0.5 overflow-auto px-1">
+          <ul
+            ref={listRef}
+            className="file-list min-h-0 min-w-0 flex-1 space-y-0.5 overflow-auto px-1 pt-1.5 pb-2"
+          >
             {visible.length === 0 && visiblePdfs.length === 0 ? (
               <li className="px-2 py-3 text-xs text-muted">No files match that filter.</li>
             ) : null}
@@ -740,7 +736,7 @@ function RepoPane() {
                       data-line={n}
                       className={cn("flex gap-3 md:min-w-max", active && "bg-pick")}
                     >
-                      <span className="w-8 shrink-0 select-none text-right text-gutter tabular-nums">{n}</span>
+                      <span className="w-8 shrink-0 select-none text-right text-muted tabular-nums">{n}</span>
                       <span className="min-w-0 whitespace-pre-wrap break-all md:whitespace-pre md:break-normal">
                         {node}
                       </span>
@@ -809,7 +805,7 @@ function TranscriptPane() {
   }
 
   return (
-    <section className="ground-panel">
+    <section className="ground-panel" data-fit="content">
       <div className="ground-head">
         <span className="ground-head-left">
           <ChevronDown className="size-3.5 shrink-0 text-faint" />
@@ -819,10 +815,10 @@ function TranscriptPane() {
           {playing ? "Playing design review" : live ? "Transcript" : "Idle"}
         </span>
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-hidden p-4">
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-md border border-line bg-input px-3 py-3">
+      <div className="flex min-h-0 min-w-0 flex-col gap-3 overflow-auto p-4">
+        <div className="flex min-h-0 min-w-0 flex-col rounded-md border border-line bg-input px-3 py-3">
           <p className="ground-hint">They said</p>
-          <div className="mt-2 min-h-0 flex-1 overflow-auto">
+          <div className="mt-2 max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
             {transcript || themDraft ? (
               <p className="ground-transcript">
                 {transcript}
@@ -936,7 +932,7 @@ function CardPane({
   }
 
   return (
-    <section className="ground-panel">
+    <section className="ground-panel" data-fit="content">
       <div className="ground-head">
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
@@ -948,7 +944,7 @@ function CardPane({
             : "Say this"}
         </span>
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-between overflow-auto p-5">
+      <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
         {theySaid ? (
           <div className="mb-5 min-w-0 rounded-md border border-line bg-input px-3 py-3">
             <p className="ground-hint">Heard</p>
@@ -1016,7 +1012,8 @@ function CardPane({
               "Room is the transcript. A question about this pack becomes You say. Small talk stays in Room."}
           </p>
         )}
-        <div className="space-y-3 pt-6">
+        <div className="space-y-3 rounded-md border border-line bg-input px-3 py-3">
+          <p className="ground-hint">Try a question</p>
           <div className="flex min-w-0 flex-wrap gap-2">
             {chips.map((q) => (
               <button

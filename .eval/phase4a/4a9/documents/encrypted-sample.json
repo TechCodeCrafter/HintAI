@@ -1,0 +1,11 @@
+{
+  "sourceId": "encrypted-sample.pdf",
+  "filename": "encrypted-sample.pdf",
+  "byteSize": 7714,
+  "pageCount": 0,
+  "extractedCharacterCount": 0,
+  "readiness": "unreadable",
+  "readinessNote": "This PDF could not be read.",
+  "totalChunks": 0,
+  "pages": []
+}

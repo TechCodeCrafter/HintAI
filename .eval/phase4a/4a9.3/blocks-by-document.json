@@ -1,0 +1,304 @@
+[
+  {
+    "file": "attention.pdf",
+    "pages": 15,
+    "kinds": {
+      "paragraph": 111,
+      "unknown": 145,
+      "heading": 22,
+      "caption": 10,
+      "list": 1,
+      "list-item": 3,
+      "math": 8
+    },
+    "listLikeLines": 5,
+    "listBlocks": 1,
+    "listItemBlocks": 3,
+    "unassignedListLike": 2,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 5,
+    "projected": 87,
+    "productionChunks": 304,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "bert.pdf",
+    "pages": 16,
+    "kinds": {
+      "heading": 19,
+      "paragraph": 195,
+      "list": 5,
+      "list-item": 5,
+      "unknown": 29,
+      "caption": 8
+    },
+    "listLikeLines": 24,
+    "listBlocks": 5,
+    "listItemBlocks": 5,
+    "unassignedListLike": 19,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 0,
+    "projected": 208,
+    "productionChunks": 325,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "bitcoin.pdf",
+    "pages": 9,
+    "kinds": {
+      "list": 13,
+      "list-item": 18,
+      "paragraph": 73,
+      "unknown": 61,
+      "heading": 2,
+      "math": 12
+    },
+    "listLikeLines": 18,
+    "listBlocks": 13,
+    "listItemBlocks": 18,
+    "unassignedListLike": 0,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 1,
+    "projected": 77,
+    "productionChunks": 227,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "pages": 31,
+    "kinds": {
+      "heading": 8,
+      "paragraph": 235,
+      "unknown": 117,
+      "list": 48,
+      "list-item": 84,
+      "math": 1,
+      "caption": 2
+    },
+    "listLikeLines": 135,
+    "listBlocks": 48,
+    "listItemBlocks": 84,
+    "unassignedListLike": 51,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 0,
+    "projected": 276,
+    "productionChunks": 922,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "pages": 28,
+    "kinds": {
+      "unknown": 612,
+      "paragraph": 145,
+      "math": 49,
+      "heading": 17,
+      "list": 3,
+      "list-item": 3
+    },
+    "listLikeLines": 11,
+    "listBlocks": 3,
+    "listItemBlocks": 3,
+    "unassignedListLike": 8,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 9,
+    "projected": 10,
+    "productionChunks": 30,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "encrypted-sample.pdf",
+    "readiness": "unreadable",
+    "pages": 0
+  },
+  {
+    "file": "encrypted.pdf",
+    "readiness": "unreadable",
+    "pages": 0
+  },
+  {
+    "file": "irs-p15.pdf",
+    "readiness": "refused",
+    "pages": 59
+  },
+  {
+    "file": "lora.pdf",
+    "pages": 26,
+    "kinds": {
+      "heading": 22,
+      "paragraph": 177,
+      "math": 12,
+      "unknown": 542,
+      "list": 4,
+      "list-item": 4,
+      "caption": 25
+    },
+    "listLikeLines": 8,
+    "listBlocks": 4,
+    "listItemBlocks": 4,
+    "unassignedListLike": 4,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 8,
+    "projected": 113,
+    "productionChunks": 529,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "nist-800-12.pdf",
+    "readiness": "refused",
+    "pages": 101
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "pages": 7,
+    "kinds": {
+      "paragraph": 51,
+      "heading": 4,
+      "unknown": 13,
+      "list": 2,
+      "list-item": 2
+    },
+    "listLikeLines": 2,
+    "listBlocks": 2,
+    "listItemBlocks": 2,
+    "unassignedListLike": 0,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 1,
+    "projected": 50,
+    "productionChunks": 138,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "pages": 59,
+    "kinds": {
+      "heading": 51,
+      "paragraph": 356,
+      "unknown": 105,
+      "furniture": 70,
+      "caption": 20,
+      "list": 21,
+      "list-item": 34,
+      "math": 1
+    },
+    "listLikeLines": 62,
+    "listBlocks": 21,
+    "listItemBlocks": 34,
+    "unassignedListLike": 28,
+    "furnitureMarked": 70,
+    "furnitureCandidates": 13,
+    "projected": 407,
+    "productionChunks": 1200,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "pages": 80,
+    "kinds": {
+      "paragraph": 594,
+      "unknown": 304,
+      "heading": 92,
+      "furniture": 169,
+      "caption": 10,
+      "list": 55,
+      "list-item": 102,
+      "math": 1
+    },
+    "listLikeLines": 150,
+    "listBlocks": 55,
+    "listItemBlocks": 102,
+    "unassignedListLike": 48,
+    "furnitureMarked": 169,
+    "furnitureCandidates": 92,
+    "projected": 638,
+    "productionChunks": 2104,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "pages": 29,
+    "kinds": {
+      "list": 51,
+      "list-item": 72,
+      "paragraph": 327,
+      "unknown": 72,
+      "math": 2,
+      "heading": 1
+    },
+    "listLikeLines": 77,
+    "listBlocks": 51,
+    "listItemBlocks": 72,
+    "unassignedListLike": 5,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 15,
+    "projected": 377,
+    "productionChunks": 689,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "resnet.pdf",
+    "pages": 12,
+    "kinds": {
+      "paragraph": 135,
+      "heading": 8,
+      "unknown": 42,
+      "math": 4,
+      "caption": 9,
+      "list": 1,
+      "list-item": 1
+    },
+    "listLikeLines": 12,
+    "listBlocks": 1,
+    "listItemBlocks": 1,
+    "unassignedListLike": 11,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 0,
+    "projected": 145,
+    "productionChunks": 804,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  },
+  {
+    "file": "rfc9110.pdf",
+    "readiness": "refused",
+    "pages": 194
+  },
+  {
+    "file": "scanned.pdf",
+    "readiness": "scanned",
+    "pages": 1
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "pages": 14,
+    "kinds": {
+      "paragraph": 128,
+      "unknown": 39,
+      "list": 3,
+      "list-item": 3,
+      "heading": 4,
+      "caption": 5,
+      "math": 7
+    },
+    "listLikeLines": 20,
+    "listBlocks": 3,
+    "listItemBlocks": 3,
+    "unassignedListLike": 17,
+    "furnitureMarked": 0,
+    "furnitureCandidates": 0,
+    "projected": 140,
+    "productionChunks": 645,
+    "pdfjsDuringDerive": 0,
+    "structureErrors": 0
+  }
+]

@@ -133,7 +133,7 @@ export function documentCard(
   timings.extractMs = nowMs() - extractStart;
   if (!claim) return silent("Nothing in it I would say out loud.", "NO_SPEAKABLE_SENTENCE");
   if (contract) {
-    if (!claimFitsContract(claim.text, contract)) {
+    if (!claimFitsContract(claim.text, contract, hit.text)) {
       return silent("Nothing loaded answers that.", "NO_SUBJECT_COVERAGE");
     }
   } else if (!documentClaimAdmissible(claim.text, subject, documents)) {
@@ -191,7 +191,7 @@ export function extractDocumentClaim(
   contract?: QuestionContract,
 ): { text: string; start: number; end: number } | null {
   const admissible = (text: string) =>
-    contract ? claimFitsContract(text, contract) : documentClaimAdmissible(text, subject, documents);
+    contract ? claimFitsContract(text, contract, chunkText) : documentClaimAdmissible(text, subject, documents);
   const list = listingClaim(chunkText, terms);
   if (list && !isSmashed(list.text) && admissible(list.text)) return list;
   const parts = sentenceRanges(chunkText).flatMap(splitSmashed);

@@ -1,0 +1,19 @@
+{
+  "phase": "4A.9.2.2",
+  "designedRegressionPass": true,
+  "clauseRelationTests": {
+    "file": "src/lib/search/__tests__/question-contract.test.ts",
+    "added": [
+      "clause completeness: dependent conjunctive tail is not a standalone action answer",
+      "clause completeness: self-contained subject-relation-object remains eligible",
+      "clause completeness: full coordinated sentence keeps first-action conservatism",
+      "clause completeness: leading And with an explicit subject is not a tail",
+      "relation frame: implement-on is not a relative-clause implement",
+      "relation frame: store-in needs the location complement",
+      "relative clause: required verb only under which/that/who is not the main relation",
+      "naming: which-entity needs the named instance in the asked relation"
+    ],
+    "pass": true
+  },
+  "designedCases": "See regression-set.json (same runner cases as 4A.8.1; all pass)."
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "attn-arch",
+    "q": "What architecture do they propose?",
+    "say": "We propose a new simple network architecture, the Transformer,",
+    "citedPath": "attention.pdf",
+    "evalSpanI": true,
+    "priorLayer": "I-eval-span"
+  },
+  {
+    "id": "tm-nested",
+    "q": "How do they solve nested loops?",
+    "say": "On ever tracing outer loops. We solve the nested loop problem by recording",
+    "citedPath": "tracemonkey.pdf",
+    "evalSpanI": false,
+    "priorLayer": "C-predicate-relation"
+  },
+  {
+    "id": "zta-asset",
+    "q": "Is any asset inherently trusted?",
+    "say": "3. No resource is inherently trusted. Every asset must have its security posture evaluated",
+    "citedPath": "nist-800-207.pdf",
+    "evalSpanI": false,
+    "priorLayer": null
+  },
+  {
+    "id": "63b-aal1",
+    "q": "What does AAL1 provide?",
+    "say": "Authenticator Assurance Level 1 : AAL1 provides some assurance that the claimant controls an",
+    "citedPath": "nist-800-63b.pdf",
+    "evalSpanI": true,
+    "priorLayer": "I-eval-span"
+  }
+]

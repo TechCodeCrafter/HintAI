@@ -1,0 +1,3437 @@
+{
+  "file": "tracemonkey.pdf",
+  "page": 2,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 7 !== 2 (total clusters 9; sizes 58.3:71, 125.2:1, 209.6:3, 254.5:5, 324.8:55, 418.2:17, 466.2:8, 511.6:7, 550.1:1)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 461.7 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 9,
+    "substantialClusterCount": 7,
+    "clusters": [
+      {
+        "x": 58.31,
+        "items": 71,
+        "meanWidth": 191.91,
+        "yMin": 68.44,
+        "yMax": 712.03
+      },
+      {
+        "x": 125.24,
+        "items": 1,
+        "meanWidth": 154.14,
+        "yMin": 632.33,
+        "yMax": 632.33
+      },
+      {
+        "x": 209.64,
+        "items": 3,
+        "meanWidth": 41.58,
+        "yMin": 682.14,
+        "yMax": 712.03
+      },
+      {
+        "x": 254.5,
+        "items": 5,
+        "meanWidth": 38.6,
+        "yMin": 293.6,
+        "yMax": 712.03
+      },
+      {
+        "x": 324.78,
+        "items": 55,
+        "meanWidth": 130.31,
+        "yMin": 68.44,
+        "yMax": 713.77
+      },
+      {
+        "x": 418.16,
+        "items": 17,
+        "meanWidth": 36.94,
+        "yMin": 118.26,
+        "yMax": 631.8
+      },
+      {
+        "x": 466.21,
+        "items": 8,
+        "meanWidth": 34,
+        "yMin": 428.12,
+        "yMax": 631.8
+      },
+      {
+        "x": 511.56,
+        "items": 7,
+        "meanWidth": 25.21,
+        "yMin": 438.89,
+        "yMax": 641.76
+      },
+      {
+        "x": 550.14,
+        "items": 1,
+        "meanWidth": 5.98,
+        "yMin": 641.76,
+        "yMax": 641.76
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 58.31,
+      "items": 71,
+      "meanWidth": 191.91,
+      "yMin": 68.44,
+      "yMax": 712.03
+    },
+    {
+      "x": 125.24,
+      "items": 1,
+      "meanWidth": 154.14,
+      "yMin": 632.33,
+      "yMax": 632.33
+    },
+    {
+      "x": 209.64,
+      "items": 3,
+      "meanWidth": 41.58,
+      "yMin": 682.14,
+      "yMax": 712.03
+    },
+    {
+      "x": 254.5,
+      "items": 5,
+      "meanWidth": 38.6,
+      "yMin": 293.6,
+      "yMax": 712.03
+    },
+    {
+      "x": 324.78,
+      "items": 55,
+      "meanWidth": 130.31,
+      "yMin": 68.44,
+      "yMax": 713.77
+    },
+    {
+      "x": 418.16,
+      "items": 17,
+      "meanWidth": 36.94,
+      "yMin": 118.26,
+      "yMax": 631.8
+    },
+    {
+      "x": 466.21,
+      "items": 8,
+      "meanWidth": 34,
+      "yMin": 428.12,
+      "yMax": 631.8
+    },
+    {
+      "x": 511.56,
+      "items": 7,
+      "meanWidth": 25.21,
+      "yMin": 438.89,
+      "yMax": 641.76
+    },
+    {
+      "x": 550.14,
+      "items": 1,
+      "meanWidth": 5.98,
+      "yMin": 641.76,
+      "yMax": 641.76
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 117,
+    "clusters": [
+      {
+        "x": 58.68,
+        "items": 62,
+        "share": 0.53
+      },
+      {
+        "x": 322.73,
+        "items": 37,
+        "share": 0.316
+      },
+      {
+        "x": 443.08,
+        "items": 10,
+        "share": 0.085
+      }
+    ],
+    "twoDominant": true,
+    "overlap": 633.62,
+    "topShare": 0.8461538461538461
+  },
+  "ySpanOverlap": 633.62,
+  "gutterCandidates": [
+    {
+      "between": [
+        58.31,
+        125.24
+      ],
+      "gap": 66.92999999999999
+    },
+    {
+      "between": [
+        125.24,
+        209.64
+      ],
+      "gap": 84.39999999999999
+    },
+    {
+      "between": [
+        209.64,
+        254.5
+      ],
+      "gap": 44.860000000000014
+    },
+    {
+      "between": [
+        254.5,
+        324.78
+      ],
+      "gap": 70.27999999999997
+    },
+    {
+      "between": [
+        324.78,
+        418.16
+      ],
+      "gap": 93.38000000000005
+    },
+    {
+      "between": [
+        418.16,
+        466.21
+      ],
+      "gap": 48.049999999999955
+    },
+    {
+      "between": [
+        466.21,
+        511.56
+      ],
+      "gap": 45.35000000000002
+    },
+    {
+      "between": [
+        511.56,
+        550.14
+      ],
+      "gap": 38.579999999999984
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Hence, recording and compiling a trace",
+      "x": 54,
+      "y": 712.03,
+      "width": 139.59,
+      "height": 8.97,
+      "right": 193.59,
+      "visualLineId": 0,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 193.59,
+      "y": 712.03,
+      "width": 1.87,
+      "height": 0,
+      "right": 195.46,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 2,
+      "str": "speculates",
+      "x": 195.46,
+      "y": 712.03,
+      "width": 37.35,
+      "height": 8.97,
+      "right": 232.81,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 3,
+      "str": " ",
+      "x": 232.81,
+      "y": 712.03,
+      "width": 1.87,
+      "height": 0,
+      "right": 234.69,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 4,
+      "str": "that the path and",
+      "x": 234.69,
+      "y": 712.03,
+      "width": 58.42,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 5,
+      "str": "typing will be exactly as they were during recording for subsequent",
+      "x": 54,
+      "y": 702.07,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 1,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 6,
+      "str": "iterations of the loop.",
+      "x": 54,
+      "y": 692.1,
+      "width": 76.71,
+      "height": 8.97,
+      "right": 130.71,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 7,
+      "str": "Every compiled trace contains all the",
+      "x": 65.96,
+      "y": 682.14,
+      "width": 134.66,
+      "height": 8.97,
+      "right": 200.61,
+      "visualLineId": 3,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 8,
+      "str": " ",
+      "x": 200.61,
+      "y": 682.14,
+      "width": 2.56,
+      "height": 0,
+      "right": 203.17,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 9,
+      "str": "guards",
+      "x": 203.17,
+      "y": 682.14,
+      "width": 24.58,
+      "height": 8.97,
+      "right": 227.75,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 10,
+      "str": " ",
+      "x": 227.75,
+      "y": 682.14,
+      "width": 2.56,
+      "height": 0,
+      "right": 230.3,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 11,
+      "str": "(checks) required",
+      "x": 230.3,
+      "y": 682.14,
+      "width": 62.8,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 12,
+      "str": "to validate the speculation. If one of the guards fails (if control",
+      "x": 54,
+      "y": 672.18,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 13,
+      "str": "flow is different, or a value of a different type is generated), the",
+      "x": 54,
+      "y": 662.22,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 14,
+      "str": "trace exits. If an exit becomes hot, the VM can record a",
+      "x": 54,
+      "y": 652.25,
+      "width": 210.64,
+      "height": 8.97,
+      "right": 264.64,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 15,
+      "str": " ",
+      "x": 264.64,
+      "y": 652.25,
+      "width": 3.33,
+      "height": 0,
+      "right": 267.97,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 16,
+      "str": "branch",
+      "x": 267.97,
+      "y": 652.25,
+      "width": 25.13,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 17,
+      "str": "trace",
+      "x": 54,
+      "y": 642.29,
+      "width": 18.29,
+      "height": 8.97,
+      "right": 72.29,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 18,
+      "str": " ",
+      "x": 72.29,
+      "y": 642.29,
+      "width": 2.2,
+      "height": 0,
+      "right": 74.5,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 19,
+      "str": "starting at the exit to cover the new path. In this way, the VM",
+      "x": 74.5,
+      "y": 642.29,
+      "width": 218.61,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 20,
+      "str": "records a",
+      "x": 54,
+      "y": 632.33,
+      "width": 32.61,
+      "height": 8.97,
+      "right": 86.61,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 21,
+      "str": " ",
+      "x": 86.61,
+      "y": 632.33,
+      "width": 2.24,
+      "height": 0,
+      "right": 88.85,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 22,
+      "str": "trace tree",
+      "x": 88.85,
+      "y": 632.33,
+      "width": 34.14,
+      "height": 8.97,
+      "right": 123,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 23,
+      "str": " ",
+      "x": 123,
+      "y": 632.33,
+      "width": 2.24,
+      "height": 0,
+      "right": 125.24,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 24,
+      "str": "covering all the hot paths through the loop.",
+      "x": 125.24,
+      "y": 632.33,
+      "width": 154.14,
+      "height": 8.97,
+      "right": 279.38,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 25,
+      "str": "Nested loops can be difficult to optimize for tracing VMs. In",
+      "x": 65.96,
+      "y": 622.37,
+      "width": 227.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 26,
+      "str": "a na¨",
+      "x": 54,
+      "y": 612.4,
+      "width": 18.37,
+      "height": 8.97,
+      "right": 72.37,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 27,
+      "str": "ıve implementation, inner loops would become hot first, and",
+      "x": 69.63,
+      "y": 612.4,
+      "width": 223.48,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 10,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 28,
+      "str": "the VM would start tracing there. When the inner loop exits, the",
+      "x": 54,
+      "y": 602.44,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 29,
+      "str": "VM would detect that a different branch was taken. The VM would",
+      "x": 54,
+      "y": 592.48,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 12,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 30,
+      "str": "try to record a branch trace, and find that the trace reaches not the",
+      "x": 54,
+      "y": 582.52,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 13,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 31,
+      "str": "inner loop header, but the outer loop header. At this point, the VM",
+      "x": 54,
+      "y": 572.55,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 32,
+      "str": "could continue tracing until it reaches the inner loop header again,",
+      "x": 54,
+      "y": 562.59,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 15,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 33,
+      "str": "thus tracing the outer loop inside a trace tree for the inner loop.",
+      "x": 54,
+      "y": 552.63,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 16,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 34,
+      "str": "But this requires tracing a copy of the outer loop for every side exit",
+      "x": 54,
+      "y": 542.67,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 17,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 35,
+      "str": "and type combination in the inner loop. In essence, this is a form",
+      "x": 54,
+      "y": 532.7,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 18,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 36,
+      "str": "of unintended tail duplication, which can easily overflow the code",
+      "x": 54,
+      "y": 522.74,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 37,
+      "str": "cache. Alternatively, the VM could simply stop tracing, and give up",
+      "x": 54,
+      "y": 512.78,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 20,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 38,
+      "str": "on ever tracing outer loops.",
+      "x": 54,
+      "y": 502.81,
+      "width": 98,
+      "height": 8.97,
+      "right": 152,
+      "visualLineId": 24,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 39,
+      "str": "We solve the nested loop problem by recording",
+      "x": 65.96,
+      "y": 492.85,
+      "width": 178.75,
+      "height": 8.97,
+      "right": 244.7,
+      "visualLineId": 26,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 40,
+      "str": " ",
+      "x": 244.7,
+      "y": 492.85,
+      "width": 3.6,
+      "height": 0,
+      "right": 248.3,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 41,
+      "str": "nested trace",
+      "x": 248.3,
+      "y": 492.85,
+      "width": 44.81,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 42,
+      "str": "trees",
+      "x": 54,
+      "y": 482.89,
+      "width": 17.1,
+      "height": 8.97,
+      "right": 71.1,
+      "visualLineId": 27,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 43,
+      "str": ". Our system traces the inner loop exactly as the na¨",
+      "x": 71.1,
+      "y": 482.89,
+      "width": 183.35,
+      "height": 8.97,
+      "right": 254.45,
+      "visualLineId": 27,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 44,
+      "str": "ıve version.",
+      "x": 251.71,
+      "y": 482.89,
+      "width": 41.39,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 45,
+      "str": "The system stops extending the inner tree when it reaches an outer",
+      "x": 54,
+      "y": 472.93,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 28,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 46,
+      "str": "loop, but then it starts a new trace at the outer loop header. When",
+      "x": 54,
+      "y": 462.96,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 30,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 47,
+      "str": "the outer loop reaches the inner loop header, the system tries to call",
+      "x": 54,
+      "y": 453,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 31,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 48,
+      "str": "the trace tree for the inner loop. If the call succeeds, the VM records",
+      "x": 54,
+      "y": 443.04,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 32,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 49,
+      "str": "the call to the inner tree as part of the outer trace and finishes",
+      "x": 54,
+      "y": 433.08,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 34,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 50,
+      "str": "the outer trace as normal. In this way, our system can trace any",
+      "x": 54,
+      "y": 423.11,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 36,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 51,
+      "str": "number of loops nested to any depth without causing excessive tail",
+      "x": 54,
+      "y": 413.15,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 37,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 52,
+      "str": "duplication.",
+      "x": 54,
+      "y": 403.19,
+      "width": 42.59,
+      "height": 8.97,
+      "right": 96.59,
+      "visualLineId": 38,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 53,
+      "str": "These techniques allow a VM to dynamically translate a pro-",
+      "x": 65.96,
+      "y": 393.23,
+      "width": 227.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 39,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 54,
+      "str": "gram to nested, type-specialized trace trees. Because traces can",
+      "x": 54,
+      "y": 383.26,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 40,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 55,
+      "str": "cross function call boundaries, our techniques also achieve the ef-",
+      "x": 54,
+      "y": 373.3,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 41,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 56,
+      "str": "fects of inlining. Because traces have no internal control-flow joins,",
+      "x": 54,
+      "y": 363.34,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 42,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 57,
+      "str": "they can be optimized in linear time by a simple compiler (10).",
+      "x": 54,
+      "y": 353.37,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 43,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 58,
+      "str": "Thus, our tracing VM efficiently performs the same kind of op-",
+      "x": 54,
+      "y": 343.41,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 44,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 59,
+      "str": "timizations that would require interprocedural analysis in a static",
+      "x": 54,
+      "y": 333.45,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 45,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 60,
+      "str": "optimization setting. This makes tracing an attractive and effective",
+      "x": 54,
+      "y": 323.49,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 46,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 61,
+      "str": "tool to type specialize even complex function call-rich code.",
+      "x": 54,
+      "y": 313.52,
+      "width": 215.9,
+      "height": 8.97,
+      "right": 269.9,
+      "visualLineId": 47,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 62,
+      "str": "We implemented these techniques for an existing JavaScript in-",
+      "x": 65.96,
+      "y": 303.56,
+      "width": 227.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 48,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 63,
+      "str": "terpreter, SpiderMonkey. We call the resulting tracing VM",
+      "x": 54,
+      "y": 293.6,
+      "width": 213.01,
+      "height": 8.97,
+      "right": 267.01,
+      "visualLineId": 49,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 64,
+      "str": " ",
+      "x": 267.01,
+      "y": 293.6,
+      "width": 2.81,
+      "height": 0,
+      "right": 269.83,
+      "visualLineId": 49,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 65,
+      "str": "Trace-",
+      "x": 269.83,
+      "y": 293.6,
+      "width": 23.28,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 49,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 66,
+      "str": "Monkey",
+      "x": 54,
+      "y": 283.64,
+      "width": 28.02,
+      "height": 8.97,
+      "right": 82.02,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 67,
+      "str": ". TraceMonkey supports all the JavaScript features of Spi-",
+      "x": 82.02,
+      "y": 283.64,
+      "width": 211.09,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 50,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 68,
+      "str": "derMonkey, with a 2x-20x speedup for traceable programs.",
+      "x": 54,
+      "y": 273.67,
+      "width": 212.09,
+      "height": 8.97,
+      "right": 266.09,
+      "visualLineId": 51,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 69,
+      "str": "This paper makes the following contributions:",
+      "x": 65.96,
+      "y": 263.71,
+      "width": 165.13,
+      "height": 8.97,
+      "right": 231.08,
+      "visualLineId": 52,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 70,
+      "str": "",
+      "x": 59.23,
+      "y": 245.68,
+      "width": 0,
+      "height": 0,
+      "right": 63.23,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 71,
+      "str": "•",
+      "x": 59.23,
+      "y": 245.68,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 63.46,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 72,
+      "str": " ",
+      "x": 63.46,
+      "y": 245.68,
+      "width": 3.49,
+      "height": 0,
+      "right": 66.95,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 73,
+      "str": "We explain an algorithm for dynamically forming trace trees to",
+      "x": 66.95,
+      "y": 244.78,
+      "width": 226.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 54,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 74,
+      "str": "cover a program, representing nested loops as nested trace trees.",
+      "x": 66.95,
+      "y": 234.82,
+      "width": 226.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 55,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 75,
+      "str": "",
+      "x": 59.23,
+      "y": 221.77,
+      "width": 0,
+      "height": 0,
+      "right": 63.23,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 76,
+      "str": "•",
+      "x": 59.23,
+      "y": 221.77,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 63.46,
+      "visualLineId": 57,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 77,
+      "str": " ",
+      "x": 63.46,
+      "y": 221.77,
+      "width": 3.49,
+      "height": 0,
+      "right": 66.95,
+      "visualLineId": 57,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 78,
+      "str": "We explain how to speculatively generate efficient type-specialized",
+      "x": 66.95,
+      "y": 220.87,
+      "width": 236.86,
+      "height": 8.97,
+      "right": 303.81,
+      "visualLineId": 57,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 79,
+      "str": "code for traces from dynamic language programs.",
+      "x": 66.95,
+      "y": 210.91,
+      "width": 178.53,
+      "height": 8.97,
+      "right": 245.48,
+      "visualLineId": 58,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 80,
+      "str": "",
+      "x": 59.23,
+      "y": 197.86,
+      "width": 0,
+      "height": 0,
+      "right": 63.23,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 81,
+      "str": "•",
+      "x": 59.23,
+      "y": 197.86,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 63.46,
+      "visualLineId": 59,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 82,
+      "str": " ",
+      "x": 63.46,
+      "y": 197.86,
+      "width": 3.49,
+      "height": 0,
+      "right": 66.95,
+      "visualLineId": 59,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 83,
+      "str": "We validate our tracing techniques in an implementation based",
+      "x": 66.95,
+      "y": 196.96,
+      "width": 226.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 59,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 84,
+      "str": "on the SpiderMonkey JavaScript interpreter, achieving 2x-20x",
+      "x": 66.95,
+      "y": 187,
+      "width": 226.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 60,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 85,
+      "str": "speedups on many programs.",
+      "x": 66.95,
+      "y": 177.04,
+      "width": 104.46,
+      "height": 8.97,
+      "right": 171.41,
+      "visualLineId": 61,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 86,
+      "str": "The remainder of this paper is organized as follows. Section 3 is",
+      "x": 65.96,
+      "y": 158.11,
+      "width": 227.15,
+      "height": 8.97,
+      "right": 293.1,
+      "visualLineId": 63,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 87,
+      "str": "a general overview of trace tree based compilation we use to cap-",
+      "x": 54,
+      "y": 148.14,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 64,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 88,
+      "str": "ture and compile frequently executed code regions. In Section 4",
+      "x": 54,
+      "y": 138.18,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 65,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 89,
+      "str": "we describe our approach of covering nested loops using a num-",
+      "x": 54,
+      "y": 128.22,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 66,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 90,
+      "str": "ber of individual trace trees. In Section 5 we describe our trace-",
+      "x": 54,
+      "y": 118.26,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 67,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 91,
+      "str": "compilation based speculative type specialization approach we use",
+      "x": 54,
+      "y": 108.29,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 68,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 92,
+      "str": "to generate efficient machine code from recorded bytecode traces.",
+      "x": 54,
+      "y": 98.33,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 69,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 93,
+      "str": "Our implementation of a dynamic type-specializing compiler for",
+      "x": 54,
+      "y": 88.37,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 70,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 94,
+      "str": "JavaScript is described in Section 6. Related work is discussed in",
+      "x": 54,
+      "y": 78.41,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 71,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 95,
+      "str": "Section 8. In Section 7 we evaluate our dynamic compiler based on",
+      "x": 54,
+      "y": 68.44,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 293.11,
+      "visualLineId": 72,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 96,
+      "str": "",
+      "x": 317.01,
+      "y": 713.77,
+      "width": 0,
+      "height": 0,
+      "right": 321.01,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 97,
+      "str": "1 for (var i = 2; i < 100; ++i) {",
+      "x": 317.01,
+      "y": 713.77,
+      "width": 155.34,
+      "height": 8.97,
+      "right": 472.36,
+      "visualLineId": 0,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 98,
+      "str": "2",
+      "x": 317.01,
+      "y": 703.81,
+      "width": 4.71,
+      "height": 8.97,
+      "right": 321.72,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 99,
+      "str": " ",
+      "x": 321.72,
+      "y": 703.81,
+      "width": 14.12,
+      "height": 0,
+      "right": 335.84,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 100,
+      "str": "if (!primes[i])",
+      "x": 335.84,
+      "y": 703.81,
+      "width": 70.61,
+      "height": 8.97,
+      "right": 406.45,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 101,
+      "str": "3",
+      "x": 317.01,
+      "y": 693.85,
+      "width": 4.71,
+      "height": 8.97,
+      "right": 321.72,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 102,
+      "str": " ",
+      "x": 321.72,
+      "y": 693.85,
+      "width": 23.54,
+      "height": 0,
+      "right": 345.26,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 103,
+      "str": "continue;",
+      "x": 345.26,
+      "y": 693.85,
+      "width": 42.37,
+      "height": 8.97,
+      "right": 387.62,
+      "visualLineId": 2,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 104,
+      "str": "4",
+      "x": 317.01,
+      "y": 683.89,
+      "width": 4.71,
+      "height": 8.97,
+      "right": 321.72,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 105,
+      "str": " ",
+      "x": 321.72,
+      "y": 683.89,
+      "width": 14.12,
+      "height": 0,
+      "right": 335.84,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 106,
+      "str": "for (var k = i + i; i < 100; k += i)",
+      "x": 335.84,
+      "y": 683.89,
+      "width": 169.46,
+      "height": 8.97,
+      "right": 505.31,
+      "visualLineId": 3,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 107,
+      "str": "5",
+      "x": 317.01,
+      "y": 673.92,
+      "width": 4.71,
+      "height": 8.97,
+      "right": 321.72,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 108,
+      "str": " ",
+      "x": 321.72,
+      "y": 673.92,
+      "width": 23.54,
+      "height": 0,
+      "right": 345.26,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 109,
+      "str": "primes[k] = false;",
+      "x": 345.26,
+      "y": 673.92,
+      "width": 84.73,
+      "height": 8.97,
+      "right": 429.99,
+      "visualLineId": 4,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 110,
+      "str": "6 }",
+      "x": 317.01,
+      "y": 663.96,
+      "width": 14.12,
+      "height": 8.97,
+      "right": 331.14,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 111,
+      "str": "",
+      "x": 317.01,
+      "y": 641.76,
+      "width": 0,
+      "height": 0,
+      "right": 321.01,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 112,
+      "str": "Figure 1. Sample program: sieve of Eratosthenes.",
+      "x": 317.01,
+      "y": 641.76,
+      "width": 197.56,
+      "height": 8.97,
+      "right": 514.57,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 113,
+      "str": " ",
+      "x": 514.57,
+      "y": 641.76,
+      "width": 3.66,
+      "height": 0,
+      "right": 518.23,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 114,
+      "str": "primes",
+      "x": 518.23,
+      "y": 641.76,
+      "width": 28.24,
+      "height": 8.97,
+      "right": 546.48,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 115,
+      "str": " ",
+      "x": 546.48,
+      "y": 641.76,
+      "width": 3.66,
+      "height": 0,
+      "right": 550.14,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 116,
+      "str": "is",
+      "x": 550.14,
+      "y": 641.76,
+      "width": 5.98,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 117,
+      "str": "initialized to an array of 100",
+      "x": 317.01,
+      "y": 631.8,
+      "width": 106.47,
+      "height": 8.97,
+      "right": 423.48,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 118,
+      "str": " ",
+      "x": 423.48,
+      "y": 631.8,
+      "width": 3.17,
+      "height": 0,
+      "right": 426.65,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 119,
+      "str": "false",
+      "x": 426.65,
+      "y": 631.8,
+      "width": 23.54,
+      "height": 8.97,
+      "right": 450.19,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 120,
+      "str": " ",
+      "x": 450.19,
+      "y": 631.8,
+      "width": 3.17,
+      "height": 0,
+      "right": 453.35,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 121,
+      "str": "values on entry to this code",
+      "x": 453.35,
+      "y": 631.8,
+      "width": 102.76,
+      "height": 8.97,
+      "right": 556.11,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 122,
+      "str": "snippet.",
+      "x": 317.01,
+      "y": 621.84,
+      "width": 28.15,
+      "height": 8.97,
+      "right": 345.16,
+      "visualLineId": 9,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 123,
+      "str": "Interpret",
+      "x": 405.4,
+      "y": 575.9,
+      "width": 20.97,
+      "height": 5.17,
+      "right": 426.37,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 124,
+      "str": "",
+      "x": 403.82,
+      "y": 569.86,
+      "width": 0,
+      "height": 0,
+      "right": 407.82,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 125,
+      "str": "Bytecodes",
+      "x": 403.82,
+      "y": 569.86,
+      "width": 24.14,
+      "height": 5.17,
+      "right": 427.95,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 126,
+      "str": "",
+      "x": 406.41,
+      "y": 529.8,
+      "width": 0,
+      "height": 0,
+      "right": 410.41,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 127,
+      "str": "Monitor",
+      "x": 406.41,
+      "y": 529.8,
+      "width": 18.95,
+      "height": 5.17,
+      "right": 425.36,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 128,
+      "str": "",
+      "x": 337.62,
+      "y": 513.43,
+      "width": 0,
+      "height": 0,
+      "right": 341.62,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 129,
+      "str": "Record",
+      "x": 337.62,
+      "y": 513.43,
+      "width": 17.81,
+      "height": 5.17,
+      "right": 355.43,
+      "visualLineId": 21,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 130,
+      "str": "",
+      "x": 335.32,
+      "y": 507.39,
+      "width": 0,
+      "height": 0,
+      "right": 339.32,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 131,
+      "str": "LIR Trace",
+      "x": 335.32,
+      "y": 507.39,
+      "width": 22.41,
+      "height": 5.17,
+      "right": 357.73,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 132,
+      "str": "",
+      "x": 473.4,
+      "y": 473.79,
+      "width": 0,
+      "height": 0,
+      "right": 477.4,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 133,
+      "str": "Execute",
+      "x": 473.4,
+      "y": 473.79,
+      "width": 19.83,
+      "height": 5.17,
+      "right": 493.22,
+      "visualLineId": 28,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 134,
+      "str": "",
+      "x": 465.21,
+      "y": 467.76,
+      "width": 0,
+      "height": 0,
+      "right": 469.21,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 135,
+      "str": "Compiled Trace",
+      "x": 465.21,
+      "y": 467.76,
+      "width": 36.21,
+      "height": 5.17,
+      "right": 501.41,
+      "visualLineId": 29,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 136,
+      "str": "",
+      "x": 476.7,
+      "y": 513.43,
+      "width": 0,
+      "height": 0,
+      "right": 480.7,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 137,
+      "str": "Enter",
+      "x": 476.7,
+      "y": 513.43,
+      "width": 13.21,
+      "height": 5.17,
+      "right": 489.92,
+      "visualLineId": 21,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 138,
+      "str": "",
+      "x": 465.21,
+      "y": 507.39,
+      "width": 0,
+      "height": 0,
+      "right": 469.21,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 139,
+      "str": "Compiled Trace",
+      "x": 465.21,
+      "y": 507.39,
+      "width": 36.21,
+      "height": 5.17,
+      "right": 501.41,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 140,
+      "str": "",
+      "x": 336.33,
+      "y": 473.79,
+      "width": 0,
+      "height": 0,
+      "right": 340.33,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 141,
+      "str": "Compile",
+      "x": 336.33,
+      "y": 473.79,
+      "width": 20.4,
+      "height": 5.17,
+      "right": 356.72,
+      "visualLineId": 28,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 142,
+      "str": "",
+      "x": 335.32,
+      "y": 467.76,
+      "width": 0,
+      "height": 0,
+      "right": 339.32,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 143,
+      "str": "LIR Trace",
+      "x": 335.32,
+      "y": 467.76,
+      "width": 22.41,
+      "height": 5.17,
+      "right": 357.73,
+      "visualLineId": 29,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 144,
+      "str": "",
+      "x": 475.98,
+      "y": 434.16,
+      "width": 0,
+      "height": 0,
+      "right": 479.98,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 145,
+      "str": "Leave",
+      "x": 475.98,
+      "y": 434.16,
+      "width": 14.66,
+      "height": 5.17,
+      "right": 490.64,
+      "visualLineId": 34,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 146,
+      "str": "",
+      "x": 465.21,
+      "y": 428.12,
+      "width": 0,
+      "height": 0,
+      "right": 469.21,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 147,
+      "str": "Compiled Trace",
+      "x": 465.21,
+      "y": 428.12,
+      "width": 36.21,
+      "height": 5.17,
+      "right": 501.41,
+      "visualLineId": 35,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 148,
+      "str": "loop",
+      "x": 402.38,
+      "y": 556.08,
+      "width": 9.77,
+      "height": 5.17,
+      "right": 412.15,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 149,
+      "str": "edge",
+      "x": 401.52,
+      "y": 550.05,
+      "width": 11.5,
+      "height": 5.17,
+      "right": 413.02,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 150,
+      "str": "hot",
+      "x": 383.86,
+      "y": 516.44,
+      "width": 7.19,
+      "height": 5.17,
+      "right": 391.05,
+      "visualLineId": 20,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 151,
+      "str": "loop/exit",
+      "x": 377.82,
+      "y": 510.41,
+      "width": 19.25,
+      "height": 5.17,
+      "right": 397.08,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 152,
+      "str": "abort",
+      "x": 335.25,
+      "y": 531.95,
+      "width": 11.78,
+      "height": 5.17,
+      "right": 347.03,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 153,
+      "str": "recording",
+      "x": 330.36,
+      "y": 525.92,
+      "width": 21.55,
+      "height": 5.17,
+      "right": 351.91,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 154,
+      "str": "finish at",
+      "x": 353.56,
+      "y": 497.06,
+      "width": 17.82,
+      "height": 5.17,
+      "right": 371.37,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 155,
+      "str": "loop header",
+      "x": 348.81,
+      "y": 491.02,
+      "width": 27.3,
+      "height": 5.17,
+      "right": 376.11,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 156,
+      "str": "cold/blacklisted",
+      "x": 441.44,
+      "y": 550.91,
+      "width": 35.05,
+      "height": 5.17,
+      "right": 476.49,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 157,
+      "str": "loop/exit",
+      "x": 449.34,
+      "y": 544.88,
+      "width": 19.25,
+      "height": 5.17,
+      "right": 468.59,
+      "visualLineId": 17,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 158,
+      "str": "compiled trace",
+      "x": 444.31,
+      "y": 529.8,
+      "width": 33.61,
+      "height": 5.17,
+      "right": 477.93,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 159,
+      "str": "ready",
+      "x": 454.66,
+      "y": 523.77,
+      "width": 12.93,
+      "height": 5.17,
+      "right": 467.59,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 160,
+      "str": "loop edge with",
+      "x": 425.07,
+      "y": 492.1,
+      "width": 33.34,
+      "height": 5.17,
+      "right": 458.4,
+      "visualLineId": 25,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 161,
+      "str": "same types",
+      "x": 428.52,
+      "y": 486.07,
+      "width": 26.43,
+      "height": 5.17,
+      "right": 454.95,
+      "visualLineId": 27,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 162,
+      "str": "side exit to",
+      "x": 518.56,
+      "y": 444.93,
+      "width": 24.71,
+      "height": 5.17,
+      "right": 543.27,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 163,
+      "str": "existing trace",
+      "x": 515.69,
+      "y": 438.89,
+      "width": 30.46,
+      "height": 5.17,
+      "right": 546.14,
+      "visualLineId": 33,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 164,
+      "str": "side exit,",
+      "x": 427.44,
+      "y": 447.08,
+      "width": 20.4,
+      "height": 5.17,
+      "right": 447.84,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 165,
+      "str": "no existing trace",
+      "x": 418.82,
+      "y": 441.05,
+      "width": 37.64,
+      "height": 5.17,
+      "right": 456.46,
+      "visualLineId": 32,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 166,
+      "str": "Overhead",
+      "x": 507.07,
+      "y": 571.59,
+      "width": 22.7,
+      "height": 5.17,
+      "right": 529.77,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 167,
+      "str": "Interpreting",
+      "x": 505.35,
+      "y": 558.66,
+      "width": 26.15,
+      "height": 5.17,
+      "right": 531.5,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 168,
+      "str": "Native",
+      "x": 511.1,
+      "y": 546.17,
+      "width": 14.65,
+      "height": 5.17,
+      "right": 525.75,
+      "visualLineId": 17,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 169,
+      "str": "",
+      "x": 504.92,
+      "y": 582.79,
+      "width": 0,
+      "height": 0,
+      "right": 508.92,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 170,
+      "str": "Symbol Key",
+      "x": 504.92,
+      "y": 582.79,
+      "width": 29.59,
+      "height": 5.17,
+      "right": 534.51,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 171,
+      "str": "",
+      "x": 317.01,
+      "y": 393.32,
+      "width": 0,
+      "height": 0,
+      "right": 321.01,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 172,
+      "str": "Figure 2.",
+      "x": 317.01,
+      "y": 393.32,
+      "width": 34.76,
+      "height": 8.97,
+      "right": 351.78,
+      "visualLineId": 39,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 173,
+      "str": " ",
+      "x": 351.78,
+      "y": 393.32,
+      "width": 4.49,
+      "height": 0,
+      "right": 356.26,
+      "visualLineId": 39,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 174,
+      "str": "State machine describing the major activities of Trace-",
+      "x": 356.26,
+      "y": 393.32,
+      "width": 199.85,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 39,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 175,
+      "str": "Monkey and the conditions that cause transitions to a new activ-",
+      "x": 317.01,
+      "y": 383.36,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 40,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 176,
+      "str": "ity. In the dark box, TM executes JS as compiled traces. In the",
+      "x": 317.01,
+      "y": 373.39,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 41,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 177,
+      "str": "light gray boxes, TM executes JS in the standard interpreter. White",
+      "x": 317.01,
+      "y": 363.43,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 42,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 178,
+      "str": "boxes are overhead. Thus, to maximize performance, we need to",
+      "x": 317.01,
+      "y": 353.47,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 43,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 179,
+      "str": "maximize time spent in the darkest box and minimize time spent in",
+      "x": 317.01,
+      "y": 343.5,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 44,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 180,
+      "str": "the white boxes. The best case is a loop where the types at the loop",
+      "x": 317.01,
+      "y": 333.54,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 45,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 181,
+      "str": "edge are the same as the types on entry–then TM can stay in native",
+      "x": 317.01,
+      "y": 323.58,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 46,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 182,
+      "str": "code until the loop is done.",
+      "x": 317.01,
+      "y": 313.62,
+      "width": 97.13,
+      "height": 8.97,
+      "right": 414.15,
+      "visualLineId": 47,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 183,
+      "str": "a set of industry benchmarks. The paper ends with conclusions in",
+      "x": 317.01,
+      "y": 285.12,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 50,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 184,
+      "str": "Section 9 and an outlook on future work is presented in Section 10.",
+      "x": 317.01,
+      "y": 275.16,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 51,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 185,
+      "str": "",
+      "x": 317.01,
+      "y": 251.76,
+      "width": 0,
+      "height": 0,
+      "right": 321.01,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 186,
+      "str": "2.",
+      "x": 317.01,
+      "y": 251.76,
+      "width": 8.22,
+      "height": 10.96,
+      "right": 325.23,
+      "visualLineId": 53,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 187,
+      "str": " ",
+      "x": 325.23,
+      "y": 251.76,
+      "width": 10.96,
+      "height": 0,
+      "right": 336.19,
+      "visualLineId": 53,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 188,
+      "str": "Overview: Example Tracing Run",
+      "x": 336.19,
+      "y": 251.76,
+      "width": 154.52,
+      "height": 10.96,
+      "right": 490.71,
+      "visualLineId": 53,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 189,
+      "str": "",
+      "x": 317.01,
+      "y": 237.81,
+      "width": 0,
+      "height": 0,
+      "right": 321.01,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 190,
+      "str": "This section provides an overview of our system by describing",
+      "x": 317.01,
+      "y": 237.81,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 55,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 191,
+      "str": "how TraceMonkey executes an example program. The example",
+      "x": 317.01,
+      "y": 227.85,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 56,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 192,
+      "str": "program, shown in Figure 1, computes the first 100 prime numbers",
+      "x": 317.01,
+      "y": 217.88,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 57,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 193,
+      "str": "with nested loops. The narrative should be read along with Figure 2,",
+      "x": 317.01,
+      "y": 207.92,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 58,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 194,
+      "str": "which describes the activities TraceMonkey performs and when it",
+      "x": 317.01,
+      "y": 197.96,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 59,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 195,
+      "str": "transitions between the loops.",
+      "x": 317.01,
+      "y": 187.99,
+      "width": 106.59,
+      "height": 8.97,
+      "right": 423.61,
+      "visualLineId": 60,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 196,
+      "str": "TraceMonkey always begins executing a program in the byte-",
+      "x": 328.97,
+      "y": 178.03,
+      "width": 227.15,
+      "height": 8.97,
+      "right": 556.11,
+      "visualLineId": 61,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 197,
+      "str": "code interpreter. Every loop back edge is a potential trace point.",
+      "x": 317.01,
+      "y": 168.07,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 62,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 198,
+      "str": "When the interpreter crosses a loop edge, TraceMonkey invokes",
+      "x": 317.01,
+      "y": 158.11,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 63,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 199,
+      "str": "the",
+      "x": 317.01,
+      "y": 148.14,
+      "width": 10.96,
+      "height": 8.97,
+      "right": 327.97,
+      "visualLineId": 64,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 200,
+      "str": " ",
+      "x": 327.97,
+      "y": 148.14,
+      "width": 2.59,
+      "height": 0,
+      "right": 330.56,
+      "visualLineId": 64,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 201,
+      "str": "trace monitor",
+      "x": 330.56,
+      "y": 148.14,
+      "width": 49.28,
+      "height": 8.97,
+      "right": 379.84,
+      "visualLineId": 64,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 202,
+      "str": ", which may decide to record or execute a native",
+      "x": 379.83,
+      "y": 148.14,
+      "width": 176.28,
+      "height": 8.97,
+      "right": 556.11,
+      "visualLineId": 64,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 203,
+      "str": "trace. At the start of execution, there are no compiled traces yet, so",
+      "x": 317.01,
+      "y": 138.18,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 65,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 204,
+      "str": "the trace monitor counts the number of times each loop back edge is",
+      "x": 317.01,
+      "y": 128.22,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 66,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 205,
+      "str": "executed until a loop becomes",
+      "x": 317.01,
+      "y": 118.26,
+      "width": 107.24,
+      "height": 8.97,
+      "right": 424.25,
+      "visualLineId": 67,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 206,
+      "str": " ",
+      "x": 424.25,
+      "y": 118.26,
+      "width": 1.97,
+      "height": 0,
+      "right": 426.22,
+      "visualLineId": 67,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 207,
+      "str": "hot",
+      "x": 426.22,
+      "y": 118.26,
+      "width": 11.46,
+      "height": 8.97,
+      "right": 437.68,
+      "visualLineId": 67,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 208,
+      "str": ", currently after 2 crossings. Note",
+      "x": 437.68,
+      "y": 118.26,
+      "width": 118.44,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 67,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 209,
+      "str": "that the way our loops are compiled, the loop edge is crossed before",
+      "x": 317.01,
+      "y": 108.29,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 68,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 210,
+      "str": "entering the loop, so the second crossing occurs immediately after",
+      "x": 317.01,
+      "y": 98.33,
+      "width": 239.11,
+      "height": 8.97,
+      "right": 556.12,
+      "visualLineId": 69,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 211,
+      "str": "the first iteration.",
+      "x": 317.01,
+      "y": 88.37,
+      "width": 61.52,
+      "height": 8.97,
+      "right": 378.53,
+      "visualLineId": 70,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 212,
+      "str": "Here is the sequence of events broken down by outer loop",
+      "x": 328.97,
+      "y": 78.41,
+      "width": 227.15,
+      "height": 8.97,
+      "right": 556.11,
+      "visualLineId": 71,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 213,
+      "str": "iteration:",
+      "x": 317.01,
+      "y": 68.44,
+      "width": 32.38,
+      "height": 8.97,
+      "right": 349.39,
+      "visualLineId": 72,
+      "inferredColumn": 1
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 712.32,
+      "height": 12,
+      "text": "Hence, recording and compiling a trace speculates that the path and 1 for (var i = 2; i < 100; ++i) {",
+      "itemIndexes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        97
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 1,
+      "y": 703.37,
+      "height": 12,
+      "text": "typing will be exactly as they were during recording for subsequent 2 if (!primes[i])",
+      "itemIndexes": [
+        5,
+        98,
+        99,
+        100
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 2,
+      "y": 693.41,
+      "height": 12,
+      "text": "iterations of the loop. 3 continue;",
+      "itemIndexes": [
+        6,
+        101,
+        102,
+        103
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 3,
+      "y": 682.8,
+      "height": 12,
+      "text": "Every compiled trace contains all the guards (checks) required 4 for (var k = i + i; i < 100; k += i)",
+      "itemIndexes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        104,
+        105,
+        106
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 4,
+      "y": 673.49,
+      "height": 12,
+      "text": "to validate the speculation. If one of the guards fails (if control 5 primes[k] = false;",
+      "itemIndexes": [
+        12,
+        107,
+        108,
+        109
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 5,
+      "y": 663.09,
+      "height": 8.97,
+      "text": "flow is different, or a value of a different type is generated), the 6 }",
+      "itemIndexes": [
+        13,
+        110
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 6,
+      "y": 652.25,
+      "height": 12,
+      "text": "trace exits. If an exit becomes hot, the VM can record a branch",
+      "itemIndexes": [
+        14,
+        15,
+        16
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 7,
+      "y": 641.96,
+      "height": 12,
+      "text": "trace starting at the exit to cover the new path. In this way, the VM Figure 1. Sample program: sieve of Eratosthenes. primes is",
+      "itemIndexes": [
+        17,
+        18,
+        19,
+        112,
+        113,
+        114,
+        115,
+        116
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 8,
+      "y": 632.06,
+      "height": 12,
+      "text": "records a trace tree covering all the hot paths through the loop. initialized to an array of 100 false values on entry to this code",
+      "itemIndexes": [
+        20,
+        21,
+        22,
+        23,
+        24,
+        117,
+        118,
+        119,
+        120,
+        121
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 9,
+      "y": 622.1,
+      "height": 8.97,
+      "text": "Nested loops can be difficult to optimize for tracing VMs. In snippet.",
+      "itemIndexes": [
+        25,
+        122
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 10,
+      "y": 612.4,
+      "height": 8.97,
+      "text": "a na¨ ıve implementation, inner loops would become hot first, and",
+      "itemIndexes": [
+        26,
+        27
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 11,
+      "y": 602.44,
+      "height": 8.97,
+      "text": "the VM would start tracing there. When the inner loop exits, the",
+      "itemIndexes": [
+        28
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 12,
+      "y": 592.48,
+      "height": 8.97,
+      "text": "VM would detect that a different branch was taken. The VM would",
+      "itemIndexes": [
+        29
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 13,
+      "y": 582.65,
+      "height": 8.97,
+      "text": "try to record a branch trace, and find that the trace reaches not the Symbol Key",
+      "itemIndexes": [
+        30,
+        170
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 14,
+      "y": 572.47,
+      "height": 8.97,
+      "text": "inner loop header, but the outer loop header. At this point, the VM Bytecodes Interpret Overhead",
+      "itemIndexes": [
+        31,
+        125,
+        123,
+        166
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 15,
+      "y": 560.63,
+      "height": 8.97,
+      "text": "could continue tracing until it reaches the inner loop header again, Interpreting",
+      "itemIndexes": [
+        32,
+        167
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 16,
+      "y": 552.41,
+      "height": 8.97,
+      "text": "thus tracing the outer loop inside a trace tree for the inner loop. edge loop cold/blacklisted",
+      "itemIndexes": [
+        33,
+        149,
+        148,
+        156
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 17,
+      "y": 544.57,
+      "height": 8.97,
+      "text": "But this requires tracing a copy of the outer loop for every side exit loop/exit Native",
+      "itemIndexes": [
+        34,
+        157,
+        168
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 18,
+      "y": 531.06,
+      "height": 8.97,
+      "text": "and type combination in the inner loop. In essence, this is a form abort Monitor compiled trace",
+      "itemIndexes": [
+        35,
+        152,
+        127,
+        158
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 19,
+      "y": 524.14,
+      "height": 8.97,
+      "text": "of unintended tail duplication, which can easily overflow the code recording ready",
+      "itemIndexes": [
+        36,
+        153,
+        159
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 20,
+      "y": 514.61,
+      "height": 8.97,
+      "text": "cache. Alternatively, the VM could simply stop tracing, and give up hot",
+      "itemIndexes": [
+        37,
+        150
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 21,
+      "y": 513.43,
+      "height": 5.17,
+      "text": "Record Enter",
+      "itemIndexes": [
+        129,
+        137
+      ],
+      "firstX": 337.62
+    },
+    {
+      "lineId": 22,
+      "y": 510.41,
+      "height": 5.17,
+      "text": "loop/exit",
+      "itemIndexes": [
+        151
+      ],
+      "firstX": 377.82
+    },
+    {
+      "lineId": 23,
+      "y": 507.39,
+      "height": 5.17,
+      "text": "LIR Trace Compiled Trace",
+      "itemIndexes": [
+        131,
+        139
+      ],
+      "firstX": 335.32
+    },
+    {
+      "lineId": 24,
+      "y": 502.81,
+      "height": 8.97,
+      "text": "on ever tracing outer loops.",
+      "itemIndexes": [
+        38
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 25,
+      "y": 493.18,
+      "height": 12,
+      "text": "nested trace loop header finish at loop edge with",
+      "itemIndexes": [
+        40,
+        41,
+        155,
+        154,
+        160
+      ],
+      "firstX": 244.7
+    },
+    {
+      "lineId": 26,
+      "y": 492.85,
+      "height": 8.97,
+      "text": "We solve the nested loop problem by recording",
+      "itemIndexes": [
+        39
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 27,
+      "y": 483.68,
+      "height": 8.97,
+      "text": "trees . Our system traces the inner loop exactly as the na¨ ıve version. same types",
+      "itemIndexes": [
+        42,
+        43,
+        44,
+        161
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 28,
+      "y": 473.5,
+      "height": 8.97,
+      "text": "The system stops extending the inner tree when it reaches an outer Compile Execute",
+      "itemIndexes": [
+        45,
+        141,
+        133
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 29,
+      "y": 467.76,
+      "height": 5.17,
+      "text": "LIR Trace Compiled Trace",
+      "itemIndexes": [
+        143,
+        135
+      ],
+      "firstX": 335.32
+    },
+    {
+      "lineId": 30,
+      "y": 462.96,
+      "height": 8.97,
+      "text": "loop, but then it starts a new trace at the outer loop header. When",
+      "itemIndexes": [
+        46
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 31,
+      "y": 453,
+      "height": 8.97,
+      "text": "the outer loop reaches the inner loop header, the system tries to call",
+      "itemIndexes": [
+        47
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 32,
+      "y": 444.02,
+      "height": 8.97,
+      "text": "the trace tree for the inner loop. If the call succeeds, the VM records no existing trace side exit, side exit to",
+      "itemIndexes": [
+        48,
+        165,
+        164,
+        162
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 33,
+      "y": 438.89,
+      "height": 5.17,
+      "text": "existing trace",
+      "itemIndexes": [
+        163
+      ],
+      "firstX": 515.69
+    },
+    {
+      "lineId": 34,
+      "y": 433.62,
+      "height": 8.97,
+      "text": "the call to the inner tree as part of the outer trace and finishes Leave",
+      "itemIndexes": [
+        49,
+        145
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 35,
+      "y": 428.12,
+      "height": 5.17,
+      "text": "Compiled Trace",
+      "itemIndexes": [
+        147
+      ],
+      "firstX": 465.21
+    },
+    {
+      "lineId": 36,
+      "y": 423.11,
+      "height": 8.97,
+      "text": "the outer trace as normal. In this way, our system can trace any",
+      "itemIndexes": [
+        50
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 37,
+      "y": 413.15,
+      "height": 8.97,
+      "text": "number of loops nested to any depth without causing excessive tail",
+      "itemIndexes": [
+        51
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 38,
+      "y": 403.19,
+      "height": 8.97,
+      "text": "duplication.",
+      "itemIndexes": [
+        52
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 39,
+      "y": 393.29,
+      "height": 12,
+      "text": "These techniques allow a VM to dynamically translate a pro- Figure 2. State machine describing the major activities of Trace-",
+      "itemIndexes": [
+        53,
+        172,
+        173,
+        174
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 40,
+      "y": 383.31,
+      "height": 8.97,
+      "text": "gram to nested, type-specialized trace trees. Because traces can Monkey and the conditions that cause transitions to a new activ-",
+      "itemIndexes": [
+        54,
+        175
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 41,
+      "y": 373.35,
+      "height": 8.97,
+      "text": "cross function call boundaries, our techniques also achieve the ef- ity. In the dark box, TM executes JS as compiled traces. In the",
+      "itemIndexes": [
+        55,
+        176
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 42,
+      "y": 363.38,
+      "height": 8.97,
+      "text": "fects of inlining. Because traces have no internal control-flow joins, light gray boxes, TM executes JS in the standard interpreter. White",
+      "itemIndexes": [
+        56,
+        177
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 43,
+      "y": 353.42,
+      "height": 8.97,
+      "text": "they can be optimized in linear time by a simple compiler (10). boxes are overhead. Thus, to maximize performance, we need to",
+      "itemIndexes": [
+        57,
+        178
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 44,
+      "y": 343.46,
+      "height": 8.97,
+      "text": "Thus, our tracing VM efficiently performs the same kind of op- maximize time spent in the darkest box and minimize time spent in",
+      "itemIndexes": [
+        58,
+        179
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 45,
+      "y": 333.5,
+      "height": 8.97,
+      "text": "timizations that would require interprocedural analysis in a static the white boxes. The best case is a loop where the types at the loop",
+      "itemIndexes": [
+        59,
+        180
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 46,
+      "y": 323.53,
+      "height": 8.97,
+      "text": "optimization setting. This makes tracing an attractive and effective edge are the same as the types on entry–then TM can stay in native",
+      "itemIndexes": [
+        60,
+        181
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 47,
+      "y": 313.57,
+      "height": 8.97,
+      "text": "tool to type specialize even complex function call-rich code. code until the loop is done.",
+      "itemIndexes": [
+        61,
+        182
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 48,
+      "y": 303.56,
+      "height": 8.97,
+      "text": "We implemented these techniques for an existing JavaScript in-",
+      "itemIndexes": [
+        62
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 49,
+      "y": 293.6,
+      "height": 12,
+      "text": "terpreter, SpiderMonkey. We call the resulting tracing VM Trace-",
+      "itemIndexes": [
+        63,
+        64,
+        65
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 50,
+      "y": 284.13,
+      "height": 8.97,
+      "text": "Monkey . TraceMonkey supports all the JavaScript features of Spi- a set of industry benchmarks. The paper ends with conclusions in",
+      "itemIndexes": [
+        66,
+        67,
+        183
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 51,
+      "y": 274.42,
+      "height": 8.97,
+      "text": "derMonkey, with a 2x-20x speedup for traceable programs. Section 9 and an outlook on future work is presented in Section 10.",
+      "itemIndexes": [
+        68,
+        184
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 52,
+      "y": 263.71,
+      "height": 8.97,
+      "text": "This paper makes the following contributions:",
+      "itemIndexes": [
+        69
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 53,
+      "y": 251.76,
+      "height": 12,
+      "text": "2. Overview: Example Tracing Run",
+      "itemIndexes": [
+        186,
+        187,
+        188
+      ],
+      "firstX": 317.01
+    },
+    {
+      "lineId": 54,
+      "y": 245.38,
+      "height": 12,
+      "text": "• We explain an algorithm for dynamically forming trace trees to",
+      "itemIndexes": [
+        71,
+        72,
+        73
+      ],
+      "firstX": 59.23
+    },
+    {
+      "lineId": 55,
+      "y": 236.31,
+      "height": 8.97,
+      "text": "cover a program, representing nested loops as nested trace trees. This section provides an overview of our system by describing",
+      "itemIndexes": [
+        74,
+        190
+      ],
+      "firstX": 66.95
+    },
+    {
+      "lineId": 56,
+      "y": 227.85,
+      "height": 8.97,
+      "text": "how TraceMonkey executes an example program. The example",
+      "itemIndexes": [
+        191
+      ],
+      "firstX": 317.01
+    },
+    {
+      "lineId": 57,
+      "y": 220.57,
+      "height": 12,
+      "text": "• We explain how to speculatively generate efficient type-specialized program, shown in Figure 1, computes the first 100 prime numbers",
+      "itemIndexes": [
+        76,
+        77,
+        78,
+        192
+      ],
+      "firstX": 59.23
+    },
+    {
+      "lineId": 58,
+      "y": 209.41,
+      "height": 8.97,
+      "text": "code for traces from dynamic language programs. with nested loops. The narrative should be read along with Figure 2,",
+      "itemIndexes": [
+        79,
+        193
+      ],
+      "firstX": 66.95
+    },
+    {
+      "lineId": 59,
+      "y": 197.66,
+      "height": 12,
+      "text": "• We validate our tracing techniques in an implementation based which describes the activities TraceMonkey performs and when it",
+      "itemIndexes": [
+        81,
+        82,
+        83,
+        194
+      ],
+      "firstX": 59.23
+    },
+    {
+      "lineId": 60,
+      "y": 187.5,
+      "height": 8.97,
+      "text": "on the SpiderMonkey JavaScript interpreter, achieving 2x-20x transitions between the loops.",
+      "itemIndexes": [
+        84,
+        195
+      ],
+      "firstX": 66.95
+    },
+    {
+      "lineId": 61,
+      "y": 177.53,
+      "height": 8.97,
+      "text": "speedups on many programs. TraceMonkey always begins executing a program in the byte-",
+      "itemIndexes": [
+        85,
+        196
+      ],
+      "firstX": 66.95
+    },
+    {
+      "lineId": 62,
+      "y": 168.07,
+      "height": 8.97,
+      "text": "code interpreter. Every loop back edge is a potential trace point.",
+      "itemIndexes": [
+        197
+      ],
+      "firstX": 317.01
+    },
+    {
+      "lineId": 63,
+      "y": 158.11,
+      "height": 8.97,
+      "text": "The remainder of this paper is organized as follows. Section 3 is When the interpreter crosses a loop edge, TraceMonkey invokes",
+      "itemIndexes": [
+        86,
+        198
+      ],
+      "firstX": 65.96
+    },
+    {
+      "lineId": 64,
+      "y": 148.14,
+      "height": 12,
+      "text": "a general overview of trace tree based compilation we use to cap- the trace monitor , which may decide to record or execute a native",
+      "itemIndexes": [
+        87,
+        199,
+        200,
+        201,
+        202
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 65,
+      "y": 138.18,
+      "height": 8.97,
+      "text": "ture and compile frequently executed code regions. In Section 4 trace. At the start of execution, there are no compiled traces yet, so",
+      "itemIndexes": [
+        88,
+        203
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 66,
+      "y": 128.22,
+      "height": 8.97,
+      "text": "we describe our approach of covering nested loops using a num- the trace monitor counts the number of times each loop back edge is",
+      "itemIndexes": [
+        89,
+        204
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 67,
+      "y": 118.26,
+      "height": 12,
+      "text": "ber of individual trace trees. In Section 5 we describe our trace- executed until a loop becomes hot , currently after 2 crossings. Note",
+      "itemIndexes": [
+        90,
+        205,
+        206,
+        207,
+        208
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 68,
+      "y": 108.29,
+      "height": 8.97,
+      "text": "compilation based speculative type specialization approach we use that the way our loops are compiled, the loop edge is crossed before",
+      "itemIndexes": [
+        91,
+        209
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 69,
+      "y": 98.33,
+      "height": 8.97,
+      "text": "to generate efficient machine code from recorded bytecode traces. entering the loop, so the second crossing occurs immediately after",
+      "itemIndexes": [
+        92,
+        210
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 70,
+      "y": 88.37,
+      "height": 8.97,
+      "text": "Our implementation of a dynamic type-specializing compiler for the first iteration.",
+      "itemIndexes": [
+        93,
+        211
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 71,
+      "y": 78.41,
+      "height": 8.97,
+      "text": "JavaScript is described in Section 6. Related work is discussed in Here is the sequence of events broken down by outer loop",
+      "itemIndexes": [
+        94,
+        212
+      ],
+      "firstX": 54
+    },
+    {
+      "lineId": 72,
+      "y": 68.44,
+      "height": 8.97,
+      "text": "Section 8. In Section 7 we evaluate our dynamic compiler based on iteration:",
+      "itemIndexes": [
+        95,
+        213
+      ],
+      "firstX": 54
+    }
+  ]
+}

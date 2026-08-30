@@ -1,0 +1,2146 @@
+{
+  "file": "nist-800-207.pdf",
+  "page": 8,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "isolated-lines",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 4 !== 2 (total clusters 8; sizes 19.7:1, 110.5:52, 162.0:9, 274.5:4, 312.5:1, 374.6:2, 420.2:1, 504.0:1)",
+      "fallback: left/right of mid both have ≥2 lines and start-x spread 281.6 > 35% width → uncertain (not two-column)"
+    ],
+    "clusterCount": 8,
+    "substantialClusterCount": 4,
+    "clusters": [
+      {
+        "x": 19.68,
+        "items": 1,
+        "meanWidth": 355.64,
+        "yMin": 559.26,
+        "yMax": 559.26
+      },
+      {
+        "x": 110.46,
+        "items": 52,
+        "meanWidth": 177.32,
+        "yMin": 78.06,
+        "yMax": 746.58
+      },
+      {
+        "x": 162,
+        "items": 9,
+        "meanWidth": 324.61,
+        "yMin": 78.06,
+        "yMax": 382.86
+      },
+      {
+        "x": 274.49,
+        "items": 4,
+        "meanWidth": 162.96,
+        "yMin": 50.58,
+        "yMax": 442.26
+      },
+      {
+        "x": 312.48,
+        "items": 1,
+        "meanWidth": 227.05,
+        "yMin": 462.06,
+        "yMax": 462.06
+      },
+      {
+        "x": 374.64,
+        "items": 2,
+        "meanWidth": 165.13,
+        "yMin": 117.66,
+        "yMax": 363.06
+      },
+      {
+        "x": 420.18,
+        "items": 1,
+        "meanWidth": 119.81,
+        "yMin": 746.58,
+        "yMax": 746.58
+      },
+      {
+        "x": 504,
+        "items": 1,
+        "meanWidth": 36.01,
+        "yMin": 501.66,
+        "yMax": 501.66
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 19.68,
+      "items": 1,
+      "meanWidth": 355.64,
+      "yMin": 559.26,
+      "yMax": 559.26
+    },
+    {
+      "x": 110.46,
+      "items": 52,
+      "meanWidth": 177.32,
+      "yMin": 78.06,
+      "yMax": 746.58
+    },
+    {
+      "x": 162,
+      "items": 9,
+      "meanWidth": 324.61,
+      "yMin": 78.06,
+      "yMax": 382.86
+    },
+    {
+      "x": 274.49,
+      "items": 4,
+      "meanWidth": 162.96,
+      "yMin": 50.58,
+      "yMax": 442.26
+    },
+    {
+      "x": 312.48,
+      "items": 1,
+      "meanWidth": 227.05,
+      "yMin": 462.06,
+      "yMax": 462.06
+    },
+    {
+      "x": 374.64,
+      "items": 2,
+      "meanWidth": 165.13,
+      "yMin": 117.66,
+      "yMax": 363.06
+    },
+    {
+      "x": 420.18,
+      "items": 1,
+      "meanWidth": 119.81,
+      "yMin": 746.58,
+      "yMax": 746.58
+    },
+    {
+      "x": 504,
+      "items": 1,
+      "meanWidth": 36.01,
+      "yMin": 501.66,
+      "yMax": 501.66
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 39,
+    "clusters": [
+      {
+        "x": 139.06,
+        "items": 27,
+        "share": 0.692
+      },
+      {
+        "x": 84,
+        "items": 4,
+        "share": 0.103
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.7948717948717948
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        19.68,
+        110.46
+      ],
+      "gap": 90.78
+    },
+    {
+      "between": [
+        110.46,
+        162
+      ],
+      "gap": 51.540000000000006
+    },
+    {
+      "between": [
+        162,
+        274.49
+      ],
+      "gap": 112.49000000000001
+    },
+    {
+      "between": [
+        274.49,
+        312.48
+      ],
+      "gap": 37.99000000000001
+    },
+    {
+      "between": [
+        312.48,
+        374.64
+      ],
+      "gap": 62.15999999999997
+    },
+    {
+      "between": [
+        374.64,
+        420.18
+      ],
+      "gap": 45.54000000000002
+    },
+    {
+      "between": [
+        420.18,
+        504
+      ],
+      "gap": 83.82
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "NIST SP 800-207",
+      "x": 72,
+      "y": 746.58,
+      "width": 77.33,
+      "height": 10.02,
+      "right": 149.33,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": " ",
+      "x": 149.33,
+      "y": 746.58,
+      "width": 22.57,
+      "height": 0,
+      "right": 171.9,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "ZERO TRUST ARCHITECTURE",
+      "x": 420.18,
+      "y": 746.58,
+      "width": 119.81,
+      "height": 10.02,
+      "right": 539.99,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 301.32,
+      "y": 50.58,
+      "width": 0,
+      "height": 0,
+      "right": 305.32,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "vi",
+      "x": 301.32,
+      "y": 50.58,
+      "width": 9.34,
+      "height": 12,
+      "right": 310.66,
+      "visualLineId": 34,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 19.68,
+      "y": 559.26,
+      "width": 0,
+      "height": 0,
+      "right": 23.68,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207",
+      "x": 19.68,
+      "y": 559.26,
+      "width": 355.64,
+      "height": 9,
+      "right": 375.32,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "",
+      "x": 99.36,
+      "y": 707.4,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "5.5",
+      "x": 99.36,
+      "y": 707.4,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": " ",
+      "x": 116.05,
+      "y": 707.4,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "Storage of System and Network Information ................................................ 30",
+      "x": 127.02,
+      "y": 707.4,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "",
+      "x": 99.36,
+      "y": 687.6,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": "5.6",
+      "x": 99.36,
+      "y": 687.6,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": " ",
+      "x": 116.05,
+      "y": 687.6,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "Reliance on Proprietary Data Formats or Solutions ...................................... 30",
+      "x": 127.02,
+      "y": 687.6,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "",
+      "x": 99.36,
+      "y": 667.8,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": "5.7",
+      "x": 99.36,
+      "y": 667.8,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": " ",
+      "x": 116.05,
+      "y": 667.8,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "Use of Non-person Entities (NPE) in ZTA Administration ............................. 30",
+      "x": 127.02,
+      "y": 667.8,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": "",
+      "x": 72,
+      "y": 648,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "6",
+      "x": 72,
+      "y": 648,
+      "width": 6.67,
+      "height": 12,
+      "right": 78.67,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": " ",
+      "x": 78.67,
+      "y": 648,
+      "width": 1.58,
+      "height": 0,
+      "right": 80.25,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": "Zero Trust Architecture and Possible Interactions with Existing Federal",
+      "x": 96,
+      "y": 648,
+      "width": 405.34,
+      "height": 12,
+      "right": 501.34,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "Guidance",
+      "x": 72,
+      "y": 634.2,
+      "width": 54.67,
+      "height": 12,
+      "right": 126.67,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": " ",
+      "x": 126.67,
+      "y": 634.2,
+      "width": 0.08,
+      "height": 0,
+      "right": 126.76,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": "...................................................................................................................... 32",
+      "x": 127.68,
+      "y": 634.2,
+      "width": 411.85,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "",
+      "x": 99.36,
+      "y": 614.4,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "6.1",
+      "x": 99.36,
+      "y": 614.4,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": " ",
+      "x": 116.05,
+      "y": 614.4,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "ZTA and NIST Risk Management Framework .............................................. 32",
+      "x": 127.02,
+      "y": 614.4,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": "",
+      "x": 99.36,
+      "y": 594.6,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": "6.2",
+      "x": 99.36,
+      "y": 594.6,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": " ",
+      "x": 116.05,
+      "y": 594.6,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": "Zero Trust and NIST Privacy Framework...................................................... 32",
+      "x": 127.02,
+      "y": 594.6,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": "",
+      "x": 99.36,
+      "y": 574.86,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": "6.3",
+      "x": 99.36,
+      "y": 574.86,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": " ",
+      "x": 116.05,
+      "y": 574.86,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": "ZTA and Federal Identity, Credential, and Access Management Architecture",
+      "x": 127.02,
+      "y": 574.86,
+      "width": 402.91,
+      "height": 12,
+      "right": 529.93,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "33",
+      "x": 127.02,
+      "y": 561.06,
+      "width": 13.33,
+      "height": 12,
+      "right": 140.35,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": "",
+      "x": 99.36,
+      "y": 541.26,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "6.4",
+      "x": 99.36,
+      "y": 541.26,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": " ",
+      "x": 116.05,
+      "y": 541.26,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "ZTA and Trusted Internet Connections 3.0 ................................................... 33",
+      "x": 127.02,
+      "y": 541.26,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": "",
+      "x": 99.36,
+      "y": 521.46,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "6.5",
+      "x": 99.36,
+      "y": 521.46,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": " ",
+      "x": 116.05,
+      "y": 521.46,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "ZTA and EINSTEIN (NCPS – National Cybersecurity Protection System) ... 34",
+      "x": 127.02,
+      "y": 521.46,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": "",
+      "x": 99.36,
+      "y": 501.66,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": "6.6",
+      "x": 99.36,
+      "y": 501.66,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": " ",
+      "x": 116.05,
+      "y": 501.66,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "ZTA and DHS Continuous Diagnostics and Mitigations (CDM) Program",
+      "x": 127.02,
+      "y": 501.66,
+      "width": 376.12,
+      "height": 12,
+      "right": 503.14,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": " ",
+      "x": 503.14,
+      "y": 501.66,
+      "width": 0.07,
+      "height": 0,
+      "right": 503.21,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "...... 34",
+      "x": 504,
+      "y": 501.66,
+      "width": 36.01,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": "",
+      "x": 99.36,
+      "y": 481.86,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "6.7",
+      "x": 99.36,
+      "y": 481.86,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": " ",
+      "x": 116.05,
+      "y": 481.86,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "ZTA, Cloud Smart, and the Federal Data Strategy ....................................... 35",
+      "x": 127.02,
+      "y": 481.86,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "",
+      "x": 72,
+      "y": 462.06,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": "7",
+      "x": 72,
+      "y": 462.06,
+      "width": 6.67,
+      "height": 12,
+      "right": 78.67,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": " ",
+      "x": 78.67,
+      "y": 462.06,
+      "width": 1.58,
+      "height": 0,
+      "right": 80.25,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "Migrating to a Zero Trust Architecture",
+      "x": 96,
+      "y": 462.06,
+      "width": 215.35,
+      "height": 12,
+      "right": 311.35,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": " ",
+      "x": 311.35,
+      "y": 462.06,
+      "width": 0.09,
+      "height": 0,
+      "right": 311.45,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "............................................................... 36",
+      "x": 312.48,
+      "y": 462.06,
+      "width": 227.05,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": "",
+      "x": 99.36,
+      "y": 442.26,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "7.1",
+      "x": 99.36,
+      "y": 442.26,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": " ",
+      "x": 116.05,
+      "y": 442.26,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "Pure Zero Trust Architecture",
+      "x": 127.02,
+      "y": 442.26,
+      "width": 151.39,
+      "height": 12,
+      "right": 278.41,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": " ",
+      "x": 278.41,
+      "y": 442.26,
+      "width": 0.04,
+      "height": 0,
+      "right": 278.45,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": "......................................................................... 36",
+      "x": 278.88,
+      "y": 442.26,
+      "width": 261.13,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "",
+      "x": 99.36,
+      "y": 422.46,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": "7.2",
+      "x": 99.36,
+      "y": 422.46,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": " ",
+      "x": 116.05,
+      "y": 422.46,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "Hybrid ZTA and Perimeter-Based Architecture ............................................. 36",
+      "x": 127.02,
+      "y": 422.46,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 73,
+      "str": "",
+      "x": 99.36,
+      "y": 402.66,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 74,
+      "str": "7.3",
+      "x": 99.36,
+      "y": 402.66,
+      "width": 16.69,
+      "height": 12,
+      "right": 116.05,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 75,
+      "str": " ",
+      "x": 116.05,
+      "y": 402.66,
+      "width": 1,
+      "height": 0,
+      "right": 117.05,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 76,
+      "str": "Steps to Introducing ZTA to a Perimeter-Based Architected Network........... 37",
+      "x": 127.02,
+      "y": 402.66,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 77,
+      "str": "",
+      "x": 126,
+      "y": 382.86,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 78,
+      "str": "7.3.1",
+      "x": 126,
+      "y": 382.86,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 79,
+      "str": " ",
+      "x": 152.71,
+      "y": 382.86,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 80,
+      "str": "Identify Actors on the Enterprise ........................................................ 38",
+      "x": 162,
+      "y": 382.86,
+      "width": 377.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 81,
+      "str": "",
+      "x": 126,
+      "y": 363.06,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 82,
+      "str": "7.3.2",
+      "x": 126,
+      "y": 363.06,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 83,
+      "str": " ",
+      "x": 152.71,
+      "y": 363.06,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 84,
+      "str": "Identify Assets Owned by the Enterprise",
+      "x": 162,
+      "y": 363.06,
+      "width": 213.49,
+      "height": 12,
+      "right": 375.49,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 85,
+      "str": " ",
+      "x": 375.49,
+      "y": 363.06,
+      "width": 0.07,
+      "height": 0,
+      "right": 375.56,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 86,
+      "str": "............................................ 38",
+      "x": 376.32,
+      "y": 363.06,
+      "width": 163.21,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 87,
+      "str": "",
+      "x": 126,
+      "y": 343.26,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 88,
+      "str": "7.3.3",
+      "x": 126,
+      "y": 343.26,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 89,
+      "str": " ",
+      "x": 152.71,
+      "y": 343.26,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 90,
+      "str": "Identify Key Processes and Evaluate Risks Associated with Executing",
+      "x": 162,
+      "y": 343.26,
+      "width": 370.82,
+      "height": 12,
+      "right": 532.82,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 91,
+      "str": "Process ......................................................................................................... 39",
+      "x": 126,
+      "y": 329.46,
+      "width": 413.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 92,
+      "str": "",
+      "x": 126,
+      "y": 309.66,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 93,
+      "str": "7.3.4",
+      "x": 126,
+      "y": 309.66,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 94,
+      "str": " ",
+      "x": 152.71,
+      "y": 309.66,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 95,
+      "str": "Formulating Policies for the ZTA Candidate ....................................... 39",
+      "x": 162,
+      "y": 309.66,
+      "width": 377.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 96,
+      "str": "",
+      "x": 126,
+      "y": 289.86,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 97,
+      "str": "7.3.5",
+      "x": 126,
+      "y": 289.86,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 98,
+      "str": " ",
+      "x": 152.71,
+      "y": 289.86,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 99,
+      "str": "Identifying Candidate Solutions .......................................................... 40",
+      "x": 162,
+      "y": 289.86,
+      "width": 377.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 100,
+      "str": "",
+      "x": 126,
+      "y": 270.06,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 101,
+      "str": "7.3.6",
+      "x": 126,
+      "y": 270.06,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 102,
+      "str": " ",
+      "x": 152.71,
+      "y": 270.06,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 103,
+      "str": "Initial Deployment and Monitoring ...................................................... 40",
+      "x": 162,
+      "y": 270.06,
+      "width": 377.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 104,
+      "str": "",
+      "x": 126,
+      "y": 250.26,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 105,
+      "str": "7.3.7",
+      "x": 126,
+      "y": 250.26,
+      "width": 26.71,
+      "height": 12,
+      "right": 152.71,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 106,
+      "str": " ",
+      "x": 152.71,
+      "y": 250.26,
+      "width": 0.85,
+      "height": 0,
+      "right": 153.56,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 107,
+      "str": "Expanding the ZTA",
+      "x": 162,
+      "y": 250.26,
+      "width": 102.74,
+      "height": 12,
+      "right": 264.74,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 108,
+      "str": " ",
+      "x": 264.74,
+      "y": 250.26,
+      "width": 0.06,
+      "height": 0,
+      "right": 264.8,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 109,
+      "str": "............................................................................. 41",
+      "x": 265.44,
+      "y": 250.26,
+      "width": 274.09,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 110,
+      "str": "",
+      "x": 72,
+      "y": 230.46,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 111,
+      "str": "References",
+      "x": 72,
+      "y": 230.46,
+      "width": 64.69,
+      "height": 12,
+      "right": 136.69,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 112,
+      "str": " ",
+      "x": 136.69,
+      "y": 230.46,
+      "width": 0.09,
+      "height": 0,
+      "right": 136.78,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 113,
+      "str": "................................................................................................................... 42",
+      "x": 137.76,
+      "y": 230.46,
+      "width": 401.77,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 114,
+      "str": "",
+      "x": 252.3,
+      "y": 196.86,
+      "width": 0,
+      "height": 0,
+      "right": 256.3,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 115,
+      "str": "List of Appendices",
+      "x": 252.3,
+      "y": 196.86,
+      "width": 107.29,
+      "height": 12,
+      "right": 359.59,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 116,
+      "str": "",
+      "x": 72,
+      "y": 177.06,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 117,
+      "str": "Appendix A— Acronyms ............................................................................................ 45",
+      "x": 72,
+      "y": 177.06,
+      "width": 467.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 118,
+      "str": "",
+      "x": 72,
+      "y": 157.26,
+      "width": 0,
+      "height": 0,
+      "right": 76,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 119,
+      "str": "Appendix B— Identified Gaps in the Current State-of-the-Art in ZTA .................... 46",
+      "x": 72,
+      "y": 157.26,
+      "width": 467.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 29,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 120,
+      "str": "",
+      "x": 99.36,
+      "y": 137.46,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 121,
+      "str": "B.1",
+      "x": 99.36,
+      "y": 137.46,
+      "width": 18.01,
+      "height": 12,
+      "right": 117.37,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 122,
+      "str": " ",
+      "x": 117.37,
+      "y": 137.46,
+      "width": 0.88,
+      "height": 0,
+      "right": 118.25,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 123,
+      "str": "Technology Survey ....................................................................................... 46",
+      "x": 127.02,
+      "y": 137.46,
+      "width": 412.99,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 30,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 124,
+      "str": "",
+      "x": 99.36,
+      "y": 117.66,
+      "width": 0,
+      "height": 0,
+      "right": 103.36,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 125,
+      "str": "B.2",
+      "x": 99.36,
+      "y": 117.66,
+      "width": 18.01,
+      "height": 12,
+      "right": 117.37,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 126,
+      "str": " ",
+      "x": 117.37,
+      "y": 117.66,
+      "width": 0.88,
+      "height": 0,
+      "right": 118.25,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 127,
+      "str": "Gaps that Prevent an Immediate Move to ZTA",
+      "x": 127.02,
+      "y": 117.66,
+      "width": 244.77,
+      "height": 12,
+      "right": 371.79,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 128,
+      "str": " ",
+      "x": 371.79,
+      "y": 117.66,
+      "width": 0.1,
+      "height": 0,
+      "right": 371.88,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 129,
+      "str": "............................................. 47",
+      "x": 372.96,
+      "y": 117.66,
+      "width": 167.05,
+      "height": 12,
+      "right": 540.01,
+      "visualLineId": 31,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 130,
+      "str": "",
+      "x": 126,
+      "y": 97.86,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 131,
+      "str": "B.2.1",
+      "x": 126,
+      "y": 97.86,
+      "width": 28.03,
+      "height": 12,
+      "right": 154.03,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 132,
+      "str": " ",
+      "x": 154.03,
+      "y": 97.86,
+      "width": 0.73,
+      "height": 0,
+      "right": 154.76,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 133,
+      "str": "Lack of Common Terms for ZTA Design, Planning, and Procurement47",
+      "x": 162,
+      "y": 97.86,
+      "width": 377.53,
+      "height": 12,
+      "right": 539.53,
+      "visualLineId": 32,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 134,
+      "str": "",
+      "x": 126,
+      "y": 78.06,
+      "width": 0,
+      "height": 0,
+      "right": 130,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 135,
+      "str": "B.2.2",
+      "x": 126,
+      "y": 78.06,
+      "width": 28.03,
+      "height": 12,
+      "right": 154.03,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 136,
+      "str": " ",
+      "x": 154.03,
+      "y": 78.06,
+      "width": 0.73,
+      "height": 0,
+      "right": 154.76,
+      "visualLineId": 33,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 137,
+      "str": "Perception that ZTA Conflicts with Existing Federal Cybersecurity",
+      "x": 162,
+      "y": 78.06,
+      "width": 346.8,
+      "height": 12,
+      "right": 508.8,
+      "visualLineId": 33,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 746.58,
+      "height": 12,
+      "text": "NIST SP 800-207 ZERO TRUST ARCHITECTURE",
+      "itemIndexes": [
+        0,
+        1,
+        2
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 1,
+      "y": 707.4,
+      "height": 12,
+      "text": "5.5 Storage of System and Network Information ................................................ 30",
+      "itemIndexes": [
+        8,
+        9,
+        10
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 2,
+      "y": 687.6,
+      "height": 12,
+      "text": "5.6 Reliance on Proprietary Data Formats or Solutions ...................................... 30",
+      "itemIndexes": [
+        12,
+        13,
+        14
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 3,
+      "y": 667.8,
+      "height": 12,
+      "text": "5.7 Use of Non-person Entities (NPE) in ZTA Administration ............................. 30",
+      "itemIndexes": [
+        16,
+        17,
+        18
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 4,
+      "y": 648,
+      "height": 12,
+      "text": "6 Zero Trust Architecture and Possible Interactions with Existing Federal",
+      "itemIndexes": [
+        20,
+        21,
+        22
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 5,
+      "y": 634.2,
+      "height": 12,
+      "text": "Guidance ...................................................................................................................... 32",
+      "itemIndexes": [
+        23,
+        24,
+        25
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 6,
+      "y": 614.4,
+      "height": 12,
+      "text": "6.1 ZTA and NIST Risk Management Framework .............................................. 32",
+      "itemIndexes": [
+        27,
+        28,
+        29
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 7,
+      "y": 594.6,
+      "height": 12,
+      "text": "6.2 Zero Trust and NIST Privacy Framework...................................................... 32",
+      "itemIndexes": [
+        31,
+        32,
+        33
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 8,
+      "y": 574.86,
+      "height": 12,
+      "text": "6.3 ZTA and Federal Identity, Credential, and Access Management Architecture",
+      "itemIndexes": [
+        35,
+        36,
+        37
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 9,
+      "y": 560.16,
+      "height": 12,
+      "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207 33",
+      "itemIndexes": [
+        6,
+        38
+      ],
+      "firstX": 19.68
+    },
+    {
+      "lineId": 10,
+      "y": 541.26,
+      "height": 12,
+      "text": "6.4 ZTA and Trusted Internet Connections 3.0 ................................................... 33",
+      "itemIndexes": [
+        40,
+        41,
+        42
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 11,
+      "y": 521.46,
+      "height": 12,
+      "text": "6.5 ZTA and EINSTEIN (NCPS – National Cybersecurity Protection System) ... 34",
+      "itemIndexes": [
+        44,
+        45,
+        46
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 12,
+      "y": 501.66,
+      "height": 12,
+      "text": "6.6 ZTA and DHS Continuous Diagnostics and Mitigations (CDM) Program ...... 34",
+      "itemIndexes": [
+        48,
+        49,
+        50,
+        51,
+        52
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 13,
+      "y": 481.86,
+      "height": 12,
+      "text": "6.7 ZTA, Cloud Smart, and the Federal Data Strategy ....................................... 35",
+      "itemIndexes": [
+        54,
+        55,
+        56
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 14,
+      "y": 462.06,
+      "height": 12,
+      "text": "7 Migrating to a Zero Trust Architecture ............................................................... 36",
+      "itemIndexes": [
+        58,
+        59,
+        60,
+        61,
+        62
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 15,
+      "y": 442.26,
+      "height": 12,
+      "text": "7.1 Pure Zero Trust Architecture ......................................................................... 36",
+      "itemIndexes": [
+        64,
+        65,
+        66,
+        67,
+        68
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 16,
+      "y": 422.46,
+      "height": 12,
+      "text": "7.2 Hybrid ZTA and Perimeter-Based Architecture ............................................. 36",
+      "itemIndexes": [
+        70,
+        71,
+        72
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 17,
+      "y": 402.66,
+      "height": 12,
+      "text": "7.3 Steps to Introducing ZTA to a Perimeter-Based Architected Network........... 37",
+      "itemIndexes": [
+        74,
+        75,
+        76
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 18,
+      "y": 382.86,
+      "height": 12,
+      "text": "7.3.1 Identify Actors on the Enterprise ........................................................ 38",
+      "itemIndexes": [
+        78,
+        79,
+        80
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 19,
+      "y": 363.06,
+      "height": 12,
+      "text": "7.3.2 Identify Assets Owned by the Enterprise ............................................ 38",
+      "itemIndexes": [
+        82,
+        83,
+        84,
+        85,
+        86
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 20,
+      "y": 343.26,
+      "height": 12,
+      "text": "7.3.3 Identify Key Processes and Evaluate Risks Associated with Executing",
+      "itemIndexes": [
+        88,
+        89,
+        90
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 21,
+      "y": 329.46,
+      "height": 12,
+      "text": "Process ......................................................................................................... 39",
+      "itemIndexes": [
+        91
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 22,
+      "y": 309.66,
+      "height": 12,
+      "text": "7.3.4 Formulating Policies for the ZTA Candidate ....................................... 39",
+      "itemIndexes": [
+        93,
+        94,
+        95
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 23,
+      "y": 289.86,
+      "height": 12,
+      "text": "7.3.5 Identifying Candidate Solutions .......................................................... 40",
+      "itemIndexes": [
+        97,
+        98,
+        99
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 24,
+      "y": 270.06,
+      "height": 12,
+      "text": "7.3.6 Initial Deployment and Monitoring ...................................................... 40",
+      "itemIndexes": [
+        101,
+        102,
+        103
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 25,
+      "y": 250.26,
+      "height": 12,
+      "text": "7.3.7 Expanding the ZTA ............................................................................. 41",
+      "itemIndexes": [
+        105,
+        106,
+        107,
+        108,
+        109
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 26,
+      "y": 230.46,
+      "height": 12,
+      "text": "References ................................................................................................................... 42",
+      "itemIndexes": [
+        111,
+        112,
+        113
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 27,
+      "y": 196.86,
+      "height": 12,
+      "text": "List of Appendices",
+      "itemIndexes": [
+        115
+      ],
+      "firstX": 252.3
+    },
+    {
+      "lineId": 28,
+      "y": 177.06,
+      "height": 12,
+      "text": "Appendix A— Acronyms ............................................................................................ 45",
+      "itemIndexes": [
+        117
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 29,
+      "y": 157.26,
+      "height": 12,
+      "text": "Appendix B— Identified Gaps in the Current State-of-the-Art in ZTA .................... 46",
+      "itemIndexes": [
+        119
+      ],
+      "firstX": 72
+    },
+    {
+      "lineId": 30,
+      "y": 137.46,
+      "height": 12,
+      "text": "B.1 Technology Survey ....................................................................................... 46",
+      "itemIndexes": [
+        121,
+        122,
+        123
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 31,
+      "y": 117.66,
+      "height": 12,
+      "text": "B.2 Gaps that Prevent an Immediate Move to ZTA ............................................. 47",
+      "itemIndexes": [
+        125,
+        126,
+        127,
+        128,
+        129
+      ],
+      "firstX": 99.36
+    },
+    {
+      "lineId": 32,
+      "y": 97.86,
+      "height": 12,
+      "text": "B.2.1 Lack of Common Terms for ZTA Design, Planning, and Procurement47",
+      "itemIndexes": [
+        131,
+        132,
+        133
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 33,
+      "y": 78.06,
+      "height": 12,
+      "text": "B.2.2 Perception that ZTA Conflicts with Existing Federal Cybersecurity",
+      "itemIndexes": [
+        135,
+        136,
+        137
+      ],
+      "firstX": 126
+    },
+    {
+      "lineId": 34,
+      "y": 50.58,
+      "height": 12,
+      "text": "vi",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 301.32
+    }
+  ]
+}

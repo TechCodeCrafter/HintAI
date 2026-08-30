@@ -2,9 +2,10 @@ import type { NormalizedPage, PageIndexMode, PageReadingOrder, PdfTextItem } fro
 import { bandKey } from "./headers.ts";
 import { usefulItemCount } from "./items.ts";
 import {
+  classifyGridKind,
   detectReadingOrder,
-  isDenseGrid,
   isParagraphBreak,
+  isTableLikeGrid,
   lineIsUsable,
   shouldInsertSpace,
   type VisualLine,
@@ -31,7 +32,7 @@ export function normalizePage(input: {
   if (useful === 0) {
     return emptyPage(input.pageNumber, items, "uncertain", "skipped", 0);
   }
-  if (isDenseGrid(items)) {
+  if (isTableLikeGrid(items)) {
     return emptyPage(input.pageNumber, items, "uncertain", "skipped", useful);
   }
 
@@ -59,6 +60,10 @@ export function normalizePage(input: {
 
   const lines = usableLines(layout.lines);
   if (layout.readingOrder === "uncertain") {
+    // Isolated math crumbs retrieve as fake answers. 4A.9.3 owns math blocks.
+    if (classifyGridKind(items) === "math") {
+      return emptyPage(input.pageNumber, items, "uncertain", "skipped", useful);
+    }
     const isolated = lines.filter((line) => lineIsUsable(visualLineText(line)));
     if (isolated.length === 0) {
       return emptyPage(input.pageNumber, items, "uncertain", "skipped", useful);

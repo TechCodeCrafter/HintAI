@@ -1,0 +1,163 @@
+{
+  "phase": "4A.3",
+  "generatedAt": "2026-08-30T23:10:44.075Z",
+  "versions": {
+    "parser": 1,
+    "normalizer": 3,
+    "documentChunker": 2
+  },
+  "metrics": {
+    "answerable": 6,
+    "top1": 0.8333333333333334,
+    "top3": 0.8333333333333334,
+    "top6": 1,
+    "top1Count": "5/6",
+    "top3Count": "5/6",
+    "top6Count": "6/6"
+  },
+  "rows": [
+    {
+      "id": "lecture-isolation",
+      "q": "What does serializable isolation prevent?",
+      "answerable": true,
+      "expectedPage": 1,
+      "expectedPath": "lecture.pdf",
+      "top1": true,
+      "top3": true,
+      "top6": true,
+      "topKind": "document",
+      "topPage": 1,
+      "topScore": 6.480281301795233
+    },
+    {
+      "id": "lecture-multipage",
+      "q": "How do predicate locks protect phantoms?",
+      "answerable": true,
+      "expectedPage": 3,
+      "expectedPath": "lecture-multi.pdf",
+      "top1": true,
+      "top3": true,
+      "top6": true,
+      "topKind": "document",
+      "topPage": 3,
+      "topScore": 11.994282466918929
+    },
+    {
+      "id": "paper-twocol",
+      "q": "What does two-phase locking require?",
+      "answerable": true,
+      "expectedPage": 1,
+      "expectedPath": "paper.pdf",
+      "top1": true,
+      "top3": true,
+      "top6": true,
+      "topKind": "document",
+      "topPage": 1,
+      "topScore": 4.304845621565608
+    },
+    {
+      "id": "bullets",
+      "q": "Which isolation levels does the lecture list?",
+      "answerable": true,
+      "expectedPage": 1,
+      "expectedPath": "bullets.pdf",
+      "top1": false,
+      "top3": false,
+      "top6": true,
+      "topKind": "document",
+      "topPage": 1,
+      "topScore": 11.523222227807727
+    },
+    {
+      "id": "headers-body",
+      "q": "What anomaly does write skew create?",
+      "answerable": true,
+      "expectedPage": 2,
+      "expectedPath": "headers.pdf",
+      "top1": true,
+      "top3": true,
+      "top6": true,
+      "topKind": "document",
+      "topPage": 2,
+      "topScore": 9.853419897574426
+    },
+    {
+      "id": "slides",
+      "q": "What is the definition of a phantom read?",
+      "answerable": true,
+      "expectedPage": 2,
+      "expectedPath": "slides.pdf",
+      "top1": true,
+      "top3": true,
+      "top6": true,
+      "topKind": "document",
+      "topPage": 2,
+      "topScore": 4.692278620138967
+    },
+    {
+      "id": "weather",
+      "q": "What is the weather in Tokyo?",
+      "answerable": false,
+      "top1": false,
+      "top3": false,
+      "top6": false
+    },
+    {
+      "id": "unrelated-api",
+      "q": "How does the FastAPI health endpoint work?",
+      "answerable": false,
+      "top1": false,
+      "top3": false,
+      "top6": false
+    }
+  ],
+  "zeroChunk": {
+    "grid.pdf": {
+      "readiness": "ready",
+      "chunks": 0
+    },
+    "scanned.pdf": {
+      "readiness": "scanned",
+      "chunks": 0
+    },
+    "unreadable.pdf": {
+      "readiness": "unreadable",
+      "chunks": 0
+    },
+    "refused.pdf": {
+      "readiness": "refused",
+      "chunks": 0
+    }
+  },
+  "lectureChunks": 1,
+  "timings": {
+    "parseMs": {
+      "lecture.pdf": 155.19129099999998,
+      "lecture-multi.pdf": 2.393459000000007,
+      "paper.pdf": 4.629957999999988,
+      "bullets.pdf": 1.0119590000000187,
+      "headers.pdf": 2.3748749999999745,
+      "slides.pdf": 1.750458000000009,
+      "grid.pdf": 0.9484590000000139,
+      "scanned.pdf": 0.5999579999999867,
+      "unreadable.pdf": 2.1614580000000103,
+      "refused.pdf": 5.209582999999952
+    },
+    "normalizedDocumentCacheMs": 1.8898750000000177,
+    "documentChunkBuildMs": 0.18633400000004485,
+    "storedChunkWriteMs": 0.6621250000000032,
+    "warmStoredChunkReadMs": 0.09945799999997007,
+    "chunkerRebuildMs": 0.2508330000000001,
+    "warm": {
+      "blobLoads": 0,
+      "irLoads": 0,
+      "pdfjsOpens": 0,
+      "reused": 1
+    },
+    "chunkerBump": {
+      "blobLoads": 0,
+      "irLoads": 1,
+      "pdfjsOpens": 0
+    }
+  }
+}

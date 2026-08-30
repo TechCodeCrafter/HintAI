@@ -1,0 +1,208 @@
+{
+  "phase": "4A.9.2.2",
+  "genuineWrongIntent": 0,
+  "unanswerableSpoken": 0,
+  "unsupported": 0,
+  "fabricatedProvenance": 0,
+  "wrongSource": 0,
+  "pageLocationAccuracy": 1,
+  "existing481SpeakersLost": [],
+  "silencedWrongClaims": ["lora-what", "tm-base"],
+  "partialButValidKept": ["bert-nsp"],
+  "exactGoldKept": ["resnet-degrade"],
+  "machineStrictSurvivors": ["attn-arch", "bert-nsp", "nist145-hybrid", "63b-aal1"],
+  "spoken481": [
+    "63b-aal1",
+    "attn-arch",
+    "btc-coin",
+    "btc-incentive",
+    "cisa-smb",
+    "nist145-hybrid",
+    "omb-passwords",
+    "omb-when",
+    "resnet-what",
+    "tm-speedup",
+    "tm-what",
+    "zta-asset",
+    "zta-what"
+  ],
+  "spoken492": [
+    "63b-aal1",
+    "attn-arch",
+    "bert-nsp",
+    "btc-coin",
+    "btc-incentive",
+    "cisa-smb",
+    "lora-what",
+    "nist145-hybrid",
+    "omb-passwords",
+    "omb-when",
+    "resnet-degrade",
+    "resnet-what",
+    "tm-base",
+    "tm-speedup",
+    "tm-what",
+    "zta-asset",
+    "zta-what"
+  ],
+  "spoken4922": [
+    "63b-aal1",
+    "attn-arch",
+    "bert-nsp",
+    "btc-coin",
+    "btc-incentive",
+    "cisa-smb",
+    "nist145-hybrid",
+    "omb-passwords",
+    "omb-when",
+    "resnet-degrade",
+    "resnet-what",
+    "tm-speedup",
+    "tm-what",
+    "zta-asset",
+    "zta-what"
+  ],
+  "lostFrom481": [],
+  "silencedFrom492": [
+    "lora-what",
+    "tm-base"
+  ],
+  "newlySpokenVs492": [],
+  "focus": {
+    "lora-what": {
+      "before492": {
+        "spoke": true,
+        "say": "Tasks and freeze the MLP modules (so they are not trained in downstream tasks) both for simplicity",
+        "citedPath": "lora.pdf",
+        "citedPage": 5,
+        "matchedSpan": false,
+        "intentWrong": true
+      },
+      "after4922": {
+        "spoke": false,
+        "say": null,
+        "reason": "Nothing in this pack cites that."
+      },
+      "before481": {
+        "spoke": false,
+        "say": null,
+        "reason": "Nothing in this pack cites that."
+      }
+    },
+    "tm-base": {
+      "before492": {
+        "spoke": true,
+        "say": "Inline threading (15) copies chunks of interpreter native code which implement the required bytecodes into a native code cache, thus acting as a simple per-method JIT compiler that eliminates the dispatch overhead.",
+        "citedPath": "tracemonkey.pdf",
+        "citedPage": 13,
+        "matchedSpan": false,
+        "intentWrong": true
+      },
+      "after4922": {
+        "spoke": false,
+        "say": null,
+        "reason": "Nothing in this pack cites that."
+      },
+      "before481": {
+        "spoke": false,
+        "say": null,
+        "reason": "Nothing in this pack cites that."
+      }
+    },
+    "bert-nsp": {
+      "before492": {
+        "spoke": true,
+        "say": "In order This step to train a model that understands sentence relationships, we pre-train for a binarized next sentence prediction task that can be trivially generated from any monolingual corpus.",
+        "citedPath": "bert.pdf",
+        "citedPage": 4,
+        "matchedSpan": false,
+        "intentWrong": true
+      },
+      "after4922": {
+        "spoke": true,
+        "say": "In order This step to train a model that understands sentence relationships, we pre-train for a binarized next sentence prediction task that can be trivially generated from any monolingual corpus.",
+        "citedPath": "bert.pdf",
+        "citedPage": 4,
+        "matchedSpan": false,
+        "intentWrong": true
+      },
+      "before481": {
+        "spoke": false,
+        "say": null,
+        "reason": "Nothing in this pack cites that."
+      }
+    },
+    "resnet-degrade": {
+      "before492": {
+        "spoke": true,
+        "say": "Unexpectedly, such degradation is not caused by overfitting , and adding more layers to a suitably deep model leads to higher training error, as reported in [11, 42] and thoroughly verified by our experiments.",
+        "citedPath": "resnet.pdf",
+        "citedPage": 1,
+        "matchedSpan": true,
+        "intentWrong": false
+      },
+      "after4922": {
+        "spoke": true,
+        "say": "Unexpectedly, such degradation is not caused by overfitting , and adding more layers to a suitably deep model leads to higher training error, as reported in [11, 42] and thoroughly verified by our experiments.",
+        "citedPath": "resnet.pdf",
+        "citedPage": 1,
+        "matchedSpan": true,
+        "intentWrong": false
+      },
+      "before481": {
+        "spoke": false,
+        "say": null,
+        "reason": "Nothing in this pack cites that."
+      }
+    }
+  },
+  "existingSpeakerDiffs": [],
+  "metrics481": {
+    "questions": 126,
+    "spoken": 13,
+    "wrongIntent": 0.031746031746031744,
+    "wrongIntentCount": "4/126",
+    "unsupported": 0,
+    "unsupportedCount": "0/13",
+    "fabricatedProvenance": 0,
+    "pageCitationAccuracy": 1,
+    "evidenceLocationAccuracy": 1,
+    "answerableHitRate": 0.10112359550561797,
+    "answerableHitCount": "9/89",
+    "falseSilence": 0.8539325842696629,
+    "falseSilenceCount": "76/89",
+    "unanswerableSpoke": 0
+  },
+  "metrics492": {
+    "questions": 126,
+    "spoken": 17,
+    "wrongIntent": 0.047619047619047616,
+    "wrongIntentCount": "6/126",
+    "unsupported": 0,
+    "unsupportedCount": "0/17",
+    "fabricatedProvenance": 0,
+    "pageCitationAccuracy": 1,
+    "evidenceLocationAccuracy": 1,
+    "answerableHitRate": 0.12359550561797752,
+    "answerableHitCount": "11/89",
+    "falseSilence": 0.8089887640449438,
+    "falseSilenceCount": "72/89",
+    "unanswerableSpoke": 0
+  },
+  "metrics4922": {
+    "questions": 126,
+    "spoken": 15,
+    "wrongIntent": 0.031746031746031744,
+    "wrongIntentCount": "4/126",
+    "unsupported": 0,
+    "unsupportedCount": "0/15",
+    "fabricatedProvenance": 0,
+    "pageCitationAccuracy": 1,
+    "evidenceLocationAccuracy": 1,
+    "answerableHitRate": 0.12359550561797752,
+    "answerableHitCount": "11/89",
+    "falseSilence": 0.8314606741573034,
+    "falseSilenceCount": "74/89",
+    "unanswerableSpoke": 0
+  }
+}

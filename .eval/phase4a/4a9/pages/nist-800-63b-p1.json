@@ -1,0 +1,1338 @@
+{
+  "file": "nist-800-63b.pdf",
+  "page": 1,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "single-column",
+    "index": "full",
+    "earliestSkip": null,
+    "whyNotTwoColumn": [
+      "substantial left-edge clusters 3 !== 2 (total clusters 3; sizes 74.1:24, 191.0:19, 282.8:2)"
+    ],
+    "clusterCount": 3,
+    "substantialClusterCount": 3,
+    "clusters": [
+      {
+        "x": 74.07,
+        "items": 24,
+        "meanWidth": 120.61,
+        "yMin": 47.16,
+        "yMax": 689.52
+      },
+      {
+        "x": 191.01,
+        "items": 19,
+        "meanWidth": 160.77,
+        "yMin": 245.22,
+        "yMax": 546.3
+      },
+      {
+        "x": 282.78,
+        "items": 2,
+        "meanWidth": 101.56,
+        "yMin": 430.08,
+        "yMax": 638.22
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 74.07,
+      "items": 24,
+      "meanWidth": 120.61,
+      "yMin": 47.16,
+      "yMax": 689.52
+    },
+    {
+      "x": 191.01,
+      "items": 19,
+      "meanWidth": 160.77,
+      "yMin": 245.22,
+      "yMax": 546.3
+    },
+    {
+      "x": 282.78,
+      "items": 2,
+      "meanWidth": 101.56,
+      "yMin": 430.08,
+      "yMax": 638.22
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 29,
+    "clusters": [
+      {
+        "x": 74.66,
+        "items": 16,
+        "share": 0.552
+      },
+      {
+        "x": 185.16,
+        "items": 11,
+        "share": 0.379
+      }
+    ],
+    "twoDominant": true,
+    "overlap": 301.08,
+    "topShare": 0.9310344827586207
+  },
+  "ySpanOverlap": 301.08,
+  "gutterCandidates": [
+    {
+      "between": [
+        74.07,
+        191.01
+      ],
+      "gap": 116.94
+    },
+    {
+      "between": [
+        191.01,
+        282.78
+      ],
+      "gap": 91.76999999999998
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Date updated: July 24, 2025",
+      "x": 72,
+      "y": 47.16,
+      "width": 135.86,
+      "height": 12,
+      "right": 207.86,
+      "visualLineId": 27,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 1,
+      "str": "",
+      "x": 101.94,
+      "y": 689.52,
+      "width": 0,
+      "height": 0,
+      "right": 105.94,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 2,
+      "str": "Withdrawn NIST Technical Series Publication",
+      "x": 101.94,
+      "y": 689.52,
+      "width": 408.07,
+      "height": 22.02,
+      "right": 510.01,
+      "visualLineId": 0,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 3,
+      "str": "",
+      "x": 267.06,
+      "y": 638.22,
+      "width": 0,
+      "height": 0,
+      "right": 271.06,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 4,
+      "str": "Warning Notice",
+      "x": 267.06,
+      "y": 638.22,
+      "width": 77.8,
+      "height": 12,
+      "right": 344.86,
+      "visualLineId": 1,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 5,
+      "str": "",
+      "x": 72.9,
+      "y": 612.3,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 6,
+      "str": "The attached publication has been withdrawn (archived), and is provided solely for historical purposes.",
+      "x": 72.9,
+      "y": 612.3,
+      "width": 459.46,
+      "height": 10.98,
+      "right": 532.36,
+      "visualLineId": 2,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 7,
+      "str": "It may have been superseded by another publication (indicated below).",
+      "x": 72.89,
+      "y": 598.86,
+      "width": 318.7,
+      "height": 10.98,
+      "right": 391.59,
+      "visualLineId": 3,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 8,
+      "str": "",
+      "x": 72.9,
+      "y": 566.52,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 9,
+      "str": "Withdrawn Publication",
+      "x": 72.9,
+      "y": 566.52,
+      "width": 115.22,
+      "height": 12,
+      "right": 188.12,
+      "visualLineId": 4,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 10,
+      "str": "",
+      "x": 72.9,
+      "y": 546.3,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 11,
+      "str": "Series/Number",
+      "x": 72.9,
+      "y": 546.3,
+      "width": 69.42,
+      "height": 10.98,
+      "right": 142.32,
+      "visualLineId": 5,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 12,
+      "str": " ",
+      "x": 142.32,
+      "y": 546.3,
+      "width": 3.9,
+      "height": 0,
+      "right": 146.22,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 13,
+      "str": "NIST Special Publication 800-63B",
+      "x": 185.16,
+      "y": 546.3,
+      "width": 146.25,
+      "height": 10.98,
+      "right": 331.41,
+      "visualLineId": 5,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 14,
+      "str": "",
+      "x": 72.9,
+      "y": 532.38,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 15,
+      "str": "Title",
+      "x": 72.9,
+      "y": 532.38,
+      "width": 20.16,
+      "height": 10.98,
+      "right": 93.06,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 16,
+      "str": " ",
+      "x": 93.06,
+      "y": 532.38,
+      "width": 8.39,
+      "height": 0,
+      "right": 101.45,
+      "visualLineId": 6,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 17,
+      "str": "Digital Identity Guidelines: Authentication and Lifecycle Management",
+      "x": 185.16,
+      "y": 532.38,
+      "width": 310.1,
+      "height": 10.98,
+      "right": 495.26,
+      "visualLineId": 6,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 18,
+      "str": "",
+      "x": 72.9,
+      "y": 518.46,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 19,
+      "str": "Publication Date(s)",
+      "x": 72.9,
+      "y": 518.46,
+      "width": 86.82,
+      "height": 10.98,
+      "right": 159.72,
+      "visualLineId": 7,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 20,
+      "str": " ",
+      "x": 159.72,
+      "y": 518.46,
+      "width": 2.32,
+      "height": 0,
+      "right": 162.04,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 21,
+      "str": "June 2017 (includes updates as of 03-02-2020)",
+      "x": 185.16,
+      "y": 518.46,
+      "width": 207.38,
+      "height": 10.98,
+      "right": 392.54,
+      "visualLineId": 7,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 22,
+      "str": "",
+      "x": 72.9,
+      "y": 504.54,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 23,
+      "str": "Withdrawal Date",
+      "x": 72.9,
+      "y": 504.54,
+      "width": 78.11,
+      "height": 10.98,
+      "right": 151.01,
+      "visualLineId": 8,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 24,
+      "str": " ",
+      "x": 151.01,
+      "y": 504.54,
+      "width": 3.11,
+      "height": 0,
+      "right": 154.12,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 25,
+      "str": "August 1",
+      "x": 185.16,
+      "y": 504.54,
+      "width": 39.12,
+      "height": 10.98,
+      "right": 224.28,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 26,
+      "str": ", 2025",
+      "x": 224.29,
+      "y": 504.54,
+      "width": 27.51,
+      "height": 10.98,
+      "right": 251.8,
+      "visualLineId": 8,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 27,
+      "str": "",
+      "x": 72.9,
+      "y": 490.56,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 28,
+      "str": "Withdrawal Note",
+      "x": 72.9,
+      "y": 490.56,
+      "width": 78.89,
+      "height": 10.98,
+      "right": 151.79,
+      "visualLineId": 9,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 29,
+      "str": " ",
+      "x": 151.79,
+      "y": 490.56,
+      "width": 3.04,
+      "height": 0,
+      "right": 154.83,
+      "visualLineId": 9,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 30,
+      "str": "NIST SP 800-63B is withdrawn and superseded in its entirety by NIST SP 800-",
+      "x": 185.16,
+      "y": 490.56,
+      "width": 340.68,
+      "height": 10.98,
+      "right": 525.84,
+      "visualLineId": 9,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 31,
+      "str": "63B-4.",
+      "x": 185.16,
+      "y": 477.18,
+      "width": 28.86,
+      "height": 10.98,
+      "right": 214.02,
+      "visualLineId": 10,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 32,
+      "str": "",
+      "x": 72.9,
+      "y": 456.3,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 33,
+      "str": "Superseding Publication(s)",
+      "x": 72.9,
+      "y": 456.3,
+      "width": 132.26,
+      "height": 12,
+      "right": 205.16,
+      "visualLineId": 11,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 34,
+      "str": " ",
+      "x": 205.16,
+      "y": 456.3,
+      "width": 0.22,
+      "height": 0,
+      "right": 205.39,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 35,
+      "str": "(if applicable)",
+      "x": 207.84,
+      "y": 456.3,
+      "width": 66.34,
+      "height": 12,
+      "right": 274.18,
+      "visualLineId": 11,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 36,
+      "str": "",
+      "x": 72.9,
+      "y": 430.08,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 37,
+      "str": "The attached publication has been",
+      "x": 72.9,
+      "y": 430.08,
+      "width": 154.06,
+      "height": 10.98,
+      "right": 226.96,
+      "visualLineId": 12,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 38,
+      "str": " ",
+      "x": 226.96,
+      "y": 430.08,
+      "width": 0.23,
+      "height": 0,
+      "right": 227.19,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 39,
+      "str": "superseded by",
+      "x": 229.5,
+      "y": 430.08,
+      "width": 66.46,
+      "height": 10.98,
+      "right": 295.96,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 40,
+      "str": " ",
+      "x": 295.96,
+      "y": 430.08,
+      "width": 0.23,
+      "height": 0,
+      "right": 296.19,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 41,
+      "str": "the following publication(s):",
+      "x": 298.5,
+      "y": 430.08,
+      "width": 125.33,
+      "height": 10.98,
+      "right": 423.82,
+      "visualLineId": 12,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 42,
+      "str": "",
+      "x": 72.9,
+      "y": 410.16,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 43,
+      "str": "Series/Number",
+      "x": 72.9,
+      "y": 410.16,
+      "width": 69.42,
+      "height": 10.98,
+      "right": 142.32,
+      "visualLineId": 13,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 44,
+      "str": " ",
+      "x": 142.32,
+      "y": 410.16,
+      "width": 3.9,
+      "height": 0,
+      "right": 146.22,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 45,
+      "str": "NIST SP 800-63B-4",
+      "x": 185.16,
+      "y": 410.16,
+      "width": 82.19,
+      "height": 10.98,
+      "right": 267.35,
+      "visualLineId": 13,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 46,
+      "str": "",
+      "x": 72.9,
+      "y": 396.24,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 47,
+      "str": "Title",
+      "x": 72.9,
+      "y": 396.24,
+      "width": 20.16,
+      "height": 10.98,
+      "right": 93.06,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 48,
+      "str": " ",
+      "x": 93.06,
+      "y": 396.24,
+      "width": 8.39,
+      "height": 0,
+      "right": 101.45,
+      "visualLineId": 14,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 49,
+      "str": "Digital Identity Guidelines: Authentication and Authenticator Management",
+      "x": 185.16,
+      "y": 396.24,
+      "width": 334.08,
+      "height": 10.98,
+      "right": 519.24,
+      "visualLineId": 14,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 50,
+      "str": "",
+      "x": 72.9,
+      "y": 382.32,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 51,
+      "str": "Author(s)",
+      "x": 72.9,
+      "y": 382.32,
+      "width": 43.26,
+      "height": 10.98,
+      "right": 116.16,
+      "visualLineId": 15,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 52,
+      "str": " ",
+      "x": 116.16,
+      "y": 382.32,
+      "width": 6.28,
+      "height": 0,
+      "right": 122.45,
+      "visualLineId": 15,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 53,
+      "str": "David Temoshok, et al.",
+      "x": 185.16,
+      "y": 382.32,
+      "width": 101.52,
+      "height": 10.98,
+      "right": 286.68,
+      "visualLineId": 15,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 54,
+      "str": "",
+      "x": 72.9,
+      "y": 368.4,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 55,
+      "str": "Publication Date(s)",
+      "x": 72.9,
+      "y": 368.4,
+      "width": 86.82,
+      "height": 10.98,
+      "right": 159.72,
+      "visualLineId": 16,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 56,
+      "str": " ",
+      "x": 159.72,
+      "y": 368.4,
+      "width": 2.32,
+      "height": 0,
+      "right": 162.04,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 57,
+      "str": "July 2025",
+      "x": 185.16,
+      "y": 368.4,
+      "width": 41.5,
+      "height": 10.98,
+      "right": 226.66,
+      "visualLineId": 16,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 58,
+      "str": "",
+      "x": 72.9,
+      "y": 354.42,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 59,
+      "str": "URL/DOI",
+      "x": 72.9,
+      "y": 354.42,
+      "width": 40.01,
+      "height": 10.98,
+      "right": 112.91,
+      "visualLineId": 17,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 60,
+      "str": " ",
+      "x": 112.91,
+      "y": 354.42,
+      "width": 6.58,
+      "height": 0,
+      "right": 119.49,
+      "visualLineId": 17,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 61,
+      "str": "https://doi.org/10.6028/NIST.SP.800-63B-4",
+      "x": 185.16,
+      "y": 354.42,
+      "width": 193.85,
+      "height": 10.98,
+      "right": 379.01,
+      "visualLineId": 17,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 62,
+      "str": "",
+      "x": 72.9,
+      "y": 333.6,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 63,
+      "str": "Additional Information",
+      "x": 72.9,
+      "y": 333.6,
+      "width": 114.56,
+      "height": 12,
+      "right": 187.46,
+      "visualLineId": 18,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 64,
+      "str": " ",
+      "x": 187.46,
+      "y": 333.6,
+      "width": 0.22,
+      "height": 0,
+      "right": 187.69,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 65,
+      "str": "(if applicable)",
+      "x": 190.14,
+      "y": 333.6,
+      "width": 66.28,
+      "height": 12,
+      "right": 256.42,
+      "visualLineId": 18,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 66,
+      "str": "",
+      "x": 72.9,
+      "y": 313.38,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 67,
+      "str": "Contact",
+      "x": 72.9,
+      "y": 313.38,
+      "width": 35.26,
+      "height": 10.98,
+      "right": 108.16,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 68,
+      "str": " ",
+      "x": 108.16,
+      "y": 313.38,
+      "width": 7.01,
+      "height": 0,
+      "right": 115.17,
+      "visualLineId": 19,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 69,
+      "str": "Applied Cybersecurity Division (Information Technology Laboratory)",
+      "x": 185.16,
+      "y": 313.38,
+      "width": 303.2,
+      "height": 10.98,
+      "right": 488.36,
+      "visualLineId": 19,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 70,
+      "str": "",
+      "x": 72.9,
+      "y": 299.46,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 71,
+      "str": "Latest revision of the",
+      "x": 72.9,
+      "y": 299.46,
+      "width": 95.94,
+      "height": 10.98,
+      "right": 168.84,
+      "visualLineId": 20,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 72,
+      "str": "attached publication",
+      "x": 72.9,
+      "y": 286.02,
+      "width": 94.31,
+      "height": 10.98,
+      "right": 167.21,
+      "visualLineId": 21,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 73,
+      "str": "",
+      "x": 72.9,
+      "y": 272.1,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 74,
+      "str": "Related Information",
+      "x": 72.9,
+      "y": 272.1,
+      "width": 92.42,
+      "height": 10.98,
+      "right": 165.32,
+      "visualLineId": 22,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 75,
+      "str": " ",
+      "x": 165.32,
+      "y": 272.1,
+      "width": 1.81,
+      "height": 0,
+      "right": 167.13,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 76,
+      "str": "https://csrc.nist.gov/pubs/sp/800/63/b/4/final",
+      "x": 185.16,
+      "y": 272.1,
+      "width": 209.97,
+      "height": 10.98,
+      "right": 395.13,
+      "visualLineId": 22,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 77,
+      "str": "",
+      "x": 185.16,
+      "y": 258.66,
+      "width": 0,
+      "height": 0,
+      "right": 189.16,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 78,
+      "str": "https://www.nist.gov/identity-access-management/nist-special-publication-",
+      "x": 185.16,
+      "y": 258.66,
+      "width": 340.72,
+      "height": 10.98,
+      "right": 525.88,
+      "visualLineId": 23,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 79,
+      "str": "",
+      "x": 185.16,
+      "y": 245.22,
+      "width": 0,
+      "height": 0,
+      "right": 189.16,
+      "visualLineId": null,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 80,
+      "str": "800-63-digital-identity-guidelines",
+      "x": 185.16,
+      "y": 245.22,
+      "width": 148.54,
+      "height": 10.98,
+      "right": 333.7,
+      "visualLineId": 24,
+      "inferredColumn": 1
+    },
+    {
+      "itemIndex": 81,
+      "str": "",
+      "x": 72.9,
+      "y": 231.3,
+      "width": 0,
+      "height": 0,
+      "right": 76.9,
+      "visualLineId": null,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 82,
+      "str": "Withdrawal",
+      "x": 72.9,
+      "y": 231.3,
+      "width": 53.88,
+      "height": 10.98,
+      "right": 126.78,
+      "visualLineId": 25,
+      "inferredColumn": 0
+    },
+    {
+      "itemIndex": 83,
+      "str": "Announcement Link",
+      "x": 72.9,
+      "y": 217.86,
+      "width": 91.5,
+      "height": 10.98,
+      "right": 164.4,
+      "visualLineId": 26,
+      "inferredColumn": 0
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 689.52,
+      "height": 22.02,
+      "text": "Withdrawn NIST Technical Series Publication",
+      "itemIndexes": [
+        2
+      ],
+      "firstX": 101.94
+    },
+    {
+      "lineId": 1,
+      "y": 638.22,
+      "height": 12,
+      "text": "Warning Notice",
+      "itemIndexes": [
+        4
+      ],
+      "firstX": 267.06
+    },
+    {
+      "lineId": 2,
+      "y": 612.3,
+      "height": 10.98,
+      "text": "The attached publication has been withdrawn (archived), and is provided solely for historical purposes.",
+      "itemIndexes": [
+        6
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 3,
+      "y": 598.86,
+      "height": 10.98,
+      "text": "It may have been superseded by another publication (indicated below).",
+      "itemIndexes": [
+        7
+      ],
+      "firstX": 72.89
+    },
+    {
+      "lineId": 4,
+      "y": 566.52,
+      "height": 12,
+      "text": "Withdrawn Publication",
+      "itemIndexes": [
+        9
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 5,
+      "y": 546.3,
+      "height": 12,
+      "text": "Series/Number NIST Special Publication 800-63B",
+      "itemIndexes": [
+        11,
+        12,
+        13
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 6,
+      "y": 532.38,
+      "height": 12,
+      "text": "Title Digital Identity Guidelines: Authentication and Lifecycle Management",
+      "itemIndexes": [
+        15,
+        16,
+        17
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 7,
+      "y": 518.46,
+      "height": 12,
+      "text": "Publication Date(s) June 2017 (includes updates as of 03-02-2020)",
+      "itemIndexes": [
+        19,
+        20,
+        21
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 8,
+      "y": 504.54,
+      "height": 12,
+      "text": "Withdrawal Date August 1 , 2025",
+      "itemIndexes": [
+        23,
+        24,
+        25,
+        26
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 9,
+      "y": 490.56,
+      "height": 12,
+      "text": "Withdrawal Note NIST SP 800-63B is withdrawn and superseded in its entirety by NIST SP 800-",
+      "itemIndexes": [
+        28,
+        29,
+        30
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 10,
+      "y": 477.18,
+      "height": 10.98,
+      "text": "63B-4.",
+      "itemIndexes": [
+        31
+      ],
+      "firstX": 185.16
+    },
+    {
+      "lineId": 11,
+      "y": 456.3,
+      "height": 12,
+      "text": "Superseding Publication(s) (if applicable)",
+      "itemIndexes": [
+        33,
+        34,
+        35
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 12,
+      "y": 430.08,
+      "height": 12,
+      "text": "The attached publication has been superseded by the following publication(s):",
+      "itemIndexes": [
+        37,
+        38,
+        39,
+        40,
+        41
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 13,
+      "y": 410.16,
+      "height": 12,
+      "text": "Series/Number NIST SP 800-63B-4",
+      "itemIndexes": [
+        43,
+        44,
+        45
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 14,
+      "y": 396.24,
+      "height": 12,
+      "text": "Title Digital Identity Guidelines: Authentication and Authenticator Management",
+      "itemIndexes": [
+        47,
+        48,
+        49
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 15,
+      "y": 382.32,
+      "height": 12,
+      "text": "Author(s) David Temoshok, et al.",
+      "itemIndexes": [
+        51,
+        52,
+        53
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 16,
+      "y": 368.4,
+      "height": 12,
+      "text": "Publication Date(s) July 2025",
+      "itemIndexes": [
+        55,
+        56,
+        57
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 17,
+      "y": 354.42,
+      "height": 12,
+      "text": "URL/DOI https://doi.org/10.6028/NIST.SP.800-63B-4",
+      "itemIndexes": [
+        59,
+        60,
+        61
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 18,
+      "y": 333.6,
+      "height": 12,
+      "text": "Additional Information (if applicable)",
+      "itemIndexes": [
+        63,
+        64,
+        65
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 19,
+      "y": 313.38,
+      "height": 12,
+      "text": "Contact Applied Cybersecurity Division (Information Technology Laboratory)",
+      "itemIndexes": [
+        67,
+        68,
+        69
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 20,
+      "y": 299.46,
+      "height": 10.98,
+      "text": "Latest revision of the",
+      "itemIndexes": [
+        71
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 21,
+      "y": 286.02,
+      "height": 10.98,
+      "text": "attached publication",
+      "itemIndexes": [
+        72
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 22,
+      "y": 272.1,
+      "height": 12,
+      "text": "Related Information https://csrc.nist.gov/pubs/sp/800/63/b/4/final",
+      "itemIndexes": [
+        74,
+        75,
+        76
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 23,
+      "y": 258.66,
+      "height": 10.98,
+      "text": "https://www.nist.gov/identity-access-management/nist-special-publication-",
+      "itemIndexes": [
+        78
+      ],
+      "firstX": 185.16
+    },
+    {
+      "lineId": 24,
+      "y": 245.22,
+      "height": 10.98,
+      "text": "800-63-digital-identity-guidelines",
+      "itemIndexes": [
+        80
+      ],
+      "firstX": 185.16
+    },
+    {
+      "lineId": 25,
+      "y": 231.3,
+      "height": 10.98,
+      "text": "Withdrawal",
+      "itemIndexes": [
+        82
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 26,
+      "y": 217.86,
+      "height": 10.98,
+      "text": "Announcement Link",
+      "itemIndexes": [
+        83
+      ],
+      "firstX": 72.9
+    },
+    {
+      "lineId": 27,
+      "y": 47.16,
+      "height": 12,
+      "text": "Date updated: July 24, 2025",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 72
+    }
+  ]
+}

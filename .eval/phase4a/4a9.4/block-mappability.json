@@ -1,0 +1,538 @@
+{
+  "phase": "4A.9.4",
+  "note": "Pre-implementation. A production chunk requires a valid contiguous page.text range. Missing ranges must not emit chunks.",
+  "byKind": {
+    "paragraph": {
+      "total": 2563,
+      "valid": 2240,
+      "missing": 323,
+      "invalid": 0
+    },
+    "unknown": {
+      "total": 2181,
+      "valid": 763,
+      "missing": 1418,
+      "invalid": 0
+    },
+    "heading": {
+      "total": 250,
+      "valid": 193,
+      "missing": 57,
+      "invalid": 0
+    },
+    "caption": {
+      "total": 89,
+      "valid": 62,
+      "missing": 27,
+      "invalid": 0
+    },
+    "list": {
+      "total": 204,
+      "valid": 198,
+      "missing": 6,
+      "invalid": 0
+    },
+    "list-item": {
+      "total": 319,
+      "valid": 311,
+      "missing": 8,
+      "invalid": 0
+    },
+    "math": {
+      "total": 138,
+      "valid": 28,
+      "missing": 110,
+      "invalid": 0
+    },
+    "furniture": {
+      "total": 239,
+      "valid": 45,
+      "missing": 194,
+      "invalid": 0
+    }
+  },
+  "focus": [
+    {
+      "file": "attention.pdf",
+      "pages": 15,
+      "kinds": {
+        "paragraph": {
+          "total": 112,
+          "valid": 81,
+          "missing": 31,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 157,
+          "valid": 40,
+          "missing": 117,
+          "invalid": 0
+        },
+        "heading": {
+          "total": 22,
+          "valid": 8,
+          "missing": 14,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 10,
+          "valid": 4,
+          "missing": 6,
+          "invalid": 0
+        },
+        "list": {
+          "total": 1,
+          "valid": 0,
+          "missing": 1,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 3,
+          "valid": 0,
+          "missing": 3,
+          "invalid": 0
+        },
+        "math": {
+          "total": 8,
+          "valid": 1,
+          "missing": 7,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 6,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "bert.pdf",
+      "pages": 16,
+      "kinds": {
+        "heading": {
+          "total": 19,
+          "valid": 19,
+          "missing": 0,
+          "invalid": 0
+        },
+        "paragraph": {
+          "total": 196,
+          "valid": 196,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list": {
+          "total": 5,
+          "valid": 5,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 5,
+          "valid": 5,
+          "missing": 0,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 35,
+          "valid": 35,
+          "missing": 0,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 8,
+          "valid": 8,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 0,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "cisa-ransomware.pdf",
+      "pages": 31,
+      "kinds": {
+        "heading": {
+          "total": 8,
+          "valid": 8,
+          "missing": 0,
+          "invalid": 0
+        },
+        "paragraph": {
+          "total": 236,
+          "valid": 229,
+          "missing": 7,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 131,
+          "valid": 71,
+          "missing": 60,
+          "invalid": 0
+        },
+        "list": {
+          "total": 45,
+          "valid": 44,
+          "missing": 1,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 78,
+          "valid": 77,
+          "missing": 1,
+          "invalid": 0
+        },
+        "math": {
+          "total": 1,
+          "valid": 1,
+          "missing": 0,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 2,
+          "valid": 2,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 0,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "cs229-notes.pdf",
+      "pages": 28,
+      "kinds": {
+        "unknown": {
+          "total": 588,
+          "valid": 8,
+          "missing": 580,
+          "invalid": 0
+        },
+        "paragraph": {
+          "total": 141,
+          "valid": 9,
+          "missing": 132,
+          "invalid": 0
+        },
+        "math": {
+          "total": 84,
+          "valid": 0,
+          "missing": 84,
+          "invalid": 0
+        },
+        "heading": {
+          "total": 18,
+          "valid": 0,
+          "missing": 18,
+          "invalid": 0
+        },
+        "list": {
+          "total": 2,
+          "valid": 0,
+          "missing": 2,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 2,
+          "valid": 0,
+          "missing": 2,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 27,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "nist-800-145.pdf",
+      "pages": 7,
+      "kinds": {
+        "paragraph": {
+          "total": 51,
+          "valid": 48,
+          "missing": 3,
+          "invalid": 0
+        },
+        "heading": {
+          "total": 4,
+          "valid": 4,
+          "missing": 0,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 13,
+          "valid": 5,
+          "missing": 8,
+          "invalid": 0
+        },
+        "list": {
+          "total": 2,
+          "valid": 2,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 2,
+          "valid": 2,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 0,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "nist-800-207.pdf",
+      "pages": 59,
+      "kinds": {
+        "heading": {
+          "total": 51,
+          "valid": 50,
+          "missing": 1,
+          "invalid": 0
+        },
+        "paragraph": {
+          "total": 363,
+          "valid": 349,
+          "missing": 14,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 115,
+          "valid": 84,
+          "missing": 31,
+          "invalid": 0
+        },
+        "furniture": {
+          "total": 70,
+          "valid": 19,
+          "missing": 51,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 20,
+          "valid": 20,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list": {
+          "total": 23,
+          "valid": 23,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 31,
+          "valid": 31,
+          "missing": 0,
+          "invalid": 0
+        },
+        "math": {
+          "total": 1,
+          "valid": 1,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 0,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "nist-800-63b.pdf",
+      "pages": 80,
+      "kinds": {
+        "paragraph": {
+          "total": 591,
+          "valid": 559,
+          "missing": 32,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 338,
+          "valid": 208,
+          "missing": 130,
+          "invalid": 0
+        },
+        "heading": {
+          "total": 92,
+          "valid": 85,
+          "missing": 7,
+          "invalid": 0
+        },
+        "furniture": {
+          "total": 169,
+          "valid": 26,
+          "missing": 143,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 10,
+          "valid": 10,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list": {
+          "total": 55,
+          "valid": 55,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 101,
+          "valid": 101,
+          "missing": 0,
+          "invalid": 0
+        },
+        "math": {
+          "total": 1,
+          "valid": 1,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 1,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "resnet.pdf",
+      "pages": 12,
+      "kinds": {
+        "paragraph": {
+          "total": 127,
+          "valid": 127,
+          "missing": 0,
+          "invalid": 0
+        },
+        "heading": {
+          "total": 8,
+          "valid": 8,
+          "missing": 0,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 50,
+          "valid": 45,
+          "missing": 5,
+          "invalid": 0
+        },
+        "math": {
+          "total": 6,
+          "valid": 6,
+          "missing": 0,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 9,
+          "valid": 9,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list": {
+          "total": 1,
+          "valid": 1,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 1,
+          "valid": 1,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 0,
+      "skippedWithMappedSearchable": 0
+    },
+    {
+      "file": "tracemonkey.pdf",
+      "pages": 14,
+      "kinds": {
+        "paragraph": {
+          "total": 130,
+          "valid": 130,
+          "missing": 0,
+          "invalid": 0
+        },
+        "unknown": {
+          "total": 37,
+          "valid": 37,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list": {
+          "total": 3,
+          "valid": 3,
+          "missing": 0,
+          "invalid": 0
+        },
+        "list-item": {
+          "total": 3,
+          "valid": 3,
+          "missing": 0,
+          "invalid": 0
+        },
+        "heading": {
+          "total": 4,
+          "valid": 4,
+          "missing": 0,
+          "invalid": 0
+        },
+        "caption": {
+          "total": 5,
+          "valid": 5,
+          "missing": 0,
+          "invalid": 0
+        },
+        "math": {
+          "total": 7,
+          "valid": 7,
+          "missing": 0,
+          "invalid": 0
+        }
+      },
+      "skippedPages": 0,
+      "skippedWithMappedSearchable": 0
+    }
+  ],
+  "cs229": {
+    "file": "cs229-notes.pdf",
+    "pages": 28,
+    "kinds": {
+      "unknown": {
+        "total": 588,
+        "valid": 8,
+        "missing": 580,
+        "invalid": 0
+      },
+      "paragraph": {
+        "total": 141,
+        "valid": 9,
+        "missing": 132,
+        "invalid": 0
+      },
+      "math": {
+        "total": 84,
+        "valid": 0,
+        "missing": 84,
+        "invalid": 0
+      },
+      "heading": {
+        "total": 18,
+        "valid": 0,
+        "missing": 18,
+        "invalid": 0
+      },
+      "list": {
+        "total": 2,
+        "valid": 0,
+        "missing": 2,
+        "invalid": 0
+      },
+      "list-item": {
+        "total": 2,
+        "valid": 0,
+        "missing": 2,
+        "invalid": 0
+      }
+    },
+    "skippedPages": 27,
+    "skippedWithMappedSearchable": 0
+  }
+}

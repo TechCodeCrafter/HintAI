@@ -13,6 +13,7 @@ export type IndexedSourceRecord = {
   /** Present on PDF ledgers only. Absent / 0 on code rows. */
   parserVersion?: number;
   normalizerVersion?: number;
+  structureVersion?: number;
   documentChunkerVersion?: number;
 };
 
@@ -71,7 +72,7 @@ export function documentLedgerKey(contextId: string, sourceId: string, contentHa
 }
 
 export function ledgerKey(record: IndexedSourceRecord): string {
-  if (record.parserVersion || record.normalizerVersion || record.documentChunkerVersion) {
+  if (record.parserVersion || record.normalizerVersion || record.structureVersion || record.documentChunkerVersion) {
     return documentLedgerKey(record.contextId, record.sourceId, record.contentHash);
   }
   return indexedSourceKey(record.contextId, record.sourceId);

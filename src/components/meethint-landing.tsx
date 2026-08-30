@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { joinWaitlist } from "@/lib/waitlist";
 
 /**
@@ -203,7 +204,7 @@ function DemoCard() {
 
   return (
     <div className="mh-panel mh-card overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="live-dot inline-block size-2 shrink-0 rounded-full bg-accent shadow-glow" />
           <span className="mh-eyebrow text-accent">Listening</span>
@@ -234,7 +235,7 @@ function DemoCard() {
                   <p className="mh-eyebrow">From your material</p>
                   {beat.cold ? <p className="text-xs text-faint">{beat.cold}</p> : null}
                 </div>
-                <ul className="mh-source divide-y divide-white/[0.05]">
+                <ul className="mh-source divide-y divide-line">
                   {beat.sources.map((source) => {
                     const Icon = SOURCE_ICON[source.kind];
                     return (
@@ -276,13 +277,13 @@ function DemoCard() {
         )}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-white/[0.06] px-4 py-2.5">
+      <div className="flex items-center gap-2 border-t border-line px-4 py-2.5">
         {BEATS.map((item, i) => (
           <span
             key={`${item.session}-${item.asked}`}
             aria-hidden
             className={`h-0.5 flex-1 rounded-full transition-colors duration-300 ${
-              i === index ? "bg-accent" : "bg-white/10"
+              i === index ? "bg-accent" : "bg-gutter"
             }`}
           />
         ))}
@@ -452,10 +453,13 @@ export function MeetHintLanding() {
             <MeetHintMark className="size-7" />
             <span className="brand-word text-sm">MEETHINT</span>
           </div>
-          <a href="/app" className="mh-chip hover:text-fg">
-            Try MeetHint
-            <ArrowRight aria-hidden className="size-3.5 text-accent" />
-          </a>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <a href="/app" className="mh-chip hover:text-fg">
+              Try MeetHint
+              <ArrowRight aria-hidden className="size-3.5 text-accent" />
+            </a>
+          </div>
         </header>
 
         <main>
@@ -607,7 +611,7 @@ export function MeetHintLanding() {
           </section>
         </main>
 
-        <footer className="flex flex-col gap-2 border-t border-white/[0.06] py-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
+        <footer className="flex flex-col gap-2 border-t border-line py-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
           <span>meethint.ai — indexed on your machine</span>
           <a href="/app" className="hover:text-fg">
             Open app

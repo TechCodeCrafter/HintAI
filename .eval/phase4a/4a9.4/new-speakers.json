@@ -1,0 +1,162 @@
+{
+  "phase": "4A.9.4",
+  "comparedTo": "4A.9.2.2",
+  "newSpeakers": [
+    {
+      "id": "bert-glue",
+      "q": "What GLUE score did they report?",
+      "answerable": true,
+      "say": "Tasks, including pushing the GLUE score to 80.5% (7.7% point absolute improvement), Multi",
+      "citedPath": "bert.pdf",
+      "citedPage": 1,
+      "matchedSpan": true,
+      "supported": true,
+      "intentWrong": false,
+      "expectedPath": "bert.pdf",
+      "expectedPage": 1,
+      "spans": [
+        "pushing the GLUE score to 80.5%"
+      ],
+      "retrievePaths": [
+        "bert.pdf#1",
+        "nist-800-207.pdf#28",
+        "lora.pdf#1",
+        "attention.pdf#1",
+        "nist-800-63b.pdf#47",
+        "omb-m22-09.pdf#18"
+      ]
+    },
+    {
+      "id": "tm-nested",
+      "q": "How do they solve nested loops?",
+      "answerable": true,
+      "say": "On ever tracing outer loops. We solve the nested loop problem by recording",
+      "citedPath": "tracemonkey.pdf",
+      "citedPage": 2,
+      "matchedSpan": false,
+      "supported": true,
+      "intentWrong": true,
+      "expectedPath": "tracemonkey.pdf",
+      "expectedPage": 2,
+      "spans": [
+        "recording nested trace trees"
+      ],
+      "retrievePaths": [
+        "tracemonkey.pdf#2",
+        "tracemonkey.pdf#2",
+        "bitcoin.pdf#3",
+        "bitcoin.pdf#8"
+      ]
+    }
+  ],
+  "lostSpeakers": [
+    {
+      "id": "bert-nsp",
+      "q": "How is the next sentence task generated?",
+      "priorSay": "In order This step to train a model that understands sentence relationships, we pre-train for a binarized next sentence prediction task that can be trivially generated from any monolingual corpus.",
+      "citedPath": "bert.pdf"
+    },
+    {
+      "id": "resnet-what",
+      "q": "What framework do they present?",
+      "priorSay": "We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously.",
+      "citedPath": "resnet.pdf"
+    },
+    {
+      "id": "resnet-degrade",
+      "q": "Is the degradation from overfitting?",
+      "priorSay": "Unexpectedly, such degradation is not caused by overfitting , and adding more layers to a suitably deep model leads to higher training error, as reported in [11, 42] and thoroughly verified by our experiments.",
+      "citedPath": "resnet.pdf"
+    },
+    {
+      "id": "tm-what",
+      "q": "What compilation technique do they present?",
+      "priorSay": "We present an alternative compilation technique for dynamically-typed languages that identifies frequently executed loop traces at run-time and then generates machine code on the fly that is specialized for the actual dynamic types occurring on each path through the loop.",
+      "citedPath": "tracemonkey.pdf"
+    },
+    {
+      "id": "tm-speedup",
+      "q": "What speedups did they measure?",
+      "priorSay": "Script based on our technique and we have measured speedups of 10x and more for certain benchmark programs.",
+      "citedPath": "tracemonkey.pdf"
+    },
+    {
+      "id": "nist145-hybrid",
+      "q": "What is a hybrid cloud?",
+      "priorSay": "Hybrid cloud. The cloud infrastructure is",
+      "citedPath": "nist-800-145.pdf"
+    },
+    {
+      "id": "zta-what",
+      "q": "What is a zero trust architecture?",
+      "priorSay": "A zero trust architecture (ZTA) is an enterprise cybersecurity architecture that is based on zero trust principles and designed to prevent data breaches and limit internal lateral movement.",
+      "citedPath": "nist-800-207.pdf"
+    }
+  ],
+  "stillSpoken": [
+    {
+      "id": "cisa-smb",
+      "sameSay": true,
+      "say": "• Disable Server Message Block (SMB) protocol version 1 and upgrade to version 3 (SMBv3)",
+      "citedPath": "cisa-ransomware.pdf",
+      "matchedSpan": true,
+      "intentWrong": false
+    },
+    {
+      "id": "attn-arch",
+      "sameSay": true,
+      "say": "We propose a new simple network architecture, the Transformer,",
+      "citedPath": "attention.pdf",
+      "matchedSpan": false,
+      "intentWrong": true
+    },
+    {
+      "id": "btc-coin",
+      "sameSay": true,
+      "say": "We define an electronic coin as a chain of digital signatures.",
+      "citedPath": "bitcoin.pdf",
+      "matchedSpan": true,
+      "intentWrong": false
+    },
+    {
+      "id": "btc-incentive",
+      "sameSay": true,
+      "say": "By convention, the first transaction in a block is a special transaction that starts a new coin owned",
+      "citedPath": "bitcoin.pdf",
+      "matchedSpan": true,
+      "intentWrong": false
+    },
+    {
+      "id": "zta-asset",
+      "sameSay": false,
+      "say": "3. No resource is inherently trusted. Every asset must have its security posture evaluated",
+      "citedPath": "nist-800-207.pdf",
+      "matchedSpan": false,
+      "intentWrong": true
+    },
+    {
+      "id": "omb-when",
+      "sameSay": false,
+      "say": "Agencies to meet specific cybersecurity standards and objectives by the end of Fiscal Year (FY) 2024 in order to reinforce the Government’s defenses against increasingly sophisticated and persistent threat campaigns.",
+      "citedPath": "omb-m22-09.pdf",
+      "matchedSpan": true,
+      "intentWrong": false
+    },
+    {
+      "id": "omb-passwords",
+      "sameSay": true,
+      "say": "• Password policies must not require use of special characters or regular rotation.",
+      "citedPath": "omb-m22-09.pdf",
+      "matchedSpan": true,
+      "intentWrong": false
+    },
+    {
+      "id": "63b-aal1",
+      "sameSay": true,
+      "say": "Authenticator Assurance Level 1 : AAL1 provides some assurance that the claimant controls an",
+      "citedPath": "nist-800-63b.pdf",
+      "matchedSpan": false,
+      "intentWrong": true
+    }
+  ]
+}

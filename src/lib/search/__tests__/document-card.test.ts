@@ -52,7 +52,7 @@ function emptyPack(): RepoPack {
 async function loadReady() {
   const names = ["lecture.pdf", "lecture-multi.pdf", "paper.pdf", "bullets.pdf", "headers.pdf", "slides.pdf"];
   const documents = await Promise.all(names.map(parseNamed));
-  const chunks = documents.flatMap(buildDocumentChunks);
+  const chunks = documents.flatMap((document) => buildDocumentChunks(document));
   return { documents, chunks, ctx: contextOf(documents), pack: emptyPack() };
 }
 

@@ -1,0 +1,1302 @@
+{
+  "file": "cs229-notes.pdf",
+  "page": 1,
+  "pageWidth": 612,
+  "pageHeight": 792,
+  "current": {
+    "readingOrder": "uncertain",
+    "index": "skipped",
+    "earliestSkip": "dense-grid",
+    "whyNotTwoColumn": [
+      "dense-grid detector fired first",
+      "substantial left-edge clusters 6 !== 2 (total clusters 6; sizes 114.4:5, 211.4:17, 254.6:9, 302.2:11, 352.8:9, 391.5:2)"
+    ],
+    "clusterCount": 6,
+    "substantialClusterCount": 6,
+    "clusters": [
+      {
+        "x": 114.37,
+        "items": 5,
+        "meanWidth": 235.68,
+        "yMin": 294.47,
+        "yMax": 488.71
+      },
+      {
+        "x": 211.44,
+        "items": 17,
+        "meanWidth": 31.45,
+        "yMin": 115.8,
+        "yMax": 605.93
+      },
+      {
+        "x": 254.57,
+        "items": 9,
+        "meanWidth": 15.15,
+        "yMin": 115.8,
+        "yMax": 395.29
+      },
+      {
+        "x": 302.16,
+        "items": 11,
+        "meanWidth": 22.27,
+        "yMin": 60.31,
+        "yMax": 570.44
+      },
+      {
+        "x": 352.85,
+        "items": 9,
+        "meanWidth": 11.9,
+        "yMin": 115.8,
+        "yMax": 395.29
+      },
+      {
+        "x": 391.45,
+        "items": 2,
+        "meanWidth": 9.51,
+        "yMin": 115.8,
+        "yMax": 115.8
+      }
+    ]
+  },
+  "leftEdgeClusters": [
+    {
+      "x": 114.37,
+      "items": 5,
+      "meanWidth": 235.68,
+      "yMin": 294.47,
+      "yMax": 488.71
+    },
+    {
+      "x": 211.44,
+      "items": 17,
+      "meanWidth": 31.45,
+      "yMin": 115.8,
+      "yMax": 605.93
+    },
+    {
+      "x": 254.57,
+      "items": 9,
+      "meanWidth": 15.15,
+      "yMin": 115.8,
+      "yMax": 395.29
+    },
+    {
+      "x": 302.16,
+      "items": 11,
+      "meanWidth": 22.27,
+      "yMin": 60.31,
+      "yMax": 570.44
+    },
+    {
+      "x": 352.85,
+      "items": 9,
+      "meanWidth": 11.9,
+      "yMin": 115.8,
+      "yMax": 395.29
+    },
+    {
+      "x": 391.45,
+      "items": 2,
+      "meanWidth": 9.51,
+      "yMin": 115.8,
+      "yMax": 115.8
+    }
+  ],
+  "dominantProse": {
+    "proseItemCount": 10,
+    "clusters": [
+      {
+        "x": 114.37,
+        "items": 5,
+        "share": 0.5
+      }
+    ],
+    "twoDominant": false,
+    "overlap": 0,
+    "topShare": 0.5
+  },
+  "ySpanOverlap": 0,
+  "gutterCandidates": [
+    {
+      "between": [
+        114.37,
+        211.44
+      ],
+      "gap": 97.07
+    },
+    {
+      "between": [
+        211.44,
+        254.57
+      ],
+      "gap": 43.129999999999995
+    },
+    {
+      "between": [
+        254.57,
+        302.16
+      ],
+      "gap": 47.59000000000003
+    },
+    {
+      "between": [
+        302.16,
+        352.85
+      ],
+      "gap": 50.69
+    },
+    {
+      "between": [
+        352.85,
+        391.45
+      ],
+      "gap": 38.599999999999966
+    }
+  ],
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "CS229 Lecture Notes",
+      "x": 217.89,
+      "y": 605.93,
+      "width": 174.48,
+      "height": 20.66,
+      "right": 392.37,
+      "visualLineId": 0,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 1,
+      "str": "",
+      "x": 270.01,
+      "y": 570.44,
+      "width": 0,
+      "height": 0,
+      "right": 274.01,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 2,
+      "str": "Andrew Ng",
+      "x": 270.01,
+      "y": 570.44,
+      "width": 70.22,
+      "height": 14.35,
+      "right": 340.23,
+      "visualLineId": 1,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 3,
+      "str": "(updates by Tengyu Ma)",
+      "x": 228.61,
+      "y": 541.6,
+      "width": 153.03,
+      "height": 14.35,
+      "right": 381.64,
+      "visualLineId": 2,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 4,
+      "str": "",
+      "x": 110.85,
+      "y": 488.71,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 5,
+      "str": "Supervised learning",
+      "x": 110.85,
+      "y": 488.71,
+      "width": 166.98,
+      "height": 17.22,
+      "right": 277.83,
+      "visualLineId": 3,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 6,
+      "str": "",
+      "x": 110.85,
+      "y": 462.43,
+      "width": 0,
+      "height": 0,
+      "right": 114.85,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 7,
+      "str": "Let’s start by talking about a few examples of supervised learning problems.",
+      "x": 110.85,
+      "y": 462.43,
+      "width": 388.55,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 4,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 8,
+      "str": "Suppose we have a dataset giving the living areas and prices of 47 houses",
+      "x": 110.85,
+      "y": 447.98,
+      "width": 388.54,
+      "height": 11.96,
+      "right": 499.4,
+      "visualLineId": 5,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 9,
+      "str": "from Portland, Oregon:",
+      "x": 110.85,
+      "y": 433.53,
+      "width": 119.82,
+      "height": 11.96,
+      "right": 230.67,
+      "visualLineId": 6,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 10,
+      "str": "Living area (feet",
+      "x": 215.62,
+      "y": 410.14,
+      "width": 84.7,
+      "height": 11.96,
+      "right": 300.32,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 11,
+      "str": "2",
+      "x": 300.33,
+      "y": 414.48,
+      "width": 4.23,
+      "height": 7.97,
+      "right": 304.56,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 12,
+      "str": ")",
+      "x": 305.06,
+      "y": 410.14,
+      "width": 4.55,
+      "height": 11.96,
+      "right": 309.61,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 13,
+      "str": " ",
+      "x": 309.61,
+      "y": 410.14,
+      "width": 11.95,
+      "height": 0,
+      "right": 321.57,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 14,
+      "str": "Price (1000$s)",
+      "x": 321.57,
+      "y": 410.14,
+      "width": 73.06,
+      "height": 11.96,
+      "right": 394.63,
+      "visualLineId": 7,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 15,
+      "str": "2104",
+      "x": 250.91,
+      "y": 395.29,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 274.32,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 16,
+      "str": " ",
+      "x": 274.32,
+      "y": 395.29,
+      "width": 74.99,
+      "height": 0,
+      "right": 349.32,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 17,
+      "str": "400",
+      "x": 349.32,
+      "y": 395.29,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 366.88,
+      "visualLineId": 8,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 18,
+      "str": "1600",
+      "x": 250.91,
+      "y": 380.85,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 274.32,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 19,
+      "str": " ",
+      "x": 274.32,
+      "y": 380.85,
+      "width": 74.99,
+      "height": 0,
+      "right": 349.32,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 20,
+      "str": "330",
+      "x": 349.32,
+      "y": 380.85,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 366.88,
+      "visualLineId": 9,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 21,
+      "str": "2400",
+      "x": 250.91,
+      "y": 366.4,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 274.32,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 22,
+      "str": " ",
+      "x": 274.32,
+      "y": 366.4,
+      "width": 74.99,
+      "height": 0,
+      "right": 349.32,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 23,
+      "str": "369",
+      "x": 349.32,
+      "y": 366.4,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 366.88,
+      "visualLineId": 10,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 24,
+      "str": "1416",
+      "x": 250.91,
+      "y": 351.96,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 274.32,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 25,
+      "str": " ",
+      "x": 274.32,
+      "y": 351.96,
+      "width": 74.99,
+      "height": 0,
+      "right": 349.32,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 26,
+      "str": "232",
+      "x": 349.32,
+      "y": 351.96,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 366.88,
+      "visualLineId": 11,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 27,
+      "str": "3000",
+      "x": 250.91,
+      "y": 337.51,
+      "width": 23.41,
+      "height": 11.96,
+      "right": 274.32,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 28,
+      "str": " ",
+      "x": 274.32,
+      "y": 337.51,
+      "width": 74.99,
+      "height": 0,
+      "right": 349.32,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 29,
+      "str": "540",
+      "x": 349.32,
+      "y": 337.51,
+      "width": 17.56,
+      "height": 11.96,
+      "right": 366.88,
+      "visualLineId": 12,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 30,
+      "str": ".",
+      "x": 260.99,
+      "y": 326.04,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 264.24,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 31,
+      "str": ".",
+      "x": 260.99,
+      "y": 322.05,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 264.24,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 32,
+      "str": ".",
+      "x": 260.99,
+      "y": 318.07,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 264.24,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 33,
+      "str": " ",
+      "x": 264.24,
+      "y": 318.07,
+      "width": 92.23,
+      "height": 0,
+      "right": 356.47,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 34,
+      "str": ".",
+      "x": 356.47,
+      "y": 326.04,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 359.72,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 35,
+      "str": ".",
+      "x": 356.47,
+      "y": 322.05,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 359.72,
+      "visualLineId": 13,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 36,
+      "str": ".",
+      "x": 356.47,
+      "y": 318.07,
+      "width": 3.25,
+      "height": 11.96,
+      "right": 359.72,
+      "visualLineId": 14,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 37,
+      "str": "We can plot this data:",
+      "x": 128.41,
+      "y": 294.47,
+      "width": 114.52,
+      "height": 11.96,
+      "right": 242.94,
+      "visualLineId": 15,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 38,
+      "str": "500",
+      "x": 212.35,
+      "y": 115.8,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 219.48,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 39,
+      "str": " ",
+      "x": 219.48,
+      "y": 115.8,
+      "width": 30.15,
+      "height": 0,
+      "right": 249.63,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 40,
+      "str": "1000",
+      "x": 232.38,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 241.89,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 41,
+      "str": " ",
+      "x": 241.89,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 269.23,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 42,
+      "str": "1500",
+      "x": 253.59,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 263.1,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 43,
+      "str": " ",
+      "x": 263.1,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 290.44,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 44,
+      "str": "2000",
+      "x": 274.79,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 284.31,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 45,
+      "str": " ",
+      "x": 284.31,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 311.65,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 46,
+      "str": "2500",
+      "x": 296,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 305.51,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 47,
+      "str": " ",
+      "x": 305.51,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 332.86,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 48,
+      "str": "3000",
+      "x": 317.21,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 326.72,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 49,
+      "str": " ",
+      "x": 326.72,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 354.06,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 50,
+      "str": "3500",
+      "x": 338.42,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 347.93,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 51,
+      "str": " ",
+      "x": 347.93,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 375.27,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 52,
+      "str": "4000",
+      "x": 359.62,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 369.14,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 53,
+      "str": " ",
+      "x": 369.14,
+      "y": 115.8,
+      "width": 27.34,
+      "height": 0,
+      "right": 396.48,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 54,
+      "str": "4500",
+      "x": 380.83,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 390.34,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 55,
+      "str": " ",
+      "x": 390.34,
+      "y": 115.8,
+      "width": 27.43,
+      "height": 0,
+      "right": 417.77,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 56,
+      "str": "5000",
+      "x": 402.08,
+      "y": 115.8,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 411.59,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 57,
+      "str": "0",
+      "x": 212.31,
+      "y": 126.28,
+      "width": 2.38,
+      "height": 4.28,
+      "right": 214.69,
+      "visualLineId": 27,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 58,
+      "str": "100",
+      "x": 207.53,
+      "y": 139.97,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 26,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 59,
+      "str": "200",
+      "x": 207.53,
+      "y": 153.66,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 25,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 60,
+      "str": "300",
+      "x": 207.53,
+      "y": 167.34,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 24,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 61,
+      "str": "400",
+      "x": 207.53,
+      "y": 181.03,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 62,
+      "str": "500",
+      "x": 207.53,
+      "y": 194.72,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 22,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 63,
+      "str": "600",
+      "x": 207.53,
+      "y": 208.44,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 21,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 64,
+      "str": "700",
+      "x": 207.53,
+      "y": 222.13,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 20,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 65,
+      "str": "800",
+      "x": 207.53,
+      "y": 235.81,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 19,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 66,
+      "str": "900",
+      "x": 207.53,
+      "y": 249.5,
+      "width": 7.13,
+      "height": 4.28,
+      "right": 214.67,
+      "visualLineId": 18,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 67,
+      "str": "1000",
+      "x": 205.18,
+      "y": 263.19,
+      "width": 9.51,
+      "height": 4.28,
+      "right": 214.69,
+      "visualLineId": 17,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 68,
+      "str": "housing prices",
+      "x": 297.5,
+      "y": 274.99,
+      "width": 27.58,
+      "height": 4.28,
+      "right": 325.07,
+      "visualLineId": 16,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 69,
+      "str": "square feet",
+      "x": 300.71,
+      "y": 110.71,
+      "width": 21.4,
+      "height": 4.28,
+      "right": 322.1,
+      "visualLineId": 28,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 70,
+      "str": "price (in $1000)",
+      "x": 202.26,
+      "y": 181.35,
+      "width": 29.71,
+      "height": 4.28,
+      "right": 231.97,
+      "visualLineId": 23,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 71,
+      "str": "",
+      "x": 302.2,
+      "y": 60.31,
+      "width": 0,
+      "height": 0,
+      "right": 306.2,
+      "visualLineId": null,
+      "inferredColumn": null
+    },
+    {
+      "itemIndex": 72,
+      "str": "1",
+      "x": 302.2,
+      "y": 60.31,
+      "width": 5.85,
+      "height": 11.96,
+      "right": 308.05,
+      "visualLineId": 29,
+      "inferredColumn": null
+    }
+  ],
+  "visualLines": [
+    {
+      "lineId": 0,
+      "y": 605.93,
+      "height": 20.66,
+      "text": "CS229 Lecture Notes",
+      "itemIndexes": [
+        0
+      ],
+      "firstX": 217.89
+    },
+    {
+      "lineId": 1,
+      "y": 570.44,
+      "height": 14.35,
+      "text": "Andrew Ng",
+      "itemIndexes": [
+        2
+      ],
+      "firstX": 270.01
+    },
+    {
+      "lineId": 2,
+      "y": 541.6,
+      "height": 14.35,
+      "text": "(updates by Tengyu Ma)",
+      "itemIndexes": [
+        3
+      ],
+      "firstX": 228.61
+    },
+    {
+      "lineId": 3,
+      "y": 488.71,
+      "height": 17.22,
+      "text": "Supervised learning",
+      "itemIndexes": [
+        5
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 4,
+      "y": 462.43,
+      "height": 11.96,
+      "text": "Let’s start by talking about a few examples of supervised learning problems.",
+      "itemIndexes": [
+        7
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 5,
+      "y": 447.98,
+      "height": 11.96,
+      "text": "Suppose we have a dataset giving the living areas and prices of 47 houses",
+      "itemIndexes": [
+        8
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 6,
+      "y": 433.53,
+      "height": 11.96,
+      "text": "from Portland, Oregon:",
+      "itemIndexes": [
+        9
+      ],
+      "firstX": 110.85
+    },
+    {
+      "lineId": 7,
+      "y": 411.01,
+      "height": 12,
+      "text": "Living area (feet 2 ) Price (1000$s)",
+      "itemIndexes": [
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "firstX": 215.62
+    },
+    {
+      "lineId": 8,
+      "y": 395.29,
+      "height": 12,
+      "text": "2104 400",
+      "itemIndexes": [
+        15,
+        16,
+        17
+      ],
+      "firstX": 250.91
+    },
+    {
+      "lineId": 9,
+      "y": 380.85,
+      "height": 12,
+      "text": "1600 330",
+      "itemIndexes": [
+        18,
+        19,
+        20
+      ],
+      "firstX": 250.91
+    },
+    {
+      "lineId": 10,
+      "y": 366.4,
+      "height": 12,
+      "text": "2400 369",
+      "itemIndexes": [
+        21,
+        22,
+        23
+      ],
+      "firstX": 250.91
+    },
+    {
+      "lineId": 11,
+      "y": 351.96,
+      "height": 12,
+      "text": "1416 232",
+      "itemIndexes": [
+        24,
+        25,
+        26
+      ],
+      "firstX": 250.91
+    },
+    {
+      "lineId": 12,
+      "y": 337.51,
+      "height": 12,
+      "text": "3000 540",
+      "itemIndexes": [
+        27,
+        28,
+        29
+      ],
+      "firstX": 250.91
+    },
+    {
+      "lineId": 13,
+      "y": 324.04,
+      "height": 11.96,
+      "text": ". . . .",
+      "itemIndexes": [
+        30,
+        31,
+        34,
+        35
+      ],
+      "firstX": 260.99
+    },
+    {
+      "lineId": 14,
+      "y": 318.07,
+      "height": 12,
+      "text": ". .",
+      "itemIndexes": [
+        32,
+        33,
+        36
+      ],
+      "firstX": 260.99
+    },
+    {
+      "lineId": 15,
+      "y": 294.47,
+      "height": 11.96,
+      "text": "We can plot this data:",
+      "itemIndexes": [
+        37
+      ],
+      "firstX": 128.41
+    },
+    {
+      "lineId": 16,
+      "y": 274.99,
+      "height": 4.28,
+      "text": "housing prices",
+      "itemIndexes": [
+        68
+      ],
+      "firstX": 297.5
+    },
+    {
+      "lineId": 17,
+      "y": 263.19,
+      "height": 4.28,
+      "text": "1000",
+      "itemIndexes": [
+        67
+      ],
+      "firstX": 205.18
+    },
+    {
+      "lineId": 18,
+      "y": 249.5,
+      "height": 4.28,
+      "text": "900",
+      "itemIndexes": [
+        66
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 19,
+      "y": 235.81,
+      "height": 4.28,
+      "text": "800",
+      "itemIndexes": [
+        65
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 20,
+      "y": 222.13,
+      "height": 4.28,
+      "text": "700",
+      "itemIndexes": [
+        64
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 21,
+      "y": 208.44,
+      "height": 4.28,
+      "text": "600",
+      "itemIndexes": [
+        63
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 22,
+      "y": 194.72,
+      "height": 4.28,
+      "text": "500",
+      "itemIndexes": [
+        62
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 23,
+      "y": 181.19,
+      "height": 4.28,
+      "text": "price (in $1000) 400",
+      "itemIndexes": [
+        70,
+        61
+      ],
+      "firstX": 202.26
+    },
+    {
+      "lineId": 24,
+      "y": 167.34,
+      "height": 4.28,
+      "text": "300",
+      "itemIndexes": [
+        60
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 25,
+      "y": 153.66,
+      "height": 4.28,
+      "text": "200",
+      "itemIndexes": [
+        59
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 26,
+      "y": 139.97,
+      "height": 4.28,
+      "text": "100",
+      "itemIndexes": [
+        58
+      ],
+      "firstX": 207.53
+    },
+    {
+      "lineId": 27,
+      "y": 126.28,
+      "height": 4.28,
+      "text": "0",
+      "itemIndexes": [
+        57
+      ],
+      "firstX": 212.31
+    },
+    {
+      "lineId": 28,
+      "y": 115.55,
+      "height": 12,
+      "text": "500 1000 1500 2000 2500 square feet 3000 3500 4000 4500 5000",
+      "itemIndexes": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        69,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56
+      ],
+      "firstX": 212.35
+    },
+    {
+      "lineId": 29,
+      "y": 60.31,
+      "height": 11.96,
+      "text": "1",
+      "itemIndexes": [
+        72
+      ],
+      "firstX": 302.2
+    }
+  ]
+}
