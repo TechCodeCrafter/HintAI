@@ -17,3 +17,10 @@ create table if not exists waitlist (
 -- One row per address, case-insensitively. A visitor who submits twice is not
 -- two signups, and the insert depends on this index to make the retry a no-op.
 create unique index if not exists waitlist_email_key on waitlist (lower(email));
+
+-- Supabase serves every table in `public` through its auto-generated REST API,
+-- reachable with the publishable key that ships inside any browser. Row level
+-- security with no policy attached closes that door: PostgREST's anon role gets
+-- nothing, while the owning role in DATABASE_URL bypasses RLS and still writes.
+-- Without this line the signup list is world-readable the moment it is hosted.
+alter table waitlist enable row level security;
