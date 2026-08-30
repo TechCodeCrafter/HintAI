@@ -737,7 +737,7 @@ export async function startHear(): Promise<void> {
         : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
   useGround.getState().appendUtterance({
     at: Date.now(),
-    speaker: "GROUND",
+    speaker: "MeetHint",
     role: "system",
     text: what,
   });
@@ -776,7 +776,7 @@ export function toggleHear() {
     useGround.getState().setListenError(null);
     useGround.getState().appendUtterance({
       at: Date.now(),
-      speaker: "GROUND",
+      speaker: "MeetHint",
       role: "system",
       text: err instanceof Error ? err.message : "Could not start hearing.",
     });

@@ -136,7 +136,7 @@ export function Cockpit() {
         <div className="mx-auto flex w-full min-w-0 max-w-[1600px] flex-col gap-2 md:flex-row md:items-center">
           <div className="flex min-w-0 items-center gap-3 md:shrink-0">
             <GroundMark />
-            <span className="brand-word text-fg">GROUND</span>
+            <span className="brand-word text-fg">MeetHint</span>
             <StatusDot on={live} down={false} label={statusLabel} live={live} />
             <span className="hidden min-w-0 truncate font-serif text-base italic text-body lg:inline">
               {folderError && !listenError ? folderError : "The pack is the brief"}
@@ -208,7 +208,7 @@ export function Cockpit() {
               </Button>
             ) : null}
             <a
-              href="/?overlay=1"
+              href="/app?overlay=1"
               target="_blank"
               rel="noreferrer"
               aria-label="Live window"

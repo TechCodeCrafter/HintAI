@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as RelayRouteImport } from './routes/relay'
 import { Route as SoonRouteImport } from './routes/soon'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelayRoute = RelayRouteImport.update({
@@ -31,30 +37,34 @@ const SoonRoute = SoonRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/relay' | '/soon'
+  fullPaths: '/' | '/app' | '/relay' | '/soon'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/relay' | '/soon'
-  id: '__root__' | '/' | '/relay' | '/soon'
+  to: '/' | '/app' | '/relay' | '/soon'
+  id: '__root__' | '/' | '/app' | '/relay' | '/soon'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRoute
   RelayRoute: typeof RelayRoute
   SoonRoute: typeof SoonRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/relay': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRoute,
   RelayRoute: RelayRoute,
   SoonRoute: SoonRoute,
 }

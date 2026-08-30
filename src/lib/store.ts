@@ -303,7 +303,7 @@ export const useGround = create<GroundState>((set, get) => ({
         {
           id: "sys-0",
           at: Date.now(),
-          speaker: "GROUND",
+          speaker: "MeetHint",
           role: "system",
           text: "Design review armed. Questions search themselves — the Card is what you say.",
         },
@@ -456,7 +456,7 @@ export const useGround = create<GroundState>((set, get) => ({
       });
       get().appendUtterance({
         at: Date.now(),
-        speaker: "GROUND",
+        speaker: "MeetHint",
         role: "system",
         text: weak
           ? `Loaded ${pack.name}, but these look like CI files. Open the src folder, then Search.`

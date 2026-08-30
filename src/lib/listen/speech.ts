@@ -105,7 +105,7 @@ function greet() {
   if (useGround.getState().sharingCall) return;
   useGround.getState().appendUtterance({
     at: Date.now(),
-    speaker: "GROUND",
+    speaker: "MeetHint",
     role: "system",
     text: "Hearing you. When they ask, the Card is what you say.",
   });
@@ -137,7 +137,7 @@ function failSoft(reason: ListenBlock) {
   if (last !== MESSAGES[reason]) {
     useGround.getState().appendUtterance({
       at: Date.now(),
-      speaker: "GROUND",
+      speaker: "MeetHint",
       role: "system",
       text: MESSAGES[reason],
     });

@@ -30,7 +30,7 @@ function RelayPage() {
   return (
     <div className="flex min-h-dvh w-full max-w-full flex-col overflow-x-hidden bg-bg px-5 py-8 text-fg">
       <header className="mb-10 flex items-center justify-between text-xs text-muted">
-        <span className="font-medium tracking-tight text-fg">GROUND</span>
+        <span className="font-medium tracking-tight text-fg">MeetHint</span>
         <span className="font-serif italic">{armed ? "Armed" : "Idle"} · phone card</span>
       </header>
       <div className="mx-auto flex w-full min-w-0 max-w-md flex-1 flex-col justify-center">
@@ -52,7 +52,7 @@ function RelayPage() {
           <p className="text-lg text-muted">No card. Search from the cockpit and this screen follows.</p>
         )}
       </div>
-      <Link to="/" className="mt-10 text-center text-sm text-faint hover:text-fg">
+      <Link to="/app" className="mt-10 text-center text-sm text-faint hover:text-fg">
         Back to cockpit
       </Link>
     </div>

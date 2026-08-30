@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Renders /soon and captures what a visitor actually sees: desktop, mobile, and
+ * Renders the landing page and captures what a visitor actually sees: desktop, mobile, and
  * the two states of the demo card that carry the pitch — an answer with its
  * citation, and the beat where the material does not support one.
  *
@@ -10,7 +10,7 @@
 import { mkdirSync } from "node:fs";
 import { chromium } from "playwright";
 
-const TARGET = process.env.SHOT_URL ?? "http://127.0.0.1:8080/soon";
+const TARGET = process.env.SHOT_URL ?? "http://127.0.0.1:8080/";
 const OUT = new URL("../screenshots/", import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
 
