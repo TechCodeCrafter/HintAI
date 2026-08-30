@@ -146,7 +146,7 @@ test("a purpose question retrieves file heads, where the docstrings are", () => 
   const hits = retrieve("What is the architecture of this application?", CHUNKS);
   assert.ok(hits.length > 0);
   assert.ok(
-    hits.some((h) => h.startLine <= 8),
+    hits.some((h) => (h.kind === "code" || h.kind === "why") && h.startLine <= 8),
     "structural questions must reach the top of files",
   );
 });

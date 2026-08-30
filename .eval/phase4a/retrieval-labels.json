@@ -1,0 +1,65 @@
+{
+  "phase": "4A.3",
+  "note": "Retrieval only. Spoken Cards are out of scope until 4A.4.",
+  "questions": [
+    {
+      "id": "lecture-isolation",
+      "q": "What does serializable isolation prevent?",
+      "answerable": true,
+      "sourcePath": "lecture.pdf",
+      "page": 1,
+      "span": "Serializable isolation prevents lost outcomes"
+    },
+    {
+      "id": "lecture-multipage",
+      "q": "How do predicate locks protect phantoms?",
+      "answerable": true,
+      "sourcePath": "lecture-multi.pdf",
+      "page": 3,
+      "span": "Predicate locks protect phantoms"
+    },
+    {
+      "id": "paper-twocol",
+      "q": "What does two-phase locking require?",
+      "answerable": true,
+      "sourcePath": "paper.pdf",
+      "page": 1,
+      "span": "Two-phase locking requires waits"
+    },
+    {
+      "id": "bullets",
+      "q": "Which isolation levels does the lecture list?",
+      "answerable": true,
+      "sourcePath": "bullets.pdf",
+      "page": 1,
+      "span": "read committed"
+    },
+    {
+      "id": "headers-body",
+      "q": "What anomaly does write skew create?",
+      "answerable": true,
+      "sourcePath": "headers.pdf",
+      "page": 2,
+      "span": "Write skew creates an integrity anomaly"
+    },
+    {
+      "id": "slides",
+      "q": "What is the definition of a phantom read?",
+      "answerable": true,
+      "sourcePath": "slides.pdf",
+      "page": 2,
+      "span": "A phantom read sees new rows"
+    },
+    {
+      "id": "weather",
+      "q": "What is the weather in Tokyo?",
+      "answerable": false
+    },
+    {
+      "id": "unrelated-api",
+      "q": "How does the FastAPI health endpoint work?",
+      "answerable": false
+    }
+  ],
+  "zeroChunk": ["scanned.pdf", "unreadable.pdf", "refused.pdf", "grid.pdf"]
+}

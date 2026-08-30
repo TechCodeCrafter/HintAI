@@ -101,7 +101,7 @@ prompt(tty, "\n");
 // A terminal left in bracketed-paste mode wraps a paste in these escapes, and
 // with echo off they are invisible — the password looks right and is rejected.
 const password = typed
-  .replace(/\u001b\[20[01]~/g, "")
+  .replace(new RegExp(`${String.fromCharCode(0x1b)}\\[20[01]~`, "g"), "")
   .replace(/^\s+|\s+$/g, "");
 
 if (!password) {

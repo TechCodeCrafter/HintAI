@@ -1,0 +1,198 @@
+{
+  "phase": "4A.8.1",
+  "pass": true,
+  "cases": [
+    {
+      "id": "un-lora-salary",
+      "class": "explicit-wrong-document",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-scan-text",
+      "class": "explicit-wrong-document",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-enc-secret",
+      "class": "explicit-wrong-document",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "cisa-what",
+      "class": "explicit-wrong-document",
+      "assert": "correct lower-ranked source cisa-ransomware.pdf",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-growth",
+      "class": "lexically-tempting-unanswerable",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-figure-secret",
+      "class": "lexically-tempting-unanswerable",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-hybrid-sla",
+      "class": "wrong-predicate",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "cisa-backups",
+      "class": "wrong-predicate",
+      "assert": "correct lower-ranked source cisa-ransomware.pdf or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "lora-what",
+      "class": "wrong-predicate",
+      "assert": "correct extract from lora.pdf p1 or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-bert-phone",
+      "class": "wrong-answer-type",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-personal",
+      "class": "where-location",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-zta-price",
+      "class": "wrong-answer-type",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "bert-glue",
+      "class": "wrong-answer-type",
+      "assert": "correct quantity 80.5% or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "cisa-parts",
+      "class": "list-enumeration",
+      "assert": "correct CISA Part 1 / Part 2 list or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "omb-pillars",
+      "class": "list-enumeration",
+      "assert": "enumerate the five pillars or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "btc-steps",
+      "class": "list-enumeration",
+      "assert": "first network step or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-who-owns-btc",
+      "class": "who-ownership",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-who-owns-zta",
+      "class": "who-ownership",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-customer-pii-attn",
+      "class": "where-location",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "un-why-pay",
+      "class": "why-rationale",
+      "assert": "SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "63b-aal3",
+      "class": "shared-vocabulary-cross-document",
+      "assert": "correct 63b Multi-Factor Cryptographic Device or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "btc-header",
+      "class": "shared-vocabulary-cross-document",
+      "assert": "bitcoin.pdf 80 bytes or SILENCE",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "cs229-followup-gd",
+      "class": "thread-document-reference",
+      "assert": "SILENCE until lecture pages are readable, then normal equations",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    },
+    {
+      "id": "cs229-normal",
+      "class": "thread-document-reference",
+      "assert": "SILENCE until lecture pages are readable",
+      "after": "SILENCE",
+      "citedPath": null,
+      "pass": true
+    }
+  ]
+}

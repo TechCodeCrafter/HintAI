@@ -1,0 +1,178 @@
+{
+  "phase": "4A.7",
+  "note": "Third-party PDFs, not created for MeetHint. Labels were written from raw PDF.js getTextContent dumps, not from MeetHint Cards.",
+  "obtain": "Files live under this directory for the local gate. Redistributable items may be committed. Restricted items list an obtain URL.",
+  "documents": [
+    {
+      "id": "cs229-notes.pdf",
+      "family": "A-lecture-normal",
+      "title": "CS229 Lecture Notes — Supervised learning / Linear regression",
+      "authors": "Andrew Ng (updates by Tengyu Ma)",
+      "license": "Course notes posted publicly; redistribution beyond this eval may be restricted.",
+      "obtain": "https://cs229.stanford.edu/notes2021fall/cs229-notes1.pdf",
+      "inRepo": true,
+      "pages": 28
+    },
+    {
+      "id": "cisa-ransomware.pdf",
+      "family": "A-lecture-bullets + C-ops + E-headers",
+      "title": "#StopRansomware Guide",
+      "license": "U.S. Government publication (TLP:CLEAR).",
+      "obtain": "https://www.cisa.gov/sites/default/files/2025-03/StopRansomware-Guide%20508.pdf",
+      "inRepo": true,
+      "pages": 31
+    },
+    {
+      "id": "attention.pdf",
+      "family": "B-two-column + B-figures",
+      "title": "Attention Is All You Need",
+      "license": "arXiv; tables/figures reproduction permitted with attribution (paper notice).",
+      "obtain": "https://arxiv.org/pdf/1706.03762",
+      "inRepo": true,
+      "pages": 15
+    },
+    {
+      "id": "bert.pdf",
+      "family": "B-academic",
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers",
+      "license": "arXiv preprint.",
+      "obtain": "https://arxiv.org/pdf/1810.04805",
+      "inRepo": true,
+      "pages": 16
+    },
+    {
+      "id": "resnet.pdf",
+      "family": "B-two-column + B-figures + E-tables",
+      "title": "Deep Residual Learning for Image Recognition",
+      "license": "arXiv preprint.",
+      "obtain": "https://arxiv.org/pdf/1512.03385",
+      "inRepo": true,
+      "pages": 12
+    },
+    {
+      "id": "lora.pdf",
+      "family": "B-academic + B-figures",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "license": "arXiv preprint.",
+      "obtain": "https://arxiv.org/pdf/2106.09685",
+      "inRepo": true,
+      "pages": 26
+    },
+    {
+      "id": "bitcoin.pdf",
+      "family": "B-single-column + D-briefing-like",
+      "title": "Bitcoin: A Peer-to-Peer Electronic Cash System",
+      "license": "Public domain / author-released.",
+      "obtain": "https://bitcoin.org/bitcoin.pdf",
+      "inRepo": true,
+      "pages": 9
+    },
+    {
+      "id": "tracemonkey.pdf",
+      "family": "B-academic + C-systems",
+      "title": "Trace-based Just-in-Time Type Specialization for Dynamic Languages",
+      "license": "ACM; Mozilla pdf.js test redistribution (Apache-2.0 tree).",
+      "obtain": "https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf",
+      "inRepo": true,
+      "pages": 14
+    },
+    {
+      "id": "nist-800-145.pdf",
+      "family": "C-technical-definition",
+      "title": "NIST SP 800-145 The NIST Definition of Cloud Computing",
+      "license": "U.S. Government public domain.",
+      "obtain": "https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-145.pdf",
+      "inRepo": true,
+      "pages": 7
+    },
+    {
+      "id": "nist-800-207.pdf",
+      "family": "C-architecture",
+      "title": "NIST SP 800-207 Zero Trust Architecture",
+      "license": "U.S. Government public domain.",
+      "obtain": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf",
+      "inRepo": true,
+      "pages": 59
+    },
+    {
+      "id": "nist-800-63b.pdf",
+      "family": "D-policy + E-headers + E-mixed",
+      "title": "NIST SP 800-63B Digital Identity Guidelines (withdrawn copy)",
+      "license": "U.S. Government public domain.",
+      "obtain": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63B.pdf",
+      "inRepo": true,
+      "pages": 80
+    },
+    {
+      "id": "omb-m22-09.pdf",
+      "family": "D-policy + D-briefing",
+      "title": "OMB M-22-09 Moving the U.S. Government Toward Zero Trust",
+      "license": "U.S. Government public domain.",
+      "obtain": "https://www.whitehouse.gov/wp-content/uploads/2022/01/M-22-09.pdf",
+      "inRepo": true,
+      "pages": 29
+    },
+    {
+      "id": "rfc9110.pdf",
+      "family": "F-over-page-limit",
+      "title": "RFC 9110 HTTP Semantics",
+      "license": "IETF Trust / BSD-style RFC license.",
+      "obtain": "https://www.rfc-editor.org/rfc/rfc9110.pdf",
+      "inRepo": true,
+      "pages": 194,
+      "expectedReadiness": "refused"
+    },
+    {
+      "id": "nist-800-12.pdf",
+      "family": "F-over-page-limit",
+      "title": "NIST SP 800-12r1 An Introduction to Information Security",
+      "license": "U.S. Government public domain.",
+      "obtain": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-12r1.pdf",
+      "inRepo": true,
+      "pages": 101,
+      "expectedReadiness": "refused"
+    },
+    {
+      "id": "irs-p15.pdf",
+      "family": "F-over-char-limit + E-tables",
+      "title": "IRS Publication 15 (Circular E) Employer's Tax Guide",
+      "license": "U.S. Government public domain.",
+      "obtain": "https://www.irs.gov/pub/irs-pdf/p15.pdf",
+      "inRepo": true,
+      "pages": 59,
+      "expectedReadiness": "refused"
+    },
+    {
+      "id": "scanned.pdf",
+      "family": "F-scanned",
+      "title": "Mozilla pdf.js issue13147 (image-only page)",
+      "license": "Apache-2.0 (pdf.js test material).",
+      "obtain": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/issue13147.pdf",
+      "inRepo": true,
+      "pages": 1,
+      "expectedReadiness": "scanned"
+    },
+    {
+      "id": "encrypted-sample.pdf",
+      "family": "F-encrypted",
+      "title": "py-pdf encrypted-file.pdf",
+      "license": "BSD (pypdf resources).",
+      "obtain": "https://github.com/py-pdf/pypdf/raw/main/resources/encrypted-file.pdf",
+      "inRepo": true,
+      "expectedReadiness": "unreadable"
+    },
+    {
+      "id": "encrypted.pdf",
+      "family": "F-encrypted",
+      "title": "Standard /Encrypt dictionary object (classification only)",
+      "license": "Synthetic encryption object; not a content fixture.",
+      "obtain": "Generated via src/lib/document/pdf/build-fixture.ts encryptedPdfBytes()",
+      "inRepo": true,
+      "expectedReadiness": "unreadable",
+      "note": "Used only because a third-party encrypted file was also obtained (encrypted-sample.pdf)."
+    }
+  ],
+  "gaps": [
+    "No redistributable exported slide-deck PDF was obtained (university slide hosts returned 403). Sparse/cover pages in CISA and OMB stand in for sparse layout. Repeated TLP:CLEAR / NIST running headers cover E-headers."
+  ]
+}

@@ -4,13 +4,24 @@ import { NORTHSTAR } from "../repo/northstar.ts";
 import { architectureCard } from "./architecture.ts";
 import { localCard } from "./local-card.ts";
 import { buildChunks, retrieve } from "./retrieve.ts";
-import type { RepoPack } from "../repo/types.ts";
+import type { Card, RepoPack } from "../repo/types.ts";
+import { citationText } from "./cite.ts";
+
+/** The paths of the citations that name a file; a commit citation names none. */
+function filePaths(card: Card): string[] {
+  return card.citations.flatMap((c) => (c.kind === "file" ? [c.path] : []));
+}
 
 const CHUNKS = buildChunks(NORTHSTAR);
 
 function ask(query: string) {
   const hits = retrieve(query, CHUNKS);
   return { hits, card: localCard(query, hits, NORTHSTAR, 0, null) };
+}
+
+/** A structural answer, which is grounded in the file tree rather than in hits. */
+function arch(pack: RepoPack, query: string) {
+  return architectureCard(pack, query, 0);
 }
 
 test("an off-topic question produces no Card", () => {
@@ -38,9 +49,12 @@ test("a grounded question produces a Card that cites a real loaded file", () => 
   assert.ok(card.citations.length > 0, "a Card must cite");
   for (const cite of card.citations) {
     const known =
-      NORTHSTAR.files.some((f) => f.path === cite.path) ||
-      NORTHSTAR.commits.some((c) => c.files.includes(cite.path));
-    assert.ok(known, `citation must point at loaded material: ${cite.path}`);
+      cite.kind === "file"
+        ? NORTHSTAR.files.some((f) => f.path === cite.path)
+        : cite.kind === "commit"
+          ? NORTHSTAR.commits.some((c) => c.sha === cite.sha)
+          : false;
+    assert.ok(known, `citation must point at loaded material: ${citationText(cite)}`);
   }
 });
 
@@ -50,14 +64,31 @@ test("the scripted demo answer stays silent without a supporting hit", () => {
   assert.equal(card.say, null);
 });
 
-test("a written architecture answer requires retrieval behind it", () => {
-  const quiet = architectureCard(NORTHSTAR, "What is the architecture of this application?", 0, []);
-  assert.equal(quiet.say, null);
-
+test("the architecture answer is read out of the material, not authored about it", () => {
   const query = "What is the architecture of this application?";
-  const grounded = architectureCard(NORTHSTAR, query, 0, retrieve(query, CHUNKS));
-  assert.ok(grounded.say, "with evidence it should answer");
+  const grounded = arch(NORTHSTAR, query);
+  assert.ok(grounded.say, "a pack that states its purpose should answer");
   assert.ok(grounded.citations.length > 0);
+  assert.match(grounded.say, /settlement/i);
+
+  // The same pack describing itself differently. If the answer were authored
+  // against the fixture rather than extracted from it, the old sentence would
+  // survive this edit.
+  const drifted = {
+    ...NORTHSTAR,
+    files: NORTHSTAR.files.map((f) =>
+      f.path === "README.md"
+        ? {
+            ...f,
+            content:
+              "# Northstar Payments\n\nNorthstar reconciles disputed chargebacks for merchants still on the legacy rail.\n",
+          }
+        : f,
+    ),
+  };
+  const moved = arch(drifted, query);
+  assert.match(moved.say ?? "", /chargebacks/i, `should read the new text, got: ${moved.say}`);
+  assert.doesNotMatch(moved.say ?? "", /settlement files/i, "the old sentence must not survive");
 });
 
 // A multi-component service, shaped like a real loaded backend.
@@ -96,7 +127,7 @@ const SERVICE: RepoPack = {
 };
 
 test("architecture answer leads with purpose, then structure", () => {
-  const card = architectureCard(SERVICE, "How does this application work end to end?", 0, []);
+  const card = arch(SERVICE, "How does this application work end to end?");
   assert.ok(card.say, "a described service should answer");
 
   assert.match(card.say, /FastAPI/, "should identify the framework");
@@ -111,7 +142,7 @@ test("architecture answer leads with purpose, then structure", () => {
   assert.doesNotMatch(card.say, /FastAPI Main Application/, "must not read a heading as purpose");
   assert.doesNotMatch(card.say, /Building/, "must not read a placeholder heading");
 
-  const paths = card.citations.map((c) => c.path);
+  const paths = filePaths(card);
   assert.ok(paths.includes("api/main.py"), "must cite the file the purpose came from");
   for (const path of paths) {
     assert.ok(
@@ -122,15 +153,13 @@ test("architecture answer leads with purpose, then structure", () => {
 });
 
 test("a citation label is provenance, never a repeat of the path", () => {
-  const card = architectureCard(SERVICE, "How does this application work end to end?", 0, []);
+  const card = arch(SERVICE, "How does this application work end to end?");
   for (const cite of card.citations) {
-    assert.notEqual(cite.label, cite.path, "label must not echo the path");
+    assert.notEqual(cite.label, citationText(cite), "label must not echo the citation");
     assert.doesNotMatch(cite.label, /\.(py|ts|tsx|js)(:\d+)?$/, `label looks like a path: ${cite.label}`);
   }
   // The demo pack does have history, so there the label carries it.
-  const demo = architectureCard(NORTHSTAR, "What is the architecture of this application?", 0, [
-    { kind: "code", path: "src/exporter/retry.ts", startLine: 1, endLine: 1, text: "", id: "x", score: 9 },
-  ]);
+  const demo = architectureCard(NORTHSTAR, "What is the architecture of this application?", 0);
   assert.ok(demo.citations.every((c) => c.label.length > 0), "provenance exists in the demo pack");
 });
 
@@ -161,7 +190,7 @@ test("a truncated capability list does not say 'and' before 'plus N more'", () =
         : f,
     ),
   };
-  const card = architectureCard(many, "How does this application work end to end?", 0, []);
+  const card = arch(many, "How does this application work end to end?");
   assert.ok(card.say);
   assert.match(card.say, /plus two more/, "should account for the remainder");
   assert.doesNotMatch(card.say, /and [^.]*, plus/, `dangling "and" before the remainder: ${card.say}`);
@@ -177,7 +206,7 @@ test("no stated purpose means silence, not a folder listing", () => {
         : f,
     ),
   };
-  const card = architectureCard(bare, "How does this application work end to end?", 0, []);
+  const card = arch(bare, "How does this application work end to end?");
   assert.equal(card.say, null, `should stay silent, got: ${card.say}`);
   assert.equal(card.citations.length, 0);
 });
@@ -250,7 +279,7 @@ test("the claim is read from the file that answers, not the entry point", () => 
   const card = askRoutes("How does document upload work?");
   assert.ok(card.say, "a documented route should answer");
   assert.match(card.say, /Accepts a PDF or DOCX file/, "should speak the route's own prose");
-  assert.equal(card.citations[0].path, "api/routes/upload.py", "must cite where the claim was read");
+  assert.equal(filePaths(card)[0], "api/routes/upload.py", "must cite where the claim was read");
   // The whole-API capability list is the generic answer; it must not win here.
   assert.doesNotMatch(card.say, /provides endpoints for/i, `generic list beat the specific answer: ${card.say}`);
 });

@@ -66,7 +66,7 @@ await context.addInitScript(() => {
 
 const page = await context.newPage();
 const room = page.locator('[data-pane="room"]');
-await page.goto("http://127.0.0.1:8080/", { waitUntil: "domcontentloaded", timeout: 60000 });
+await page.goto("http://127.0.0.1:8080/app", { waitUntil: "domcontentloaded", timeout: 60000 });
 await room.waitFor({ state: "visible", timeout: 60000 });
 for (let i = 0; i < 200; i += 1) {
   const t = await room.innerText();

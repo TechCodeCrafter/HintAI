@@ -1,0 +1,1334 @@
+[
+  {
+    "q": "What does the BDA ingest worker do?",
+    "hits": [
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 33.16858623075156,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/bda_client.py",
+        "startLine": 507,
+        "endLine": 534,
+        "score": 25.94578735862529,
+        "kind": "code"
+      },
+      {
+        "path": "docs/ops-runbooks/04_unification_architecture.md",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 22.760872532178528,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        "startLine": 199,
+        "endLine": 226,
+        "score": 12.877224732717561,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/bda_client.py",
+        "startLine": 309,
+        "endLine": 336,
+        "score": 10.082675931697962,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/template-validator/app/bda_client.py",
+        "startLine": 309,
+        "endLine": 336,
+        "score": 10.082675931697962,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What does the in-memory repository do?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 16.77669298441709,
+        "kind": "code"
+      },
+      {
+        "path": "infrastructure/repositories/sqlite_repository.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 16.77669298441709,
+        "kind": "code"
+      },
+      {
+        "path": "domain/interfaces/i_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 15.703764944715996,
+        "kind": "code"
+      },
+      {
+        "path": "application/processing_steps/storage_step.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 10.603053568810802,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_pipeline.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 9.690962939235677,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 9.690962939235677,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What is the in-memory repository for?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 16.77669298441709,
+        "kind": "code"
+      },
+      {
+        "path": "infrastructure/repositories/sqlite_repository.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 16.77669298441709,
+        "kind": "code"
+      },
+      {
+        "path": "domain/interfaces/i_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 15.703764944715996,
+        "kind": "code"
+      },
+      {
+        "path": "application/processing_steps/storage_step.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 10.603053568810802,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_pipeline.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 9.690962939235677,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 9.690962939235677,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What does this API do?",
+    "hits": [
+      {
+        "path": "api/main.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 13.452582142125054,
+        "kind": "code"
+      },
+      {
+        "path": "api/config.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.405497448250932,
+        "kind": "code"
+      },
+      {
+        "path": "api/client.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.350004773327859,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/sessions.py",
+        "startLine": 309,
+        "endLine": 336,
+        "score": 12.80402845553634,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/responses.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 12.56883865710307,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/results.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 12.56883865710307,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What does the text formatter do?",
+    "hits": [
+      {
+        "path": "infrastructure/formatters/text_formatter.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 34.740821589249,
+        "kind": "code"
+      },
+      {
+        "path": "domain/interfaces/i_formatter.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 23.202027786021905,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 16.130468130812748,
+        "kind": "code"
+      },
+      {
+        "path": "application/processing_steps/text_extraction_step.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 8.748323597437675,
+        "kind": "code"
+      },
+      {
+        "path": "services/cache/text_cache_manager.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 8.45090462898083,
+        "kind": "code"
+      },
+      {
+        "path": "domain/interfaces/i_text_extractor.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 7.987186882462095,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What does the ec2 bridge do?",
+    "hits": [
+      {
+        "path": "ec2_bridge.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 54.37672103443171,
+        "kind": "code"
+      },
+      {
+        "path": "ec2_bridge.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 48.93333731685227,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What does the session service do?",
+    "hits": [
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.71358665099665,
+        "kind": "code"
+      },
+      {
+        "path": "services/shared_bda_service.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 12.362841669111234,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/sku_attribute_store.py",
+        "startLine": 771,
+        "endLine": 798,
+        "score": 11.39707999451753,
+        "kind": "code"
+      },
+      {
+        "path": "services/llm/bedrock_service.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 10.88694360891472,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/session_store.py",
+        "startLine": 617,
+        "endLine": 638,
+        "score": 9.872196945278919,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/sessions.py",
+        "startLine": 1233,
+        "endLine": 1260,
+        "score": 7.802699137522987,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What is the template config used for?",
+    "hits": [
+      {
+        "path": "core/config.py",
+        "startLine": 111,
+        "endLine": 132,
+        "score": 23.50875712819515,
+        "kind": "code"
+      },
+      {
+        "path": "api/config.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 23.50875712819515,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/db/template_config_db.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 22.484050463451013,
+        "kind": "code"
+      },
+      {
+        "path": "databases/template_config_db.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 22.484050463451013,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/db/seed_template_config.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 22.469637622795425,
+        "kind": "code"
+      },
+      {
+        "path": "databases/seed_template_config.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 22.469637622795425,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How does the Excel export work?",
+    "hits": [
+      {
+        "path": "services/excel_output_generator.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 23.034869679756493,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/sessions.py",
+        "startLine": 1365,
+        "endLine": 1392,
+        "score": 19.764847647727613,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/results.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 19.582384761542535,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/responses.py",
+        "startLine": 155,
+        "endLine": 182,
+        "score": 18.768668479441732,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/requests.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 18.667257043492135,
+        "kind": "code"
+      },
+      {
+        "path": "api/client.py",
+        "startLine": 309,
+        "endLine": 336,
+        "score": 16.39219163897899,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How does document upload work?",
+    "hits": [
+      {
+        "path": "api/routers/uploads.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 14.927796271396893,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.99492793724487,
+        "kind": "code"
+      },
+      {
+        "path": "services/document/loader.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 13.697160140521543,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "startLine": 133,
+        "endLine": 160,
+        "score": 12.457914528298877,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/agent_loop.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 12.398822301546133,
+        "kind": "code"
+      },
+      {
+        "path": "services/lambda_processor.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 11.950169758875072,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How is the data indexed for RAG?",
+    "hits": [
+      {
+        "path": "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 19.851154904880975,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/global-rag-compactor/app/lambda_function.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 17.721977267842696,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/global-rag-indexer/app/services/shard_registry.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 15.74889010105784,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/global-rag-compactor/app/services/shard_registry.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 15.355018654801754,
+        "kind": "code"
+      },
+      {
+        "path": "mastra-poc/src/mastra/tools/stubTools.ts",
+        "startLine": 221,
+        "endLine": 248,
+        "score": 13.645627560233947,
+        "kind": "code"
+      },
+      {
+        "path": "services/sku_matcher.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.523460843136746,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How does extraction work?",
+    "hits": [
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "startLine": 133,
+        "endLine": 160,
+        "score": 16.76056825896213,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/agent_loop.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 12.182392900708997,
+        "kind": "code"
+      },
+      {
+        "path": "docs/ops-runbooks/04_unification_architecture.md",
+        "startLine": 89,
+        "endLine": 116,
+        "score": 11.17805350900803,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/critic.py",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 9.94538330200901,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/chat.py",
+        "startLine": 309,
+        "endLine": 336,
+        "score": 9.086249521373327,
+        "kind": "code"
+      },
+      {
+        "path": "core/prompt_defaults.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 8.699564740651093,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How are sessions stored?",
+    "hits": [
+      {
+        "path": "api/routers/sessions.py",
+        "startLine": 89,
+        "endLine": 116,
+        "score": 27.375273903712355,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/session_store.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 14.507617968358813,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/athena_store.py",
+        "startLine": 419,
+        "endLine": 446,
+        "score": 13.941768562185526,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/sku_attribute_store.py",
+        "startLine": 221,
+        "endLine": 248,
+        "score": 10.61914544810396,
+        "kind": "code"
+      },
+      {
+        "path": "databases/chat_session_db.py",
+        "startLine": 155,
+        "endLine": 182,
+        "score": 9.61943990494588,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/responses.py",
+        "startLine": 265,
+        "endLine": 292,
+        "score": 9.053590498772593,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How does the bda client talk to AWS?",
+    "hits": [
+      {
+        "path": "infrastructure/aws/bda_client.py",
+        "startLine": 705,
+        "endLine": 732,
+        "score": 27.72544034801457,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/bda_client.py",
+        "startLine": 749,
+        "endLine": 776,
+        "score": 23.480930813094844,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/bda_client.py",
+        "startLine": 727,
+        "endLine": 754,
+        "score": 21.97851973051598,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/template-validator/app/bda_client.py",
+        "startLine": 705,
+        "endLine": 732,
+        "score": 21.97851973051598,
+        "kind": "code"
+      },
+      {
+        "path": "api/client.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 18.975489994726452,
+        "kind": "code"
+      },
+      {
+        "path": "services/shared_bda_service.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 17.68639059054447,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Where does document upload happen?",
+    "hits": [
+      {
+        "path": "services/document/template_categorizer.py",
+        "startLine": 573,
+        "endLine": 600,
+        "score": 18.81432171492668,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/uploads.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 14.927796271396893,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.99492793724487,
+        "kind": "code"
+      },
+      {
+        "path": "services/lambda_processor.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 11.950169758875072,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/validation.py",
+        "startLine": 45,
+        "endLine": 72,
+        "score": 11.588336255626189,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/responses.py",
+        "startLine": 243,
+        "endLine": 270,
+        "score": 11.028038443365393,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Where is the Excel output generated?",
+    "hits": [
+      {
+        "path": "services/excel_output_generator.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 34.053825051477254,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/sessions.py",
+        "startLine": 1519,
+        "endLine": 1546,
+        "score": 23.459307690984037,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/results.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 19.51513454283768,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/responses.py",
+        "startLine": 155,
+        "endLine": 182,
+        "score": 16.68912581519798,
+        "kind": "code"
+      },
+      {
+        "path": "core/knowledge/knowledge_loader.py",
+        "startLine": 287,
+        "endLine": 314,
+        "score": 11.386713781283353,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/agent_loop.py",
+        "startLine": 463,
+        "endLine": 490,
+        "score": 11.126927637702732,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Where are the repositories defined?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 11.530477961694954,
+        "kind": "code"
+      },
+      {
+        "path": "infrastructure/repositories/sqlite_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 11.530477961694954,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/athena_store.py",
+        "startLine": 331,
+        "endLine": 358,
+        "score": 10.009764205116413,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/sessions.py",
+        "startLine": 375,
+        "endLine": 402,
+        "score": 8.758543679476862,
+        "kind": "code"
+      },
+      {
+        "path": "api/models/responses.py",
+        "startLine": 331,
+        "endLine": 358,
+        "score": 7.7853721595349885,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/extraction_runner.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 7.7853721595349885,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Where does the extraction run?",
+    "hits": [
+      {
+        "path": "mastra-poc/src/run.ts",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 24.60942548074278,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/extraction_runner.py",
+        "startLine": 199,
+        "endLine": 226,
+        "score": 14.028778900563054,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/pipeline_extraction_runner.py",
+        "startLine": 1387,
+        "endLine": 1414,
+        "score": 13.2348907472812,
+        "kind": "code"
+      },
+      {
+        "path": "core/prompt_defaults.py",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 10.4063174511233,
+        "kind": "code"
+      },
+      {
+        "path": "mastra-poc/src/promptDefaults.ts",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 10.4063174511233,
+        "kind": "code"
+      },
+      {
+        "path": "mastra-poc/src/mastra/tools/stubTools.ts",
+        "startLine": 705,
+        "endLine": 732,
+        "score": 9.686441315560012,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Why is the extraction done in a container lambda?",
+    "hits": [
+      {
+        "path": "docs/ops-runbooks/04_unification_architecture.md",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 24.186939069279504,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "startLine": 991,
+        "endLine": 1018,
+        "score": 22.063259044487435,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "startLine": 947,
+        "endLine": 974,
+        "score": 18.614886626664052,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/extraction_runner.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 18.231445214517922,
+        "kind": "code"
+      },
+      {
+        "path": "mastra-poc/src/mastra/tools/stubTools.ts",
+        "startLine": 771,
+        "endLine": 798,
+        "score": 16.75303705873235,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/lambda_function.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.56057056700013,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Why did the team choose an in-memory repository?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 16.77669298441709,
+        "kind": "code"
+      },
+      {
+        "path": "infrastructure/repositories/sqlite_repository.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 16.77669298441709,
+        "kind": "code"
+      },
+      {
+        "path": "domain/interfaces/i_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 15.703764944715996,
+        "kind": "code"
+      },
+      {
+        "path": "application/processing_steps/storage_step.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 10.603053568810802,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_pipeline.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 9.690962939235677,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 9.690962939235677,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Why is data not persisted between runs?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 30.405841382370866,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/critic.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 16.184929178586895,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/agent_loop.py",
+        "startLine": 155,
+        "endLine": 182,
+        "score": 14.053087494496975,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/chat.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.665925673660505,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "startLine": 265,
+        "endLine": 292,
+        "score": 12.866823694201901,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/athena_store.py",
+        "startLine": 793,
+        "endLine": 820,
+        "score": 11.997019400069423,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Why are there seven lambdas?",
+    "hits": [
+      {
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "startLine": 573,
+        "endLine": 600,
+        "score": 13.557561103692315,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/rules.json",
+        "startLine": 89,
+        "endLine": 116,
+        "score": 13.557561103692315,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/bda_client.py",
+        "startLine": 485,
+        "endLine": 512,
+        "score": 11.067528002150649,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "startLine": 485,
+        "endLine": 512,
+        "score": 11.067528002150649,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/bda_client.py",
+        "startLine": 485,
+        "endLine": 512,
+        "score": 11.067528002150649,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/template-validator/app/bda_client.py",
+        "startLine": 485,
+        "endLine": 512,
+        "score": 11.067528002150649,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What happens if the extraction fails?",
+    "hits": [
+      {
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "startLine": 573,
+        "endLine": 600,
+        "score": 15.007590615930152,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        "startLine": 617,
+        "endLine": 644,
+        "score": 12.716567200901666,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/pipeline_extraction_runner.py",
+        "startLine": 1629,
+        "endLine": 1656,
+        "score": 10.04763079784691,
+        "kind": "code"
+      },
+      {
+        "path": "application/processing_steps/text_extraction_step.py",
+        "startLine": 89,
+        "endLine": 116,
+        "score": 9.59760834132346,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/extraction_runner.py",
+        "startLine": 199,
+        "endLine": 226,
+        "score": 9.4494938643537,
+        "kind": "code"
+      },
+      {
+        "path": "docs/ops-runbooks/04_unification_architecture.md",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 8.858513382971594,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What happens if the upload fails?",
+    "hits": [
+      {
+        "path": "api/routers/uploads.py",
+        "startLine": 155,
+        "endLine": 182,
+        "score": 13.945204701012479,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        "startLine": 617,
+        "endLine": 644,
+        "score": 12.716567200901666,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "startLine": 573,
+        "endLine": 600,
+        "score": 12.716567200901666,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/bda-ingest-worker/app/bda_client.py",
+        "startLine": 133,
+        "endLine": 160,
+        "score": 11.111326824788588,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/bda_client.py",
+        "startLine": 133,
+        "endLine": 160,
+        "score": 11.111326824788588,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/template-validator/app/bda_client.py",
+        "startLine": 133,
+        "endLine": 160,
+        "score": 11.111326824788588,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What is the architecture of this application?",
+    "hits": [
+      {
+        "path": "docs/ARCHITECTURE_DIAGRAM.md",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 27.36597504078221,
+        "kind": "code"
+      },
+      {
+        "path": "docs/chat_architecture_spec.md",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 22.707719666177518,
+        "kind": "code"
+      },
+      {
+        "path": "docs/ops-runbooks/04_unification_architecture.md",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 22.707719666177518,
+        "kind": "code"
+      },
+      {
+        "path": "agentcore-spike/main.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 18.297641151238004,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/aggregator.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.443087866471007,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_pipeline.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 12.136383211917494,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How does this application work end to end?",
+    "hits": [
+      {
+        "path": "application/document_processing_pipeline.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 12.136383211917494,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 12.136383211917494,
+        "kind": "code"
+      },
+      {
+        "path": "mastra-poc/src/agentcore.ts",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 11.502947525821149,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/markdown_section_extractor.py",
+        "startLine": 221,
+        "endLine": 248,
+        "score": 10.102105535108256,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/utils/markdown_section_extractor.py",
+        "startLine": 221,
+        "endLine": 248,
+        "score": 10.102105535108256,
+        "kind": "code"
+      },
+      {
+        "path": "core/chat_tools/pipeline_extraction_runner.py",
+        "startLine": 177,
+        "endLine": 204,
+        "score": 9.650894866046348,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How is the repo organised?",
+    "hits": [
+      {
+        "path": "agentcore-spike/main.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 14.610868782341417,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/db/seed_template_config.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 9.29782558876272,
+        "kind": "code"
+      },
+      {
+        "path": "databases/seed_template_config.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 9.29782558876272,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/db/seed_template_config.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 9.29782558876272,
+        "kind": "code"
+      },
+      {
+        "path": "databases/seed_template_config.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 9.29782558876272,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "Do we have unit tests?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 17.919761539168487,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/rules.json",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 16.590028908786763,
+        "kind": "code"
+      },
+      {
+        "path": "infrastructure/formatters/text_formatter.py",
+        "startLine": 67,
+        "endLine": 94,
+        "score": 14.672602168669242,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-iceberg-processor/app/rules.json",
+        "startLine": 111,
+        "endLine": 138,
+        "score": 10.6376365722852,
+        "kind": "code"
+      },
+      {
+        "path": "services/s3_browser.py",
+        "startLine": 221,
+        "endLine": 232,
+        "score": 10.6376365722852,
+        "kind": "code"
+      },
+      {
+        "path": "services/database/sku_attribute_store.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 9.4556769531424,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "How are we testing the application?",
+    "hits": [
+      {
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 16.077848312742272,
+        "kind": "code"
+      },
+      {
+        "path": "domain/interfaces/i_repository.py",
+        "startLine": 1,
+        "endLine": 28,
+        "score": 13.227487670716805,
+        "kind": "code"
+      },
+      {
+        "path": "container-lambdas/synthes-chat-agent/app/rules.json",
+        "startLine": 89,
+        "endLine": 116,
+        "score": 13.105462517138832,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_pipeline.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 12.136383211917494,
+        "kind": "code"
+      },
+      {
+        "path": "application/document_processing_service.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 12.136383211917494,
+        "kind": "code"
+      },
+      {
+        "path": "api/routers/uploads.py",
+        "startLine": 23,
+        "endLine": 50,
+        "score": 8.372934385949808,
+        "kind": "code"
+      }
+    ]
+  },
+  {
+    "q": "What is the weather in Tokyo?",
+    "hits": []
+  }
+]

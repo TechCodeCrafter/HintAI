@@ -1,0 +1,338 @@
+[
+  {
+    "id": "cs229-hypothesis",
+    "kind": "D-parser-chunking",
+    "expectedInTop6": false,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-regression",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-classification",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-cost",
+    "kind": "B-top2-6-wrong-higher-admitted",
+    "expectedInTop6": true,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-lms",
+    "kind": "D-parser-chunking",
+    "expectedInTop6": false,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-batch",
+    "kind": "D-parser-chunking",
+    "expectedInTop6": false,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-normal",
+    "kind": "D-parser-chunking",
+    "expectedInTop6": false,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-followup-gd",
+    "kind": "D-parser-chunking",
+    "expectedInTop6": false,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cisa-what",
+    "kind": "E-source-label",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "cisa-double",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "cisa-parts",
+    "kind": "E-source-label",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "cisa-backups",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-arch",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-bleu-de",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-encoder-n",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-dmodel",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-why-scale",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-dropout",
+    "kind": "B-top2-6-wrong-higher-admitted",
+    "expectedInTop6": true,
+    "top1Correct": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "bert-stands",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "bert-glue",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "bert-base",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "bert-nsp",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "resnet-depth",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "resnet-error",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "lora-what",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "lora-reduce",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "lora-rank",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-header",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-rate",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-majority",
+    "kind": "B-top2-6-wrong-higher-admitted",
+    "expectedInTop6": true,
+    "top1Correct": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-steps",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-what",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-name",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-loops",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-nested",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-base",
+    "kind": "B-top2-6-wrong-higher-admitted",
+    "expectedInTop6": true,
+    "top1Correct": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "nist145-def",
+    "kind": "E-source-label",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "nist145-counts",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "nist145-hybrid",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "zta-mfa",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "omb-pillars",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "omb-encrypt",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-withdrawn",
+    "kind": "E-source-label",
+    "expectedInTop6": true,
+    "top1Correct": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-aal1",
+    "kind": "A-top1-wrong-extract",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-password",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-complexity",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-aal3",
+    "kind": "F-other",
+    "expectedInTop6": true,
+    "top1Correct": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-pii",
+    "kind": "B-top2-6-wrong-higher-admitted",
+    "expectedInTop6": true,
+    "top1Correct": false,
+    "parserBlocked": false
+  }
+]

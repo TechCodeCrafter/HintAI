@@ -1,10 +1,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import type { RepoPack } from "@/lib/repo/types";
+import type { Card, RepoPack } from "@/lib/repo/types";
 import { localCard } from "./local-card.ts";
 import { buildChunks, retrieve } from "./retrieve.ts";
 import { admissible, provenanceOf, subjectTerms } from "./subject.ts";
+
+/** The paths of the citations that name a file; a commit citation names none. */
+function filePaths(card: Card): string[] {
+  return card.citations.flatMap((c) => (c.kind === "file" ? [c.path] : []));
+}
+
 
 /**
  * Admission semantics: a path match locates evidence, it does not make unrelated
@@ -121,7 +127,7 @@ test("a spoken Card cites only where the sentence was read", () => {
   const card = ask("What does the BDA ingest worker do?");
   assert.ok(card.say);
   assert.equal(card.citations.length, 1, "a second file cannot support this sentence");
-  assert.equal(card.citations[0].path, "container-lambdas/bda-ingest-worker/app/bda_client.py");
+  assert.equal(filePaths(card)[0], "container-lambdas/bda-ingest-worker/app/bda_client.py");
 });
 
 test("the generic term is identified by how common it is, not by a word list", () => {
@@ -170,7 +176,7 @@ test("a WHERE question may lean on the path", () => {
   const card = ask("Where is document upload handled?");
   assert.ok(card.say, "location questions must still answer");
   assert.ok(
-    card.citations.some((c) => c.path === "api/upload.py"),
+    filePaths(card).includes("api/upload.py"),
     "and must cite the file that handles it",
   );
 });

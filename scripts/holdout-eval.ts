@@ -18,6 +18,7 @@
 import { readFileSync } from "node:fs";
 import type { Card, RepoPack } from "../src/lib/repo/types.ts";
 import { claimDecisions, closeDecision, traceClaims } from "../src/lib/search/claim-trace.ts";
+import { citationText, citedSource } from "../src/lib/search/cite.ts";
 import { shapeOf } from "../src/lib/search/intent.ts";
 import { localCard } from "../src/lib/search/local-card.ts";
 import { gateNewest } from "../src/lib/search/question.ts";
@@ -127,7 +128,7 @@ function supportedBy(card: Card): boolean {
   if (!card.say) return true;
   if (!card.citations.length) return false;
   const cited = [
-    ...card.citations.map((c) => pack.files.find((f) => f.path === c.path)?.content ?? ""),
+    ...card.citations.map((c) => citedSource(c, pack)),
     pack.files.map((f) => f.path.replace(/[/_.-]/g, " ")).join(" "),
     pack.name,
   ]
@@ -153,9 +154,10 @@ function citationOverlap(card: Card): string {
   const claimWords = contentWords(card.say);
   return card.citations
     .map((cite) => {
-      const body = (pack.files.find((f) => f.path === cite.path)?.content ?? "").toLowerCase();
+      const body = citedSource(cite, pack).toLowerCase();
       const hit = claimWords.filter((w) => body.includes(w)).length;
-      return `${cite.path.split("/").pop()} ${hit}/${claimWords.length}`;
+      const where = cite.kind === "file" ? (cite.path.split("/").pop() ?? cite.path) : `commit ${cite.shortSha}`;
+      return `${where} ${hit}/${claimWords.length}`;
     })
     .join("  ");
 }
@@ -280,13 +282,13 @@ for (const probe of HOLDOUT) {
   console.log(`  admission   ${admission}`);
   if (card?.say) {
     console.log(`  CARD        "${card.say}"`);
-    console.log(`  citations   ${card.citations.map((c) => `${c.path}:${c.line}`).join(", ")}`);
+    console.log(`  citations   ${card.citations.map(citationText).join(", ")}`);
     console.log(`  cite cover  ${citationOverlap(card)}`);
     console.log(`  supported   ${supported ? "yes" : "NO — UNSUPPORTED"}`);
   } else {
     console.log(`  SILENT      ${card?.reason ?? "(no card)"}`);
     if (card?.citations.length) {
-      console.log(`  looked at   ${card.citations.map((c) => `${c.path}:${c.line}`).join(", ")}`);
+      console.log(`  looked at   ${card.citations.map(citationText).join(", ")}`);
     }
   }
 }

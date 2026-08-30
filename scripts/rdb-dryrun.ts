@@ -10,6 +10,7 @@ import type { RepoPack } from "../src/lib/repo/types.ts";
 import { prunePack } from "../src/lib/repo/folder.ts";
 import { isArchitectureQuery } from "../src/lib/search/question.ts";
 import { localCard } from "../src/lib/search/local-card.ts";
+import { citationText } from "../src/lib/search/cite.ts";
 import { buildChunks, retrieve } from "../src/lib/search/retrieve.ts";
 
 const ROOT = process.argv[2] ?? "/Users/prajvaggu/Documents/jnjcode/rdb-labsai-backend";
@@ -161,7 +162,7 @@ for (const query of QUESTIONS) {
   }
   answered += 1;
   console.log(`   SAY   ${card.say}`);
-  console.log(`   CITE  ${card.citations.map((c) => `${c.path}:${c.line}`).join("  ·  ")}`);
+  console.log(`   CITE  ${card.citations.map(citationText).join("  ·  ")}`);
 }
 console.log(`\n${"=".repeat(76)}`);
 console.log(`ANSWERED  ${answered}/${QUESTIONS.length}`);

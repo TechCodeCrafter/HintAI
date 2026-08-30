@@ -1,0 +1,63 @@
+{
+  "phase": "4A.8.1",
+  "frozen": true,
+  "frozenAt": "2026-08-30",
+  "landing": "PDF Coming soon",
+  "nextPhaseNotStarted": "4A.9",
+  "invariants": [
+    {
+      "id": "df0-required-terms",
+      "rule": "A meaningful required term stays required even when corpus df = 0."
+    },
+    {
+      "id": "explicit-source-hard-filter",
+      "rule": "Explicit source selectors remain hard filters. Retrieve rank cannot override them."
+    },
+    {
+      "id": "ambiguous-source-silence",
+      "rule": "Ambiguous source selectors cause silence. No type-preference fallback."
+    },
+    {
+      "id": "no-fallback-empty-named",
+      "rule": "Failed, scanned, refused, or empty named documents never fall back to another PDF."
+    },
+    {
+      "id": "subject-on-claim",
+      "rule": "Subject compatibility applies to the actual spoken claim / mapped range, not page title, outline, neighbor chunk, or unmapped metadata."
+    },
+    {
+      "id": "predicate-required",
+      "rule": "Predicate compatibility is required. shape=what is not a pass-through."
+    },
+    {
+      "id": "answer-type-required",
+      "rule": "Answer-type compatibility is required."
+    },
+    {
+      "id": "enumeration-page-local",
+      "rule": "Enumeration remains coherent and page-local. Headings and single members are not lists."
+    },
+    {
+      "id": "unknown-relation-fail-closed",
+      "rule": "Unknown relations fail closed. Prefer silence over an unrecognized predicate."
+    },
+    {
+      "id": "thread-source-only",
+      "rule": "Thread resolves source references only. It does not satisfy subject, predicate, answer type, or support."
+    },
+    {
+      "id": "evidence-support-last",
+      "rule": "Evidence support remains the final safety check. Currentness and word-level support stay last."
+    },
+    {
+      "id": "no-embeddings-as-proof",
+      "rule": "No embeddings are ever used as proof that a passage answers a question."
+    }
+  ],
+  "developmentCorpus": {
+    "id": "4A.7-126",
+    "role": "development / regression only",
+    "notAShipGate": true,
+    "shipGate": "4A.11 new untouched third-party blind corpus"
+  }
+}

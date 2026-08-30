@@ -1,0 +1,11 @@
+{
+  "phase": "4A.7",
+  "status": "structure-only",
+  "note": "Acceptance holdout. Do not tune 4A.4 / 4A.4.1 against this file. Labels must be human-created from real PDFs, never from MeetHint output. The 35-question card-labels.json set remains the development benchmark and is frozen. This repository has no third-party PDF fixtures yet; acquisition is Phase 4A.7.",
+  "questions": [],
+  "fixtureAcquisition": "pending-4A.7",
+  "requiredLabelFields": {
+    "answerable": ["id", "q", "answerable", "sourcePath", "page", "spans", "shape"],
+    "unanswerable": ["id", "q", "answerable", "shape"]
+  }
+}

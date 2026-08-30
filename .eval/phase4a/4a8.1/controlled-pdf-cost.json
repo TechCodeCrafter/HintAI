@@ -1,0 +1,25 @@
+{
+  "phase": "4A.8.1",
+  "frozen": true,
+  "note": "Measurable cost of QuestionContract on the controlled 4A.4 / 4A.4.1 development Card bench. Not a regression to fix by weakening admission.",
+  "before": {
+    "baseline": "4A.4.1",
+    "artifact": ".eval/phase4a/card-bench-4a41.json",
+    "answerableHitCount": "22/22",
+    "wrongIntent": 0
+  },
+  "after": {
+    "baseline": "4A.8.1",
+    "artifact": ".eval/phase4a/4a8.1/card-bench.json",
+    "answerableHitCount": "17/22",
+    "wrongIntent": 0
+  },
+  "safeSilences": [
+    "lecture-concurrent",
+    "multi-deadlock",
+    "paper-checks",
+    "bullets-list",
+    "slides-phantom"
+  ],
+  "forbidden": "Do not regain these five Cards by weakening QuestionContract."
+}

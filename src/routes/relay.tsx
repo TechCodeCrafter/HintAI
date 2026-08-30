@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { Card } from "@/lib/repo/types";
+import { citationText } from "@/lib/search/cite";
 import { readRelaySession } from "@/lib/store";
 
 export const Route = createFileRoute("/relay")({ component: RelayPage });
@@ -38,11 +39,10 @@ function RelayPage() {
           <div className="space-y-8">
             <p className="text-3xl font-medium leading-tight tracking-tight">{card.say}</p>
             <ul className="space-y-3 font-mono text-sm text-muted">
+              {/* Relay has no source pane. Citations stay text — including PDFs. */}
               {card.citations.map((c) => (
-                <li key={`${c.path}-${c.line}`} className="min-w-0">
-                  <span className="block break-all text-fg">
-                    {c.path}:{c.line}
-                  </span>
+                <li key={c.evidenceId ?? citationText(c)} className="min-w-0">
+                  <span className="block break-all text-fg">{citationText(c)}</span>
                   <span className="mt-1 block break-words text-xs">{c.label}</span>
                 </li>
               ))}

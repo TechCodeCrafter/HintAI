@@ -1,0 +1,101 @@
+{
+  "pageOpenAttempts": 4,
+  "correctPageOpen": 4,
+  "correctPageOpenRate": 1,
+  "exact": 4,
+  "itemBox": 0,
+  "captionOnly": 0,
+  "stale": 0,
+  "exactRate": 1,
+  "itemBoxRate": 0,
+  "captionOnlyRate": 0,
+  "wrongPage": 0,
+  "wrongText": 0,
+  "latencies": [
+    {
+      "id": "What does serializable isolation prevent?",
+      "cold": {
+        "blobMs": 0.008167000000014468,
+        "openMs": 0.004666999999983545,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.008791999999999689,
+        "totalMs": 0.05579199999999673,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0017499999999870397,
+        "openMs": 0.00045799999998052954,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.0060409999999819775,
+        "totalMs": 0.01675000000000182,
+        "cold": false
+      }
+    },
+    {
+      "id": "Which isolation levels does the lecture list?",
+      "cold": {
+        "blobMs": 0.0012499999999988631,
+        "openMs": 0.0004160000000013042,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.005832999999995536,
+        "totalMs": 0.01345800000001418,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0022080000000244127,
+        "openMs": 0.0003330000000119071,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.003540999999984251,
+        "totalMs": 0.01012499999998795,
+        "cold": false
+      }
+    },
+    {
+      "id": "What does two-phase locking require?",
+      "cold": {
+        "blobMs": 0.0010000000000047748,
+        "openMs": 0.00041699999999877946,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.003375000000005457,
+        "totalMs": 0.008874999999989086,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0005840000000034706,
+        "openMs": 0.0002499999999940883,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.002208999999993466,
+        "totalMs": 0.006166999999976497,
+        "cold": false
+      }
+    },
+    {
+      "id": "When does snapshot isolation allow write skew?",
+      "cold": {
+        "blobMs": 0.0007090000000005148,
+        "openMs": 0.00033400000000938235,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.0027919999999994616,
+        "totalMs": 0.007374999999996135,
+        "cold": true
+      },
+      "warm": {
+        "blobMs": 0.0005409999999983484,
+        "openMs": 0.0002499999999940883,
+        "pageMs": 0,
+        "textLayerMs": 0,
+        "highlightMs": 0.006917000000015605,
+        "totalMs": 0.010457999999999856,
+        "cold": false
+      }
+    }
+  ],
+  "note": "Exact rates use 6.3.289 TextLayer mapping against fixture items. Raster/text-layer ms stay 0 in this Node bench; browser shots measure those."
+}

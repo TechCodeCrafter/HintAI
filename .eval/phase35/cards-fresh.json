@@ -1,0 +1,713 @@
+[
+  {
+    "query": "What does the BDA ingest worker do?",
+    "say": "Handles PDF to Markdown conversion using AWS Bedrock Data Automation service",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "container-lambdas/bda-ingest-worker/app/bda_client.py",
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 39,
+        "endOffset": 115,
+        "text": "Handles PDF to Markdown conversion using AWS Bedrock Data Automation service"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/bda-ingest-worker/app/bda_client.py",
+        "line": 3,
+        "endLine": 3,
+        "label": "",
+        "text": "container-lambdas/bda-ingest-worker/app/bda_client.py:3"
+      }
+    ]
+  },
+  {
+    "query": "What does the in-memory repository do?",
+    "say": "That stores data in memory using dictionaries. Perfect for unit testing (no database setup required), development environments, integration tests, and rapid prototyping.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 5,
+        "endLine": 9,
+        "startOffset": 127,
+        "endOffset": 297,
+        "text": "that stores data in memory using dictionaries. Perfect for:\n- Unit testing (no database setup required)\n- Development environments\n- Integration tests\n- Rapid prototyping"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 5,
+        "endLine": 9,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:5-9"
+      }
+    ]
+  },
+  {
+    "query": "What is the in-memory repository for?",
+    "say": "That stores data in memory using dictionaries. Perfect for unit testing (no database setup required), development environments, integration tests, and rapid prototyping.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 5,
+        "endLine": 9,
+        "startOffset": 127,
+        "endOffset": 297,
+        "text": "that stores data in memory using dictionaries. Perfect for:\n- Unit testing (no database setup required)\n- Development environments\n- Integration tests\n- Rapid prototyping"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 5,
+        "endLine": 9,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:5-9"
+      }
+    ]
+  },
+  {
+    "query": "What does this API do?",
+    "say": "Pydantic models for API responses with proper typing and documentation.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "api/models/responses.py",
+        "startLine": 4,
+        "endLine": 4,
+        "startOffset": 25,
+        "endOffset": 96,
+        "text": "Pydantic models for API responses with proper typing and documentation."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/models/responses.py",
+        "line": 4,
+        "endLine": 4,
+        "label": "",
+        "text": "api/models/responses.py:4"
+      }
+    ]
+  },
+  {
+    "query": "What does the text formatter do?",
+    "say": "Handles text formatting operations including superscript conversion",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "infrastructure/formatters/text_formatter.py",
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 33,
+        "endOffset": 100,
+        "text": "Handles text formatting operations including superscript conversion"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/formatters/text_formatter.py",
+        "line": 3,
+        "endLine": 3,
+        "label": "",
+        "text": "infrastructure/formatters/text_formatter.py:3"
+      }
+    ]
+  },
+  {
+    "query": "What does the ec2 bridge do?",
+    "say": "This service runs on EC2 (which has the required permissions) and acts as a proxy: Lambda calls this service via VPC-internal HTTP, and this service calls AgentCore via WebSocket using EC2 IAM credentials.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "ec2_bridge.py",
+        "startLine": 5,
+        "endLine": 7,
+        "startOffset": 169,
+        "endOffset": 374,
+        "text": "This service runs on EC2 (which has the required permissions) and\nacts as a proxy: Lambda calls this service via VPC-internal HTTP, and this service\ncalls AgentCore via WebSocket using EC2 IAM credentials."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "ec2_bridge.py",
+        "line": 5,
+        "endLine": 7,
+        "label": "",
+        "text": "ec2_bridge.py:5-7"
+      }
+    ]
+  },
+  {
+    "query": "What does the session service do?",
+    "say": "Centralized BDA (Business Document Analysis) service for both Chat and Extraction.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "services/shared_bda_service.py",
+        "startLine": 31,
+        "endLine": 31,
+        "startOffset": 793,
+        "endOffset": 875,
+        "text": "Centralized BDA (Business Document Analysis) service for both Chat and Extraction."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "services/shared_bda_service.py",
+        "line": 31,
+        "endLine": 31,
+        "label": "",
+        "text": "services/shared_bda_service.py:31"
+      }
+    ]
+  },
+  {
+    "query": "What is the template config used for?",
+    "say": "Return the config item for a single template, or None if not found.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "container-lambdas/synthes-chat-agent/app/db/template_config_db.py",
+        "startLine": 66,
+        "endLine": 66,
+        "startOffset": 2214,
+        "endOffset": 2281,
+        "text": "Return the config item for a single template, or None if not found."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/synthes-chat-agent/app/db/template_config_db.py",
+        "line": 66,
+        "endLine": 66,
+        "label": "",
+        "text": "container-lambdas/synthes-chat-agent/app/db/template_config_db.py:66"
+      }
+    ]
+  },
+  {
+    "query": "How does the Excel export work?",
+    "say": "Generates Excel files in the required format for Synthes biocompatibility data",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "services/excel_output_generator.py",
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 29,
+        "endOffset": 107,
+        "text": "Generates Excel files in the required format for Synthes biocompatibility data"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "services/excel_output_generator.py",
+        "line": 3,
+        "endLine": 3,
+        "label": "",
+        "text": "services/excel_output_generator.py:3"
+      }
+    ]
+  },
+  {
+    "query": "How does document upload work?",
+    "say": "Handles file upload and document processing endpoints: generate presigned S3 upload URLs and trigger Lambda processing for uploaded files.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "api/routers/uploads.py",
+        "startLine": 4,
+        "endLine": 6,
+        "startOffset": 34,
+        "endOffset": 171,
+        "text": "Handles file upload and document processing endpoints:\n- Generate presigned S3 upload URLs\n- Trigger Lambda processing for uploaded files"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/routers/uploads.py",
+        "line": 4,
+        "endLine": 6,
+        "label": "",
+        "text": "api/routers/uploads.py:4-6"
+      }
+    ]
+  },
+  {
+    "query": "How is the data indexed for RAG?",
+    "say": "Consumes _bg_index events and materializes per-document retrieval artifacts.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        "startLine": 4,
+        "endLine": 4,
+        "startOffset": 31,
+        "endOffset": 109,
+        "text": "Consumes `_bg_index` events and materializes per-document retrieval artifacts."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        "line": 4,
+        "endLine": 4,
+        "label": "",
+        "text": "container-lambdas/global-rag-indexer/app/lambda_function.py:4"
+      }
+    ]
+  },
+  {
+    "query": "How does extraction work?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "line": 133,
+        "endLine": null,
+        "label": "",
+        "text": "container-lambdas/bda-ingest-worker/app/lambda_function.py:133"
+      }
+    ]
+  },
+  {
+    "query": "How are sessions stored?",
+    "say": "Store the first user prompt snippet for sidebar display.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "databases/chat_session_db.py",
+        "startLine": 157,
+        "endLine": 157,
+        "startOffset": 5271,
+        "endOffset": 5327,
+        "text": "Store the first user prompt snippet for sidebar display."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "databases/chat_session_db.py",
+        "line": 157,
+        "endLine": 157,
+        "label": "",
+        "text": "databases/chat_session_db.py:157"
+      }
+    ]
+  },
+  {
+    "query": "How does the bda client talk to AWS?",
+    "say": "Handles PDF to Markdown conversion using AWS Bedrock Data Automation service",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "infrastructure/aws/bda_client.py",
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 39,
+        "endOffset": 115,
+        "text": "Handles PDF to Markdown conversion using AWS Bedrock Data Automation service"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/aws/bda_client.py",
+        "line": 3,
+        "endLine": 3,
+        "label": "",
+        "text": "infrastructure/aws/bda_client.py:3"
+      }
+    ]
+  },
+  {
+    "query": "Where does document upload happen?",
+    "say": "Handles file upload and document processing endpoints: generate presigned S3 upload URLs and trigger Lambda processing for uploaded files.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "api/routers/uploads.py",
+        "startLine": 4,
+        "endLine": 6,
+        "startOffset": 34,
+        "endOffset": 171,
+        "text": "Handles file upload and document processing endpoints:\n- Generate presigned S3 upload URLs\n- Trigger Lambda processing for uploaded files"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/routers/uploads.py",
+        "line": 4,
+        "endLine": 6,
+        "label": "",
+        "text": "api/routers/uploads.py:4-6"
+      }
+    ]
+  },
+  {
+    "query": "Where is the Excel output generated?",
+    "say": "Generates Excel files in the required format for Synthes biocompatibility data",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "services/excel_output_generator.py",
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 29,
+        "endOffset": 107,
+        "text": "Generates Excel files in the required format for Synthes biocompatibility data"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "services/excel_output_generator.py",
+        "line": 3,
+        "endLine": 3,
+        "label": "",
+        "text": "services/excel_output_generator.py:3"
+      }
+    ]
+  },
+  {
+    "query": "Where are the repositories defined?",
+    "say": "That stores data in memory using dictionaries. Perfect for unit testing (no database setup required), development environments, integration tests, and rapid prototyping.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "startLine": 5,
+        "endLine": 9,
+        "startOffset": 127,
+        "endOffset": 297,
+        "text": "that stores data in memory using dictionaries. Perfect for:\n- Unit testing (no database setup required)\n- Development environments\n- Integration tests\n- Rapid prototyping"
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 5,
+        "endLine": 9,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:5-9"
+      }
+    ]
+  },
+  {
+    "query": "Where does the extraction run?",
+    "say": "Strands @tool wrapper that runs the EXACT same extraction pipeline as the production Iceberg processor (synthes-iceberg-processor), minus the BDA step.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "core/chat_tools/pipeline_extraction_runner.py",
+        "startLine": 4,
+        "endLine": 5,
+        "startOffset": 51,
+        "endOffset": 202,
+        "text": "Strands @tool wrapper that runs the EXACT same extraction pipeline as the\nproduction Iceberg processor (synthes-iceberg-processor), minus the BDA step."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "core/chat_tools/pipeline_extraction_runner.py",
+        "line": 4,
+        "endLine": 5,
+        "label": "",
+        "text": "core/chat_tools/pipeline_extraction_runner.py:4-5"
+      }
+    ]
+  },
+  {
+    "query": "Why is the extraction done in a container lambda?",
+    "say": null,
+    "silent": true,
+    "reason": "The material says what this does, not why it was chosen.",
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "startLine": 9,
+        "endLine": 17,
+        "startOffset": 265,
+        "endOffset": 661,
+        "text": "SUCCESS  → skip (already processed)\n         - IN_PROGRESS → skip (currently processing)\n         - FAILED   → retry (up to MAX_RETRIES)\n         - not found → process\n      3. Download file to /tmp, run BDA, store markdown in S3\n      4. Update file-registry:  status=SUCCESS + bda_output_path\n         (or status=FAILED on error)\n\nThis Lambda does NOT do attribute extraction or Iceberg writes."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        "line": 9,
+        "endLine": 17,
+        "label": "",
+        "text": "container-lambdas/bda-ingest-worker/app/lambda_function.py:9-17"
+      }
+    ]
+  },
+  {
+    "query": "Why did the team choose an in-memory repository?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 1,
+        "endLine": null,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:1"
+      }
+    ]
+  },
+  {
+    "query": "Why is data not persisted between runs?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 1,
+        "endLine": null,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:1"
+      }
+    ]
+  },
+  {
+    "query": "Why are there seven lambdas?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "line": 573,
+        "endLine": null,
+        "label": "",
+        "text": "container-lambdas/synthes-query-processor/app/lambda_function.py:573"
+      }
+    ]
+  },
+  {
+    "query": "What happens if the extraction fails?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        "line": 573,
+        "endLine": null,
+        "label": "",
+        "text": "container-lambdas/synthes-query-processor/app/lambda_function.py:573"
+      }
+    ]
+  },
+  {
+    "query": "What happens if the upload fails?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/routers/uploads.py",
+        "line": 155,
+        "endLine": null,
+        "label": "",
+        "text": "api/routers/uploads.py:155"
+      }
+    ]
+  },
+  {
+    "query": "What is the architecture of this application?",
+    "say": "Rdb-labsai-backend is a FastAPI service — REST API for Synthes Biocompatibility Data Extraction System. Work is split across seven container lambdas.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "api/main.py",
+        "startLine": 5,
+        "endLine": 5,
+        "startOffset": 42,
+        "endOffset": 103,
+        "text": "REST API for Synthes Biocompatibility Data Extraction System."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/main.py",
+        "line": 5,
+        "endLine": 5,
+        "label": "",
+        "text": "api/main.py:5"
+      }
+    ]
+  },
+  {
+    "query": "How does this application work end to end?",
+    "say": "Rdb-labsai-backend is a FastAPI service — REST API for Synthes Biocompatibility Data Extraction System. Work is split across seven container lambdas.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "api/main.py",
+        "startLine": 5,
+        "endLine": 5,
+        "startOffset": 42,
+        "endOffset": 103,
+        "text": "REST API for Synthes Biocompatibility Data Extraction System."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/main.py",
+        "line": 5,
+        "endLine": 5,
+        "label": "",
+        "text": "api/main.py:5"
+      }
+    ]
+  },
+  {
+    "query": "How is the repo organised?",
+    "say": "Rdb-labsai-backend is a FastAPI service — REST API for Synthes Biocompatibility Data Extraction System. Work is split across seven container lambdas.",
+    "silent": false,
+    "reason": null,
+    "evidence": [
+      {
+        "kind": "text",
+        "path": "api/main.py",
+        "startLine": 5,
+        "endLine": 5,
+        "startOffset": 42,
+        "endOffset": 103,
+        "text": "REST API for Synthes Biocompatibility Data Extraction System."
+      }
+    ],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "api/main.py",
+        "line": 5,
+        "endLine": 5,
+        "label": "",
+        "text": "api/main.py:5"
+      }
+    ]
+  },
+  {
+    "query": "Do we have unit tests?",
+    "say": null,
+    "silent": true,
+    "reason": "Nothing loaded proves that either way.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 1,
+        "endLine": null,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:1"
+      }
+    ]
+  },
+  {
+    "query": "How are we testing the application?",
+    "say": null,
+    "silent": true,
+    "reason": "Found the file, but nothing in it I would say out loud.",
+    "evidence": [],
+    "citations": [
+      {
+        "kind": "file",
+        "path": "infrastructure/repositories/in_memory_repository.py",
+        "line": 1,
+        "endLine": null,
+        "label": "",
+        "text": "infrastructure/repositories/in_memory_repository.py:1"
+      }
+    ]
+  },
+  {
+    "query": "What is the weather in Tokyo?",
+    "say": null,
+    "silent": true,
+    "reason": "Nothing in this pack cites that.",
+    "evidence": [],
+    "citations": []
+  }
+]

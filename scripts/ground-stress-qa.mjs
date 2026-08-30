@@ -11,7 +11,7 @@ import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const target = process.env.QA_URL || "http://127.0.0.1:8080/";
+const target = process.env.QA_URL || "http://127.0.0.1:8080/app";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const AUDIO = `${ROOT}.qa-audio/`;
 const SHOTS = `${ROOT}screenshots/`;

@@ -1,4 +1,4 @@
-import type { Chunk, Hit, RepoPack } from "@/lib/repo/types";
+import type { Chunk, Hit, IndexedChunk, RepoPack } from "@/lib/repo/types";
 
 const STOP = new Set([
   "a",
@@ -152,6 +152,14 @@ export function buildChunks(pack: RepoPack): Chunk[] {
   for (const file of pack.files) {
     if (!isEvidencePath(file.path)) continue;
     const lines = file.content.replace(/\n$/, "").split("\n");
+    // Offset of the first character of each line, so a chunk knows its position
+    // in the file and a claim read out of one can be cited against the file.
+    const lineStart: number[] = [];
+    let cursor = 0;
+    for (const line of lines) {
+      lineStart.push(cursor);
+      cursor += line.length + 1;
+    }
     const size = 28;
     const step = 22;
     for (let start = 0; start < lines.length; start += step) {
@@ -164,6 +172,7 @@ export function buildChunks(pack: RepoPack): Chunk[] {
         path: file.path,
         startLine,
         endLine,
+        startOffset: lineStart[start],
         text: slice.join("\n"),
       });
       if (endLine >= lines.length) break;
@@ -176,6 +185,7 @@ export function buildChunks(pack: RepoPack): Chunk[] {
       path: commit.files[0] ?? "git",
       startLine: 1,
       endLine: 1,
+      startOffset: 0,
       text: `${commit.message}\n${commit.files.join(", ")}\nPR #${commit.pr ?? "—"} ${commit.author}`,
       sha: commit.sha,
       author: commit.author,
@@ -204,7 +214,7 @@ function vocabWords(source: string): string[] {
  * this instead of a fixed keyword list, so a question earns retrieval by
  * overlapping with the material rather than by sounding technical.
  */
-export function packVocabulary(chunks: Chunk[]): Set<string> {
+export function packVocabulary(chunks: IndexedChunk[]): Set<string> {
   const vocab = new Set<string>();
   const scan = chunks.length > VOCAB_CHUNKS ? chunks.slice(0, VOCAB_CHUNKS) : chunks;
   for (const chunk of scan) {
@@ -216,7 +226,7 @@ export function packVocabulary(chunks: Chunk[]): Set<string> {
       if (vocab.size >= VOCAB_MAX) return vocab;
       vocab.add(word);
     }
-    if (chunk.message) {
+    if ("message" in chunk && chunk.message) {
       for (const word of vocabWords(chunk.message)) {
         if (vocab.size >= VOCAB_MAX) return vocab;
         vocab.add(word);
@@ -267,9 +277,9 @@ function tally(words: string[]): Map<string, number> {
   return map;
 }
 
-const INDEX = new WeakMap<Chunk, Indexed>();
+const INDEX = new WeakMap<IndexedChunk, Indexed>();
 
-function indexOf(chunk: Chunk): Indexed {
+function indexOf(chunk: IndexedChunk): Indexed {
   const cached = INDEX.get(chunk);
   if (cached) return cached;
   const path = chunk.path.toLowerCase();
@@ -279,7 +289,9 @@ function indexOf(chunk: Chunk): Indexed {
     base,
     stem: base.replace(/\.[^.]+$/, ""),
     pathWords: tally(toWords(chunk.path)),
-    bodyWords: tally(toWords(`${chunk.text} ${chunk.message ?? ""} ${chunk.pr ?? ""}`)),
+    bodyWords: tally(
+      toWords(`${chunk.text} ${"message" in chunk ? (chunk.message ?? "") : ""} ${"pr" in chunk ? (chunk.pr ?? "") : ""}`),
+    ),
   };
   INDEX.set(chunk, built);
   return built;
@@ -301,7 +313,7 @@ function freq(words: Map<string, number>, term: string): number {
  * in half the repo ("gate", "store", "client") cannot outrank the term that
  * actually identifies the subject.
  */
-function idfMap(terms: string[], chunks: Chunk[]): Map<string, number> {
+function idfMap(terms: string[], chunks: IndexedChunk[]): Map<string, number> {
   const df = new Map<string, number>();
   for (const chunk of chunks) {
     const idx = indexOf(chunk);
@@ -326,7 +338,7 @@ export function namedPaths(query: string): string[] {
 const MAX_PER_FILE = 3;
 const MAX_PER_FILE_KIND = 2;
 
-export function retrieve(query: string, chunks: Chunk[], limit = 6): Hit[] {
+export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[] {
   const terms = tokenize(query);
   const named = namedPaths(query);
   if (terms.length === 0 && named.length === 0) return [];
@@ -362,7 +374,7 @@ export function retrieve(query: string, chunks: Chunk[], limit = 6): Hit[] {
     ) {
       score += 3.4;
     }
-    if ((named.length > 0 || wantsShape) && chunk.startLine <= 8 && chunk.kind === "code") {
+    if ((named.length > 0 || wantsShape) && chunk.kind === "code" && chunk.startLine <= 8) {
       score += 1.6;
     }
     if (score > 0) scored.push({ ...chunk, score });

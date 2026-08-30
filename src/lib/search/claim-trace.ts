@@ -39,6 +39,12 @@ export type RejectCode =
    * relevant and never mentions what was actually asked about.
    */
   | "NO_SUBJECT_COVERAGE"
+  /** A sentence was read, but it could not be located in its source. */
+  | "NO_EVIDENCE_SPAN"
+  /** The source changed under the span: the index no longer matches the file. */
+  | "STALE_EVIDENCE"
+  /** Words were about to be spoken that the cited evidence does not contain. */
+  | "UNSUPPORTED_CLAIM"
   | "OTHER";
 
 export type ClaimAttempt = {
@@ -88,6 +94,11 @@ export function closeDecision(query: string, spoke: boolean): ClaimDecision | nu
   // rejection on a claim that was speakable is more informative than one on a
   // file that never produced a sentence, so eligible-but-rejected wins.
   const ranked: RejectCode[] = [
+    // An evidence failure outranks a ranking failure: a claim withdrawn because
+    // its words are not in the file it cites is the defect worth seeing first.
+    "UNSUPPORTED_CLAIM",
+    "STALE_EVIDENCE",
+    "NO_EVIDENCE_SPAN",
     "TOO_LONG",
     "NO_SUBJECT_COVERAGE",
     "SCORE_FLOOR",

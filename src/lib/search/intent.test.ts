@@ -87,3 +87,27 @@ test("absence is never answered from retrieved prose", () => {
   assert.equal(evidenceFitsShape("absence", "Perfect for unit testing and integration tests."), false);
   assert.equal(evidenceFitsShape("absence", "anything at all", true), false);
 });
+
+test("authorship is not answered from a description of behaviour", () => {
+  // The failure this closes: "who touched the auth flow?" answered with the
+  // auth module's docstring — cited, accurate, and about the wrong thing.
+  assert.equal(shapeOf("Who touched the auth flow?"), "who");
+  assert.equal(
+    evidenceFitsShape("who", "Verifies the session cookie on every non-public request and rotates it."),
+    false,
+  );
+  // Being a commit is not authorship. A commit message states what changed, and
+  // quoting it while naming nobody answers a different question — so `whyKind`
+  // alone does not satisfy this shape.
+  assert.equal(
+    evidenceFitsShape("who", "auth: rotate session cookies through edge middleware", true),
+    false,
+  );
+  // It qualifies once the evidence identifies a person and the claim names them.
+  assert.equal(
+    evidenceFitsShape("who", "Jordan Lee, in PR #640: auth: rotate session cookies", true, true),
+    true,
+  );
+  // Prose qualifies when it states ownership outright.
+  assert.equal(evidenceFitsShape("who", "Owned by the payments platform team.", false), true);
+});

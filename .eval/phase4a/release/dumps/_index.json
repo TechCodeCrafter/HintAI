@@ -1,0 +1,164 @@
+[
+  {
+    "file": "attention.pdf",
+    "bytes": 2215244,
+    "pages": 15,
+    "extractablePages": 15,
+    "rawChars": 39998,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "bert.pdf",
+    "bytes": 775166,
+    "pages": 16,
+    "extractablePages": 16,
+    "rawChars": 64619,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "bitcoin.pdf",
+    "bytes": 184292,
+    "pages": 9,
+    "extractablePages": 9,
+    "rawChars": 21263,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "cisa-ransomware.pdf",
+    "bytes": 1047655,
+    "pages": 31,
+    "extractablePages": 31,
+    "rawChars": 69567,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "cs229-notes.pdf",
+    "bytes": 357392,
+    "pages": 28,
+    "extractablePages": 28,
+    "rawChars": 47437,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "encrypted-sample.pdf",
+    "bytes": 7714,
+    "pages": null,
+    "extractablePages": 0,
+    "rawChars": 0,
+    "encrypted": true,
+    "error": "No password given"
+  },
+  {
+    "file": "encrypted.pdf",
+    "bytes": 647,
+    "pages": null,
+    "extractablePages": 0,
+    "rawChars": 0,
+    "encrypted": true,
+    "error": "No password given"
+  },
+  {
+    "file": "irs-p15.pdf",
+    "bytes": 1713916,
+    "pages": 59,
+    "extractablePages": 59,
+    "rawChars": 303584,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "lora.pdf",
+    "bytes": 1609513,
+    "pages": 26,
+    "extractablePages": 26,
+    "rawChars": 84526,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "nist-800-12.pdf",
+    "bytes": 1339030,
+    "pages": 101,
+    "extractablePages": 101,
+    "rawChars": 270271,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "nist-800-145.pdf",
+    "bytes": 85781,
+    "pages": 7,
+    "extractablePages": 7,
+    "rawChars": 10768,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "nist-800-207.pdf",
+    "bytes": 966908,
+    "pages": 59,
+    "extractablePages": 59,
+    "rawChars": 154140,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "nist-800-63b.pdf",
+    "bytes": 1480377,
+    "pages": 80,
+    "extractablePages": 80,
+    "rawChars": 198551,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "omb-m22-09.pdf",
+    "bytes": 934880,
+    "pages": 29,
+    "extractablePages": 29,
+    "rawChars": 79100,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "resnet.pdf",
+    "bytes": 819383,
+    "pages": 12,
+    "extractablePages": 12,
+    "rawChars": 59980,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "rfc9110.pdf",
+    "bytes": 2858365,
+    "pages": 194,
+    "extractablePages": 194,
+    "rawChars": 463749,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "scanned.pdf",
+    "bytes": 21487,
+    "pages": 1,
+    "extractablePages": 0,
+    "rawChars": 0,
+    "encrypted": false,
+    "error": null
+  },
+  {
+    "file": "tracemonkey.pdf",
+    "bytes": 1016315,
+    "pages": 14,
+    "extractablePages": 14,
+    "rawChars": 83053,
+    "encrypted": false,
+    "error": null
+  }
+]

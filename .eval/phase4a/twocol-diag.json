@@ -1,0 +1,128 @@
+{
+  "phase": "4A.4.1",
+  "rootCause": "Left-column item 0 is 322.8pt wide (right edge 394.8), so it crosses mid (306). The old classifier required itemRight < mid-14 to count as left, leaving only 'the lock point.' on the left (1 line) and failing TWO_COL_MIN_LINES=3. Same-Y grouping then put left and right first-lines on one visual line. shouldInsertSpace saw a negative gap (-54.8) and concatenated before+Snapshot. Wrap leftover 'extra ch the lock point' is that mash plus the next visual line. PDF.js also clipped the overflowing right-column string to 'extra ch'.",
+  "pageWidth": 612,
+  "mid": 306,
+  "gutterHalf": 14,
+  "current": {
+    "readingOrder": "single-column",
+    "index": "full",
+    "columnBreakOffset": null,
+    "pageText": "Two-phase locking requires waits on conflicting writes beforeSnapshot isolation allows write skew unless extra ch the lock point. added."
+  },
+  "classifier": {
+    "twoColMinLines": 3,
+    "leftItemCount": 1,
+    "rightItemCount": 2,
+    "midItemCount": 0,
+    "leftLineCount": 1,
+    "rightLineCount": 2,
+    "leftLineNeed": 3,
+    "itemsCrossingMid": [
+      0
+    ],
+    "detected": "single-column",
+    "whyNotTwoColumn": [
+      "left visual lines 1 < 3",
+      "right visual lines 2 < 3"
+    ]
+  },
+  "items": [
+    {
+      "itemIndex": 0,
+      "str": "Two-phase locking requires waits on conflicting writes before",
+      "x": 72,
+      "y": 700,
+      "width": 322.7760000000001,
+      "height": 12,
+      "right": 394.7760000000001,
+      "crossesMid": true
+    },
+    {
+      "itemIndex": 1,
+      "str": "the lock point.",
+      "x": 72,
+      "y": 684,
+      "width": 74.03999999999999,
+      "height": 12,
+      "right": 146.04,
+      "crossesMid": false
+    },
+    {
+      "itemIndex": 2,
+      "str": "Snapshot isolation allows write skew unless extra ch",
+      "x": 340,
+      "y": 700,
+      "width": 278.1000000000001,
+      "height": 12,
+      "right": 618.1000000000001,
+      "crossesMid": false
+    },
+    {
+      "itemIndex": 3,
+      "str": "added.",
+      "x": 340,
+      "y": 684,
+      "width": 36.696,
+      "height": 12,
+      "right": 376.696,
+      "crossesMid": false
+    }
+  ],
+  "visualLines": [
+    {
+      "index": 0,
+      "y": 700,
+      "height": 12,
+      "itemIndexes": [
+        0,
+        2
+      ],
+      "strs": [
+        "Two-phase locking requires waits on conflicting writes before",
+        "Snapshot isolation allows write skew unless extra ch"
+      ],
+      "firstX": 72,
+      "lastX": 340
+    },
+    {
+      "index": 1,
+      "y": 684,
+      "height": 12,
+      "itemIndexes": [
+        1,
+        3
+      ],
+      "strs": [
+        "the lock point.",
+        "added."
+      ],
+      "firstX": 72,
+      "lastX": 340
+    }
+  ],
+  "sameLineJoins": [
+    {
+      "from": "Two-phase locking requires waits on conflicting writes before",
+      "to": "Snapshot isolation allows write skew unless extra ch",
+      "gap": -54.776000000000124,
+      "insertsSpace": false,
+      "smash": "Two-phase locking requires waits on conflicting writes beforeSnapshot isolation allows write skew unless extra ch"
+    },
+    {
+      "from": "the lock point.",
+      "to": "added.",
+      "gap": 193.96,
+      "insertsSpace": true,
+      "smash": "the lock point.added."
+    }
+  ],
+  "chunks": [
+    {
+      "id": "paper.pdf:p1:0-136:paper.pdf",
+      "startOffset": 0,
+      "endOffset": 136,
+      "text": "Two-phase locking requires waits on conflicting writes beforeSnapshot isolation allows write skew unless extra ch the lock point. added."
+    }
+  ]
+}

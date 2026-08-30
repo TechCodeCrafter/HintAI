@@ -9,6 +9,7 @@
 import { readFileSync } from "node:fs";
 import type { RepoPack } from "../src/lib/repo/types.ts";
 import { localCard } from "../src/lib/search/local-card.ts";
+import { citationText } from "../src/lib/search/cite.ts";
 import { plain } from "../src/lib/search/prose.ts";
 import { buildChunks, retrieve } from "../src/lib/search/retrieve.ts";
 
@@ -88,7 +89,7 @@ for (const { q, note } of QUESTIONS) {
     console.log(`SILENT — ${card.reason ?? "no evidence"}`);
     continue;
   }
-  const citePaths = card.citations.map((c) => c.path);
+  const citePaths = card.citations.flatMap((c) => (c.kind === "file" ? [c.path] : []));
   const source = rawDoc(citePaths[0] ?? "");
   const sourceLine =
     source
@@ -99,7 +100,7 @@ for (const { q, note } of QUESTIONS) {
   console.log(`NORMALIZED (was)   ${oldPlain(sourceLine).trim()}`);
   console.log(`NORMALIZED (now)   ${plain(sourceLine).trim()}`);
   console.log(`\nFINAL CARD         ${card.say}`);
-  console.log(`CITATION           ${card.citations.map((c) => `${c.path}:${c.line}`).join("  ·  ")}`);
+  console.log(`CITATION           ${card.citations.map(citationText).join("  ·  ")}`);
 
   const support = claimSupport(card.say, citePaths);
   const ids = identifiers(card.say);

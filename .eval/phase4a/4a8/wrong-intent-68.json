@@ -1,0 +1,3927 @@
+[
+  {
+    "id": "cs229-hypothesis",
+    "question": "What does he call the function we learn?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "lora.pdf#18",
+      "tracemonkey.pdf#3",
+      "attention.pdf#11",
+      "resnet.pdf#3",
+      "bitcoin.pdf#5",
+      "bert.pdf#5"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 18,
+      "score": 20.98677810381088,
+      "text": "We again train using AdamW with a linear learning rate decay schedule. Following He et al. (2021), we tune learning rate, dropout probability, warm-up steps, and batch size. We use the same model sequence length used by (He et al., 2021) to"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "Mov edx, ebx(748) // load primes from the trace activation record mov edi(0), edx // (*) store primes to interpreter stack mov esi, ebx(764) // load k from the trace activation record mov edi(8), esi // (*) store k to interpreter stack mov edi(16), 0 // (*) store false to interpreter stack mov eax, edx(4) // (*) load object class word for primes and eax, -4 // (*) mask out object class tag for primes cmp eax, Array // (*) test whether primes is an array jne side_exit_1 // (*) side exit if primes is not an array sub esp, 8 // bump stack for call alignment convention push false // push last argument for call push esi // push first argument for call call js_Array_set // call function to set array element add esp, 8 // clean up extra stack space mov ecx, ebx // (*) created by register allocator test eax, eax // (*) test return value of js_Array_set je side_exit_2 // (*) side exit if call failed ...",
+    "questionShape": "what",
+    "extractedSubject": [
+      "call",
+      "function"
+    ],
+    "subjectTokens": [
+      "call",
+      "function",
+      "learn"
+    ],
+    "candidateSubjectTokens": [
+      "call",
+      "function"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "call"
+    ],
+    "rarestPresentInClaim": [
+      "call"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=call,function; rarest-in-claim=call; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "SOURCE_PARSER_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-regression",
+    "question": "When is it a regression problem?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "cs229-notes.pdf#14",
+      "resnet.pdf#10",
+      "tracemonkey.pdf#9",
+      "bitcoin.pdf#1",
+      "lora.pdf#2",
+      "nist-800-207.pdf#47"
+    ],
+    "winningChunk": {
+      "path": "cs229-notes.pdf",
+      "page": 14,
+      "score": 18.228069433054614,
+      "text": "Let’s now talk about the classification problem. This is just like the regression"
+    },
+    "winningDocument": "cs229-notes.pdf",
+    "spokenText": "This is just like the regression",
+    "questionShape": "what",
+    "extractedSubject": [
+      "regression"
+    ],
+    "subjectTokens": [
+      "regression",
+      "problem"
+    ],
+    "candidateSubjectTokens": [
+      "regression"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "regression"
+    ],
+    "rarestPresentInClaim": [
+      "regression"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=regression; rarest-in-claim=regression; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-classification",
+    "question": "When do they call it a classification problem?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "cs229-notes.pdf#14",
+      "tracemonkey.pdf#10",
+      "bert.pdf#4",
+      "nist-800-207.pdf#10",
+      "resnet.pdf#1",
+      "omb-m22-09.pdf#22"
+    ],
+    "winningChunk": {
+      "path": "cs229-notes.pdf",
+      "page": 14,
+      "score": 16.475315953329375,
+      "text": "Let’s now talk about the classification problem. This is just like the regression"
+    },
+    "winningDocument": "cs229-notes.pdf",
+    "spokenText": "Let’s now talk about the classification problem.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "classification",
+      "problem"
+    ],
+    "subjectTokens": [
+      "call",
+      "classification",
+      "problem"
+    ],
+    "candidateSubjectTokens": [
+      "classification",
+      "problem"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "classification"
+    ],
+    "rarestPresentInClaim": [
+      "classification"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=classification,problem; rarest-in-claim=classification; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-cost",
+    "question": "How do they measure how close the hypothesis is?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "bert.pdf#5",
+      "resnet.pdf#3",
+      "cs229-notes.pdf#14",
+      "nist-800-207.pdf#29",
+      "tracemonkey.pdf#5",
+      "omb-m22-09.pdf#22"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 5,
+      "score": 14.768819584563348,
+      "text": "ing, (2) hypothesis-premise pairs in entailment, (3) F1 score of 91.0%."
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Ing, (2) hypothesis-premise pairs in entailment, (3) F1 score of 91.0%.",
+    "questionShape": "how",
+    "extractedSubject": [
+      "measure",
+      "hypothesis"
+    ],
+    "subjectTokens": [
+      "measure",
+      "close",
+      "hypothesis"
+    ],
+    "candidateSubjectTokens": [
+      "hypothesis"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "hypothesis"
+    ],
+    "rarestPresentInClaim": [
+      "hypothesis"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=measure,hypothesis; rarest-in-claim=hypothesis; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-lms",
+    "question": "What does LMS stand for?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 5,
+    "retrievedRanks": [
+      "bert.pdf#2",
+      "nist-800-63b.pdf#4",
+      "nist-800-207.pdf#3",
+      "omb-m22-09.pdf#3",
+      "bert.pdf#1",
+      "nist-800-63b.pdf#61"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 2,
+      "score": 13.19219514636577,
+      "text": "trained left-to-right and right-to-left LMs."
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Trained left-to-right and right-to-left LMs.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "lms"
+    ],
+    "subjectTokens": [
+      "lms",
+      "stand"
+    ],
+    "candidateSubjectTokens": [
+      "lms"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "lms"
+    ],
+    "rarestPresentInClaim": [
+      "lms"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=lms; rarest-in-claim=lms; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "SOURCE_PARSER_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-batch",
+    "question": "What is batch gradient descent?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 5,
+    "retrievedRanks": [
+      "lora.pdf#14",
+      "resnet.pdf#1",
+      "resnet.pdf#9",
+      "lora.pdf#17",
+      "attention.pdf#7",
+      "bert.pdf#6"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 14,
+      "score": 21.497996558358835,
+      "text": "Learning overparameterized neural networks via stochastic gradient descent on structured data. "
+    },
+    "winningDocument": "lora.pdf",
+    "spokenText": "Learning overparameterized neural networks via stochastic gradient descent on structured data.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "gradient",
+      "descent"
+    ],
+    "subjectTokens": [
+      "batch",
+      "gradient",
+      "descent"
+    ],
+    "candidateSubjectTokens": [
+      "gradient",
+      "descent"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "descent"
+    ],
+    "rarestPresentInClaim": [
+      "descent"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=gradient,descent; rarest-in-claim=descent; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "SOURCE_PARSER_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-normal",
+    "question": "So what's the closed form for theta again?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 10,
+    "retrievedRanks": [
+      "tracemonkey.pdf#11",
+      "resnet.pdf#2",
+      "omb-m22-09.pdf#17",
+      "nist-800-63b.pdf#79",
+      "bert.pdf#6",
+      "cisa-ransomware.pdf#3"
+    ],
+    "winningChunk": {
+      "path": "tracemonkey.pdf",
+      "page": 11,
+      "score": 16.40012253454819,
+      "text": "form many bitwise operations, so TraceMonkey can cover the en- access-nbody forms a large number of traces (81). crypto-md5"
+    },
+    "winningDocument": "resnet.pdf",
+    "spokenText": "When a gated shortcut is “closed” (approaching zero), the",
+    "questionShape": "what",
+    "extractedSubject": [
+      "closed"
+    ],
+    "subjectTokens": [
+      "closed",
+      "form",
+      "theta"
+    ],
+    "candidateSubjectTokens": [
+      "closed"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "closed"
+    ],
+    "rarestPresentInClaim": [
+      "closed"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=closed; rarest-in-claim=closed; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "G-thread-reference",
+    "gateThatShouldReject": "thread source selector: follow-up should stay on the prior document",
+    "track": "SOURCE_PARSER_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cs229-followup-gd",
+    "question": "And the other way besides gradient descent?",
+    "answerable": true,
+    "expectedDocument": "cs229-notes.pdf",
+    "expectedPage": 8,
+    "retrievedRanks": [
+      "lora.pdf#14",
+      "resnet.pdf#1",
+      "nist-800-207.pdf#58",
+      "nist-800-63b.pdf#80",
+      "omb-m22-09.pdf#20",
+      "attention.pdf#11"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 14,
+      "score": 21.497996558358835,
+      "text": "Learning overparameterized neural networks via stochastic gradient descent on structured data. "
+    },
+    "winningDocument": "lora.pdf",
+    "spokenText": "Learning overparameterized neural networks via stochastic gradient descent on structured data.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "gradient",
+      "descent"
+    ],
+    "subjectTokens": [
+      "other",
+      "way",
+      "besides",
+      "gradient",
+      "descent"
+    ],
+    "candidateSubjectTokens": [
+      "gradient",
+      "descent"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "descent"
+    ],
+    "rarestPresentInClaim": [
+      "descent"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=gradient,descent; rarest-in-claim=descent; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "G-thread-reference",
+    "gateThatShouldReject": "thread source selector: follow-up should stay on the prior document",
+    "track": "SOURCE_PARSER_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "cisa-what",
+    "question": "What is ransomware according to the guide?",
+    "answerable": true,
+    "expectedDocument": "cisa-ransomware.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "cisa-ransomware.pdf#4",
+      "nist-800-207.pdf#28",
+      "attention.pdf#7",
+      "nist-800-145.pdf#6",
+      "omb-m22-09.pdf#19",
+      "bert.pdf#3"
+    ],
+    "winningChunk": {
+      "path": "cisa-ransomware.pdf",
+      "page": 4,
+      "score": 23.040765484392125,
+      "text": "Since the initial release of the Ransomware Guide in September 2020, ransomware actors have"
+    },
+    "winningDocument": "nist-800-207.pdf",
+    "spokenText": "Different implementers may wish to weigh the above factors differently according to the factors’ perceived importance.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "according",
+      "guide"
+    ],
+    "subjectTokens": [
+      "ransomware",
+      "according",
+      "guide"
+    ],
+    "candidateSubjectTokens": [
+      "according"
+    ],
+    "sourceSelector": {
+      "raw": "the guide",
+      "kind": "document-type"
+    },
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "according"
+    ],
+    "rarestPresentInClaim": [
+      "according"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=according,guide; rarest-in-claim=according; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "cisa-double",
+    "question": "What do they call encrypting plus threatening to leak data?",
+    "answerable": true,
+    "expectedDocument": "cisa-ransomware.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "cisa-ransomware.pdf#3",
+      "omb-m22-09.pdf#1",
+      "nist-800-63b.pdf#28",
+      "lora.pdf#16",
+      "resnet.pdf#9",
+      "tracemonkey.pdf#3"
+    ],
+    "winningChunk": {
+      "path": "cisa-ransomware.pdf",
+      "page": 3,
+      "score": 20.932086427735396,
+      "text": "threatening to release the stolen data. The infrastructure and government agencies. The"
+    },
+    "winningDocument": "cisa-ransomware.pdf",
+    "spokenText": "Threatening to release the stolen data.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "encrypting",
+      "threatening",
+      "leak"
+    ],
+    "subjectTokens": [
+      "call",
+      "encrypting",
+      "plus",
+      "threatening",
+      "leak",
+      "data"
+    ],
+    "candidateSubjectTokens": [
+      "threatening"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "threatening",
+      "leak"
+    ],
+    "rarestPresentInClaim": [
+      "threatening"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=encrypting,threatening,leak; rarest-in-claim=threatening; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "cisa-parts",
+    "question": "What are the two primary resources in the guide?",
+    "answerable": true,
+    "expectedDocument": "cisa-ransomware.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "cisa-ransomware.pdf#3",
+      "nist-800-207.pdf#38",
+      "omb-m22-09.pdf#20",
+      "nist-800-63b.pdf#28",
+      "attention.pdf#4",
+      "bert.pdf#9"
+    ],
+    "winningChunk": {
+      "path": "cisa-ransomware.pdf",
+      "page": 3,
+      "score": 22.851672729826838,
+      "text": "two primary resources: ransomware-task-force ."
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "Federal Chief Data Officers and Chief Information Security Officers will create a joint committee to develop a zero trust data security guide for agencies.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "primary",
+      "guide"
+    ],
+    "subjectTokens": [
+      "two",
+      "primary",
+      "resources",
+      "guide"
+    ],
+    "candidateSubjectTokens": [
+      "guide"
+    ],
+    "sourceSelector": {
+      "raw": "the guide",
+      "kind": "document-type"
+    },
+    "answerExpectation": "enumeration",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "guide"
+    ],
+    "rarestPresentInClaim": [
+      "guide"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=primary,guide; rarest-in-claim=guide; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "cisa-backups",
+    "question": "What kind of backups do they recommend?",
+    "answerable": true,
+    "expectedDocument": "cisa-ransomware.pdf",
+    "expectedPage": 5,
+    "retrievedRanks": [
+      "cisa-ransomware.pdf#4",
+      "nist-800-63b.pdf#31",
+      "nist-800-207.pdf#36",
+      "tracemonkey.pdf#2",
+      "omb-m22-09.pdf#11",
+      "nist-800-145.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "cisa-ransomware.pdf",
+      "page": 4,
+      "score": 12.060921137737203,
+      "text": "backups and zero trust architecture (ZTA)."
+    },
+    "winningDocument": "nist-800-63b.pdf",
+    "spokenText": "The second factor of authentication may be achieved through some kind",
+    "questionShape": "what",
+    "extractedSubject": [
+      "kind",
+      "backups"
+    ],
+    "subjectTokens": [
+      "kind",
+      "backups",
+      "recommend"
+    ],
+    "candidateSubjectTokens": [
+      "kind"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": "recommendation",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "kind"
+    ],
+    "rarestPresentInClaim": [
+      "kind"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=kind,backups; rarest-in-claim=kind; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-arch",
+    "question": "What architecture do they propose?",
+    "answerable": true,
+    "expectedDocument": "attention.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "attention.pdf#1",
+      "lora.pdf#2",
+      "omb-m22-09.pdf#4",
+      "bitcoin.pdf#1",
+      "resnet.pdf#2",
+      "nist-800-207.pdf#10"
+    ],
+    "winningChunk": {
+      "path": "attention.pdf",
+      "page": 1,
+      "score": 18.746088613204634,
+      "text": "mechanism. We propose a new simple network architecture, the Transformer,"
+    },
+    "winningDocument": "attention.pdf",
+    "spokenText": "We propose a new simple network architecture, the Transformer,",
+    "questionShape": "what",
+    "extractedSubject": [
+      "propose"
+    ],
+    "subjectTokens": [
+      "architecture",
+      "propose"
+    ],
+    "candidateSubjectTokens": [
+      "propose"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "propose"
+    ],
+    "rarestPresentInClaim": [
+      "propose"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=propose; rarest-in-claim=propose; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-bleu-de",
+    "question": "What BLEU did they get on English-to-German?",
+    "answerable": true,
+    "expectedDocument": "attention.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "attention.pdf#1",
+      "nist-800-207.pdf#11",
+      "omb-m22-09.pdf#22",
+      "tracemonkey.pdf#4",
+      "bitcoin.pdf#2",
+      "cisa-ransomware.pdf#8"
+    ],
+    "winningChunk": {
+      "path": "attention.pdf",
+      "page": 1,
+      "score": 15.856084221662416,
+      "text": "less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-"
+    },
+    "winningDocument": "attention.pdf",
+    "spokenText": "Our model achieves 28.4 BLEU on the WMT 2014 English-",
+    "questionShape": "what",
+    "extractedSubject": [
+      "bleu",
+      "german"
+    ],
+    "subjectTokens": [
+      "bleu",
+      "english",
+      "german"
+    ],
+    "candidateSubjectTokens": [
+      "bleu"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "bleu"
+    ],
+    "rarestPresentInClaim": [
+      "bleu"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=bleu,german; rarest-in-claim=bleu; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-encoder-n",
+    "question": "How many identical layers is the encoder?",
+    "answerable": true,
+    "expectedDocument": "attention.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "attention.pdf#3",
+      "tracemonkey.pdf#9",
+      "bert.pdf#3",
+      "nist-800-63b.pdf#33",
+      "lora.pdf#2",
+      "resnet.pdf#2"
+    ],
+    "winningChunk": {
+      "path": "attention.pdf",
+      "page": 3,
+      "score": 40.32244620436833,
+      "text": "3.1 Encoder and Decoder Stacks Encoder: The encoder is composed of a stack of N = 6 identical layers. Each layer has two sub-layers. The first is a multi-head self-attention mechanism, and the second is a simple, positionwise fully connecte"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "Plementation, identical type maps yield identical activation record ments full Java",
+    "questionShape": "how",
+    "extractedSubject": [
+      "identical",
+      "encoder"
+    ],
+    "subjectTokens": [
+      "many",
+      "identical",
+      "layers",
+      "encoder"
+    ],
+    "candidateSubjectTokens": [
+      "identical"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "quantity",
+    "predicate": "quantity",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "identical"
+    ],
+    "rarestPresentInClaim": [
+      "identical"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=identical,encoder; rarest-in-claim=identical; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-dmodel",
+    "question": "What dimension do the sub-layers produce?",
+    "answerable": true,
+    "expectedDocument": "attention.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "attention.pdf#3",
+      "lora.pdf#2",
+      "nist-800-207.pdf#57",
+      "resnet.pdf#1",
+      "tracemonkey.pdf#4",
+      "bert.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "attention.pdf",
+      "page": 3,
+      "score": 19.810076357023107,
+      "text": "3.1 Encoder and Decoder Stacks Encoder: The encoder is composed of a stack of N = 6 identical layers. Each layer has two sub-layers. The first is a multi-head self-attention mechanism, and the second is a simple, positionwise fully connecte"
+    },
+    "winningDocument": "attention.pdf",
+    "spokenText": "Each layer has two sub-layers.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "dimension",
+      "sub",
+      "produce"
+    ],
+    "subjectTokens": [
+      "dimension",
+      "sub",
+      "layers",
+      "produce"
+    ],
+    "candidateSubjectTokens": [
+      "sub"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "sub"
+    ],
+    "rarestPresentInClaim": [
+      "sub"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=dimension,sub,produce; rarest-in-claim=sub; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-why-scale",
+    "question": "Why do they scale the dot products?",
+    "answerable": true,
+    "expectedDocument": "attention.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "attention.pdf#4",
+      "nist-800-207.pdf#57",
+      "omb-m22-09.pdf#14",
+      "lora.pdf#9",
+      "cisa-ransomware.pdf#20",
+      "bert.pdf#8"
+    ],
+    "winningChunk": {
+      "path": "attention.pdf",
+      "page": 4,
+      "score": 31.22357633000393,
+      "text": "extremely small gradients 4. To counteract this effect, we scale the dot products by √1d ."
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "There are significant security benefits to enforcing HTTPS client-side and domain-wide, and since 2020, the Dot",
+    "questionShape": "why",
+    "extractedSubject": [
+      "dot",
+      "products"
+    ],
+    "subjectTokens": [
+      "scale",
+      "dot",
+      "products"
+    ],
+    "candidateSubjectTokens": [
+      "dot"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "explanation",
+    "predicate": "rationale",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "dot"
+    ],
+    "rarestPresentInClaim": [
+      "dot"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=dot,products; rarest-in-claim=dot; shape=why fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "attn-dropout",
+    "question": "What dropout rate for the base model?",
+    "answerable": true,
+    "expectedDocument": "attention.pdf",
+    "expectedPage": 8,
+    "retrievedRanks": [
+      "lora.pdf#18",
+      "bert.pdf#13",
+      "attention.pdf#7",
+      "resnet.pdf#7",
+      "nist-800-207.pdf#23",
+      "nist-800-63b.pdf#8"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 18,
+      "score": 30.97571010231311,
+      "text": "We again train using AdamW with a linear learning rate decay schedule. Following He et al. (2021), we tune learning rate, dropout probability, warm-up steps, and batch size. We use the same model sequence length used by (He et al., 2021) to"
+    },
+    "winningDocument": "attention.pdf",
+    "spokenText": "We trained the base models for a total of 100,000 steps or 12 hours.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "dropout",
+      "base"
+    ],
+    "subjectTokens": [
+      "dropout",
+      "rate",
+      "base",
+      "model"
+    ],
+    "candidateSubjectTokens": [
+      "base"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "base"
+    ],
+    "rarestPresentInClaim": [
+      "base"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=dropout,base; rarest-in-claim=base; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": true
+  },
+  {
+    "id": "bert-stands",
+    "question": "What does BERT stand for?",
+    "answerable": true,
+    "expectedDocument": "bert.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "bert.pdf#1",
+      "bert.pdf#11",
+      "nist-800-63b.pdf#4",
+      "nist-800-207.pdf#3",
+      "omb-m22-09.pdf#3",
+      "nist-800-63b.pdf#61"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 1,
+      "score": 26.193973495790384,
+      "text": "tion model called BERT, which stands for stream tasks: feature-based and fine-tuning . The"
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Tion model called BERT, which stands for stream tasks: feature-based and fine-tuning .",
+    "questionShape": "what",
+    "extractedSubject": [
+      "stand"
+    ],
+    "subjectTokens": [
+      "bert",
+      "stand"
+    ],
+    "candidateSubjectTokens": [
+      "stand"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "stand"
+    ],
+    "rarestPresentInClaim": [
+      "stand"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=stand; rarest-in-claim=stand; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "H-parser-damage",
+    "gateThatShouldReject": "presentation gate: smashed/unusable extract should silence",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "bert-glue",
+    "question": "What GLUE score did they report?",
+    "answerable": true,
+    "expectedDocument": "bert.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "bert.pdf#1",
+      "nist-800-207.pdf#28",
+      "resnet.pdf#10",
+      "attention.pdf#1",
+      "lora.pdf#1",
+      "nist-800-63b.pdf#47"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 1,
+      "score": 22.543518714721305,
+      "text": "tasks, including pushing the GLUE score to"
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Tasks, including pushing the GLUE score to",
+    "questionShape": "what",
+    "extractedSubject": [
+      "glue",
+      "score"
+    ],
+    "subjectTokens": [
+      "glue",
+      "score",
+      "report"
+    ],
+    "candidateSubjectTokens": [
+      "glue",
+      "score"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "score"
+    ],
+    "rarestPresentInClaim": [
+      "score"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=glue,score; rarest-in-claim=score; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "bert-base",
+    "question": "What are the BERT BASE sizes?",
+    "answerable": true,
+    "expectedDocument": "bert.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "bert.pdf#3",
+      "cisa-ransomware.pdf#3",
+      "lora.pdf#17",
+      "nist-800-63b.pdf#65",
+      "resnet.pdf#4",
+      "attention.pdf#7"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 3,
+      "score": 28.14263777570403,
+      "text": "We introduce BERT and its detailed implementa- We primarily report results on two model sizes:"
+    },
+    "winningDocument": "attention.pdf",
+    "spokenText": "We trained the base models for a total of 100,000 steps or 12 hours.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "base",
+      "sizes"
+    ],
+    "subjectTokens": [
+      "bert",
+      "base",
+      "sizes"
+    ],
+    "candidateSubjectTokens": [
+      "base"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "base"
+    ],
+    "rarestPresentInClaim": [
+      "base"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=base,sizes; rarest-in-claim=base; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "bert-nsp",
+    "question": "How is the next sentence task generated?",
+    "answerable": true,
+    "expectedDocument": "bert.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "bert.pdf#8",
+      "attention.pdf#2",
+      "bitcoin.pdf#2",
+      "lora.pdf#18",
+      "nist-800-207.pdf#40",
+      "nist-800-63b.pdf#25"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 8,
+      "score": 25.002331233719115,
+      "text": "the next sentence prediction task. “LTR & No NSP” is is non-intuitive for tasks like QA, since the RTL"
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "The next sentence prediction task.",
+    "questionShape": "how",
+    "extractedSubject": [
+      "sentence",
+      "generated"
+    ],
+    "subjectTokens": [
+      "next",
+      "sentence",
+      "task",
+      "generated"
+    ],
+    "candidateSubjectTokens": [
+      "sentence"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "sentence",
+      "generated"
+    ],
+    "rarestPresentInClaim": [
+      "sentence"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=sentence,generated; rarest-in-claim=sentence; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "resnet-depth",
+    "question": "How deep are the ImageNet residual nets?",
+    "answerable": true,
+    "expectedDocument": "resnet.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "resnet.pdf#2",
+      "attention.pdf#11",
+      "lora.pdf#13",
+      "omb-m22-09.pdf#13",
+      "bert.pdf#1",
+      "nist-800-207.pdf#38"
+    ],
+    "winningChunk": {
+      "path": "resnet.pdf",
+      "page": 2,
+      "score": 27.51002476674497,
+      "text": "method. We show that: 1) Our extremely deep residual nets diate layers are directly connected to auxiliary classifiers"
+    },
+    "winningDocument": "resnet.pdf",
+    "spokenText": "We show that: 1) Our extremely deep residual nets diate layers are directly connected to auxiliary classifiers",
+    "questionShape": "how",
+    "extractedSubject": [
+      "imagenet",
+      "residual",
+      "nets"
+    ],
+    "subjectTokens": [
+      "deep",
+      "imagenet",
+      "residual",
+      "nets"
+    ],
+    "candidateSubjectTokens": [
+      "residual",
+      "nets"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "nets"
+    ],
+    "rarestPresentInClaim": [
+      "nets"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=imagenet,residual,nets; rarest-in-claim=nets; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "resnet-error",
+    "question": "What ImageNet test error did the ensemble get?",
+    "answerable": true,
+    "expectedDocument": "resnet.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "resnet.pdf#1",
+      "tracemonkey.pdf#4",
+      "bert.pdf#6",
+      "cisa-ransomware.pdf#8",
+      "nist-800-207.pdf#11",
+      "nist-800-63b.pdf#59"
+    ],
+    "winningChunk": {
+      "path": "resnet.pdf",
+      "page": 1,
+      "score": 20.31006130168954,
+      "text": "ity. An ensemble of these residual nets achieves 3.57% error Driven by the significance of depth, a question arises: Is"
+    },
+    "winningDocument": "resnet.pdf",
+    "spokenText": "An ensemble of these residual nets achieves 3.57% error Driven by the significance of depth, a question arises: Is",
+    "questionShape": "what",
+    "extractedSubject": [
+      "imagenet",
+      "ensemble"
+    ],
+    "subjectTokens": [
+      "imagenet",
+      "test",
+      "error",
+      "ensemble"
+    ],
+    "candidateSubjectTokens": [
+      "ensemble"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "ensemble"
+    ],
+    "rarestPresentInClaim": [
+      "ensemble"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=imagenet,ensemble; rarest-in-claim=ensemble; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "lora-what",
+    "question": "What does LoRA freeze?",
+    "answerable": true,
+    "expectedDocument": "lora.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "lora.pdf#5",
+      "lora.pdf#2"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 5,
+      "score": 39.24584946005761,
+      "text": "4.2 APPLYING LORA TO TRANSFORMER In principle, we can apply LoRA to any subset of weight matrices in a neural network to reduce the number of trainable parameters. In the Transformer architecture, there are four weight matrices in the self-"
+    },
+    "winningDocument": "lora.pdf",
+    "spokenText": "We limit our study to only adapting the attention weights for downstream tasks and freeze the MLP modules (so they are not trained in downstream tasks) both for simplicity and parameter-efficiency.We further study the effect on adapting different types of attention weight matrices in a Transformer in Section 7.1.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "freeze"
+    ],
+    "subjectTokens": [
+      "lora",
+      "freeze"
+    ],
+    "candidateSubjectTokens": [
+      "freeze"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "freeze"
+    ],
+    "rarestPresentInClaim": [
+      "freeze"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=freeze; rarest-in-claim=freeze; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "lora-reduce",
+    "question": "How much can LoRA cut trainable parameters vs GPT-3 175B?",
+    "answerable": true,
+    "expectedDocument": "lora.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "lora.pdf#5",
+      "tracemonkey.pdf#8",
+      "resnet.pdf#2",
+      "omb-m22-09.pdf#4",
+      "nist-800-63b.pdf#43",
+      "bert.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 5,
+      "score": 47.39742141298911,
+      "text": "4.2 APPLYING LORA TO TRANSFORMER In principle, we can apply LoRA to any subset of weight matrices in a neural network to reduce the number of trainable parameters. In the Transformer architecture, there are four weight matrices in the self-"
+    },
+    "winningDocument": "lora.pdf",
+    "spokenText": "RA to any subset of weight matrices in a neural network to reduce the number of trainable parameters.",
+    "questionShape": "how",
+    "extractedSubject": [
+      "lora",
+      "cut",
+      "trainable",
+      "175b"
+    ],
+    "subjectTokens": [
+      "much",
+      "lora",
+      "cut",
+      "trainable",
+      "parameters",
+      "gpt",
+      "175b"
+    ],
+    "candidateSubjectTokens": [
+      "trainable"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "quantity",
+    "predicate": "quantity",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "trainable",
+      "175b"
+    ],
+    "rarestPresentInClaim": [
+      "trainable"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=lora,cut,trainable,175b; rarest-in-claim=trainable; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "lora-rank",
+    "question": "How small can the rank be?",
+    "answerable": true,
+    "expectedDocument": "lora.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "lora.pdf#2",
+      "bert.pdf#2",
+      "nist-800-207.pdf#48",
+      "nist-800-63b.pdf#61",
+      "resnet.pdf#3",
+      "tracemonkey.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 2,
+      "score": 16.749919832639534,
+      "text": "• A pre-trained model can be shared and used to build many small LoRA modules for different tasks. We can freeze the shared model and efficiently switch tasks by replacing the matrices A and B in Figure 1, reducing the storage requirement a"
+    },
+    "winningDocument": "lora.pdf",
+    "spokenText": "Instead, we only optimize the injected, much smaller low-rank matrices.",
+    "questionShape": "how",
+    "extractedSubject": [
+      "rank"
+    ],
+    "subjectTokens": [
+      "small",
+      "rank"
+    ],
+    "candidateSubjectTokens": [
+      "rank"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "rank"
+    ],
+    "rarestPresentInClaim": [
+      "rank"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=rank; rarest-in-claim=rank; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-header",
+    "question": "How big is a block header with no transactions?",
+    "answerable": true,
+    "expectedDocument": "bitcoin.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "bitcoin.pdf#4",
+      "tracemonkey.pdf#6",
+      "attention.pdf#7",
+      "resnet.pdf#10",
+      "nist-800-207.pdf#11",
+      "nist-800-63b.pdf#73"
+    ],
+    "winningChunk": {
+      "path": "bitcoin.pdf",
+      "page": 4,
+      "score": 39.221278759734716,
+      "text": "A block header with no transactions would be about 80 bytes. If we suppose blocks are generated every 10 minutes, 80 bytes * 6 * 24 * 365 = 4.2MB per year. With computer systems typically selling with 2GB of RAM as of 2008, and Moore's Law "
+    },
+    "winningDocument": "attention.pdf",
+    "spokenText": "The big models were trained for 300,000 steps (3.5 days).",
+    "questionShape": "how",
+    "extractedSubject": [
+      "big",
+      "header"
+    ],
+    "subjectTokens": [
+      "big",
+      "block",
+      "header",
+      "transactions"
+    ],
+    "candidateSubjectTokens": [
+      "big"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "big"
+    ],
+    "rarestPresentInClaim": [
+      "big"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=big,header; rarest-in-claim=big; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-rate",
+    "question": "How often do they suppose blocks are generated?",
+    "answerable": true,
+    "expectedDocument": "bitcoin.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "bitcoin.pdf#4",
+      "lora.pdf#2",
+      "nist-800-207.pdf#11",
+      "tracemonkey.pdf#8",
+      "omb-m22-09.pdf#22",
+      "bert.pdf#3"
+    ],
+    "winningChunk": {
+      "path": "bitcoin.pdf",
+      "page": 4,
+      "score": 34.88818907238198,
+      "text": "A block header with no transactions would be about 80 bytes. If we suppose blocks are generated every 10 minutes, 80 bytes * 6 * 24 * 365 = 4.2MB per year. With computer systems typically selling with 2GB of RAM as of 2008, and Moore's Law "
+    },
+    "winningDocument": "lora.pdf",
+    "spokenText": "Suppose we are given a pre-trained autoregressive language model PΦ(y|x) parametrized by Φ.",
+    "questionShape": "how",
+    "extractedSubject": [
+      "suppose",
+      "generated"
+    ],
+    "subjectTokens": [
+      "often",
+      "suppose",
+      "blocks",
+      "generated"
+    ],
+    "candidateSubjectTokens": [
+      "suppose"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "suppose"
+    ],
+    "rarestPresentInClaim": [
+      "suppose"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=suppose,generated; rarest-in-claim=suppose; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-majority",
+    "question": "When is the network secure?",
+    "answerable": true,
+    "expectedDocument": "bitcoin.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "nist-800-207.pdf#44",
+      "nist-800-63b.pdf#28",
+      "omb-m22-09.pdf#2",
+      "cisa-ransomware.pdf#19",
+      "bitcoin.pdf#9",
+      "attention.pdf#11"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 44,
+      "score": 16.428198454444765,
+      "text": "Hardware Asset Management (HWAM) [HWAM] program is an effort to help agencies identify devices on their network infrastructure to deploy a secure configuration. This is similar to the first steps in developing a road map to ZTA. Agencies mu"
+    },
+    "winningDocument": "nist-800-207.pdf",
+    "spokenText": "Hardware Asset Management (HWAM) [HWAM] program is an effort to help agencies identify devices on their network infrastructure to deploy a secure configuration.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "secure"
+    ],
+    "subjectTokens": [
+      "network",
+      "secure"
+    ],
+    "candidateSubjectTokens": [
+      "secure"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "secure"
+    ],
+    "rarestPresentInClaim": [
+      "secure"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=secure; rarest-in-claim=secure; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "btc-steps",
+    "question": "What is the first step to run the network?",
+    "answerable": true,
+    "expectedDocument": "bitcoin.pdf",
+    "expectedPage": 3,
+    "retrievedRanks": [
+      "bitcoin.pdf#3",
+      "nist-800-207.pdf#44",
+      "attention.pdf#7",
+      "lora.pdf#18",
+      "tracemonkey.pdf#3",
+      "cisa-ransomware.pdf#12"
+    ],
+    "winningChunk": {
+      "path": "bitcoin.pdf",
+      "page": 3,
+      "score": 20.17657573669133,
+      "text": "5. Network The steps to run the network are as follows:"
+    },
+    "winningDocument": "bitcoin.pdf",
+    "spokenText": "Network The steps to run the network are as follows:",
+    "questionShape": "what",
+    "extractedSubject": [
+      "step",
+      "run"
+    ],
+    "subjectTokens": [
+      "first",
+      "step",
+      "run",
+      "network"
+    ],
+    "candidateSubjectTokens": [
+      "step",
+      "run"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "run"
+    ],
+    "rarestPresentInClaim": [
+      "run"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=step,run; rarest-in-claim=run; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-what",
+    "question": "What compilation technique do they present?",
+    "answerable": true,
+    "expectedDocument": "tracemonkey.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "tracemonkey.pdf#1",
+      "nist-800-207.pdf#12",
+      "cisa-ransomware.pdf#22",
+      "bert.pdf#5",
+      "nist-800-63b.pdf#29",
+      "omb-m22-09.pdf#4"
+    ],
+    "winningChunk": {
+      "path": "tracemonkey.pdf",
+      "page": 1,
+      "score": 28.224662237153954,
+      "text": "guages]: Processors — Incremental compilers, code generation . We present a trace-based compilation technique for dynamic"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "We present a trace-based compilation technique for dynamic",
+    "questionShape": "what",
+    "extractedSubject": [
+      "compilation",
+      "technique"
+    ],
+    "subjectTokens": [
+      "compilation",
+      "technique",
+      "present"
+    ],
+    "candidateSubjectTokens": [
+      "compilation",
+      "technique"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "compilation"
+    ],
+    "rarestPresentInClaim": [
+      "compilation"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=compilation,technique; rarest-in-claim=compilation; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-name",
+    "question": "What do they call the resulting VM?",
+    "answerable": true,
+    "expectedDocument": "tracemonkey.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "tracemonkey.pdf#2",
+      "nist-800-63b.pdf#26",
+      "resnet.pdf#6",
+      "omb-m22-09.pdf#12",
+      "attention.pdf#10",
+      "cisa-ransomware.pdf#28"
+    ],
+    "winningChunk": {
+      "path": "tracemonkey.pdf",
+      "page": 2,
+      "score": 24.144779569546124,
+      "text": "terpreter, SpiderMonkey. We call the resulting tracing VM Trace-"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "We call the resulting tracing VM Trace-",
+    "questionShape": "what",
+    "extractedSubject": [
+      "resulting"
+    ],
+    "subjectTokens": [
+      "call",
+      "resulting"
+    ],
+    "candidateSubjectTokens": [
+      "resulting"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "resulting"
+    ],
+    "rarestPresentInClaim": [
+      "resulting"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=resulting; rarest-in-claim=resulting; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-loops",
+    "question": "Why operate at the granularity of loops?",
+    "answerable": true,
+    "expectedDocument": "tracemonkey.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "tracemonkey.pdf#1",
+      "nist-800-207.pdf#45",
+      "omb-m22-09.pdf#7",
+      "bert.pdf#12",
+      "nist-800-63b.pdf#17",
+      "cisa-ransomware.pdf#3"
+    ],
+    "winningChunk": {
+      "path": "tracemonkey.pdf",
+      "page": 1,
+      "score": 32.450260532756445,
+      "text": "ular since they are expressive, accessible to non-experts, and make piler operates at the granularity of individual loops. This design"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "Ular since they are expressive, accessible to non-experts, and make piler operates at the granularity of individual loops.",
+    "questionShape": "why",
+    "extractedSubject": [
+      "granularity",
+      "loops"
+    ],
+    "subjectTokens": [
+      "operate",
+      "granularity",
+      "loops"
+    ],
+    "candidateSubjectTokens": [
+      "granularity",
+      "loops"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "explanation",
+    "predicate": "rationale",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "granularity"
+    ],
+    "rarestPresentInClaim": [
+      "granularity"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=granularity,loops; rarest-in-claim=granularity; shape=why fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-nested",
+    "question": "How do they solve nested loops?",
+    "answerable": true,
+    "expectedDocument": "tracemonkey.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "tracemonkey.pdf#2",
+      "tracemonkey.pdf#2",
+      "bitcoin.pdf#8",
+      "bitcoin.pdf#3"
+    ],
+    "winningChunk": {
+      "path": "tracemonkey.pdf",
+      "page": 2,
+      "score": 24.456643208428027,
+      "text": "We solve the nested loop problem by recording"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "We solve the nested loop problem by recording",
+    "questionShape": "how",
+    "extractedSubject": [
+      "solve",
+      "nested"
+    ],
+    "subjectTokens": [
+      "solve",
+      "nested",
+      "loops"
+    ],
+    "candidateSubjectTokens": [
+      "solve",
+      "nested"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "solve"
+    ],
+    "rarestPresentInClaim": [
+      "solve"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=solve,nested; rarest-in-claim=solve; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "tm-base",
+    "question": "Which interpreter did they implement on?",
+    "answerable": true,
+    "expectedDocument": "tracemonkey.pdf",
+    "expectedPage": 2,
+    "retrievedRanks": [
+      "bitcoin.pdf#3",
+      "omb-m22-09.pdf#20",
+      "tracemonkey.pdf#3",
+      "cisa-ransomware.pdf#5",
+      "nist-800-207.pdf#16",
+      "nist-800-63b.pdf#21"
+    ],
+    "winningChunk": {
+      "path": "bitcoin.pdf",
+      "page": 3,
+      "score": 16.098568225056393,
+      "text": "4. Proof-of-Work To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proofof-work system similar to Adam Back's Hashcash [6], rather than newspaper or Usenet posts. The proof-of-work involves scanning "
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "The LIR also encodes all the stores that the interpreter would do to its data stack.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "interpreter"
+    ],
+    "subjectTokens": [
+      "interpreter",
+      "implement"
+    ],
+    "candidateSubjectTokens": [
+      "interpreter"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "interpreter"
+    ],
+    "rarestPresentInClaim": [
+      "interpreter"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=interpreter; rarest-in-claim=interpreter; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "nist145-def",
+    "question": "How does NIST define cloud computing?",
+    "answerable": true,
+    "expectedDocument": "nist-800-145.pdf",
+    "expectedPage": 6,
+    "retrievedRanks": [
+      "nist-800-145.pdf#5",
+      "nist-800-207.pdf#44",
+      "nist-800-63b.pdf#42",
+      "omb-m22-09.pdf#20",
+      "cisa-ransomware.pdf#6",
+      "tracemonkey.pdf#6"
+    ],
+    "winningChunk": {
+      "path": "nist-800-145.pdf",
+      "page": 5,
+      "score": 27.67329675894416,
+      "text": "Cloud computing is an evolving paradigm. The NIST definition characterizes important aspects of cloud"
+    },
+    "winningDocument": "nist-800-63b.pdf",
+    "spokenText": "Determine the level of acceptable risk for their system(s) and associated data and to define any",
+    "questionShape": "how",
+    "extractedSubject": [
+      "define",
+      "computing"
+    ],
+    "subjectTokens": [
+      "nist",
+      "define",
+      "cloud",
+      "computing"
+    ],
+    "candidateSubjectTokens": [
+      "define"
+    ],
+    "sourceSelector": {
+      "raw": "NIST",
+      "kind": "document-title"
+    },
+    "answerExpectation": "procedure",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "define"
+    ],
+    "rarestPresentInClaim": [
+      "define"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=define,computing; rarest-in-claim=define; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "nist145-counts",
+    "question": "How many essential characteristics and service models?",
+    "answerable": true,
+    "expectedDocument": "nist-800-145.pdf",
+    "expectedPage": 6,
+    "retrievedRanks": [
+      "nist-800-145.pdf#6",
+      "nist-800-207.pdf#28",
+      "nist-800-63b.pdf#37",
+      "cisa-ransomware.pdf#21",
+      "resnet.pdf#6",
+      "attention.pdf#7"
+    ],
+    "winningChunk": {
+      "path": "nist-800-145.pdf",
+      "page": 6,
+      "score": 40.502020131631674,
+      "text": "This cloud model is composed of five essential characteristics, three service models, and four deployment"
+    },
+    "winningDocument": "nist-800-145.pdf",
+    "spokenText": "This cloud model is composed of five essential characteristics, three service models, and four deployment",
+    "questionShape": "how",
+    "extractedSubject": [
+      "essential",
+      "characteristics",
+      "models"
+    ],
+    "subjectTokens": [
+      "many",
+      "essential",
+      "characteristics",
+      "service",
+      "models"
+    ],
+    "candidateSubjectTokens": [
+      "essential",
+      "characteristics",
+      "models"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "quantity",
+    "predicate": "quantity",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "essential"
+    ],
+    "rarestPresentInClaim": [
+      "essential"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=essential,characteristics,models; rarest-in-claim=essential; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "nist145-hybrid",
+    "question": "What is a hybrid cloud?",
+    "answerable": true,
+    "expectedDocument": "nist-800-145.pdf",
+    "expectedPage": 7,
+    "retrievedRanks": [
+      "nist-800-145.pdf#7",
+      "omb-m22-09.pdf#4",
+      "nist-800-207.pdf#33",
+      "cisa-ransomware.pdf#6",
+      "nist-800-145.pdf#5",
+      "bert.pdf#5"
+    ],
+    "winningChunk": {
+      "path": "nist-800-145.pdf",
+      "page": 7,
+      "score": 20.695002761875195,
+      "text": "Hybrid cloud. The cloud infrastructure is a composition of two or more distinct cloud"
+    },
+    "winningDocument": "nist-800-145.pdf",
+    "spokenText": "Hybrid cloud. The cloud infrastructure is a composition of two or more distinct cloud",
+    "questionShape": "what",
+    "extractedSubject": [
+      "hybrid"
+    ],
+    "subjectTokens": [
+      "hybrid",
+      "cloud"
+    ],
+    "candidateSubjectTokens": [
+      "hybrid"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "hybrid"
+    ],
+    "rarestPresentInClaim": [
+      "hybrid"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=hybrid; rarest-in-claim=hybrid; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "zta-mfa",
+    "question": "What authentication do they expect for some resources?",
+    "answerable": true,
+    "expectedDocument": "nist-800-207.pdf",
+    "expectedPage": 16,
+    "retrievedRanks": [
+      "nist-800-207.pdf#14",
+      "omb-m22-09.pdf#9",
+      "nist-800-63b.pdf#13",
+      "cisa-ransomware.pdf#28",
+      "tracemonkey.pdf#1",
+      "nist-800-145.pdf#6"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 14,
+      "score": 15.951268923813966,
+      "text": "The system must ensure that the subject is authentic and the request is valid. The PDP/PEP passes proper judgment to allow the subject to access the resource. This implies that zero trust applies to two basic areas: authentication and autho"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "At the same time, online public services are a major target for phishing attacks and account takeover, and many users will expect Government services to give them tools they can use to protect themselves.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "expect",
+      "resources"
+    ],
+    "subjectTokens": [
+      "authentication",
+      "expect",
+      "some",
+      "resources"
+    ],
+    "candidateSubjectTokens": [
+      "expect"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "expect"
+    ],
+    "rarestPresentInClaim": [
+      "expect"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=expect,resources; rarest-in-claim=expect; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "omb-pillars",
+    "question": "What are the five CISA pillars they align to?",
+    "answerable": true,
+    "expectedDocument": "omb-m22-09.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "omb-m22-09.pdf#4",
+      "cisa-ransomware.pdf#5",
+      "lora.pdf#18",
+      "nist-800-145.pdf#6",
+      "nist-800-207.pdf#43",
+      "attention.pdf#10"
+    ],
+    "winningChunk": {
+      "path": "omb-m22-09.pdf",
+      "page": 4,
+      "score": 41.72741678690197,
+      "text": "The strategic goals set forth in this memorandum align with CISA’s five pillars:"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "The strategic goals set forth in this memorandum align with CISA’s five pillars:",
+    "questionShape": "what",
+    "extractedSubject": [
+      "five",
+      "pillars"
+    ],
+    "subjectTokens": [
+      "five",
+      "cisa",
+      "pillars",
+      "align"
+    ],
+    "candidateSubjectTokens": [
+      "five",
+      "pillars"
+    ],
+    "sourceSelector": {
+      "raw": "CISA",
+      "kind": "document-title"
+    },
+    "answerExpectation": "enumeration",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "pillars"
+    ],
+    "rarestPresentInClaim": [
+      "pillars"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=five,pillars; rarest-in-claim=pillars; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "omb-encrypt",
+    "question": "What traffic must agencies encrypt?",
+    "answerable": true,
+    "expectedDocument": "omb-m22-09.pdf",
+    "expectedPage": 4,
+    "retrievedRanks": [
+      "omb-m22-09.pdf#14",
+      "nist-800-207.pdf#38",
+      "cisa-ransomware.pdf#9",
+      "nist-800-63b.pdf#4",
+      "bitcoin.pdf#1",
+      "tracemonkey.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "omb-m22-09.pdf",
+      "page": 14,
+      "score": 29.764579355654035,
+      "text": "OMB Memorandum M-15-13 and DHS Binding Operational Directive (BOD) 18-01 currently require agencies to use HTTPS, the encrypted form of HTTP, across all internetaccessible web services and APIs. They do not, however, require the use of HTTP"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "Zero trust architectures—and this strategy— require agencies to encrypt all HTTP traffic, including within their environments.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "traffic",
+      "encrypt"
+    ],
+    "subjectTokens": [
+      "traffic",
+      "agencies",
+      "encrypt"
+    ],
+    "candidateSubjectTokens": [
+      "traffic",
+      "encrypt"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "encrypt"
+    ],
+    "rarestPresentInClaim": [
+      "encrypt"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=traffic,encrypt; rarest-in-claim=encrypt; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-withdrawn",
+    "question": "What happened to SP 800-63B?",
+    "answerable": true,
+    "expectedDocument": "nist-800-63b.pdf",
+    "expectedPage": 1,
+    "retrievedRanks": [
+      "bitcoin.pdf#1",
+      "nist-800-63b.pdf#1",
+      "tracemonkey.pdf#3",
+      "omb-m22-09.pdf#13",
+      "nist-800-207.pdf#43",
+      "cisa-ransomware.pdf#15"
+    ],
+    "winningChunk": {
+      "path": "bitcoin.pdf",
+      "page": 1,
+      "score": 13.184283247205926,
+      "text": "Abstract. A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution. Digital signatures provide part of the solution, but the mai"
+    },
+    "winningDocument": "bitcoin.pdf",
+    "spokenText": "Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "happened"
+    ],
+    "subjectTokens": [
+      "happened",
+      "800",
+      "63b"
+    ],
+    "candidateSubjectTokens": [
+      "happened"
+    ],
+    "sourceSelector": {
+      "raw": "800-63B",
+      "kind": "document-title"
+    },
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "happened"
+    ],
+    "rarestPresentInClaim": [
+      "happened"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=happened; rarest-in-claim=happened; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-aal1",
+    "question": "What does AAL1 provide?",
+    "answerable": true,
+    "expectedDocument": "nist-800-63b.pdf",
+    "expectedPage": 16,
+    "retrievedRanks": [
+      "nist-800-63b.pdf#13",
+      "omb-m22-09.pdf#16",
+      "nist-800-207.pdf#29",
+      "cisa-ransomware.pdf#5",
+      "lora.pdf#1",
+      "nist-800-145.pdf#5"
+    ],
+    "winningChunk": {
+      "path": "nist-800-63b.pdf",
+      "page": 13,
+      "score": 13.906981781717608,
+      "text": "Authenticator Assurance Level 1 : AAL1 provides some assurance that the claimant controls an"
+    },
+    "winningDocument": "nist-800-63b.pdf",
+    "spokenText": "Authenticator Assurance Level 1 : AAL1 provides some assurance that the claimant controls an",
+    "questionShape": "what",
+    "extractedSubject": [
+      "aal1"
+    ],
+    "subjectTokens": [
+      "aal1",
+      "provide"
+    ],
+    "candidateSubjectTokens": [
+      "aal1"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "aal1"
+    ],
+    "rarestPresentInClaim": [
+      "aal1"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=aal1; rarest-in-claim=aal1; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-password",
+    "question": "What is a memorized secret commonly called?",
+    "answerable": true,
+    "expectedDocument": "nist-800-63b.pdf",
+    "expectedPage": 24,
+    "retrievedRanks": [
+      "nist-800-63b.pdf#24",
+      "lora.pdf#18",
+      "cisa-ransomware.pdf#11",
+      "attention.pdf#4",
+      "omb-m22-09.pdf#14",
+      "tracemonkey.pdf#8"
+    ],
+    "winningChunk": {
+      "path": "nist-800-63b.pdf",
+      "page": 24,
+      "score": 25.751375934796062,
+      "text": "A Memorized Secret authenticator — commonly referred to as a password or, if"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "5.2 Register Allocation called as functions using standard native calling conventions (e.g.,",
+    "questionShape": "what",
+    "extractedSubject": [
+      "commonly",
+      "called"
+    ],
+    "subjectTokens": [
+      "memorized",
+      "secret",
+      "commonly",
+      "called"
+    ],
+    "candidateSubjectTokens": [
+      "called"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "called"
+    ],
+    "rarestPresentInClaim": [
+      "called"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=commonly,called; rarest-in-claim=called; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-complexity",
+    "question": "Should they impose other password complexity rules?",
+    "answerable": true,
+    "expectedDocument": "nist-800-63b.pdf",
+    "expectedPage": 24,
+    "retrievedRanks": [
+      "nist-800-63b.pdf#79",
+      "omb-m22-09.pdf#2",
+      "bitcoin.pdf#4",
+      "nist-800-207.pdf#36",
+      "cisa-ransomware.pdf#6",
+      "lora.pdf#9"
+    ],
+    "winningChunk": {
+      "path": "nist-800-63b.pdf",
+      "page": 79,
+      "score": 31.331544382780727,
+      "text": "As noted above, composition rules are commonly used in an attempt to increase the difficulty of guessing user-chosen passwords. Research has shown, however, that users respond in very predictable ways to the requirements imposed by composit"
+    },
+    "winningDocument": "cisa-ransomware.pdf",
+    "spokenText": "Misconfiguration can impose significant cost.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "impose",
+      "complexity",
+      "rules"
+    ],
+    "subjectTokens": [
+      "impose",
+      "other",
+      "password",
+      "complexity",
+      "rules"
+    ],
+    "candidateSubjectTokens": [
+      "impose"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "impose"
+    ],
+    "rarestPresentInClaim": [
+      "impose"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=impose,complexity,rules; rarest-in-claim=impose; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-aal3",
+    "question": "What authenticator can satisfy AAL3 by itself?",
+    "answerable": true,
+    "expectedDocument": "nist-800-63b.pdf",
+    "expectedPage": 20,
+    "retrievedRanks": [
+      "nist-800-63b.pdf#18",
+      "bitcoin.pdf#3",
+      "attention.pdf#3",
+      "omb-m22-09.pdf#10",
+      "nist-800-207.pdf#29",
+      "bert.pdf#4"
+    ],
+    "winningChunk": {
+      "path": "nist-800-63b.pdf",
+      "page": 18,
+      "score": 18.654414134166146,
+      "text": "but not recognized as an authenticator by itself. Therefore, when conducting authentication"
+    },
+    "winningDocument": "bitcoin.pdf",
+    "spokenText": "Once the CPU effort has been expended to make it satisfy the proof-of-work, the block cannot be changed without redoing the work.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "satisfy",
+      "aal3"
+    ],
+    "subjectTokens": [
+      "authenticator",
+      "satisfy",
+      "aal3",
+      "itself"
+    ],
+    "candidateSubjectTokens": [
+      "satisfy"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "satisfy"
+    ],
+    "rarestPresentInClaim": [
+      "satisfy"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=satisfy,aal3; rarest-in-claim=satisfy; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "63b-pii",
+    "question": "When self-asserted PII is online, what AAL do agencies select?",
+    "answerable": true,
+    "expectedDocument": "nist-800-63b.pdf",
+    "expectedPage": 16,
+    "retrievedRanks": [
+      "omb-m22-09.pdf#16",
+      "nist-800-63b.pdf#16",
+      "cisa-ransomware.pdf#13",
+      "lora.pdf#3",
+      "tracemonkey.pdf#13",
+      "nist-800-207.pdf#48"
+    ],
+    "winningChunk": {
+      "path": "omb-m22-09.pdf",
+      "page": 16,
+      "score": 22.02189620586633,
+      "text": "1. Agencies must operate dedicated application security testing programs. 2. Agencies must utilize high-quality firms specializing in application security for independent third-party evaluation. • CISA and GSA will work together to make the"
+    },
+    "winningDocument": "nist-800-63b.pdf",
+    "spokenText": "Asserted PII or other personal information is made available online.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "self",
+      "asserted",
+      "pii",
+      "select"
+    ],
+    "subjectTokens": [
+      "self",
+      "asserted",
+      "pii",
+      "online",
+      "aal",
+      "agencies",
+      "select"
+    ],
+    "candidateSubjectTokens": [
+      "asserted",
+      "pii"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "asserted"
+    ],
+    "rarestPresentInClaim": [
+      "asserted"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=self,asserted,pii,select; rarest-in-claim=asserted; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": true,
+    "expectedPageInTop6": true,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-growth",
+    "question": "What is the annual growth rate?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "bert.pdf#11",
+      "attention.pdf#12",
+      "cisa-ransomware.pdf#10",
+      "lora.pdf#18",
+      "nist-800-63b.pdf#8",
+      "resnet.pdf#4"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 11,
+      "score": 13.67522957373557,
+      "text": "Ankur P Parikh, Oscar T¨ ackstr¨om, Dipanjan Das, and 48th Annual Meeting of the Association for Compu-"
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Ankur P Parikh, Oscar T¨ ackstr¨om, Dipanjan Das, and 48th Annual Meeting of the Association for Compu-",
+    "questionShape": "what",
+    "extractedSubject": [
+      "annual"
+    ],
+    "subjectTokens": [
+      "annual",
+      "growth",
+      "rate"
+    ],
+    "candidateSubjectTokens": [
+      "annual"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "quantity",
+    "predicate": "quantity-rate",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "annual"
+    ],
+    "rarestPresentInClaim": [
+      "annual"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=annual; rarest-in-claim=annual; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-gpu-buy",
+    "question": "Which GPU vendor should we buy from for Transformers?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "lora.pdf#5",
+      "nist-800-207.pdf#57",
+      "bert.pdf#1",
+      "attention.pdf#2",
+      "resnet.pdf#10",
+      "cisa-ransomware.pdf#6"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 5,
+      "score": 13.71023274761233,
+      "text": "4We still need the 350GB model during deployment; however, storing 100 adapted models only requires 350GB + 35MB * 100 ≈ 354GB as opposed to 100 * 350GB ≈ 35TB. 5For GPT-3 175B, the training throughput for full fine-tuning is 32.5 tokens/s "
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "BERT: Pre-training of Deep Bidirectional Transformers for",
+    "questionShape": "what",
+    "extractedSubject": [
+      "vendor",
+      "transformers"
+    ],
+    "subjectTokens": [
+      "gpu",
+      "vendor",
+      "buy",
+      "transformers"
+    ],
+    "candidateSubjectTokens": [
+      "transformers"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "enumeration",
+    "predicate": "recommendation",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "transformers"
+    ],
+    "rarestPresentInClaim": [
+      "transformers"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=vendor,transformers; rarest-in-claim=transformers; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "F-enumeration",
+    "gateThatShouldReject": "enumeration contract: no list/category established",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-lora-salary",
+    "question": "What salary did the LoRA authors disclose?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "lora.pdf#1",
+      "nist-800-207.pdf#6",
+      "nist-800-63b.pdf#3",
+      "cisa-ransomware.pdf#31",
+      "omb-m22-09.pdf#9",
+      "bert.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "lora.pdf",
+      "page": 1,
+      "score": 24.91314286920389,
+      "text": "LORA: LOW-RANK ADAPTATION OF LARGE LAN-"
+    },
+    "winningDocument": "nist-800-207.pdf",
+    "spokenText": "Disclose such patent claims to ITL.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "salary",
+      "disclose"
+    ],
+    "subjectTokens": [
+      "salary",
+      "lora",
+      "authors",
+      "disclose"
+    ],
+    "candidateSubjectTokens": [
+      "disclose"
+    ],
+    "sourceSelector": {
+      "raw": "LoRA",
+      "kind": "author"
+    },
+    "answerExpectation": "quantity",
+    "predicate": "cost/price",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "salary",
+      "disclose"
+    ],
+    "rarestPresentInClaim": [
+      "disclose"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=salary,disclose; rarest-in-claim=disclose; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-prof-grade",
+    "question": "What grade did the professor say we need on the midterm?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-63b.pdf#63",
+      "bitcoin.pdf#8",
+      "nist-800-207.pdf#55",
+      "cs229-notes.pdf#14",
+      "omb-m22-09.pdf#2",
+      "lora.pdf#5"
+    ],
+    "winningChunk": {
+      "path": "nist-800-63b.pdf",
+      "page": 63,
+      "score": 16.123794067780384,
+      "text": "write for a 6th to 8th grade literacy level."
+    },
+    "winningDocument": "nist-800-63b.pdf",
+    "spokenText": "Write for a 6th to 8th grade literacy level.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "grade",
+      "say",
+      "midterm"
+    ],
+    "subjectTokens": [
+      "grade",
+      "professor",
+      "say",
+      "need",
+      "midterm"
+    ],
+    "candidateSubjectTokens": [
+      "grade"
+    ],
+    "sourceSelector": {
+      "raw": "the lecture/professor",
+      "kind": "document-type"
+    },
+    "answerExpectation": "quantity",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "grade",
+      "say",
+      "midterm"
+    ],
+    "rarestPresentInClaim": [
+      "grade"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=grade,say,midterm; rarest-in-claim=grade; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-omb-vendor",
+    "question": "Which SSO vendor does OMB mandate?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "cisa-ransomware.pdf#8",
+      "omb-m22-09.pdf#17",
+      "nist-800-207.pdf#57",
+      "omb-m22-09.pdf#4",
+      "nist-800-63b.pdf#73",
+      "nist-800-145.pdf#5"
+    ],
+    "winningChunk": {
+      "path": "cisa-ransomware.pdf",
+      "page": 8,
+      "score": 16.123794067780384,
+      "text": "Windows Server 2019, Windows 11 Preview Build 25951, and later, you can mandate"
+    },
+    "winningDocument": "cisa-ransomware.pdf",
+    "spokenText": "Windows Server 2019, Windows 11 Preview Build 25951, and later, you can mandate",
+    "questionShape": "what",
+    "extractedSubject": [
+      "vendor",
+      "mandate"
+    ],
+    "subjectTokens": [
+      "sso",
+      "vendor",
+      "omb",
+      "mandate"
+    ],
+    "candidateSubjectTokens": [
+      "mandate"
+    ],
+    "sourceSelector": {
+      "raw": "OMB",
+      "kind": "document-title"
+    },
+    "answerExpectation": "definition",
+    "predicate": "recommendation",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "mandate"
+    ],
+    "rarestPresentInClaim": [
+      "mandate"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=vendor,mandate; rarest-in-claim=mandate; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-zta-price",
+    "question": "What is the budget for a typical ZTA rollout?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-207.pdf#50",
+      "nist-800-63b.pdf#37",
+      "resnet.pdf#1",
+      "tracemonkey.pdf#4",
+      "omb-m22-09.pdf#4",
+      "lora.pdf#9"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 50,
+      "score": 13.19219514636577,
+      "text": "When enough confidence is gained and the workflow policy set is refined, the enterprise enters This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207 the steady operational phase. The network and assets a"
+    },
+    "winningDocument": "nist-800-207.pdf",
+    "spokenText": "Like the previous rollout, a candidate workflow and solution set need to be identified and initial policies developed.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "budget",
+      "rollout"
+    ],
+    "subjectTokens": [
+      "budget",
+      "typical",
+      "zta",
+      "rollout"
+    ],
+    "candidateSubjectTokens": [
+      "rollout"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "quantity",
+    "predicate": "cost/price",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "rollout"
+    ],
+    "rarestPresentInClaim": [
+      "rollout"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=budget,rollout; rarest-in-claim=rollout; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-63b-vendor",
+    "question": "Which password manager does 800-63B require?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-207.pdf#5",
+      "nist-800-63b.pdf#79",
+      "cisa-ransomware.pdf#10",
+      "omb-m22-09.pdf#5",
+      "tracemonkey.pdf#2",
+      "bert.pdf#9"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 5,
+      "score": 17.77358567389684,
+      "text": "This publication is available free of charge from: https://doi.org/10.6028/NIST.SP.800-207 This document is intended to describe zero trust for enterprise security architects. It is meant to aid understanding of zero trust for civilian uncl"
+    },
+    "winningDocument": "nist-800-207.pdf",
+    "spokenText": "Agency cybersecurity managers, network administrators, and managers may also gain insight into zero trust and ZTA from this document.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "password",
+      "manager"
+    ],
+    "subjectTokens": [
+      "password",
+      "manager",
+      "800",
+      "63b",
+      "require"
+    ],
+    "candidateSubjectTokens": [
+      "manager"
+    ],
+    "sourceSelector": {
+      "raw": "800-63B",
+      "kind": "document-title"
+    },
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "manager"
+    ],
+    "rarestPresentInClaim": [
+      "manager"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=password,manager; rarest-in-claim=manager; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-tm-firefox-share",
+    "question": "What market share did TraceMonkey give Firefox?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "tracemonkey.pdf#8",
+      "nist-800-207.pdf#22",
+      "omb-m22-09.pdf#21",
+      "nist-800-63b.pdf#47",
+      "cisa-ransomware.pdf#6",
+      "bert.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "tracemonkey.pdf",
+      "page": 8,
+      "score": 28.161271646846593,
+      "text": "VM embedded in Mozilla’s Firefox open-source web browser (2),"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "VM embedded in Mozilla’s Firefox open-source web browser (2),",
+    "questionShape": "what",
+    "extractedSubject": [
+      "market",
+      "share",
+      "firefox"
+    ],
+    "subjectTokens": [
+      "market",
+      "share",
+      "tracemonkey",
+      "give",
+      "firefox"
+    ],
+    "candidateSubjectTokens": [
+      "firefox"
+    ],
+    "sourceSelector": {
+      "raw": "TraceMonkey/Firefox",
+      "kind": "document-title"
+    },
+    "answerExpectation": "quantity",
+    "predicate": "quantity-rate",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "firefox"
+    ],
+    "rarestPresentInClaim": [
+      "firefox"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=market,share,firefox; rarest-in-claim=firefox; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-hybrid-sla",
+    "question": "What SLA does NIST require for hybrid cloud?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-145.pdf#7",
+      "nist-800-207.pdf#44",
+      "omb-m22-09.pdf#4",
+      "nist-800-63b.pdf#35",
+      "cisa-ransomware.pdf#6",
+      "bert.pdf#9"
+    ],
+    "winningChunk": {
+      "path": "nist-800-145.pdf",
+      "page": 7,
+      "score": 23.52421115640574,
+      "text": "Hybrid cloud. The cloud infrastructure is a composition of two or more distinct cloud"
+    },
+    "winningDocument": "nist-800-145.pdf",
+    "spokenText": "Hybrid cloud. The cloud infrastructure is a composition of two or more distinct cloud",
+    "questionShape": "what",
+    "extractedSubject": [
+      "hybrid",
+      "cloud"
+    ],
+    "subjectTokens": [
+      "sla",
+      "nist",
+      "require",
+      "hybrid",
+      "cloud"
+    ],
+    "candidateSubjectTokens": [
+      "hybrid",
+      "cloud"
+    ],
+    "sourceSelector": {
+      "raw": "NIST",
+      "kind": "document-title"
+    },
+    "answerExpectation": "definition",
+    "predicate": "cost/price",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "hybrid"
+    ],
+    "rarestPresentInClaim": [
+      "hybrid"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=hybrid,cloud; rarest-in-claim=hybrid; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-ransom-pay",
+    "question": "How much ransom does CISA say we should pay?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "cisa-ransomware.pdf#21",
+      "cs229-notes.pdf#14",
+      "nist-800-145.pdf#6",
+      "bitcoin.pdf#1",
+      "nist-800-207.pdf#38",
+      "omb-m22-09.pdf#10"
+    ],
+    "winningChunk": {
+      "path": "cisa-ransomware.pdf",
+      "page": 21,
+      "score": 29.971247227689872,
+      "text": "paying ransom. Paying ransom will not ensure your"
+    },
+    "winningDocument": "cs229-notes.pdf",
+    "spokenText": "(Most of what we say here will also generalize to the multiple-class case.)",
+    "questionShape": "how",
+    "extractedSubject": [
+      "much",
+      "say",
+      "pay"
+    ],
+    "subjectTokens": [
+      "much",
+      "ransom",
+      "cisa",
+      "say",
+      "pay"
+    ],
+    "candidateSubjectTokens": [
+      "say"
+    ],
+    "sourceSelector": {
+      "raw": "CISA",
+      "kind": "document-title"
+    },
+    "answerExpectation": "quantity",
+    "predicate": "cost/price",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "say"
+    ],
+    "rarestPresentInClaim": [
+      "say"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=much,say,pay; rarest-in-claim=say; shape=how fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-theta0-secret",
+    "question": "What is the secret production API key in the lecture?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-207.pdf#40",
+      "omb-m22-09.pdf#20",
+      "lora.pdf#3",
+      "nist-800-63b.pdf#28",
+      "bitcoin.pdf#2",
+      "cisa-ransomware.pdf#16"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 40,
+      "score": 15.677426529612795,
+      "text": "The associated risk is that an attacker will be able to induce or coerce an NPE to perform some task that the attacker is not privileged to perform. The software agent may have a lower bar for This publication is available free of charge fr"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "Allowing manual changes to the environment inevitably leads to situations where different instances of production servers are running different patches or software versions, increasing the complexity of future deployments and introducing opportunities for error.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "production",
+      "api"
+    ],
+    "subjectTokens": [
+      "secret",
+      "production",
+      "api",
+      "key",
+      "lecture"
+    ],
+    "candidateSubjectTokens": [
+      "production"
+    ],
+    "sourceSelector": {
+      "raw": "the lecture/professor",
+      "kind": "document-type"
+    },
+    "answerExpectation": "definition",
+    "predicate": "secret/identifier",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "production"
+    ],
+    "rarestPresentInClaim": [
+      "production"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=production,api; rarest-in-claim=production; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-isolation-vendor",
+    "question": "Which database isolation vendor do they recommend?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-207.pdf#23",
+      "omb-m22-09.pdf#12",
+      "cisa-ransomware.pdf#10",
+      "nist-800-63b.pdf#52",
+      "bert.pdf#10",
+      "nist-800-145.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 23,
+      "score": 14.490077615986015,
+      "text": "This deployment model is a variation of the device agent/gateway model above. In this model, the gateway components may not reside on assets or in front of individual resources but instead reside at the boundary of a resource enclave (e.g.,"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "To environmental isolation in consultation with CISA and submit it to OMB as part of",
+    "questionShape": "what",
+    "extractedSubject": [
+      "isolation",
+      "vendor"
+    ],
+    "subjectTokens": [
+      "database",
+      "isolation",
+      "vendor",
+      "recommend"
+    ],
+    "candidateSubjectTokens": [
+      "isolation"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": "recommendation",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "isolation"
+    ],
+    "rarestPresentInClaim": [
+      "isolation"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=isolation,vendor; rarest-in-claim=isolation; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-scan-text",
+    "question": "What does the scanned PDF say about isolation?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "cs229-notes.pdf#14",
+      "nist-800-207.pdf#26",
+      "omb-m22-09.pdf#12",
+      "bitcoin.pdf#3",
+      "cisa-ransomware.pdf#7",
+      "nist-800-63b.pdf#74"
+    ],
+    "winningChunk": {
+      "path": "cs229-notes.pdf",
+      "page": 14,
+      "score": 14.85559083219916,
+      "text": "(Most of what we say here will also generalize to the multiple-class case.)"
+    },
+    "winningDocument": "cs229-notes.pdf",
+    "spokenText": "(Most of what we say here will also generalize to the multiple-class case.)",
+    "questionShape": "what",
+    "extractedSubject": [
+      "scanned",
+      "say"
+    ],
+    "subjectTokens": [
+      "scanned",
+      "pdf",
+      "say",
+      "isolation"
+    ],
+    "candidateSubjectTokens": [
+      "say"
+    ],
+    "sourceSelector": {
+      "raw": "scanned PDF",
+      "kind": "document-type"
+    },
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "scanned",
+      "say"
+    ],
+    "rarestPresentInClaim": [
+      "say"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=scanned,say; rarest-in-claim=say; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-enc-secret",
+    "question": "What password opens the encrypted PDF?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "omb-m22-09.pdf#14",
+      "omb-m22-09.pdf#14",
+      "nist-800-63b.pdf#79",
+      "nist-800-63b.pdf#79",
+      "cisa-ransomware.pdf#5",
+      "nist-800-207.pdf#23"
+    ],
+    "winningChunk": {
+      "path": "omb-m22-09.pdf",
+      "page": 14,
+      "score": 16.556339849154075,
+      "text": "protocols (DNS-over-HTTPS or DNS-over-TLS), and must use them to communicate with upstream DNS resolvers. Agency endpoints must enable encrypted DNS in supporting applications (for example, web browsers) and at the operating system level wh"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "18 If agencies use custom-developed software to initiate DNS requests, they must implement support for encrypted DNS.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "encrypted",
+      "pdf"
+    ],
+    "subjectTokens": [
+      "password",
+      "opens",
+      "encrypted",
+      "pdf"
+    ],
+    "candidateSubjectTokens": [
+      "encrypted"
+    ],
+    "sourceSelector": {
+      "raw": "encrypted PDF",
+      "kind": "document-type"
+    },
+    "answerExpectation": "definition",
+    "predicate": "secret/identifier",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "encrypted"
+    ],
+    "rarestPresentInClaim": [
+      "encrypted"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=encrypted,pdf; rarest-in-claim=encrypted; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-irs-ssn",
+    "question": "What is the sample employee's SSN in Publication 15?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-207.pdf#38",
+      "tracemonkey.pdf#3",
+      "nist-800-63b.pdf#24",
+      "cisa-ransomware.pdf#25",
+      "resnet.pdf#12",
+      "lora.pdf#18"
+    ],
+    "winningChunk": {
+      "path": "nist-800-207.pdf",
+      "page": 38,
+      "score": 18.44313350441889,
+      "text": "Attackers may use phishing, social engineering, or a combination of attacks to obtain credentials of valuable accounts. “Valuable” may mean different things based on the attacker’s motivation. For instance, enterprise administrator accounts"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "LIR snippet for sample program.",
+    "questionShape": "what",
+    "extractedSubject": [
+      "sample"
+    ],
+    "subjectTokens": [
+      "sample",
+      "employee",
+      "ssn",
+      "publication"
+    ],
+    "candidateSubjectTokens": [
+      "sample"
+    ],
+    "sourceSelector": {
+      "raw": "Publication 15",
+      "kind": "document-title"
+    },
+    "answerExpectation": "person",
+    "predicate": "secret/identifier",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "sample"
+    ],
+    "rarestPresentInClaim": [
+      "sample"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=sample; rarest-in-claim=sample; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "A-source-reference",
+    "gateThatShouldReject": "source-selector: cited sourceId is not the resolved document",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-personal",
+    "question": "Can you remind me of my home address from the packet?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "omb-m22-09.pdf#19",
+      "nist-800-207.pdf#31",
+      "nist-800-63b.pdf#44",
+      "cisa-ransomware.pdf#26",
+      "resnet.pdf#2",
+      "tracemonkey.pdf#4"
+    ],
+    "winningChunk": {
+      "path": "omb-m22-09.pdf",
+      "page": 19,
+      "score": 18.988482323010018,
+      "text": "28 DotGov Program home page, https://home.dotgov.gov"
+    },
+    "winningDocument": "omb-m22-09.pdf",
+    "spokenText": "Gov Program home page, https://home.dotgov.gov",
+    "questionShape": "what",
+    "extractedSubject": [
+      "home",
+      "packet"
+    ],
+    "subjectTokens": [
+      "remind",
+      "home",
+      "address",
+      "packet"
+    ],
+    "candidateSubjectTokens": [
+      "home"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "person",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "home"
+    ],
+    "rarestPresentInClaim": [
+      "home"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=home,packet; rarest-in-claim=home; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-bert-phone",
+    "question": "What's Jacob Devlin's phone number?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "bert.pdf#1",
+      "lora.pdf#13",
+      "cisa-ransomware.pdf#28",
+      "nist-800-63b.pdf#44",
+      "omb-m22-09.pdf#7",
+      "tracemonkey.pdf#6"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 1,
+      "score": 23.162015317500433,
+      "text": "Jacob Devlin Ming-Wei Chang Kenton Lee Kristina Toutanova"
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Jacob Devlin Ming-Wei Chang Kenton Lee Kristina Toutanova",
+    "questionShape": "what",
+    "extractedSubject": [
+      "jacob",
+      "devlin"
+    ],
+    "subjectTokens": [
+      "jacob",
+      "devlin",
+      "phone",
+      "number"
+    ],
+    "candidateSubjectTokens": [
+      "jacob",
+      "devlin"
+    ],
+    "sourceSelector": {
+      "raw": "Jacob Devlin",
+      "kind": "author"
+    },
+    "answerExpectation": "person",
+    "predicate": "secret/identifier",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "jacob",
+      "devlin"
+    ],
+    "rarestPresentInClaim": [
+      "jacob",
+      "devlin"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=jacob,devlin; rarest-in-claim=jacob,devlin; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "D-answer-type",
+    "gateThatShouldReject": "answer-expectation: claim is not a quantity/person/location/enumeration answer",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-satoshi-kyc",
+    "question": "What KYC vendor does Satoshi recommend?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "bitcoin.pdf#1",
+      "nist-800-207.pdf#57",
+      "cisa-ransomware.pdf#6",
+      "omb-m22-09.pdf#17",
+      "nist-800-63b.pdf#58",
+      "nist-800-145.pdf#1"
+    ],
+    "winningChunk": {
+      "path": "bitcoin.pdf",
+      "page": 1,
+      "score": 13.19219514636577,
+      "text": "Satoshi Nakamoto satoshin@gmx.com www.bitcoin.org"
+    },
+    "winningDocument": "bitcoin.pdf",
+    "spokenText": "Satoshi Nakamoto satoshin@gmx.com www.bitcoin.org",
+    "questionShape": "what",
+    "extractedSubject": [
+      "vendor",
+      "satoshi"
+    ],
+    "subjectTokens": [
+      "kyc",
+      "vendor",
+      "satoshi",
+      "recommend"
+    ],
+    "candidateSubjectTokens": [
+      "satoshi"
+    ],
+    "sourceSelector": {
+      "raw": "Satoshi",
+      "kind": "author"
+    },
+    "answerExpectation": "definition",
+    "predicate": "recommendation",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "satoshi"
+    ],
+    "rarestPresentInClaim": [
+      "satoshi"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": false,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=vendor,satoshi; rarest-in-claim=satoshi; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "C-predicate-relation",
+    "gateThatShouldReject": "predicate/relation: claim lacks the requested relation terms",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-figure-secret",
+    "question": "What unpublished accuracy is hidden in Figure 1?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "bert.pdf#16",
+      "attention.pdf#2",
+      "cisa-ransomware.pdf#16",
+      "tracemonkey.pdf#3",
+      "nist-800-207.pdf#30",
+      "nist-800-63b.pdf#63"
+    ],
+    "winningChunk": {
+      "path": "bert.pdf",
+      "page": 16,
+      "score": 17.33094301481264,
+      "text": "Figure 5 presents MNLI Dev accuracy after fine- we report both fine-tuning and feature-based ap-"
+    },
+    "winningDocument": "bert.pdf",
+    "spokenText": "Figure 5 presents MNLI Dev accuracy after fine- we report both fine-tuning and feature-based ap-",
+    "questionShape": "what",
+    "extractedSubject": [
+      "accuracy",
+      "hidden"
+    ],
+    "subjectTokens": [
+      "unpublished",
+      "accuracy",
+      "hidden",
+      "figure"
+    ],
+    "candidateSubjectTokens": [
+      "accuracy"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": null,
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "accuracy"
+    ],
+    "rarestPresentInClaim": [
+      "accuracy"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=accuracy,hidden; rarest-in-claim=accuracy; shape=what fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  },
+  {
+    "id": "un-retry-fail",
+    "question": "What happens to customer passwords when the retry fails?",
+    "answerable": false,
+    "expectedDocument": null,
+    "expectedPage": null,
+    "retrievedRanks": [
+      "nist-800-63b.pdf#79",
+      "tracemonkey.pdf#6",
+      "nist-800-207.pdf#58",
+      "omb-m22-09.pdf#9",
+      "cisa-ransomware.pdf#10",
+      "nist-800-145.pdf#6"
+    ],
+    "winningChunk": {
+      "path": "nist-800-63b.pdf",
+      "page": 79,
+      "score": 16.168715760364964,
+      "text": "Users’ password choices are very predictable, so attackers are likely to guess passwords that have been successful in the past. These include dictionary words and passwords from previous breaches, such as the “Password1!” example above. For"
+    },
+    "winningDocument": "tracemonkey.pdf",
+    "spokenText": "When the VM fails to finish a trace start- Trace 1 Trace 2 Trace 1 Trace 2",
+    "questionShape": "failure",
+    "extractedSubject": [
+      "customer",
+      "fails"
+    ],
+    "subjectTokens": [
+      "customer",
+      "passwords",
+      "retry",
+      "fails"
+    ],
+    "candidateSubjectTokens": [
+      "fails"
+    ],
+    "sourceSelector": null,
+    "answerExpectation": "definition",
+    "predicate": "failure-outcome",
+    "corpusCoversQuestion": true,
+    "rarestSubjectTerms": [
+      "fails"
+    ],
+    "rarestPresentInClaim": [
+      "fails"
+    ],
+    "claimAdmissible": true,
+    "shapeFit": true,
+    "relationPresentInClaim": true,
+    "whyAdmitted": "documentCorpusCoversQuestion=true; subject=customer,fails; rarest-in-claim=fails; shape=failure fit=true; support last-line passed; first speaking hit wins",
+    "earliestLayer": "E-shared-vocabulary",
+    "gateThatShouldReject": "subject+predicate together: overlapping tokens are not the asked subject",
+    "track": "ADMISSION_FAILURE",
+    "expectedInTop6": false,
+    "expectedPageInTop6": false,
+    "parserBlocked": false
+  }
+]
