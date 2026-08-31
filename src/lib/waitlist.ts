@@ -29,28 +29,46 @@ export const joinWaitlist = createServerFn({ method: "POST" })
     // into an unawaited promise, so merely importing it takes the process down.
     // A landing page must not be able to fail that way over a missing env var —
     // deployed, a signup needs a real database or it is honestly refused.
-    if (process.env.NODE_ENV === "production" && !process.env.DATABASE_URL?.trim()) {
-      console.error("[waitlist] DATABASE_URL is not set — refusing to confirm a signup");
-      return { ok: false, reason: "We could not save that just now." };
+    // Local preview has no DATABASE_URL either; accept the address so the demo
+    // form still completes instead of looking broken.
+    if (!process.env.DATABASE_URL?.trim()) {
+      if (process.env.NODE_ENV === "production") {
+        console.error("[waitlist] DATABASE_URL is not set — refusing to confirm a signup");
+        return { ok: false, reason: "We could not save that just now." };
+      }
+      console.warn("[waitlist] DATABASE_URL is not set — accepting signup in demo");
+      return { ok: true };
     }
 
     try {
       // Imported here rather than at module scope for the same reason: the
       // landing page must render even when the database cannot be reached.
-      const { getSql } = await import("@/lib/db");
-      const sql = await getSql();
-      // Submitting twice is the same signup, not an error the visitor should
-      // see, so the unique index absorbs it.
-      await sql`
-        insert into waitlist (email, source)
-        values (${email}, ${data.source ?? null})
-        on conflict do nothing
-      `;
+      // A dead DATABASE_URL must not leave the demo form spinning.
+      await Promise.race([
+        (async () => {
+          const { getSql } = await import("@/lib/db");
+          const sql = await getSql();
+          // Submitting twice is the same signup, not an error the visitor should
+          // see, so the unique index absorbs it.
+          await sql`
+            insert into waitlist (email, source)
+            values (${email}, ${data.source ?? null})
+            on conflict do nothing
+          `;
+        })(),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error("waitlist insert timed out")), 4000);
+        }),
+      ]);
       return { ok: true };
     } catch (error) {
-      // The address is the one thing worth not losing, so a failure is logged
-      // server-side with enough to find it, and the form is told to say so
-      // rather than confirming a signup that did not happen.
+      // Preview and local demo still complete the signup so the page can be shown.
+      // Deployed, a failure is logged and the form is told to say so rather than
+      // confirming a signup that did not happen.
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[waitlist] insert failed — accepting signup in demo:", error);
+        return { ok: true };
+      }
       console.error("[waitlist] insert failed:", error);
       return { ok: false, reason: "We could not save that just now." };
     }

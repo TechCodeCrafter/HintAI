@@ -47,7 +47,7 @@ export function ContextDetail({ id }: { id: string }) {
       <ContextShell>
         <main className="space-y-4 py-10">
           <h1 className="mh-display text-3xl">That context is gone.</h1>
-          <Link to="/" className="text-accent hover:underline">
+          <Link to="/home" className="text-accent hover:underline">
             Back to contexts
           </Link>
         </main>
@@ -147,7 +147,7 @@ export function ContextDetail({ id }: { id: string }) {
                 data-testid="confirm-delete"
                 onClick={async () => {
                   await deleteStoredContext(id);
-                  void navigate({ to: "/" });
+                  void navigate({ to: "/home" });
                 }}
               >
                 Delete

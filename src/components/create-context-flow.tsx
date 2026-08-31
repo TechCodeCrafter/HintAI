@@ -257,7 +257,7 @@ export function CreateContextFlow() {
         ) : null}
 
         <p className="text-xs text-faint">
-          <Link to="/" className="hover:text-fg">
+          <Link to="/home" className="hover:text-fg">
             Back to contexts
           </Link>
         </p>

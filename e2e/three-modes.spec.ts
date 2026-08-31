@@ -36,4 +36,33 @@ test.describe("Three Answer Modes", () => {
     const card = await waitForCard(page, { badge: "From your docs" });
     await expect(card.getByTestId("card-citation")).toBeVisible();
   });
+
+  test("mode buttons persist the chosen mode", async ({ page }) => {
+    await openCockpit(page);
+    await setMode(page, "assisted");
+    await expect(page.getByTestId("mode-assisted")).toHaveAttribute("data-active", "true");
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem("ground.answerMode")))
+      .toBe("assisted");
+    await setMode(page, "grounded");
+    await expect(page.getByTestId("mode-grounded")).toHaveAttribute("data-active", "true");
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem("ground.answerMode")))
+      .toBe("grounded");
+  });
+
+  test("silence replaces the previous answer instead of stacking it", async ({ page }) => {
+    await openCockpit(page);
+    await setMode(page, "grounded");
+    await typeQuestion(page, "Why does that retry three times?");
+    const card = await waitForCard(page, { allowNull: false });
+    await expect(card.getByTestId("card-say")).toContainText("three");
+
+    await typeQuestion(page, "What is the weather in Paris today?");
+    await expect(card.getByTestId("card-reason")).toBeVisible();
+    await expect(card.getByTestId("card-say")).toHaveCount(0);
+    await expect(card.getByTestId("card-reason")).toHaveText("Nothing in this pack cites that.");
+    await expect(card).not.toContainText("MAX_ATTEMPTS");
+    await expect(card).not.toContainText("payment gateway");
+  });
 });

@@ -389,7 +389,7 @@ function WaitlistForm({ id }: { id: string }) {
 
   if (state === "done") {
     return (
-      <p className="flex items-center gap-2 text-sm text-accent" role="status">
+      <p className="flex items-center gap-2 text-sm text-accent" data-testid="waitlist-done" role="status">
         <Check aria-hidden className="size-4" />
         You're on the list. We'll be in touch before the first calls go live.
       </p>
@@ -407,6 +407,7 @@ function WaitlistForm({ id }: { id: string }) {
           type="email"
           inputMode="email"
           autoComplete="email"
+          data-testid={`${id}-input`}
           className="mh-field sm:flex-1"
           placeholder="Enter your email"
           value={email}
@@ -415,7 +416,12 @@ function WaitlistForm({ id }: { id: string }) {
             if (state === "error") setState("idle");
           }}
         />
-        <button type="submit" className="mh-cta inline-flex items-center justify-center gap-2" disabled={!valid || state === "sending"}>
+        <button
+          type="submit"
+          data-testid={`${id}-submit`}
+          className="mh-cta inline-flex items-center justify-center gap-2"
+          disabled={!valid || state === "sending"}
+        >
           {state === "sending" ? (
             <Loader2 aria-hidden className="size-4 animate-spin" />
           ) : (
@@ -446,7 +452,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export function MeetHintLanding() {
   return (
-    <div className="mh-page min-h-dvh text-fg">
+    <div className="mh-page min-h-dvh text-fg" data-testid="landing">
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         <header className="flex items-center justify-between gap-4 py-6">
           <div className="flex items-center gap-2.5">
@@ -455,7 +461,7 @@ export function MeetHintLanding() {
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <a href="/app" className="mh-chip hover:text-fg">
+            <a href="/home" className="mh-chip hover:text-fg">
               Try MeetHint
               <ArrowRight aria-hidden className="size-3.5 text-accent" />
             </a>
@@ -483,7 +489,7 @@ export function MeetHintLanding() {
                 <WaitlistForm id="hero-email" />
                 <p className="text-sm text-muted">
                   Or{" "}
-                  <a href="/app" className="text-accent underline-offset-4 hover:underline">
+                  <a href="/home" className="text-accent underline-offset-4 hover:underline">
                     open the app
                   </a>{" "}
                   and try it on a local folder.
@@ -613,7 +619,7 @@ export function MeetHintLanding() {
 
         <footer className="flex flex-col gap-2 border-t border-line py-8 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
           <span>meethint.ai — indexed on your machine</span>
-          <a href="/app" className="hover:text-fg">
+          <a href="/home" className="hover:text-fg">
             Open app
           </a>
         </footer>

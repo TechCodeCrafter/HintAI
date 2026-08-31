@@ -495,7 +495,7 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
             </button>
           ))}
           <div className="context-menu-rule" />
-          <a href="/" className="context-option" onClick={() => setOpen(false)}>
+          <a href="/home" className="context-option" onClick={() => setOpen(false)}>
             Your contexts
           </a>
           <a href="/create" className="context-option" onClick={() => setOpen(false)}>
@@ -925,16 +925,19 @@ function CardPane({
   const card = useGround((s) => s.card);
   const lastAnswerMode = useGround((s) => s.lastAnswerMode);
   const pack = useGround((s) => s.pack);
-  const ledger = useGround((s) => s.ledger);
   const search = useGround((s) => s.search);
   const searchReady = useGround((s) => s.contextStatus === "ready");
   const heardQuestion = useGround((s) => s.heardQuestion);
-  const theySaid = heardQuestion ?? (card?.query || null);
+  const theySaid = card?.query || heardQuestion;
   const chips = useMemo(() => questionChips(pack), [pack]);
   const [copied, setCopied] = useState(false);
   // The inline excerpt can only be shown for evidence that is in a file.
   const citedFile = card?.citations.find(isFileCitation);
   const cited = pack.files.find((f) => f.path === citedFile?.path);
+  const speaking = Boolean(card?.say);
+  const shownMode = card?.answerMode ?? lastAnswerMode;
+  const assisted = shownMode === "assisted" && speaking;
+  const cardKey = `${card?.query ?? ""}|${card?.say ?? ""}|${card?.reason ?? ""}|${card?.latencyMs ?? 0}`;
 
   function copySay() {
     if (!card?.say) return;
@@ -943,99 +946,105 @@ function CardPane({
     window.setTimeout(() => setCopied(false), 1400);
   }
 
-  const shownMode = card?.answerMode ?? lastAnswerMode;
-  const assisted = shownMode === "assisted" && Boolean(card?.say);
+  const citations =
+    card && !assisted && card.citations.length > 0 ? (
+      <ul className="space-y-2">
+        {card.citations.map((c) => {
+          const opensFile = Boolean(citedPath(c));
+          const opensPdf = isDocumentCitation(c) && !overlay;
+          const opens = opensFile || opensPdf;
+          return (
+            <li key={c.evidenceId ?? citationText(c)} className="min-w-0" data-testid="card-citation">
+              <button
+                type="button"
+                onClick={opens ? () => onOpenCited(c) : undefined}
+                disabled={!opens}
+                className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs enabled:hover:border-accent disabled:cursor-default"
+              >
+                {isDocumentCitation(c) ? (
+                  <FileText className="mt-0.5 size-3.5 shrink-0 text-muted" />
+                ) : (
+                  <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
+                )}
+                <span className="min-w-0">
+                  <span className="block break-all font-mono text-fg">{citationText(c)}</span>
+                  {c.label ? (
+                    <span className="mt-0.5 block break-words text-muted">{c.label}</span>
+                  ) : null}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    ) : null;
 
   return (
     <section
-      className={cn("ground-panel", card?.say && `card-mode-${shownMode}`)}
+      className={cn("ground-panel", speaking && `card-mode-${shownMode}`)}
       data-fit="content"
       data-testid="card"
-      data-answer-mode={card?.say ? shownMode : undefined}
+      data-answer-mode={speaking ? shownMode : undefined}
     >
       <div className="ground-head">
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
           <span>Card</span>
-          {card?.say ? <AnswerModeBadge mode={shownMode} /> : null}
+          {speaking ? <AnswerModeBadge mode={shownMode} /> : null}
         </span>
         <span className="ground-hint tabular-nums">
           {card ? `${card.latencyMs}ms${refining ? " · polishing" : ""}` : "Say this"}
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
-        {theySaid ? (
-          <div className="mb-5 min-w-0 rounded-md border border-line bg-input px-3 py-3">
-            <p className="ground-hint">Heard</p>
-            <p className="mt-2 font-serif text-base leading-snug text-body">{theySaid}</p>
-          </div>
-        ) : null}
-        {card?.say ? (
-          <div className="space-y-5">
-            <p className="ground-hint">You say · Say this</p>
-            <p
-              data-testid="card-say"
-              className={cn(
-                "font-serif leading-snug text-fg",
-                compact ? "text-2xl md:text-3xl" : "text-xl md:text-2xl",
-              )}
-            >
-              {card.say}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="ghost" size="sm" className="border-accent text-fg" onClick={copySay}>
-                {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-                {copied ? "Copied" : "Copy"}
-              </Button>
+        <div key={cardKey} className="flex min-w-0 flex-col gap-5">
+          {theySaid ? (
+            <div className="min-w-0 rounded-md border border-line bg-input px-3 py-3">
+              <p className="ground-hint">Heard</p>
+              <p className="mt-2 font-serif text-base leading-snug text-body">{theySaid}</p>
             </div>
-            {assisted ? (
-              <p className="text-xs text-muted">General knowledge. Verify before using.</p>
-            ) : null}
-            <ul className="space-y-2">
-              {!assisted &&
-                card.citations.map((c) => {
-                  const opensFile = Boolean(citedPath(c));
-                  const opensPdf = isDocumentCitation(c) && !overlay;
-                  const opens = opensFile || opensPdf;
-                  return (
-                    <li key={c.evidenceId ?? citationText(c)} className="min-w-0" data-testid="card-citation">
-                      <button
-                        type="button"
-                        onClick={opens ? () => onOpenCited(c) : undefined}
-                        disabled={!opens}
-                        className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs enabled:hover:border-accent disabled:cursor-default"
-                      >
-                        {isDocumentCitation(c) ? (
-                          <FileText className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                        ) : (
-                          <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                        )}
-                        <span className="min-w-0">
-                          <span className="block break-all font-mono text-fg">{citationText(c)}</span>
-                          {c.label ? (
-                            <span className="mt-0.5 block break-words text-muted">{c.label}</span>
-                          ) : null}
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-            </ul>
-            {compact && cited && citedFile && !assisted ? (
-              <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
-                {cited.content
-                  .split("\n")
-                  .slice(Math.max(0, citedFile.line - 3), citedFile.line + 5)
-                  .join("\n")}
-              </pre>
-            ) : null}
-          </div>
-        ) : (
-          <p className="font-serif text-lg italic text-body">
-            {card?.reason ??
-              "Room is the transcript. A question about this pack becomes You say. Small talk stays in Room."}
-          </p>
-        )}
+          ) : null}
+          {speaking ? (
+            <div className="space-y-5">
+              <p className="ground-hint">You say · Say this</p>
+              <p
+                data-testid="card-say"
+                className={cn(
+                  "font-serif leading-snug text-fg",
+                  compact ? "text-2xl md:text-3xl" : "text-xl md:text-2xl",
+                )}
+              >
+                {card?.say}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="ghost" size="sm" className="border-accent text-fg" onClick={copySay}>
+                  {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                  {copied ? "Copied" : "Copy"}
+                </Button>
+              </div>
+              {assisted ? (
+                <p className="text-xs text-muted">General knowledge. Verify before using.</p>
+              ) : null}
+              {citations}
+              {compact && cited && citedFile && !assisted ? (
+                <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
+                  {cited.content
+                    .split("\n")
+                    .slice(Math.max(0, citedFile.line - 3), citedFile.line + 5)
+                    .join("\n")}
+                </pre>
+              ) : null}
+            </div>
+          ) : (
+            <div className="space-y-5">
+              <p data-testid="card-reason" className="font-serif text-lg italic text-body">
+                {card?.reason ??
+                  "Room is the transcript. A question about this pack becomes You say. Small talk stays in Room."}
+              </p>
+              {citations}
+            </div>
+          )}
+        </div>
         <div className="space-y-3 rounded-md border border-line bg-input px-3 py-3">
           <p className="ground-hint">Try a question</p>
           <div className="flex min-w-0 flex-wrap gap-2">
@@ -1056,15 +1065,6 @@ function CardPane({
               pack.commits.length === 0 && pack.id !== "northstar-payments" ? pack.name : undefined
             }
           />
-          {ledger.length > 0 ? (
-            <ul className="space-y-1 text-xs text-faint">
-              {ledger.slice(0, 3).map((row, i) => (
-                <li key={`${row.at}-${i}`} className="flex min-w-0 gap-2">
-                  <span className="min-w-0 flex-1 truncate text-muted">{row.say ?? "silence"}</span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </div>
       </div>
     </section>

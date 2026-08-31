@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as HomeRouteImport } from './routes/home'
 import { Route as RelayRouteImport } from './routes/relay'
 import { Route as SoonRouteImport } from './routes/soon'
 import { Route as ContextIdRouteImport } from './routes/context.$id'
@@ -33,6 +34,11 @@ const AppRoute = AppRouteImport.update({
 const CreateRoute = CreateRouteImport.update({
   id: '/create',
   path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelayRoute = RelayRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/create': typeof CreateRoute
+  '/home': typeof HomeRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
   '/context/$id': typeof ContextIdRouteWithChildren
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/create': typeof CreateRoute
+  '/home': typeof HomeRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
   '/eval/viewer': typeof EvalViewerRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/create': typeof CreateRoute
+  '/home': typeof HomeRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
   '/context/$id': typeof ContextIdRouteWithChildren
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/create'
+    | '/home'
     | '/relay'
     | '/soon'
     | '/context/$id'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/create'
+    | '/home'
     | '/relay'
     | '/soon'
     | '/eval/viewer'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/create'
+    | '/home'
     | '/relay'
     | '/soon'
     | '/context/$id'
@@ -149,6 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
   CreateRoute: typeof CreateRoute
+  HomeRoute: typeof HomeRoute
   RelayRoute: typeof RelayRoute
   SoonRoute: typeof SoonRoute
   ContextIdRoute: typeof ContextIdRouteWithChildren
@@ -176,6 +189,13 @@ declare module '@tanstack/react-router' {
       path: '/create'
       fullPath: '/create'
       preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/relay': {
@@ -250,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
   CreateRoute: CreateRoute,
+  HomeRoute: HomeRoute,
   RelayRoute: RelayRoute,
   SoonRoute: SoonRoute,
   ContextIdRoute: ContextIdRouteWithChildren,

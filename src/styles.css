@@ -307,6 +307,8 @@ html[data-theme="light"] .mh-chip {
 }
 
 .answer-mode-control {
+  position: relative;
+  z-index: 20;
   display: inline-flex;
   align-items: center;
   gap: 0.15rem;
@@ -314,17 +316,24 @@ html[data-theme="light"] .mh-chip {
   padding: 0.2rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-line);
+  pointer-events: auto;
 }
 
 .answer-mode-option {
+  position: relative;
+  z-index: 21;
   display: inline-flex;
   min-height: 2.25rem;
   align-items: center;
   gap: 0.35rem;
+  border: 0;
+  background: transparent;
   border-radius: var(--radius-xs);
   padding: 0 0.55rem;
   font-size: 11px;
   color: var(--color-muted);
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .answer-mode-option.is-on {

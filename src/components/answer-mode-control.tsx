@@ -1,3 +1,5 @@
+"use client";
+
 import { ANSWER_MODES, modeLabel, type AnswerMode } from "@/lib/search/answer-mode";
 import { cn } from "@/lib/cn";
 import { useGround } from "@/lib/store";
@@ -6,10 +8,14 @@ export function AnswerModeControl() {
   const mode = useGround((s) => s.answerMode);
   const setAnswerMode = useGround((s) => s.setAnswerMode);
 
+  function pick(next: AnswerMode) {
+    setAnswerMode(next);
+  }
+
   return (
     <div
       className="answer-mode-control"
-      role="radiogroup"
+      role="group"
       aria-label="Answer mode"
     >
       {ANSWER_MODES.map((item) => {
@@ -18,17 +24,25 @@ export function AnswerModeControl() {
           <button
             key={item.id}
             type="button"
-            role="radio"
-            aria-checked={on}
+            aria-pressed={on}
             title={item.hint}
             data-mode={item.id}
             data-testid={`mode-${item.id}`}
             data-active={on ? "true" : undefined}
             className={cn("answer-mode-option", on && "is-on")}
-            onClick={() => setAnswerMode(item.id)}
+            onPointerDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              pick(item.id);
+            }}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              pick(item.id);
+            }}
           >
             <span className={cn("answer-mode-dot", `is-${item.id}`)} aria-hidden="true" />
-            <span className="hidden md:inline">{item.label}</span>
+            <span>{item.label}</span>
           </button>
         );
       })}

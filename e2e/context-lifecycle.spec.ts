@@ -3,7 +3,7 @@ import { installE2eMocks, typeQuestion, waitForCard, waitForIndexing } from "./f
 
 test("Create context, add files, search, delete", async ({ page }) => {
   await installE2eMocks(page);
-  await page.goto("/");
+  await page.goto("/home");
   await page.getByTestId("create-context-button").click();
   await page.getByTestId("context-type-work").click();
   await page.getByTestId("context-name").fill("Test Project");
@@ -43,7 +43,7 @@ export const MAX_ATTEMPTS = 3;
   const card = await waitForCard(page, { allowNull: false });
   await expect(card.getByTestId("card-say")).toContainText("three");
 
-  await page.goto("/");
+  await page.goto("/home");
   await page.getByRole("link", { name: "Test Project" }).click();
   await page.getByTestId("delete-context").click();
   await page.getByTestId("confirm-delete").click();
