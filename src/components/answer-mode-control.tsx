@@ -29,7 +29,7 @@ export function AnswerModeControl() {
             data-mode={item.id}
             data-testid={`mode-${item.id}`}
             data-active={on ? "true" : undefined}
-            className={cn("answer-mode-option", on && "is-on")}
+            className={cn("answer-mode-option", `is-${item.id}`, on && "is-on")}
             onPointerDown={(event) => {
               event.preventDefault();
               event.stopPropagation();
