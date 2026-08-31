@@ -43,6 +43,7 @@ export type IndexTimings = {
   chunkBuildMs: number;
   assembleMs: number;
   vocabMs: number;
+  embedMs: number;
   totalMs: number;
 };
 

@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MeetHintLanding } from "@/components/meethint-landing";
+import { ContextHome } from "@/components/context-home";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MeetHint — the meeting just became searchable" },
+      { title: "MeetHint — your knowledge, right when you need it" },
       {
         name: "description",
         content:
-          "Live retrieval over the material you bring. Someone asks about a service you last touched fourteen months ago; MeetHint finds the note, the PR, and the line, and cites the file. Nothing generated.",
+          "Create a context from the material you work with. MeetHint cites a line from that material when the room asks.",
       },
     ],
   }),
@@ -16,5 +16,5 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
-  return <MeetHintLanding />;
+  return <ContextHome />;
 }

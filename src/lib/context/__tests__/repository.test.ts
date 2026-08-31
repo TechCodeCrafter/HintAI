@@ -64,12 +64,13 @@ afterEach(() => {
 
 test("context ids are random UUIDs, not folder names", async () => {
   for (const { name, repo } of repos()) {
-    const created = await repo.createContext({ name: "backend" });
+    const created = await repo.createContext({ name: "backend", kind: "work" });
     assert.match(created.id, /^[0-9a-f-]{36}$/, name);
     assert.notEqual(created.id, "backend");
     assert.notEqual(created.id, "folder-backend");
     assert.equal(created.sourceCount, 0);
     assert.equal(created.status, "indexing");
+    assert.equal(created.kind, "work", name);
   }
 });
 

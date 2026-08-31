@@ -20,6 +20,7 @@ import {
   Zap,
   Square,
 } from "lucide-react";
+import { AnswerModeBadge, AnswerModeControl } from "@/components/answer-mode-control";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
@@ -37,7 +38,7 @@ import { useGround } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
 
-export function Cockpit() {
+export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const armed = useGround((s) => s.armed);
   const playing = useGround((s) => s.playing);
   const overlay = useGround((s) => s.overlay);
@@ -99,12 +100,12 @@ export function Cockpit() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("overlay") === "1") setOverlay(true);
-    void useGround.getState().boot().then(() => {
+    void useGround.getState().boot(contextId).then(() => {
       if (params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
     });
-  }, [setOverlay]);
+  }, [contextId, setOverlay]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -171,6 +172,7 @@ export function Cockpit() {
   return (
     <div
       className="cockpit-shell text-fg"
+      data-testid="cockpit"
       data-context-status={contextStatus}
       data-context-updating={contextUpdating ? "true" : undefined}
     >
@@ -226,6 +228,7 @@ export function Cockpit() {
               <Zap className="size-4" />
               <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
             </Button>
+            <AnswerModeControl />
             <ContextSwitcher folderRef={folderRef} />
             <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
             <input
@@ -492,6 +495,13 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
             </button>
           ))}
           <div className="context-menu-rule" />
+          <a href="/" className="context-option" onClick={() => setOpen(false)}>
+            Your contexts
+          </a>
+          <a href="/create" className="context-option" onClick={() => setOpen(false)}>
+            <Plus className="size-3.5 shrink-0" />
+            Create context
+          </a>
           <button
             type="button"
             className="context-option"
@@ -720,7 +730,7 @@ function RepoPane() {
             })}
           </ul>
         </div>
-        <div className="ground-code mx-2 mb-2 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <div className="ground-code mx-2 mb-2 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" data-testid="file-viewer">
           {openDocument ? (
             <PdfPane />
           ) : file ? (
@@ -872,6 +882,7 @@ function TranscriptPane() {
           <p className="ground-hint">Question</p>
           <textarea
             ref={queryRef}
+            data-testid="search-input"
             value={typedQuery}
             onChange={(e) => setTypedQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -912,6 +923,7 @@ function CardPane({
   overlay: boolean;
 }) {
   const card = useGround((s) => s.card);
+  const lastAnswerMode = useGround((s) => s.lastAnswerMode);
   const pack = useGround((s) => s.pack);
   const ledger = useGround((s) => s.ledger);
   const search = useGround((s) => s.search);
@@ -931,17 +943,24 @@ function CardPane({
     window.setTimeout(() => setCopied(false), 1400);
   }
 
+  const shownMode = card?.answerMode ?? lastAnswerMode;
+  const assisted = shownMode === "assisted" && Boolean(card?.say);
+
   return (
-    <section className="ground-panel" data-fit="content">
+    <section
+      className={cn("ground-panel", card?.say && `card-mode-${shownMode}`)}
+      data-fit="content"
+      data-testid="card"
+      data-answer-mode={card?.say ? shownMode : undefined}
+    >
       <div className="ground-head">
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
           <span>Card</span>
+          {card?.say ? <AnswerModeBadge mode={shownMode} /> : null}
         </span>
         <span className="ground-hint tabular-nums">
-          {card
-            ? `${card.latencyMs}ms · ${card.source}${refining ? " · refining" : ""}`
-            : "Say this"}
+          {card ? `${card.latencyMs}ms${refining ? " · polishing" : ""}` : "Say this"}
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
@@ -955,6 +974,7 @@ function CardPane({
           <div className="space-y-5">
             <p className="ground-hint">You say · Say this</p>
             <p
+              data-testid="card-say"
               className={cn(
                 "font-serif leading-snug text-fg",
                 compact ? "text-2xl md:text-3xl" : "text-xl md:text-2xl",
@@ -968,36 +988,40 @@ function CardPane({
                 {copied ? "Copied" : "Copy"}
               </Button>
             </div>
+            {assisted ? (
+              <p className="text-xs text-muted">General knowledge. Verify before using.</p>
+            ) : null}
             <ul className="space-y-2">
-              {card.citations.map((c) => {
-                const opensFile = Boolean(citedPath(c));
-                const opensPdf = isDocumentCitation(c) && !overlay;
-                const opens = opensFile || opensPdf;
-                return (
-                  <li key={c.evidenceId ?? citationText(c)} className="min-w-0">
-                    <button
-                      type="button"
-                      onClick={opens ? () => onOpenCited(c) : undefined}
-                      disabled={!opens}
-                      className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs enabled:hover:border-accent disabled:cursor-default"
-                    >
-                      {isDocumentCitation(c) ? (
-                        <FileText className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                      ) : (
-                        <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                      )}
-                      <span className="min-w-0">
-                        <span className="block break-all font-mono text-fg">{citationText(c)}</span>
-                        {c.label ? (
-                          <span className="mt-0.5 block break-words text-muted">{c.label}</span>
-                        ) : null}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
+              {!assisted &&
+                card.citations.map((c) => {
+                  const opensFile = Boolean(citedPath(c));
+                  const opensPdf = isDocumentCitation(c) && !overlay;
+                  const opens = opensFile || opensPdf;
+                  return (
+                    <li key={c.evidenceId ?? citationText(c)} className="min-w-0" data-testid="card-citation">
+                      <button
+                        type="button"
+                        onClick={opens ? () => onOpenCited(c) : undefined}
+                        disabled={!opens}
+                        className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs enabled:hover:border-accent disabled:cursor-default"
+                      >
+                        {isDocumentCitation(c) ? (
+                          <FileText className="mt-0.5 size-3.5 shrink-0 text-muted" />
+                        ) : (
+                          <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
+                        )}
+                        <span className="min-w-0">
+                          <span className="block break-all font-mono text-fg">{citationText(c)}</span>
+                          {c.label ? (
+                            <span className="mt-0.5 block break-words text-muted">{c.label}</span>
+                          ) : null}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
             </ul>
-            {compact && cited && citedFile ? (
+            {compact && cited && citedFile && !assisted ? (
               <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
                 {cited.content
                   .split("\n")

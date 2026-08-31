@@ -13,6 +13,7 @@ import {
   readSavedPack,
 } from "@/lib/context/migration";
 import { getContextRepository, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
+import type { CreateContextInput } from "@/lib/context/repository";
 import type { NormalizedDocument } from "@/lib/document/types";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
@@ -20,7 +21,10 @@ import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { isDocumentHit } from "@/lib/repo/types";
-import { refinePayload, shouldRefine } from "@/lib/search/refine-payload";
+import { isAnswerMode, nextAnswerAction, type AnswerMode } from "@/lib/search/answer-mode";
+import { assistCard } from "@/lib/search/assist";
+import { polishCard } from "@/lib/search/polish";
+import { shouldRefine } from "@/lib/search/refine-payload";
 import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import { localCard } from "@/lib/search/local-card";
@@ -34,7 +38,7 @@ import {
   liveQuestionFromTranscript,
   looksLikeQuestion,
 } from "@/lib/search/question";
-import { buildChunks, packVocabulary, retrieve } from "@/lib/search/retrieve";
+import { buildChunks, packVocabulary, retrieveHits } from "@/lib/search/retrieve";
 import { shapeOf } from "@/lib/search/intent";
 import { contentWords, normalizeSpokenQuestion } from "@/lib/search/spoken";
 import { subjectTerms } from "@/lib/search/subject";
@@ -43,6 +47,25 @@ import { threadAlive, threadFrom, withdrawReplay, type ThreadContext } from "@/l
 export { readSavedPack };
 
 const SESSION_KEY = "ground.session";
+const ANSWER_MODE_KEY = "ground.answerMode";
+
+function readAnswerMode(): AnswerMode {
+  try {
+    const raw = localStorage.getItem(ANSWER_MODE_KEY);
+    if (isAnswerMode(raw)) return raw;
+  } catch {
+    /* ignore */
+  }
+  return "grounded";
+}
+
+function persistAnswerMode(mode: AnswerMode) {
+  try {
+    localStorage.setItem(ANSWER_MODE_KEY, mode);
+  } catch {
+    /* ignore quota */
+  }
+}
 const HERO_QUERY = "Why does that retry three times?";
 const WEAK_PACK = "This pack is mostly CI/config. Open the src folder, not the repo root.";
 
@@ -83,6 +106,8 @@ type GroundState = {
   playing: boolean;
   overlay: boolean;
   autoAnswer: boolean;
+  answerMode: AnswerMode;
+  lastAnswerMode: AnswerMode;
   sharingCall: boolean;
   searching: boolean;
   refining: boolean;
@@ -112,6 +137,7 @@ type GroundState = {
   disarm: () => void;
   setOverlay: (value: boolean) => void;
   setAutoAnswer: (value: boolean) => void;
+  setAnswerMode: (mode: AnswerMode) => void;
   setSharingCall: (value: boolean) => void;
   setTypedQuery: (q: string) => void;
   setHeardQuestion: (q: string | null) => void;
@@ -123,8 +149,12 @@ type GroundState = {
   setAsrStatus: (status: GroundState["asrStatus"]) => void;
   setAsrNote: (note: string) => void;
   setListenError: (text: string | null, blocked?: GroundState["listenBlocked"]) => void;
-  boot: () => Promise<void>;
+  boot: (preferredId?: string) => Promise<void>;
   activateContext: (id: string) => Promise<void>;
+  createNamedContext: (input: CreateContextInput) => Promise<string>;
+  attachFolderToContext: (contextId: string, list: FileList | File[]) => Promise<void>;
+  deleteStoredContext: (id: string) => Promise<void>;
+  refreshContexts: () => Promise<void>;
   hydratePack: (pack: RepoPack) => void;
   playMeeting: () => void;
   stopMeeting: () => void;
@@ -291,10 +321,6 @@ function isTyping(): boolean {
   return active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable;
 }
 
-function hitPayload(hits: Hit[]) {
-  return refinePayload(hits);
-}
-
 const NORTHSTAR_CHUNKS = buildChunks(NORTHSTAR);
 
 export const useGround = create<GroundState>((set, get) => ({
@@ -314,6 +340,8 @@ export const useGround = create<GroundState>((set, get) => ({
   playing: false,
   overlay: false,
   autoAnswer: true,
+  answerMode: typeof localStorage === "undefined" ? "grounded" : readAnswerMode(),
+  lastAnswerMode: "grounded",
   sharingCall: false,
   searching: false,
   refining: false,
@@ -361,6 +389,10 @@ export const useGround = create<GroundState>((set, get) => ({
   },
   setOverlay: (value) => set({ overlay: value }),
   setAutoAnswer: (value) => set({ autoAnswer: value }),
+  setAnswerMode: (mode) => {
+    persistAnswerMode(mode);
+    set({ answerMode: mode });
+  },
   setSharingCall: (value) => set({ sharingCall: value }),
   setTypedQuery: (q) => set({ typedQuery: q }),
   setHeardQuestion: (q) => set({ heardQuestion: q }),
@@ -418,7 +450,7 @@ export const useGround = create<GroundState>((set, get) => ({
       listenBlocked: text ? (blocked ?? get().listenBlocked) : null,
       listening: text ? false : get().listening,
     }),
-  boot: async () => {
+  boot: async (preferredId) => {
     const epoch = nextHydrationEpoch();
     set({
       contextStatus: "booting",
@@ -438,8 +470,9 @@ export const useGround = create<GroundState>((set, get) => ({
         });
         return;
       }
-      const remembered = readActiveContextId();
+      const remembered = preferredId ?? readActiveContextId();
       const target =
+        (preferredId ? contexts.find((item) => item.id === preferredId) : null) ??
         contexts.find((item) => item.id === remembered) ??
         (migration.kind === "migrated" ? migration.context : null) ??
         contexts[0] ??
@@ -462,6 +495,97 @@ export const useGround = create<GroundState>((set, get) => ({
       });
     }
   },
+  createNamedContext: async (input) => {
+    const repo = getContextRepository();
+    const context = await repo.createContext(input);
+    persistActiveContextId(context.id);
+    const contexts = await listStoredContexts();
+    set({
+      contexts,
+      activeContextId: context.id,
+      sources: [],
+    });
+    return context.id;
+  },
+  attachFolderToContext: async (contextId, list) => {
+    const epoch = nextHydrationEpoch();
+    searchEpoch += 1;
+    set({
+      loadingFolder: true,
+      folderError: null,
+      contextStatus: "hydrating",
+      contextError: null,
+      hydrationEpoch: epoch,
+      activeContextId: contextId,
+      ...clearSessionOnSwitch(),
+    });
+    persistActiveContextId(contextId);
+    try {
+      const { pack: raw, skipped } = await packFromFiles(list);
+      if (raw.files.length === 0) {
+        if (epoch !== hydrationEpoch) return;
+        set({
+          loadingFolder: false,
+          contextStatus: "ready",
+          folderError: "No readable source files in that selection. Pick source, markdown, or text.",
+        });
+        return;
+      }
+      const { context } = await persistPackAsContext(raw, getContextRepository(), { contextId });
+      if (epoch !== hydrationEpoch) return;
+      const hydrated = await indexContext(getContextRepository(), context.id, {
+        isCancelled: () => epoch !== hydrationEpoch,
+      });
+      if (epoch !== hydrationEpoch || hydrated.cancelled) return;
+      persistActiveContextId(context.id);
+      const contexts = await listStoredContexts();
+      const sources = await getContextRepository().listSources(context.id);
+      if (epoch !== hydrationEpoch) return;
+      set({
+        contexts,
+        activeContextId: context.id,
+        sources,
+        pack: hydrated.pack,
+        chunks: hydrated.chunks,
+        vocab: hydrated.vocab,
+        loadingFolder: false,
+        openFile: hydrated.openFile,
+        contextStatus: "ready",
+        contextUpdating: false,
+        ingestProgress: null,
+        contextError: null,
+        folderError: hydrated.weak ? WEAK_PACK : skipped ? `Skipped ${skipped} files that are not source or text.` : null,
+      });
+    } catch {
+      if (epoch !== hydrationEpoch) return;
+      set({
+        loadingFolder: false,
+        contextStatus: "error",
+        contextError: "Could not save that material.",
+        folderError: "Could not read those files.",
+      });
+    }
+  },
+  deleteStoredContext: async (id) => {
+    const repo = getContextRepository();
+    await repo.deleteContext(id);
+    const contexts = await listStoredContexts();
+    if (get().activeContextId === id) {
+      persistActiveContextId(null);
+      const next = contexts[0];
+      if (next) {
+        await get().activateContext(next.id);
+        return;
+      }
+      get().resetPack();
+      set({ contexts });
+      return;
+    }
+    set({ contexts });
+  },
+  refreshContexts: async () => {
+    set({ contexts: await listStoredContexts() });
+  },
   activateContext: async (id) => {
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
@@ -478,6 +602,34 @@ export const useGround = create<GroundState>((set, get) => ({
         const repo = getContextRepository();
         const sources = await repo.listSources(id);
         if (epoch !== hydrationEpoch) return;
+        if (sources.length === 0) {
+          const record = await repo.getContext(id);
+          if (epoch !== hydrationEpoch) return;
+          persistActiveContextId(id);
+          const contexts = await listStoredContexts();
+          if (epoch !== hydrationEpoch) return;
+          set({
+            activeContextId: id,
+            contexts,
+            sources,
+            pack: {
+              id,
+              name: record?.name ?? "Context",
+              description: record?.description ?? "No sources yet",
+              files: [],
+              commits: [],
+            },
+            chunks: [],
+            vocab: new Set(),
+            openFile: null,
+            contextStatus: "ready",
+            contextUpdating: false,
+            ingestProgress: null,
+            contextError: null,
+            folderError: "This context has no material yet. Add a folder, files, or PDFs.",
+          });
+          return;
+        }
         const serveNow = canServeSnapshot(sources);
         const pending = pdfWorkPending(sources);
 
@@ -914,7 +1066,6 @@ export const useGround = create<GroundState>((set, get) => ({
     );
     const demo = state.pack.id === "northstar-payments";
     const query = (explicit ?? (typed || fromRoom || (demo && !state.armed ? HERO_QUERY : ""))).trim();
-    const fast = Boolean(opts?.fast);
     if (!query) {
       set({
         ...applyCard(
@@ -937,54 +1088,58 @@ export const useGround = create<GroundState>((set, get) => ({
     // Card is still given the raw utterance, so what the room sees is what the
     // room said.
     const canonical = normalizeSpokenQuestion(query).canonical;
-    const hits = retrieve(canonical, state.chunks);
+    const hits = await retrieveHits(canonical, state.chunks);
     const documents = await documentsForHits(hits);
     const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
       document: (sourceId) => documents.get(sourceId),
     });
     const resolved = Boolean(opts?.resolved);
     const fallback = withdrawReplay(composed, state.thread, resolved);
+    const grounded: Card = { ...fallback, answerMode: "grounded" };
+    const action = nextAnswerAction({
+      mode: state.answerMode,
+      evidenceSpeaks: Boolean(fallback.say),
+      mayPolish: shouldRefine(hits, fallback),
+    });
     set((s) => ({
       searching: false,
-      refining: !fast,
+      refining: action !== "grounded",
       typedQuery: explicit ?? s.typedQuery,
-      ...applyCard(fallback, s.openDocument),
-      openFile: firstCitedPath(fallback) ?? s.openFile,
-      ledger: [{ query, say: fallback.say, at: Date.now() }, ...s.ledger].slice(0, 12),
-      thread: nextThread(s.thread, { query, canonical, card: fallback, pack: s.pack, resolved }),
+      lastAnswerMode: "grounded",
+      ...applyCard(grounded, s.openDocument),
+      openFile: firstCitedPath(grounded) ?? s.openFile,
+      ledger: [{ query, say: grounded.say, at: Date.now() }, ...s.ledger].slice(0, 12),
+      thread: nextThread(s.thread, { query, canonical, card: grounded, pack: s.pack, resolved }),
     }));
     persist({
-      card: fallback,
+      card: grounded,
       armed: get().armed,
       listening: get().listening,
       searching: false,
     });
 
-    if (fast) return;
-    if (!shouldRefine(hits, fallback)) {
+    if (action === "grounded") {
       set({ refining: false });
       return;
     }
 
     void (async () => {
       try {
-        const { craftCard } = await import("@/lib/ai/cardsmith");
-        const remote = await Promise.race([
-          craftCard({ data: { query, hits: hitPayload(hits) } }),
-          new Promise<never>((_, reject) => {
-            window.setTimeout(() => reject(new Error("timeout")), 4000);
-          }),
-        ]);
+        const card =
+          action === "polish"
+            ? await polishCard(grounded, query, hits, t0)
+            : await assistCard(query, get().thread, t0);
         if (epoch !== searchEpoch) return;
-        if (!remote.say) return;
-        const latencyMs = Math.round(performance.now() - t0);
-        const card: Card = { ...remote, query, latencyMs };
+        if (!card.say || (action === "polish" && card.say === grounded.say)) {
+          set({ refining: false, lastAnswerMode: "grounded" });
+          return;
+        }
+        const finalMode = card.answerMode ?? (action === "polish" ? "polished" : "assisted");
         set((s) => ({
+          lastAnswerMode: finalMode,
           ...applyCard(card, s.openDocument),
           openFile: firstCitedPath(card) ?? s.openFile,
           ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger.slice(1)].slice(0, 12),
-          // The thread tracks what was actually said, so the replay guard
-          // compares against this line and not the local draft it replaced.
           thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
         }));
         persist({
@@ -1001,6 +1156,10 @@ export const useGround = create<GroundState>((set, get) => ({
     })();
   },
 }));
+
+if (typeof window !== "undefined") {
+  window.useGround = useGround as unknown as Window["useGround"];
+}
 
 export function readRelaySession(): SessionWire | null {
   try {

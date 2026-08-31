@@ -4,6 +4,10 @@ dist
 .vercel
 .tanstack
 *.log
+test-results
+playwright-report
+blob-report
+.playwright
 .env
 .env.local
 .env*.local
