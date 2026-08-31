@@ -2,7 +2,13 @@ import type { NormalizedDocument } from "../document/types.ts";
 import type { IndexedChunk } from "../repo/types.ts";
 import type { IndexedSourceRecord } from "./index-types.ts";
 import type { PdfParsePatch } from "./source-write.ts";
-import type { ContextRecord, SourceDraft, StoredSource, UpsertDraft } from "./types.ts";
+import type { ContextKind, ContextRecord, SourceDraft, StoredSource, UpsertDraft } from "./types.ts";
+
+export type CreateContextInput = {
+  name: string;
+  description?: string;
+  kind?: ContextKind;
+};
 
 /**
  * Persistence seam. Search, the store, and the cockpit talk to this — never
@@ -11,7 +17,7 @@ import type { ContextRecord, SourceDraft, StoredSource, UpsertDraft } from "./ty
 export type ContextRepository = {
   listContexts(): Promise<ContextRecord[]>;
   getContext(id: string): Promise<ContextRecord | null>;
-  createContext(input: { name: string; description?: string }): Promise<ContextRecord>;
+  createContext(input: CreateContextInput): Promise<ContextRecord>;
   replaceSources(contextId: string, drafts: SourceDraft[]): Promise<StoredSource[]>;
   upsertSources(contextId: string, drafts: UpsertDraft[]): Promise<StoredSource[]>;
   listSources(contextId: string): Promise<StoredSource[]>;

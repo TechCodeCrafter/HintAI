@@ -15,6 +15,8 @@ import {
   type IndexReport,
   type IndexedSourceRecord,
 } from "./index-types.ts";
+import type { VectorStore } from "../search/vector-store.ts";
+import { setVectorStore } from "../search/vector-access.ts";
 import {
   CHUNKER_VERSION,
   DOCUMENT_CHUNKER_VERSION,
@@ -23,6 +25,7 @@ import {
   PDF_PARSER_VERSION,
   RETRIEVAL_INDEX_VERSION,
   STORED_CHUNK_SCHEMA,
+  USE_HYBRID_RETRIEVAL,
 } from "./index-versions.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { isPdfSource, isTextSource, type PdfStoredSource, type StoredSource, type TextStoredSource } from "./types.ts";
@@ -41,6 +44,11 @@ export type IndexOptions = {
   skipPrune?: boolean;
   /** When this returns true, persist may still finish; the caller must not apply. */
   isCancelled?: () => boolean;
+  /** Overrides USE_STRUCTURED_CHUNKER for this index pass. Does not bump CHUNKER_VERSION. */
+  structured?: boolean;
+  /** Generate embeddings after chunks are built. Defaults to USE_HYBRID_RETRIEVAL. */
+  embed?: boolean;
+  vectorStore?: VectorStore;
 };
 
 export type IndexedRuntime = HydratedRuntime & {
@@ -94,14 +102,17 @@ export function chunkEquivalent(a: IndexedChunk, b: IndexedChunk): boolean {
   );
 }
 
-export function chunksFromFile(file: RepoFile): Chunk[] {
-  return buildChunks({
-    id: "file",
-    name: "file",
-    description: "",
-    files: [file],
-    commits: [],
-  });
+export function chunksFromFile(file: RepoFile, options?: { structured?: boolean }): Chunk[] {
+  return buildChunks(
+    {
+      id: "file",
+      name: "file",
+      description: "",
+      files: [file],
+      commits: [],
+    },
+    options,
+  );
 }
 
 export function commitChunks(pack: RepoPack): Chunk[] {
@@ -190,8 +201,9 @@ async function rebuildSource(
   file: RepoFile,
   chunkerVersion: number,
   indexVersion: number,
+  structured?: boolean,
 ): Promise<Chunk[]> {
-  const chunks = chunksFromFile(file);
+  const chunks = chunksFromFile(file, { structured });
   const record: IndexedSourceRecord = {
     id: indexedSourceKey(source.contextId, source.id),
     contextId: source.contextId,
@@ -261,6 +273,7 @@ export async function indexContext(
     chunkBuildMs: 0,
     assembleMs: 0,
     vocabMs: 0,
+    embedMs: 0,
     totalMs: 0,
   };
 
@@ -312,7 +325,7 @@ export async function indexContext(
       }
     }
     const buildStart = nowMs();
-    const built = await rebuildSource(repo, source, file, chunkerVersion, indexVersion);
+    const built = await rebuildSource(repo, source, file, chunkerVersion, indexVersion, options.structured);
     timings.chunkBuildMs += nowMs() - buildStart;
     assembled.push(...built);
     stats.rebuiltSourceCount += 1;
@@ -332,6 +345,22 @@ export async function indexContext(
   const commits = commitChunks(use);
   assembled.push(...commits);
   timings.assembleMs = nowMs() - assembleStart;
+
+  const shouldEmbed = options.embed ?? USE_HYBRID_RETRIEVAL;
+  if (shouldEmbed) {
+    const embedStart = nowMs();
+    try {
+      const store = options.vectorStore ?? (await defaultVectorStore());
+      if (store) {
+        setVectorStore(store);
+        const { embedIndexedChunks } = await import("../search/embed-chunks.ts");
+        await embedIndexedChunks(assembled, store);
+      }
+    } catch {
+      // Embedding is a sidecar. A failed encode must not block searchability.
+    }
+    timings.embedMs = nowMs() - embedStart;
+  }
 
   const vocabStart = nowMs();
   const vocab = packVocabulary(assembled);
@@ -435,6 +464,15 @@ async function indexPdfSource(
   stats.rebuiltChunkCount += chunks.length;
   if (!known) stats.newSourceCount += 1;
   return orderDocumentChunks(chunks);
+}
+
+async function defaultVectorStore(): Promise<VectorStore | null> {
+  try {
+    const { createIndexedDbVectorStore } = await import("./storage/vector-store-indexeddb.ts");
+    return createIndexedDbVectorStore();
+  } catch {
+    return null;
+  }
 }
 
 function nowMs(): number {

@@ -3,6 +3,19 @@
  * changes. Cache hits require both to match the rows that were written.
  */
 export const CHUNKER_VERSION = 1;
+/**
+ * Structured symbol chunks are implemented but off. Do not bump
+ * CHUNKER_VERSION until this flips — cached window rows stay valid.
+ */
+export const USE_STRUCTURED_CHUNKER = false;
+/**
+ * Hybrid lexical + semantic retrieve is implemented but off. The live path
+ * stays the existing synchronous IDF retrieve(). Do not flip until eval
+ * shows equal-or-better safety (wrong-intent 0, unsupported 0).
+ */
+export const USE_HYBRID_RETRIEVAL = false;
+/** Bump when the embedding model or pooling contract changes. */
+export const EMBEDDING_VERSION = 1;
 export const RETRIEVAL_INDEX_VERSION = 1;
 export const STORED_CHUNK_SCHEMA = 1;
 

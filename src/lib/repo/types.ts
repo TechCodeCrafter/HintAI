@@ -1,5 +1,6 @@
 import type { DocumentChunk } from "@/lib/document/types";
 import type { Evidence } from "@/lib/search/evidence";
+import type { SymbolKind } from "./parser";
 
 export type { DocumentChunk };
 
@@ -39,6 +40,10 @@ export type FileChunk = {
    */
   startOffset: number;
   text: string;
+  /** Present on structured code chunks; window chunks omit it. */
+  symbol?: string;
+  symbolKind?: SymbolKind;
+  language?: string;
   sha?: string;
   author?: string;
   date?: string;
@@ -52,8 +57,15 @@ export type Chunk = FileChunk;
 /** Anything retrieve() and packVocabulary() may see. */
 export type IndexedChunk = Chunk | DocumentChunk;
 
-export type FileHit = FileChunk & { score: number };
-export type DocumentHit = DocumentChunk & { score: number };
+export type RetrievalScores = {
+  score: number;
+  lexicalScore?: number;
+  semanticScore?: number;
+  signals?: string[];
+};
+
+export type FileHit = FileChunk & RetrievalScores;
+export type DocumentHit = DocumentChunk & RetrievalScores;
 export type Hit = FileHit | DocumentHit;
 
 export function isDocumentChunk(chunk: IndexedChunk): chunk is DocumentChunk {
@@ -126,7 +138,9 @@ export type Card = {
   evidence?: Evidence[];
   query: string;
   latencyMs: number;
-  source: "grok" | "local";
+  source: "grok" | "local" | "polished" | "assisted";
+  /** Which product mode produced this answer. Absent on older local cards. */
+  answerMode?: "grounded" | "polished" | "assisted";
 };
 
 export type Utterance = {

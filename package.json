@@ -17,6 +17,8 @@
     "typecheck": "tsc --noEmit",
     "check:auth": "node scripts/check-auth-invariant.mjs",
     "test": "node scripts/run-tests.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "qa": "node scripts/ground-qa.mjs",
     "score": "node scripts/make-score.mjs",
     "voice": "node scripts/make-voice.mjs",
@@ -85,6 +87,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@playwright/test": "^1.62.1",
     "@remotion/cli": "^4.0.518",
     "@remotion/google-fonts": "^4.0.518",
     "@types/node": "^22.16.5",

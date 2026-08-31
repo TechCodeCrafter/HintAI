@@ -13,12 +13,17 @@ export const STORED_CHUNK_INDEXES = "id, contextId, sourceId, [contextId+sourceI
 export const SOURCE_BLOB_INDEXES = "id, contextId, sourceId, contentHash, [sourceId+contentHash], [contextId+sourceId]";
 export const NORMALIZED_DOCUMENT_INDEXES = "id, contextId, sourceId, contentHash, [sourceId+contentHash]";
 
-export function newContextRecord(input: { name: string; description?: string }): ContextRecord {
+export function newContextRecord(input: {
+  name: string;
+  description?: string;
+  kind?: ContextRecord["kind"];
+}): ContextRecord {
   const now = Date.now();
   return {
     id: crypto.randomUUID(),
     name: input.name,
     description: input.description,
+    kind: input.kind,
     createdAt: now,
     updatedAt: now,
     sourceCount: 0,

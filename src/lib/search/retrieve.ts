@@ -1,4 +1,12 @@
-import type { Chunk, Hit, IndexedChunk, RepoPack } from "@/lib/repo/types";
+import type { Chunk, Hit, IndexedChunk, RepoFile, RepoPack } from "@/lib/repo/types";
+import { USE_HYBRID_RETRIEVAL, USE_STRUCTURED_CHUNKER } from "../context/index-versions.ts";
+import { createRegexParser } from "../repo/parsers/regex-parser.ts";
+import { buildStructuredChunks } from "../repo/structured-chunks.ts";
+import { combineScores, RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
+import { closeRetrieval, noteRetrieval, type RetrievalTrace } from "./retrieval-trace.ts";
+import { semanticRetrieve } from "./semantic-retrieve.ts";
+import type { VectorStore } from "./vector-store.ts";
+import { getVectorStore } from "./vector-access.ts";
 
 const STOP = new Set([
   "a",
@@ -147,36 +155,30 @@ export function isEvidencePath(path: string): boolean {
   return !JUNK_PATH.test(path) && !GENERATED_PATH.test(path) && !TOOLING_PATH.test(path);
 }
 
-export function buildChunks(pack: RepoPack): Chunk[] {
+const REGEX_PARSER = createRegexParser();
+
+export type BuildChunksOptions = {
+  /** Overrides USE_STRUCTURED_CHUNKER for tests and the eval harness. */
+  structured?: boolean;
+};
+
+export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk[] {
+  const useStructured = options?.structured ?? USE_STRUCTURED_CHUNKER;
   const chunks: Chunk[] = [];
   for (const file of pack.files) {
     if (!isEvidencePath(file.path)) continue;
-    const lines = file.content.replace(/\n$/, "").split("\n");
-    // Offset of the first character of each line, so a chunk knows its position
-    // in the file and a claim read out of one can be cited against the file.
-    const lineStart: number[] = [];
-    let cursor = 0;
-    for (const line of lines) {
-      lineStart.push(cursor);
-      cursor += line.length + 1;
+    if (useStructured) {
+      try {
+        const structured = buildStructuredChunks(file, REGEX_PARSER);
+        if (structured && structured.length > 0) {
+          chunks.push(...structured);
+          continue;
+        }
+      } catch {
+        // Parser failure must not prevent the file from being searchable.
+      }
     }
-    const size = 28;
-    const step = 22;
-    for (let start = 0; start < lines.length; start += step) {
-      const slice = lines.slice(start, start + size);
-      const startLine = start + 1;
-      const endLine = start + slice.length;
-      chunks.push({
-        id: `${file.path}:${startLine}-${endLine}`,
-        kind: "code",
-        path: file.path,
-        startLine,
-        endLine,
-        startOffset: lineStart[start],
-        text: slice.join("\n"),
-      });
-      if (endLine >= lines.length) break;
-    }
+    chunks.push(...buildWindowChunks(file));
   }
   for (const commit of pack.commits) {
     chunks.push({
@@ -193,6 +195,38 @@ export function buildChunks(pack: RepoPack): Chunk[] {
       pr: commit.pr,
       message: commit.message,
     });
+  }
+  return chunks;
+}
+
+/** Existing 28-line windows, 22-line step. Kept as the default and the fallback. */
+function buildWindowChunks(file: RepoFile): Chunk[] {
+  const chunks: Chunk[] = [];
+  const lines = file.content.replace(/\n$/, "").split("\n");
+  // Offset of the first character of each line, so a chunk knows its position
+  // in the file and a claim read out of one can be cited against the file.
+  const lineStart: number[] = [];
+  let cursor = 0;
+  for (const line of lines) {
+    lineStart.push(cursor);
+    cursor += line.length + 1;
+  }
+  const size = 28;
+  const step = 22;
+  for (let start = 0; start < lines.length; start += step) {
+    const slice = lines.slice(start, start + size);
+    const startLine = start + 1;
+    const endLine = start + slice.length;
+    chunks.push({
+      id: `${file.path}:${startLine}-${endLine}`,
+      kind: "code",
+      path: file.path,
+      startLine,
+      endLine,
+      startOffset: lineStart[start],
+      text: slice.join("\n"),
+    });
+    if (endLine >= lines.length) break;
   }
   return chunks;
 }
@@ -362,20 +396,22 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
       const weight = idf.get(term) ?? 1;
       score += weight * 2.4 * sat(freq(idx.pathWords, term));
       score += weight * 1.6 * sat(freq(idx.bodyWords, term));
-      if (term === idx.stem || term === idx.base) score += weight * 4;
+      if (term === idx.stem || term === idx.base) score += weight * RETRIEVAL_WEIGHTS.filenameMatch;
       if (chunk.kind === "why") score += weight * 1.1 * sat(freq(idx.bodyWords, term));
     }
     for (const name of named) {
-      if (idx.path.endsWith(name) || idx.path.includes(`/${name}`) || idx.base === name) score += 12;
+      if (idx.path.endsWith(name) || idx.path.includes(`/${name}`) || idx.base === name) {
+        score += RETRIEVAL_WEIGHTS.pathMatch;
+      }
     }
     if (
       (wantsApi || wantsShape) &&
       /(?:^|\/)(api|main|app|index|server|router|client|store)(?:\/|\.[a-z]+$)/.test(idx.path)
     ) {
-      score += 3.4;
+      score += RETRIEVAL_WEIGHTS.apiShapePath;
     }
     if ((named.length > 0 || wantsShape) && chunk.kind === "code" && chunk.startLine <= 8) {
-      score += 1.6;
+      score += RETRIEVAL_WEIGHTS.fileHead;
     }
     if (score > 0) scored.push({ ...chunk, score });
   }
@@ -426,6 +462,115 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   }
   // Diversity decides which chunks survive; score decides how they rank.
   return out.sort((a, b) => b.score - a.score);
+}
+
+/**
+ * Live retrieve entry. Flag off (default) is the existing synchronous IDF
+ * path. Flag on uses hybridRetrieve when a VectorStore is installed.
+ */
+export async function retrieveHits(
+  query: string,
+  chunks: IndexedChunk[],
+  limit = 6,
+  vectorStore: VectorStore | null = getVectorStore(),
+  hybrid = USE_HYBRID_RETRIEVAL,
+): Promise<Hit[]> {
+  if (hybrid && vectorStore) return hybridRetrieve(query, chunks, vectorStore, limit);
+  return retrieve(query, chunks, limit);
+}
+
+export async function hybridRetrieve(
+  query: string,
+  chunks: IndexedChunk[],
+  vectorStore: VectorStore,
+  limit = 6,
+): Promise<Hit[]> {
+  const cached = await vectorStore.get(chunks.map((chunk) => chunk.id));
+  if (cached.size === 0) {
+    const lexical = retrieve(query, chunks, limit);
+    finishTraces(query, lexical.map((hit) => ({ ...hit, lexicalScore: hit.score, semanticScore: 0 })));
+    return lexical;
+  }
+
+  const lexicalHits = retrieve(query, chunks, limit * 2);
+  let semanticHits: Hit[] = [];
+  try {
+    semanticHits = await semanticRetrieve(query, chunks, vectorStore, limit * 2);
+  } catch {
+    // A failed embed must not hide lexical evidence.
+  }
+  if (semanticHits.length === 0) {
+    const lexical = retrieve(query, chunks, limit);
+    finishTraces(query, lexical.map((hit) => ({ ...hit, lexicalScore: hit.score, semanticScore: 0 })));
+    return lexical;
+  }
+
+  const byId = new Map<string, Hit>();
+  for (const hit of lexicalHits) {
+    byId.set(hit.id, { ...hit, lexicalScore: hit.score, semanticScore: 0 });
+  }
+  for (const hit of semanticHits) {
+    const existing = byId.get(hit.id);
+    if (existing) {
+      existing.semanticScore = hit.score;
+      existing.score = combineScores(existing.lexicalScore ?? 0, existing.semanticScore ?? 0);
+    } else {
+      byId.set(hit.id, {
+        ...hit,
+        lexicalScore: 0,
+        semanticScore: hit.score,
+        score: hit.score,
+      });
+    }
+  }
+
+  const combined = finishTraces(query, [...byId.values()]);
+  combined.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+  return combined.slice(0, limit);
+}
+
+function finishTraces(query: string, hits: Hit[]): Hit[] {
+  const traces: RetrievalTrace[] = [];
+  const scored = hits.map((hit) => {
+    const lexicalScore = hit.lexicalScore ?? (hit.semanticScore ? 0 : hit.score);
+    const semanticScore = hit.semanticScore ?? 0;
+    const signals = signalsFor(query, hit, lexicalScore, semanticScore);
+    const next = { ...hit, lexicalScore, semanticScore, signals };
+    const trace = {
+      chunkId: hit.id,
+      lexicalScore,
+      semanticScore,
+      combinedScore: next.score,
+      signals,
+    };
+    traces.push(trace);
+    noteRetrieval(trace);
+    return next;
+  });
+  closeRetrieval(traces.sort((a, b) => b.combinedScore - a.combinedScore));
+  return scored;
+}
+
+function signalsFor(query: string, hit: Hit, lexicalScore: number, semanticScore: number): string[] {
+  const signals: string[] = [];
+  if (lexicalScore > 0) signals.push("lexical");
+  if (semanticScore > 0) signals.push("semantic");
+  const q = query.toLowerCase();
+  const named = namedPaths(query);
+  const path = hit.path.toLowerCase();
+  const base = path.split("/").pop() ?? path;
+  if (named.some((name) => path.endsWith(name) || path.includes(`/${name}`) || base === name)) {
+    signals.push("path-match");
+  }
+  if ("symbol" in hit && typeof hit.symbol === "string" && hit.symbol && q.includes(hit.symbol.toLowerCase())) {
+    signals.push("symbol-match");
+  }
+  if ("heading" in hit && typeof hit.heading === "string" && hit.heading && q.includes(hit.heading.toLowerCase())) {
+    signals.push("heading-match");
+  }
+  const phrase = q.replace(/[^a-z0-9 ]+/g, " ").trim();
+  if (phrase.length >= 8 && hit.text.toLowerCase().includes(phrase)) signals.push("exact-phrase");
+  return signals;
 }
 
 export function lineInFile(pack: RepoPack, path: string, needle: string): number {

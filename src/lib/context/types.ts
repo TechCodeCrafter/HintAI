@@ -1,9 +1,13 @@
 export const CONTEXT_SCHEMA_VERSION = 1;
 
+/** Why this context exists. Optional so older IndexedDB rows stay valid. */
+export type ContextKind = "work" | "course" | "client" | "presentation" | "research" | "other";
+
 export type ContextRecord = {
   id: string;
   name: string;
   description?: string;
+  kind?: ContextKind;
   createdAt: number;
   updatedAt: number;
   /** Cached count. Truth is `sources WHERE contextId = X`. */

@@ -11,9 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as CreateRouteImport } from './routes/create'
 import { Route as RelayRouteImport } from './routes/relay'
 import { Route as SoonRouteImport } from './routes/soon'
+import { Route as ContextIdRouteImport } from './routes/context.$id'
 import { Route as EvalViewerRouteImport } from './routes/eval.viewer'
+import { Route as ContextIdIndexRouteImport } from './routes/context.$id.index'
+import { Route as ContextIdAskRouteImport } from './routes/context.$id.ask'
+import { Route as ContextIdLiveRouteImport } from './routes/context.$id.live'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelayRoute = RelayRouteImport.update({
@@ -35,47 +45,113 @@ const SoonRoute = SoonRouteImport.update({
   path: '/soon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContextIdRoute = ContextIdRouteImport.update({
+  id: '/context/$id',
+  path: '/context/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EvalViewerRoute = EvalViewerRouteImport.update({
   id: '/eval/viewer',
   path: '/eval/viewer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContextIdIndexRoute = ContextIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ContextIdRoute,
+} as any)
+const ContextIdAskRoute = ContextIdAskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => ContextIdRoute,
+} as any)
+const ContextIdLiveRoute = ContextIdLiveRouteImport.update({
+  id: '/live',
+  path: '/live',
+  getParentRoute: () => ContextIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/create': typeof CreateRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
+  '/context/$id': typeof ContextIdRouteWithChildren
   '/eval/viewer': typeof EvalViewerRoute
+  '/context/$id/ask': typeof ContextIdAskRoute
+  '/context/$id/live': typeof ContextIdLiveRoute
+  '/context/$id/': typeof ContextIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/create': typeof CreateRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
   '/eval/viewer': typeof EvalViewerRoute
+  '/context/$id/ask': typeof ContextIdAskRoute
+  '/context/$id/live': typeof ContextIdLiveRoute
+  '/context/$id': typeof ContextIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/create': typeof CreateRoute
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
+  '/context/$id': typeof ContextIdRouteWithChildren
   '/eval/viewer': typeof EvalViewerRoute
+  '/context/$id/ask': typeof ContextIdAskRoute
+  '/context/$id/live': typeof ContextIdLiveRoute
+  '/context/$id/': typeof ContextIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/relay' | '/soon' | '/eval/viewer'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/create'
+    | '/relay'
+    | '/soon'
+    | '/context/$id'
+    | '/eval/viewer'
+    | '/context/$id/ask'
+    | '/context/$id/live'
+    | '/context/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/relay' | '/soon' | '/eval/viewer'
-  id: '__root__' | '/' | '/app' | '/relay' | '/soon' | '/eval/viewer'
+  to:
+    | '/'
+    | '/app'
+    | '/create'
+    | '/relay'
+    | '/soon'
+    | '/eval/viewer'
+    | '/context/$id/ask'
+    | '/context/$id/live'
+    | '/context/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/create'
+    | '/relay'
+    | '/soon'
+    | '/context/$id'
+    | '/eval/viewer'
+    | '/context/$id/ask'
+    | '/context/$id/live'
+    | '/context/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
+  CreateRoute: typeof CreateRoute
   RelayRoute: typeof RelayRoute
   SoonRoute: typeof SoonRoute
+  ContextIdRoute: typeof ContextIdRouteWithChildren
   EvalViewerRoute: typeof EvalViewerRoute
 }
 
@@ -95,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relay': {
       id: '/relay'
       path: '/relay'
@@ -109,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SoonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/context/$id': {
+      id: '/context/$id'
+      path: '/context/$id'
+      fullPath: '/context/$id'
+      preLoaderRoute: typeof ContextIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/eval/viewer': {
       id: '/eval/viewer'
       path: '/eval/viewer'
@@ -116,14 +206,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EvalViewerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/context/$id/': {
+      id: '/context/$id/'
+      path: '/'
+      fullPath: '/context/$id/'
+      preLoaderRoute: typeof ContextIdIndexRouteImport
+      parentRoute: typeof ContextIdRoute
+    }
+    '/context/$id/ask': {
+      id: '/context/$id/ask'
+      path: '/ask'
+      fullPath: '/context/$id/ask'
+      preLoaderRoute: typeof ContextIdAskRouteImport
+      parentRoute: typeof ContextIdRoute
+    }
+    '/context/$id/live': {
+      id: '/context/$id/live'
+      path: '/live'
+      fullPath: '/context/$id/live'
+      preLoaderRoute: typeof ContextIdLiveRouteImport
+      parentRoute: typeof ContextIdRoute
+    }
   }
 }
+
+interface ContextIdRouteChildren {
+  ContextIdAskRoute: typeof ContextIdAskRoute
+  ContextIdLiveRoute: typeof ContextIdLiveRoute
+  ContextIdIndexRoute: typeof ContextIdIndexRoute
+}
+
+const ContextIdRouteChildren: ContextIdRouteChildren = {
+  ContextIdAskRoute: ContextIdAskRoute,
+  ContextIdLiveRoute: ContextIdLiveRoute,
+  ContextIdIndexRoute: ContextIdIndexRoute,
+}
+
+const ContextIdRouteWithChildren = ContextIdRoute._addFileChildren(
+  ContextIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
+  CreateRoute: CreateRoute,
   RelayRoute: RelayRoute,
   SoonRoute: SoonRoute,
+  ContextIdRoute: ContextIdRouteWithChildren,
   EvalViewerRoute: EvalViewerRoute,
 }
 export const routeTree = rootRouteImport

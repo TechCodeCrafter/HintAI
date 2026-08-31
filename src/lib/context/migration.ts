@@ -74,6 +74,8 @@ export type MigrationResult =
 /**
  * One-shot move from localStorage `ground.pack` into IndexedDB.
  * The legacy key is deleted only after a read-back fingerprint matches.
+ * The context hub also offers this when a leftover pack is still present;
+ * live-session boot() runs it automatically.
  */
 export async function migrateLegacyPack(
   repo: ContextRepository = getContextRepository(),

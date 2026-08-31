@@ -1,8 +1,9 @@
 import type { RepoPack } from "../repo/types.ts";
 import { draftsFromPack, fingerprintPack, fingerprintsMatch, hydrateContext, packFromSources } from "./hydrate.ts";
-import type { ContextRepository } from "./repository.ts";
+import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { createIndexedDbRepository } from "./storage/indexeddb.ts";
-import type { ContextRecord } from "./types.ts";
+import type { ContextKind, ContextRecord } from "./types.ts";
+import { isPdfSource, isTextSource } from "./types.ts";
 
 let repository: ContextRepository | null = null;
 
@@ -20,6 +21,20 @@ export async function listStoredContexts(repo: ContextRepository = getContextRep
   return repo.listContexts();
 }
 
+export type PersistPackOptions = {
+  /** Attach to an existing context instead of creating one. */
+  contextId?: string;
+  kind?: ContextKind;
+};
+
+export type ContextSummary = {
+  context: ContextRecord;
+  fileCount: number;
+  pdfCount: number;
+  chunkCount: number;
+  symbolCount: number;
+};
+
 /**
  * Persist a pruned pack as a Context + sources, then read it back and compare
  * file count, paths, and hashes before returning.
@@ -27,20 +42,55 @@ export async function listStoredContexts(repo: ContextRepository = getContextRep
 export async function persistPackAsContext(
   pack: RepoPack,
   repo: ContextRepository = getContextRepository(),
+  options?: PersistPackOptions,
 ): Promise<{ context: ContextRecord; pack: RepoPack }> {
-  const context = await repo.createContext({
-    name: pack.name,
-    description: pack.description,
-  });
+  const existing = options?.contextId ? await repo.getContext(options.contextId) : null;
+  if (options?.contextId && !existing) throw new ContextNotFoundError(options.contextId);
+  const created = existing
+    ? null
+    : await repo.createContext({
+        name: pack.name,
+        description: pack.description,
+        kind: options?.kind,
+      });
+  const context = existing ?? created;
+  if (!context) throw new Error("Could not create a context");
   try {
     await repo.replaceSources(context.id, draftsFromPack(pack));
     const stored = await verifyPersistedPack(repo, context.id, pack);
     const ready = (await repo.getContext(context.id)) ?? { ...context, sourceCount: stored.files.length, status: "ready" as const };
     return { context: ready, pack: stored };
   } catch (error) {
-    await repo.deleteContext(context.id).catch(() => undefined);
+    if (created) await repo.deleteContext(created.id).catch(() => undefined);
     throw error;
   }
+}
+
+export async function listContextSummaries(
+  repo: ContextRepository = getContextRepository(),
+): Promise<ContextSummary[]> {
+  const contexts = await repo.listContexts();
+  const summaries: ContextSummary[] = [];
+  for (const context of contexts) {
+    const sources = await repo.listSources(context.id);
+    const ledgers = await repo.listIndexed(context.id);
+    let symbolCount = 0;
+    for (const ledger of ledgers) {
+      const chunks = await repo.readIndexedChunks(context.id, ledger.sourceId, ledger.contentHash);
+      if (!chunks) continue;
+      for (const chunk of chunks) {
+        if ("symbol" in chunk && chunk.symbol) symbolCount += 1;
+      }
+    }
+    summaries.push({
+      context,
+      fileCount: sources.filter(isTextSource).length,
+      pdfCount: sources.filter(isPdfSource).length,
+      chunkCount: ledgers.reduce((sum, row) => sum + row.chunkCount, 0),
+      symbolCount,
+    });
+  }
+  return summaries;
 }
 
 export async function verifyPersistedPack(
