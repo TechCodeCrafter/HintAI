@@ -981,7 +981,7 @@ function CardPane({
 
   return (
     <section
-      className={cn("ground-panel", speaking && `card-mode-${shownMode}`)}
+      className={cn("ground-panel", speaking && "card-mode-on")}
       data-fit="content"
       data-testid="card"
       data-answer-mode={speaking ? shownMode : undefined}

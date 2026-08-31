@@ -5,9 +5,21 @@ export const ANSWER_MODES: ReadonlyArray<{
   label: string;
   hint: string;
 }> = [
-  { id: "grounded", label: "Grounded", hint: "Exact citations from your material only" },
-  { id: "polished", label: "Polished", hint: "Your material, rewritten to sound natural" },
-  { id: "assisted", label: "Assisted", hint: "Suggests answers when your material is silent" },
+  {
+    id: "grounded",
+    label: "Grounded",
+    hint: "Use when you need proof. Speaks only a line already in your files, and stays silent if nothing matches.",
+  },
+  {
+    id: "polished",
+    label: "Polished",
+    hint: "Use when the file has the answer but the wording is too raw to say in the room. Same citation, clearer sentence.",
+  },
+  {
+    id: "assisted",
+    label: "Assisted",
+    hint: "Use when you still want a suggestion if your material is silent. Marks it as general knowledge — verify before using.",
+  },
 ];
 
 export function modeLabel(mode: AnswerMode): string {

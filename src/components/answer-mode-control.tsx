@@ -1,5 +1,6 @@
 "use client";
 
+import * as Tooltip from "@radix-ui/react-tooltip";
 import { ANSWER_MODES, modeLabel, type AnswerMode } from "@/lib/search/answer-mode";
 import { cn } from "@/lib/cn";
 import { useGround } from "@/lib/store";
@@ -13,47 +14,58 @@ export function AnswerModeControl() {
   }
 
   return (
-    <div
-      className="answer-mode-control"
-      role="group"
-      aria-label="Answer mode"
-    >
-      {ANSWER_MODES.map((item) => {
-        const on = mode === item.id;
-        return (
-          <button
-            key={item.id}
-            type="button"
-            aria-pressed={on}
-            title={item.hint}
-            data-mode={item.id}
-            data-testid={`mode-${item.id}`}
-            data-active={on ? "true" : undefined}
-            className={cn("answer-mode-option", `is-${item.id}`, on && "is-on")}
-            onPointerDown={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              pick(item.id);
-            }}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              pick(item.id);
-            }}
-          >
-            <span className={cn("answer-mode-dot", `is-${item.id}`)} aria-hidden="true" />
-            <span>{item.label}</span>
-          </button>
-        );
-      })}
-    </div>
+    <Tooltip.Provider delayDuration={200} skipDelayDuration={120}>
+      <div className="answer-mode-control" role="group" aria-label="Answer mode">
+        {ANSWER_MODES.map((item) => {
+          const on = mode === item.id;
+          return (
+            <Tooltip.Root key={item.id}>
+              <Tooltip.Trigger asChild>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  data-mode={item.id}
+                  data-testid={`mode-${item.id}`}
+                  data-active={on ? "true" : undefined}
+                  className={cn("answer-mode-option", on && "is-on")}
+                  onPointerDown={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    pick(item.id);
+                  }}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    pick(item.id);
+                  }}
+                >
+                  {item.label}
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="answer-mode-tooltip"
+                  side="top"
+                  align="center"
+                  sideOffset={8}
+                  data-testid={`mode-${item.id}-tip`}
+                >
+                  <p className="answer-mode-tooltip-title">{item.label}</p>
+                  <p>{item.hint}</p>
+                  <Tooltip.Arrow className="answer-mode-tooltip-arrow" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          );
+        })}
+      </div>
+    </Tooltip.Provider>
   );
 }
 
 export function AnswerModeBadge({ mode }: { mode: AnswerMode }) {
   return (
-    <span data-testid="card-badge" className={cn("answer-mode-badge", `is-${mode}`)}>
-      <span className={cn("answer-mode-dot", `is-${mode}`)} aria-hidden="true" />
+    <span data-testid="card-badge" className="answer-mode-badge">
       {modeLabel(mode)}
     </span>
   );

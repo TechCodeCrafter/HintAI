@@ -37,6 +37,13 @@ test.describe("Three Answer Modes", () => {
     await expect(card.getByTestId("card-citation")).toBeVisible();
   });
 
+  test("mode buttons explain what each one is for", async ({ page }) => {
+    await openCockpit(page);
+    await page.getByTestId("mode-grounded").hover();
+    await expect(page.getByTestId("mode-grounded-tip")).toContainText("proof");
+    await expect(page.getByTestId("mode-grounded-tip")).toContainText("silent");
+  });
+
   test("mode buttons persist the chosen mode", async ({ page }) => {
     await openCockpit(page);
     await setMode(page, "assisted");
