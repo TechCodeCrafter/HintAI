@@ -15,7 +15,7 @@ export type MockCraftPayload = {
   evidenceSay?: string;
   instruction?: string;
   threadContext?: string | null;
-  task?: "refine" | "polish" | "assist";
+  task?: "refine" | "polish" | "assist" | "answer";
 };
 
 declare global {

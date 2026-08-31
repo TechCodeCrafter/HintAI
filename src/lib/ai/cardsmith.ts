@@ -17,7 +17,7 @@ type Payload = {
   evidenceSay?: string;
   instruction?: string;
   threadContext?: string | null;
-  task?: "refine" | "polish" | "assist";
+  task?: "refine" | "polish" | "assist" | "answer";
 };
 
 function parseJson(raw: string): { say: string | null; citations?: Citation[] } | null {
@@ -66,6 +66,24 @@ function assistSystem(): string {
   );
 }
 
+function answerSystem(): string {
+  return (
+    "You write what someone should say in a live meeting. " +
+    "Reply with JSON only: {\"say\": string}. " +
+    "say is one or two conversational spoken sentences. " +
+    "If the provided documents contain the answer, paraphrase them. Do not read them verbatim. " +
+    "If they do not, answer from general knowledge. " +
+    "Never invent file paths, SHAs, or PR numbers. " +
+    "Never open with 'Based on', 'According to', or any reference to documents or context."
+  );
+}
+
+function parseSpoken(raw: string): string | null {
+  const parsed = parseJson(raw);
+  if (parsed?.say) return sayable(parsed.say);
+  return sayable(raw.replace(/^["“]|["”]$/g, ""));
+}
+
 export const craftCard = createServerFn({ method: "POST" })
   .validator((input: Payload) => input)
   .handler(async ({ data }): Promise<Omit<Card, "latencyMs" | "query">> => {
@@ -74,7 +92,7 @@ export const craftCard = createServerFn({ method: "POST" })
     if (!apiKey) {
       return { say: null, citations: [], source: "grok", reason: "AI is not available" };
     }
-    if (task !== "assist" && data.hits.length === 0) {
+    if (task !== "assist" && task !== "answer" && data.hits.length === 0) {
       return { say: null, citations: [], source: "grok" };
     }
 
@@ -94,7 +112,14 @@ export const craftCard = createServerFn({ method: "POST" })
     if (data.threadContext) userParts.push(`Open thread:\n${data.threadContext}`);
     if (evidence) userParts.push(`Evidence:\n${evidence}`);
 
-    const system = task === "assist" ? assistSystem() : task === "polish" ? polishSystem() : refineSystem();
+    const system =
+      task === "answer"
+        ? answerSystem()
+        : task === "assist"
+          ? assistSystem()
+          : task === "polish"
+            ? polishSystem()
+            : refineSystem();
 
     let res: Response;
     try {
@@ -107,7 +132,7 @@ export const craftCard = createServerFn({ method: "POST" })
         signal: AbortSignal.timeout(3500),
         body: JSON.stringify({
           model: "grok-4.5",
-          temperature: task === "assist" ? 0.3 : 0.2,
+          temperature: task === "assist" || task === "answer" ? 0.3 : 0.2,
           max_tokens: 220,
           messages: [
             { role: "system", content: system },
@@ -126,13 +151,14 @@ export const craftCard = createServerFn({ method: "POST" })
     const body = (await res.json()) as {
       choices?: { message?: { content?: string } }[];
     };
-    const parsed = parseJson(body.choices?.[0]?.message?.content ?? "");
-    const say = sayable(parsed?.say);
+    const raw = body.choices?.[0]?.message?.content ?? "";
+    const parsed = parseJson(raw);
+    const say = task === "answer" ? parseSpoken(raw) : sayable(parsed?.say);
     if (!say) {
       return { say: null, citations: [], source: "grok" };
     }
 
-    if (task === "assist" || task === "polish") {
+    if (task === "assist" || task === "polish" || task === "answer") {
       return {
         say: say.slice(0, 280),
         citations: [],

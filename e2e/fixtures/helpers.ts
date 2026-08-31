@@ -11,7 +11,7 @@ export async function openCockpit(page: Page) {
   });
 }
 
-export async function setMode(page: Page, mode: "grounded" | "polished" | "assisted") {
+export async function setMode(page: Page, mode: "docs" | "free") {
   await page.getByTestId(`mode-${mode}`).click();
 }
 

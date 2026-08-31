@@ -936,7 +936,7 @@ function CardPane({
   const cited = pack.files.find((f) => f.path === citedFile?.path);
   const speaking = Boolean(card?.say);
   const shownMode = card?.answerMode ?? lastAnswerMode;
-  const assisted = shownMode === "assisted" && speaking;
+  const generated = speaking && (shownMode === "free" || shownMode === "assisted");
   const cardKey = `${card?.query ?? ""}|${card?.say ?? ""}|${card?.reason ?? ""}|${card?.latencyMs ?? 0}`;
 
   function copySay() {
@@ -947,7 +947,7 @@ function CardPane({
   }
 
   const citations =
-    card && !assisted && card.citations.length > 0 ? (
+    card && card.citations.length > 0 ? (
       <ul className="space-y-2">
         {card.citations.map((c) => {
           const opensFile = Boolean(citedPath(c));
@@ -993,7 +993,7 @@ function CardPane({
           {speaking ? <AnswerModeBadge mode={shownMode} /> : null}
         </span>
         <span className="ground-hint tabular-nums">
-          {card ? `${card.latencyMs}ms${refining ? " · polishing" : ""}` : "Say this"}
+          {card ? `${card.latencyMs}ms${refining ? " · writing" : ""}` : "Say this"}
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
@@ -1022,11 +1022,11 @@ function CardPane({
                   {copied ? "Copied" : "Copy"}
                 </Button>
               </div>
-              {assisted ? (
+              {generated ? (
                 <p className="text-xs text-muted">General knowledge. Verify before using.</p>
               ) : null}
               {citations}
-              {compact && cited && citedFile && !assisted ? (
+              {compact && cited && citedFile && !generated ? (
                 <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
                   {cited.content
                     .split("\n")

@@ -1,4 +1,4 @@
-export type AnswerMode = "grounded" | "polished" | "assisted";
+export type AnswerMode = "docs" | "free";
 
 export const ANSWER_MODES: ReadonlyArray<{
   id: AnswerMode;
@@ -6,59 +6,36 @@ export const ANSWER_MODES: ReadonlyArray<{
   hint: string;
 }> = [
   {
-    id: "grounded",
-    label: "Grounded",
-    hint: "Use when you need proof. Speaks only a line already in your files, and stays silent if nothing matches.",
+    id: "docs",
+    label: "From my docs",
+    hint: "Retrieve your material, then write a spoken answer. Cites a source when the files cover it.",
   },
   {
-    id: "polished",
-    label: "Polished",
-    hint: "Use when the file has the answer but the wording is too raw to say in the room. Same citation, clearer sentence.",
-  },
-  {
-    id: "assisted",
-    label: "Assisted",
-    hint: "Use when you still want a suggestion if your material is silent. Marks it as general knowledge — verify before using.",
+    id: "free",
+    label: "Freely",
+    hint: "Write a spoken answer from general knowledge. No citations.",
   },
 ];
 
-export function modeLabel(mode: AnswerMode): string {
-  switch (mode) {
-    case "grounded":
-      return "From your docs";
-    case "polished":
-      return "Polished from your docs";
-    case "assisted":
-      return "Suggested";
-  }
-}
-
-export function modeColor(mode: AnswerMode): "green" | "purple" | "blue" {
-  switch (mode) {
-    case "grounded":
-      return "green";
-    case "polished":
-      return "purple";
-    case "assisted":
-      return "blue";
-  }
+export function modeLabel(mode: AnswerMode | "grounded" | "polished" | "assisted"): string {
+  if (mode === "free" || mode === "assisted") return "Generated";
+  return "From your docs";
 }
 
 export function isAnswerMode(value: string | null | undefined): value is AnswerMode {
-  return value === "grounded" || value === "polished" || value === "assisted";
+  return value === "docs" || value === "free";
+}
+
+/** Older sessions stored the three-mode names. */
+export function readStoredAnswerMode(value: string | null | undefined): AnswerMode {
+  if (value === "free" || value === "assisted") return "free";
+  if (value === "docs" || value === "grounded" || value === "polished") return "docs";
+  return "docs";
 }
 
 /**
- * What the LLM layer may do after evidence has already run.
- * Evidence always wins when it speaks. Document cards never polish.
+ * Live search always generates. This only decides whether retrieval may cite.
  */
-export function nextAnswerAction(input: {
-  mode: AnswerMode;
-  evidenceSpeaks: boolean;
-  mayPolish: boolean;
-}): "grounded" | "polish" | "assist" {
-  if (input.evidenceSpeaks) {
-    return input.mode === "polished" && input.mayPolish ? "polish" : "grounded";
-  }
-  return input.mode === "assisted" ? "assist" : "grounded";
+export function shouldCiteFromDocs(mode: AnswerMode): boolean {
+  return mode === "docs";
 }

@@ -9,10 +9,6 @@ export function AnswerModeControl() {
   const mode = useGround((s) => s.answerMode);
   const setAnswerMode = useGround((s) => s.setAnswerMode);
 
-  function pick(next: AnswerMode) {
-    setAnswerMode(next);
-  }
-
   return (
     <Tooltip.Provider delayDuration={200} skipDelayDuration={120}>
       <div className="answer-mode-control" role="group" aria-label="Answer mode">
@@ -31,12 +27,12 @@ export function AnswerModeControl() {
                   onPointerDown={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    pick(item.id);
+                    setAnswerMode(item.id);
                   }}
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    pick(item.id);
+                    setAnswerMode(item.id);
                   }}
                 >
                   {item.label}
@@ -63,7 +59,7 @@ export function AnswerModeControl() {
   );
 }
 
-export function AnswerModeBadge({ mode }: { mode: AnswerMode }) {
+export function AnswerModeBadge({ mode }: { mode: AnswerMode | "grounded" | "polished" | "assisted" }) {
   return (
     <span data-testid="card-badge" className="answer-mode-badge">
       {modeLabel(mode)}

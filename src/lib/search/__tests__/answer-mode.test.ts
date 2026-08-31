@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { modeColor, modeLabel, nextAnswerAction } from "../answer-mode.ts";
+import { modeLabel, readStoredAnswerMode, shouldCiteFromDocs } from "../answer-mode.ts";
 import { applyAssist, silentAssist } from "../assist.ts";
 import { applyPolish } from "../polish.ts";
 import type { Card, FileCitation } from "../../repo/types.ts";
@@ -22,50 +22,24 @@ const evidenceCard: Card = {
   answerMode: "grounded",
 };
 
-test("mode labels and colors are the ones the card shows", () => {
+test("mode labels are the ones the card shows", () => {
+  assert.equal(modeLabel("docs"), "From your docs");
   assert.equal(modeLabel("grounded"), "From your docs");
-  assert.equal(modeLabel("polished"), "Polished from your docs");
-  assert.equal(modeLabel("assisted"), "Suggested");
-  assert.equal(modeColor("grounded"), "green");
-  assert.equal(modeColor("polished"), "purple");
-  assert.equal(modeColor("assisted"), "blue");
+  assert.equal(modeLabel("free"), "Generated");
+  assert.equal(modeLabel("assisted"), "Generated");
 });
 
-test("grounded never polishes or assists", () => {
-  assert.equal(
-    nextAnswerAction({ mode: "grounded", evidenceSpeaks: true, mayPolish: true }),
-    "grounded",
-  );
-  assert.equal(
-    nextAnswerAction({ mode: "grounded", evidenceSpeaks: false, mayPolish: true }),
-    "grounded",
-  );
+test("older three-mode names map onto the two live modes", () => {
+  assert.equal(readStoredAnswerMode("grounded"), "docs");
+  assert.equal(readStoredAnswerMode("polished"), "docs");
+  assert.equal(readStoredAnswerMode("assisted"), "free");
+  assert.equal(readStoredAnswerMode("docs"), "docs");
+  assert.equal(readStoredAnswerMode(null), "docs");
 });
 
-test("polished rewrites only when evidence speaks and polish is allowed", () => {
-  assert.equal(
-    nextAnswerAction({ mode: "polished", evidenceSpeaks: true, mayPolish: true }),
-    "polish",
-  );
-  assert.equal(
-    nextAnswerAction({ mode: "polished", evidenceSpeaks: true, mayPolish: false }),
-    "grounded",
-  );
-  assert.equal(
-    nextAnswerAction({ mode: "polished", evidenceSpeaks: false, mayPolish: true }),
-    "grounded",
-  );
-});
-
-test("assisted uses evidence when it speaks and LLM only when silent", () => {
-  assert.equal(
-    nextAnswerAction({ mode: "assisted", evidenceSpeaks: true, mayPolish: true }),
-    "grounded",
-  );
-  assert.equal(
-    nextAnswerAction({ mode: "assisted", evidenceSpeaks: false, mayPolish: false }),
-    "assist",
-  );
+test("only From my docs may attach citations", () => {
+  assert.equal(shouldCiteFromDocs("docs"), true);
+  assert.equal(shouldCiteFromDocs("free"), false);
 });
 
 test("polish keeps the original citations and evidence", () => {

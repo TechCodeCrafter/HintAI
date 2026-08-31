@@ -21,10 +21,8 @@ import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { isDocumentHit } from "@/lib/repo/types";
-import { isAnswerMode, nextAnswerAction, type AnswerMode } from "@/lib/search/answer-mode";
-import { assistCard } from "@/lib/search/assist";
-import { polishCard } from "@/lib/search/polish";
-import { shouldRefine } from "@/lib/search/refine-payload";
+import { readStoredAnswerMode, shouldCiteFromDocs, type AnswerMode } from "@/lib/search/answer-mode";
+import { generateAnswer } from "@/lib/search/generate-answer";
 import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import { localCard } from "@/lib/search/local-card";
@@ -42,7 +40,7 @@ import { buildChunks, packVocabulary, retrieveHits } from "@/lib/search/retrieve
 import { shapeOf } from "@/lib/search/intent";
 import { contentWords, normalizeSpokenQuestion } from "@/lib/search/spoken";
 import { subjectTerms } from "@/lib/search/subject";
-import { threadAlive, threadFrom, withdrawReplay, type ThreadContext } from "@/lib/search/thread";
+import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread";
 
 export { readSavedPack };
 
@@ -51,12 +49,10 @@ const ANSWER_MODE_KEY = "ground.answerMode";
 
 function readAnswerMode(): AnswerMode {
   try {
-    const raw = localStorage.getItem(ANSWER_MODE_KEY);
-    if (isAnswerMode(raw)) return raw;
+    return readStoredAnswerMode(localStorage.getItem(ANSWER_MODE_KEY));
   } catch {
-    /* ignore */
+    return "docs";
   }
-  return "grounded";
 }
 
 function persistAnswerMode(mode: AnswerMode) {
@@ -340,8 +336,8 @@ export const useGround = create<GroundState>((set, get) => ({
   playing: false,
   overlay: false,
   autoAnswer: true,
-  answerMode: typeof localStorage === "undefined" ? "grounded" : readAnswerMode(),
-  lastAnswerMode: "grounded",
+  answerMode: typeof localStorage === "undefined" ? "docs" : readAnswerMode(),
+  lastAnswerMode: "docs",
   sharingCall: false,
   searching: false,
   refining: false,
@@ -1084,76 +1080,55 @@ export const useGround = create<GroundState>((set, get) => ({
     }
     const epoch = ++searchEpoch;
     const t0 = performance.now();
-    // Retrieval reads the question with its conversational framing removed; the
-    // Card is still given the raw utterance, so what the room sees is what the
-    // room said.
     const canonical = normalizeSpokenQuestion(query).canonical;
-    const hits = await retrieveHits(canonical, state.chunks);
-    const documents = await documentsForHits(hits);
-    const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
-      document: (sourceId) => documents.get(sourceId),
-    });
     const resolved = Boolean(opts?.resolved);
-    const fallback = withdrawReplay(composed, state.thread, resolved);
-    const grounded: Card = { ...fallback, answerMode: "grounded" };
-    const action = nextAnswerAction({
-      mode: state.answerMode,
-      evidenceSpeaks: Boolean(fallback.say),
-      mayPolish: shouldRefine(hits, fallback),
+    set({ searching: true, refining: true, typedQuery: explicit ?? get().typedQuery });
+    const hits = await retrieveHits(canonical, state.chunks);
+    if (epoch !== searchEpoch) return;
+    const threadHistory = state.ledger
+      .slice(0, 3)
+      .map((entry) => (entry.say ? `Q: ${entry.query}\nA: ${entry.say}` : `Q: ${entry.query}`));
+    const generated = await generateAnswer(query, hits, threadHistory, t0, {
+      cite: shouldCiteFromDocs(state.answerMode),
     });
+    if (epoch !== searchEpoch) return;
+
+    let card: Card;
+    if (generated?.say) {
+      card = {
+        say: generated.say,
+        citations: generated.citations,
+        query,
+        latencyMs: generated.latencyMs,
+        source: generated.usedEvidence ? "grok" : "assisted",
+        answerMode: generated.usedEvidence ? "docs" : "free",
+      };
+    } else {
+      const documents = await documentsForHits(hits);
+      const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
+        document: (sourceId) => documents.get(sourceId),
+      });
+      card = {
+        ...composed,
+        answerMode: composed.say ? "docs" : "free",
+      };
+    }
+
     set((s) => ({
       searching: false,
-      refining: action !== "grounded",
-      typedQuery: explicit ?? s.typedQuery,
-      lastAnswerMode: "grounded",
-      ...applyCard(grounded, s.openDocument),
-      openFile: firstCitedPath(grounded) ?? s.openFile,
-      ledger: [{ query, say: grounded.say, at: Date.now() }, ...s.ledger].slice(0, 12),
-      thread: nextThread(s.thread, { query, canonical, card: grounded, pack: s.pack, resolved }),
+      refining: false,
+      lastAnswerMode: card.answerMode === "free" ? "free" : "docs",
+      ...applyCard(card, s.openDocument),
+      openFile: firstCitedPath(card) ?? s.openFile,
+      ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger].slice(0, 12),
+      thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
     }));
     persist({
-      card: grounded,
+      card,
       armed: get().armed,
       listening: get().listening,
       searching: false,
     });
-
-    if (action === "grounded") {
-      set({ refining: false });
-      return;
-    }
-
-    void (async () => {
-      try {
-        const card =
-          action === "polish"
-            ? await polishCard(grounded, query, hits, t0)
-            : await assistCard(query, get().thread, t0);
-        if (epoch !== searchEpoch) return;
-        if (!card.say || (action === "polish" && card.say === grounded.say)) {
-          set({ refining: false, lastAnswerMode: "grounded" });
-          return;
-        }
-        const finalMode = card.answerMode ?? (action === "polish" ? "polished" : "assisted");
-        set((s) => ({
-          lastAnswerMode: finalMode,
-          ...applyCard(card, s.openDocument),
-          openFile: firstCitedPath(card) ?? s.openFile,
-          ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger.slice(1)].slice(0, 12),
-          thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
-        }));
-        persist({
-          card,
-          armed: get().armed,
-          listening: get().listening,
-          searching: false,
-        });
-      } catch {
-        /* keep the grounded local card */
-      } finally {
-        if (epoch === searchEpoch) set({ refining: false });
-      }
-    })();
   },
 }));
 

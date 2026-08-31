@@ -140,7 +140,7 @@ export type Card = {
   latencyMs: number;
   source: "grok" | "local" | "polished" | "assisted";
   /** Which product mode produced this answer. Absent on older local cards. */
-  answerMode?: "grounded" | "polished" | "assisted";
+  answerMode?: "docs" | "free" | "grounded" | "polished" | "assisted";
 };
 
 export type Utterance = {
