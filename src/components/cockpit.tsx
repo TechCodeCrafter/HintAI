@@ -13,6 +13,7 @@ import {
   FolderOpen,
   GitCommitHorizontal,
   Mic,
+  MoreHorizontal,
   Plus,
   Minimize2,
   Play,
@@ -181,126 +182,115 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
       data-context-updating={contextUpdating ? "true" : undefined}
     >
       <header className="shrink-0 border-b border-line px-4 py-3 md:px-8">
-        <div className="mx-auto flex w-full min-w-0 max-w-[1600px] flex-col gap-2 md:flex-row md:items-center">
-          <div className="flex min-w-0 items-center gap-3 md:shrink-0">
-            <GroundMark />
-            <span className="brand-word text-fg">MeetHint</span>
-            <StatusDot on={live} down={false} label={statusLabel} live={live} />
+        <div className="cockpit-header">
+          <div className="cockpit-masthead">
+            <div className="cockpit-brand max-md:w-full">
+              <GroundMark />
+              <span className="brand-word text-fg">MeetHint</span>
+              <StatusDot on={live} down={false} label={statusLabel} live={live} />
+              <Button
+                size="sm"
+                disabled={!searchReady}
+                onClick={() => void search()}
+                className={cn("ml-auto md:hidden", cueSearch && "ring-1 ring-accent/50")}
+              >
+                <Search className="size-4" />
+                Search
+              </Button>
+            </div>
+            <div className="cockpit-cluster" role="group" aria-label="Session">
+              <Button
+                variant={live ? "primary" : "ghost"}
+                size="sm"
+                aria-label={listenLabel}
+                title="Hear you and the computer. The Card is what you say."
+                disabled={!searchReady}
+                onClick={() => {
+                  if (live) {
+                    stopHear();
+                    disarm();
+                    return;
+                  }
+                  toggleHear();
+                }}
+              >
+                <Mic className={cn("size-4", live && "live-dot")} />
+                <span className="hidden md:inline">{listenLabel}</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-pressed={autoAnswer}
+                aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
+                title="When they ask about this repo, the Card fills"
+                disabled={!searchReady}
+                className={autoAnswer ? "border-accent text-fg" : undefined}
+                onClick={() => setAutoAnswer(!autoAnswer)}
+              >
+                <Zap className="size-4" />
+                <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
+              </Button>
+            </div>
+            <div className="cockpit-pack">
+              <ContextSwitcher folderRef={folderRef} />
+              <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
+              <UtilityMenu
+                className="md:hidden"
+                overlay={overlay}
+                demo={demo}
+                playing={playing}
+                onOverlay={() => setOverlay(!overlay)}
+                onReview={playing ? stopMeeting : playMeeting}
+              />
+            </div>
+          </div>
+          <div className="cockpit-utils">
             <span
-              className="hidden min-w-0 truncate font-serif text-base italic text-body lg:inline"
+              className="cockpit-note hidden min-w-0 truncate font-serif text-base italic text-body lg:inline"
               data-ingest-progress={ingestNote ?? undefined}
             >
               {statusNote}
             </span>
-            <Button
-              size="sm"
-              disabled={!searchReady}
-              onClick={() => void search()}
-              className={cn("ml-auto md:hidden", cueSearch && "ring-1 ring-accent/50")}
-            >
-              <Search className="size-4" />
-              Search
-            </Button>
-          </div>
-          <div className="cockpit-actions md:ml-auto">
-            <Button
-              variant={live ? "primary" : "ghost"}
-              size="sm"
-              aria-label={listenLabel}
-              title="Hear you and the computer. The Card is what you say."
-              disabled={!searchReady}
-              onClick={() => {
-                if (live) {
-                  stopHear();
-                  disarm();
-                  return;
-                }
-                toggleHear();
-              }}
-            >
-              <Mic className={cn("size-4", live && "live-dot")} />
-              <span className="hidden md:inline">{listenLabel}</span>
-            </Button>
-            <Button
-              variant={autoAnswer ? "primary" : "ghost"}
-              size="sm"
-              aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
-              title="When they ask about this repo, the Card fills"
-              disabled={!searchReady}
-              onClick={() => setAutoAnswer(!autoAnswer)}
-            >
-              <Zap className="size-4" />
-              <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
-            </Button>
-            <ContextSwitcher folderRef={folderRef} />
-            <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
-            <input
-              ref={folderRef}
-              type="file"
-              multiple
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              data-folder-input="true"
-              suppressHydrationWarning
-              onChange={(e) => {
-                const files = e.target.files;
-                if (files && files.length > 0) void loadFolder(files);
-                e.target.value = "";
-              }}
-              {...{ webkitdirectory: "", directory: "" }}
+            <UtilityLinks
+              overlay={overlay}
+              demo={demo}
+              playing={playing}
+              onOverlay={() => setOverlay(!overlay)}
+              onReview={playing ? stopMeeting : playMeeting}
             />
-            <input
-              ref={pdfRef}
-              type="file"
-              multiple
-              accept=".pdf,application/pdf"
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              data-pdf-input="true"
-              suppressHydrationWarning
-              onChange={(e) => {
-                const files = e.target.files;
-                if (files && files.length > 0) void addPdfFiles(files);
-                e.target.value = "";
-              }}
-            />
-            <a
-              href="/app?overlay=1"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Live window"
-              title="Live window"
-              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
-            >
-              <ExternalLink className="size-4" />
-              <span className="hidden md:inline">Live window</span>
-            </a>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={overlay ? "Cockpit" : "Overlay"}
-              title={overlay ? "Cockpit" : "Overlay"}
-              onClick={() => setOverlay(!overlay)}
-            >
-              <Minimize2 className="size-4" />
-              <span className="hidden md:inline">{overlay ? "Cockpit" : "Overlay"}</span>
-            </Button>
-            <ThemeToggle />
-            {demo ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label={playing ? "Stop" : "Play review"}
-                title={playing ? "Stop" : "Play review"}
-                onClick={playing ? stopMeeting : playMeeting}
-              >
-                {playing ? <Square className="size-4" /> : <Play className="size-4" />}
-                <span className="hidden md:inline">{playing ? "Stop" : "Play review"}</span>
-              </Button>
-            ) : null}
           </div>
+          <input
+            ref={folderRef}
+            type="file"
+            multiple
+            className="sr-only"
+            aria-hidden="true"
+            tabIndex={-1}
+            data-folder-input="true"
+            suppressHydrationWarning
+            onChange={(e) => {
+              const files = e.target.files;
+              if (files && files.length > 0) void loadFolder(files);
+              e.target.value = "";
+            }}
+            {...{ webkitdirectory: "", directory: "" }}
+          />
+          <input
+            ref={pdfRef}
+            type="file"
+            multiple
+            accept=".pdf,application/pdf"
+            className="sr-only"
+            aria-hidden="true"
+            tabIndex={-1}
+            data-pdf-input="true"
+            suppressHydrationWarning
+            onChange={(e) => {
+              const files = e.target.files;
+              if (files && files.length > 0) void addPdfFiles(files);
+              e.target.value = "";
+            }}
+          />
         </div>
       </header>
 
@@ -333,14 +323,19 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           data-pane="room"
           data-active={mobilePane === "room" ? "true" : undefined}
         >
-          <TranscriptPane />
+          <TranscriptPane active={live && !card?.query} />
         </div>
         <div
           className={cn("cockpit-pane", mobilePane !== "card" && "max-md:hidden")}
           data-pane="card"
           data-active={mobilePane === "card" ? "true" : undefined}
         >
-          <CardPane compact={overlay} onOpenCited={openCited} overlay={overlay} />
+          <CardPane
+            compact={overlay}
+            onOpenCited={openCited}
+            overlay={overlay}
+            active={Boolean(card?.query)}
+          />
         </div>
       </main>
     </div>
@@ -569,6 +564,164 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
   );
 }
 
+function UtilityLinks({
+  overlay,
+  demo,
+  playing,
+  onOverlay,
+  onReview,
+  labels = true,
+}: {
+  overlay: boolean;
+  demo: boolean;
+  playing: boolean;
+  onOverlay: () => void;
+  onReview: () => void;
+  labels?: boolean;
+}) {
+  return (
+    <>
+      <a
+        href="/app?overlay=1"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Live window"
+        title="Live window"
+        className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
+      >
+        <ExternalLink className="size-4" />
+        {labels ? <span className="hidden md:inline">Live window</span> : <span>Live window</span>}
+      </a>
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label={overlay ? "Cockpit" : "Overlay"}
+        title={overlay ? "Cockpit" : "Overlay"}
+        onClick={onOverlay}
+      >
+        <Minimize2 className="size-4" />
+        {labels ? (
+          <span className="hidden md:inline">{overlay ? "Cockpit" : "Overlay"}</span>
+        ) : (
+          <span>{overlay ? "Cockpit" : "Overlay"}</span>
+        )}
+      </Button>
+      <ThemeToggle className="size-11 rounded-sm" />
+      {demo ? (
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label={playing ? "Stop" : "Play review"}
+          title={playing ? "Stop" : "Play review"}
+          onClick={onReview}
+        >
+          {playing ? <Square className="size-4" /> : <Play className="size-4" />}
+          {labels ? (
+            <span className="hidden md:inline">{playing ? "Stop" : "Play review"}</span>
+          ) : (
+            <span>{playing ? "Stop" : "Play review"}</span>
+          )}
+        </Button>
+      ) : null}
+    </>
+  );
+}
+
+function UtilityMenu({
+  className,
+  overlay,
+  demo,
+  playing,
+  onOverlay,
+  onReview,
+}: {
+  className?: string;
+  overlay: boolean;
+  demo: boolean;
+  playing: boolean;
+  onOverlay: () => void;
+  onReview: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className={cn("relative", className)}>
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label="More"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <MoreHorizontal className="size-4" />
+      </Button>
+      {open ? (
+        <div className="context-menu" role="menu" aria-label="More">
+          <a
+            href="/app?overlay=1"
+            target="_blank"
+            rel="noreferrer"
+            role="menuitem"
+            className="context-option"
+            onClick={() => setOpen(false)}
+          >
+            <ExternalLink className="size-3.5 shrink-0" />
+            Live window
+          </a>
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option"
+            onClick={() => {
+              setOpen(false);
+              onOverlay();
+            }}
+          >
+            <Minimize2 className="size-3.5 shrink-0" />
+            {overlay ? "Cockpit" : "Overlay"}
+          </button>
+          {demo ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="context-option"
+              onClick={() => {
+                setOpen(false);
+                onReview();
+              }}
+            >
+              {playing ? <Square className="size-3.5 shrink-0" /> : <Play className="size-3.5 shrink-0" />}
+              {playing ? "Stop" : "Play review"}
+            </button>
+          ) : null}
+          <div className="flex items-center justify-between gap-2 px-3 py-2">
+            <span className="text-xs text-muted">Theme</span>
+            <ThemeToggle className="size-11 rounded-sm" />
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function PaneTab({
   active,
   onClick,
@@ -629,17 +782,10 @@ function StatusDot({
   );
 }
 
-function ProofLine({ local }: { local?: string }) {
-  if (local) {
-    return (
-      <p className="font-serif text-base italic text-body">
-        Retrieved from {local}, then written to say.
-      </p>
-    );
-  }
+function ProofLine() {
   return (
-    <p className="font-serif text-base italic text-body">
-      Retrieve first, then write what to say.
+    <p className="font-serif text-sm italic text-body">
+      Every line comes from a file you brought.
     </p>
   );
 }
@@ -711,7 +857,9 @@ function RepoPane() {
           <FolderGit2 className="size-3.5 shrink-0 text-faint" />
           <span className="truncate">{pack.name}</span>
         </span>
-        <span className="ground-hint tabular-nums">{sourceCount} files</span>
+        <span className="ground-status tabular-nums">
+          {sourceCount} {sourceCount === 1 ? "file" : "files"}
+        </span>
       </div>
       {weak ? (
         <p className="px-3 pb-2 text-xs text-warn">Mostly CI/config. Open the src folder, then Search.</p>
@@ -819,7 +967,23 @@ function RepoPane() {
   );
 }
 
-function TranscriptPane() {
+function markAsked(transcript: string, asked: string | null): { text: string; hit: boolean }[] {
+  if (!transcript) return [];
+  const needle = asked?.trim().replace(/[?]+$/, "").trim();
+  if (!needle) return [{ text: transcript, hit: false }];
+  const idx = transcript.toLowerCase().lastIndexOf(needle.toLowerCase());
+  if (idx < 0) return [{ text: transcript, hit: false }];
+  const before = transcript.slice(0, idx);
+  const mid = transcript.slice(idx, idx + needle.length);
+  const after = transcript.slice(idx + needle.length);
+  return [
+    ...(before ? [{ text: before, hit: false }] : []),
+    { text: mid, hit: true },
+    ...(after ? [{ text: after, hit: false }] : []),
+  ];
+}
+
+function TranscriptPane({ active }: { active: boolean }) {
   const utterances = useGround((s) => s.utterances);
   const typedQuery = useGround((s) => s.typedQuery);
   const setTypedQuery = useGround((s) => s.setTypedQuery);
@@ -835,10 +999,12 @@ function TranscriptPane() {
   const hearLevel = useGround((s) => s.hearLevel);
   const asrStatus = useGround((s) => s.asrStatus);
   const asrNote = useGround((s) => s.asrNote);
+  const asked = useGround((s) => s.card?.query ?? s.heardQuestion);
   const queryRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const themLines = utterances.filter((u) => u.role === "them");
   const transcript = themLines.map((u) => cleanCaption(u.text)).filter(Boolean).join(" ");
+  const askedParts = useMemo(() => markAsked(transcript, asked), [transcript, asked]);
   const draft = liveDraft === "…" ? "…" : cleanCaption(liveDraft);
   const themDraft = draftRole === "them" ? draft : "";
   const youDraft = draftRole === "you" ? draft : "";
@@ -865,13 +1031,13 @@ function TranscriptPane() {
   }
 
   return (
-    <section className="ground-panel" data-fit="content">
+    <section className={cn("ground-panel", active && "panel-active")} data-fit="content">
       <div className="ground-head">
         <span className="ground-head-left">
           <ChevronDown className="size-3.5 shrink-0 text-faint" />
           <span>Room</span>
         </span>
-        <span className="ground-hint">
+        <span className="ground-status">
           {playing ? "Playing design review" : live ? "Transcript" : "Idle"}
         </span>
       </div>
@@ -881,9 +1047,19 @@ function TranscriptPane() {
           <div className="mt-2 max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
             {transcript || themDraft ? (
               <p className="ground-transcript">
-                {transcript}
+                {askedParts.map((part, i) =>
+                  part.hit ? (
+                    <mark key={i} className="ground-transcript-ask">
+                      {part.text}
+                    </mark>
+                  ) : (
+                    <span key={i} className={asked ? "ground-transcript-fill" : undefined}>
+                      {part.text}
+                    </span>
+                  ),
+                )}
                 {themDraft ? (
-                  <span className={cn("text-muted", live && "live-caret")}>
+                  <span className={cn(asked ? "ground-transcript-fill" : "text-muted", live && "live-caret")}>
                     {transcript ? " " : ""}
                     {themDraft}
                   </span>
@@ -961,19 +1137,21 @@ function TranscriptPane() {
   );
 }
 
-function cardMeta(card: { say: string | null; latencyMs: number } | null) {
-  if (!card) return "Say this";
-  return `${card.latencyMs}ms`;
+function cardMeta(card: { latencyMs: number } | null) {
+  if (!card || card.latencyMs <= 0) return null;
+  return `Found in ${card.latencyMs} ms`;
 }
 
 function CardPane({
   compact,
   onOpenCited,
   overlay,
+  active,
 }: {
   compact: boolean;
   onOpenCited: (cite: Citation) => void;
   overlay: boolean;
+  active: boolean;
 }) {
   const card = useGround((s) => s.card);
   const pack = useGround((s) => s.pack);
@@ -991,6 +1169,7 @@ function CardPane({
   const cardKey = `${card?.query ?? ""}|${card?.say ?? ""}|${card?.reason ?? ""}|${card?.latencyMs ?? 0}`;
   const longSay = (card?.say?.length ?? 0) > 180;
   const sayClamped = longSay && !sayOpen;
+  const found = cardMeta(card);
 
   useEffect(() => {
     setSayOpen(!compact);
@@ -1038,8 +1217,7 @@ function CardPane({
 
   return (
     <section
-      className={cn("ground-panel", speaking && "card-mode-on")}
-      data-fit="content"
+      className={cn("ground-panel", active && "panel-active")}
       data-testid="card"
     >
       <div className="ground-head">
@@ -1048,12 +1226,10 @@ function CardPane({
           <span>Card</span>
           {speaking ? <AnswerModeBadge /> : null}
         </span>
-        <span className="ground-hint tabular-nums">
-          {cardMeta(card)}
-        </span>
+        {found ? <span className="ground-status tabular-nums">{found}</span> : null}
       </div>
-      <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
-        <div key={cardKey} className="flex min-w-0 flex-col gap-5">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <div key={cardKey} className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-auto p-5">
           {theySaid ? (
             <div className="min-w-0 rounded-md border border-line bg-input px-3 py-3">
               <p className="ground-hint">Heard</p>
@@ -1109,9 +1285,9 @@ function CardPane({
             </div>
           )}
         </div>
-        <div className="space-y-3 rounded-md border border-line bg-input px-3 py-3">
+        <div className="shrink-0 space-y-3 border-t border-line px-5 py-3">
           <p className="ground-hint">Try a question</p>
-          <div className="flex min-w-0 flex-wrap gap-2">
+          <div className="card-chips">
             {chips.map((q) => (
               <button
                 key={q}
@@ -1124,11 +1300,7 @@ function CardPane({
               </button>
             ))}
           </div>
-          <ProofLine
-            local={
-              pack.commits.length === 0 && pack.id !== "northstar-payments" ? pack.name : undefined
-            }
-          />
+          <ProofLine />
         </div>
       </div>
     </section>
