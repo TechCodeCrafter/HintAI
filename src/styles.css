@@ -294,7 +294,7 @@ html[data-theme="light"] .mh-chip {
   gap: 0.5rem;
 }
 
-.card-mode-on {
+.panel-active {
   box-shadow: inset 3px 0 0 var(--color-accent);
 }
 
@@ -348,11 +348,45 @@ html[data-theme="light"] .mh-chip {
   color: var(--color-secondary);
 }
 
+.ground-status {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--color-secondary);
+}
+
 .ground-transcript {
   font-family: var(--font-serif);
   font-size: 1.125rem;
   line-height: 1.55;
   color: var(--color-fg);
+}
+
+.ground-transcript-fill {
+  color: var(--color-faint);
+}
+
+.ground-transcript-ask {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border-radius: 2px;
+  padding: 0 0.15em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.card-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  max-height: calc(44px * 2 + 0.4rem);
+  overflow-y: auto;
+}
+
+.card-chips .ground-chip {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
 }
 
 .live-caret::after {
@@ -628,16 +662,63 @@ html[data-theme="light"] .mh-chip {
   animation-delay: 0.19s;
 }
 
-.cockpit-actions {
+.cockpit-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+.cockpit-masthead {
   display: flex;
   min-width: 0;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cockpit-brand {
+  display: flex;
+  min-width: 0;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cockpit-cluster {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.cockpit-pack {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.cockpit-utils {
+  display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: flex-end;
   gap: 0.4rem;
 }
 
-.cockpit-actions svg {
+.cockpit-note {
+  min-width: 0;
+  margin-right: auto;
+}
+
+.cockpit-header svg {
   width: 13px;
   height: 13px;
 }
@@ -709,8 +790,16 @@ html[data-theme="light"] .mh-chip {
     min-height: 0;
   }
 
-  .cockpit-actions {
-    justify-content: flex-start;
+  .cockpit-masthead {
+    flex-wrap: wrap;
+  }
+
+  .cockpit-pack {
+    margin-left: 0;
+  }
+
+  .cockpit-utils {
+    display: none;
   }
 }
 
