@@ -84,19 +84,76 @@ function parseSpoken(raw: string): string | null {
   return sayable(raw.replace(/^["“]|["”]$/g, ""));
 }
 
+function asPayload(input: Payload | { data?: Payload }): Payload {
+  if (input && typeof input === "object" && "query" in input && typeof input.query === "string") {
+    return input;
+  }
+  if (input && typeof input === "object" && "data" in input && input.data && typeof input.data.query === "string") {
+    return input.data;
+  }
+  return { query: "", hits: [] };
+}
+
+async function completeChat(system: string, user: string, timeoutMs: number, temperature: number) {
+  const apiKey = process.env.XAI_API_KEY;
+  if (!apiKey) return { raw: null as string | null, reason: "AI is not available" };
+  try {
+    const res = await fetch("https://api.x.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      signal: AbortSignal.timeout(timeoutMs),
+      body: JSON.stringify({
+        model: "grok-4.5",
+        temperature,
+        max_tokens: 220,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+      }),
+    });
+    if (!res.ok) return { raw: null, reason: `xAI ${res.status}` };
+    const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+    return { raw: body.choices?.[0]?.message?.content ?? "", reason: undefined };
+  } catch {
+    return { raw: null, reason: "timeout" };
+  }
+}
+
+/** Live RAG path: query + prompt only. Avoids the refine-hit payload. */
+export const speakAnswer = createServerFn({ method: "POST" })
+  .validator((input: { query?: string; prompt?: string; data?: { query?: string; prompt?: string } }) => {
+    const inner = input && typeof input.query === "string" ? input : input?.data;
+    return {
+      query: typeof inner?.query === "string" ? inner.query : "",
+      prompt: typeof inner?.prompt === "string" ? inner.prompt : "",
+    };
+  })
+  .handler(async ({ data }): Promise<{ say: string | null; reason?: string }> => {
+    const { raw, reason } = await completeChat(answerSystem(), `${data.prompt}\n\nQuestion: ${data.query}`, 8000, 0.3);
+    if (raw == null) return { say: null, reason };
+    const say = parseSpoken(raw);
+    return say ? { say: say.slice(0, 280) } : { say: null, reason: "empty" };
+  });
+
 export const craftCard = createServerFn({ method: "POST" })
-  .validator((input: Payload) => input)
+  .validator((input: Payload | { data?: Payload }) => asPayload(input))
   .handler(async ({ data }): Promise<Omit<Card, "latencyMs" | "query">> => {
+    const payload = asPayload(data);
     const apiKey = process.env.XAI_API_KEY;
-    const task = data.task ?? "refine";
+    const task = payload.task ?? "refine";
+    const hits = payload.hits ?? [];
     if (!apiKey) {
       return { say: null, citations: [], source: "grok", reason: "AI is not available" };
     }
-    if (task !== "assist" && task !== "answer" && data.hits.length === 0) {
+    if (task !== "assist" && task !== "answer" && hits.length === 0) {
       return { say: null, citations: [], source: "grok" };
     }
 
-    const evidence = data.hits
+    const evidence = hits
       .slice(0, 6)
       .map(
         (h, i) =>
@@ -106,10 +163,10 @@ export const craftCard = createServerFn({ method: "POST" })
       )
       .join("\n\n");
 
-    const userParts = [`Question from the room:\n${data.query}`];
-    if (data.evidenceSay) userParts.push(`Evidence-backed wording to rewrite:\n${data.evidenceSay}`);
-    if (data.instruction) userParts.push(`Instruction:\n${data.instruction}`);
-    if (data.threadContext) userParts.push(`Open thread:\n${data.threadContext}`);
+    const userParts = [`Question from the room:\n${payload.query}`];
+    if (payload.evidenceSay) userParts.push(`Evidence-backed wording to rewrite:\n${payload.evidenceSay}`);
+    if (payload.instruction) userParts.push(`Instruction:\n${payload.instruction}`);
+    if (payload.threadContext) userParts.push(`Open thread:\n${payload.threadContext}`);
     if (evidence) userParts.push(`Evidence:\n${evidence}`);
 
     const system =
@@ -121,37 +178,16 @@ export const craftCard = createServerFn({ method: "POST" })
             ? polishSystem()
             : refineSystem();
 
-    let res: Response;
-    try {
-      res = await fetch("https://api.x.ai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        signal: AbortSignal.timeout(task === "answer" ? 8000 : 3500),
-        body: JSON.stringify({
-          model: "grok-4.5",
-          temperature: task === "assist" || task === "answer" ? 0.3 : 0.2,
-          max_tokens: 220,
-          messages: [
-            { role: "system", content: system },
-            { role: "user", content: userParts.join("\n\n") },
-          ],
-        }),
-      });
-    } catch {
-      return { say: null, citations: [], source: "grok", reason: "timeout" };
+    const { raw, reason } = await completeChat(
+      system,
+      userParts.join("\n\n"),
+      task === "answer" ? 8000 : 3500,
+      task === "assist" || task === "answer" ? 0.3 : 0.2,
+    );
+    if (raw == null) {
+      return { say: null, citations: [], source: "grok", reason };
     }
 
-    if (!res.ok) {
-      return { say: null, citations: [], source: "grok", reason: `xAI ${res.status}` };
-    }
-
-    const body = (await res.json()) as {
-      choices?: { message?: { content?: string } }[];
-    };
-    const raw = body.choices?.[0]?.message?.content ?? "";
     const parsed = parseJson(raw);
     const say = task === "answer" ? parseSpoken(raw) : sayable(parsed?.say);
     if (!say) {
@@ -166,12 +202,12 @@ export const craftCard = createServerFn({ method: "POST" })
       };
     }
 
-    const allowed = new Set(data.hits.map((h) => h.path));
+    const allowed = new Set(hits.map((h) => h.path));
     const citations: Citation[] = (parsed?.citations ?? []).filter(
       (c): c is FileCitation => c.kind === "file" && allowed.has(c.path),
     );
     if (citations.length === 0) {
-      const top = data.hits[0];
+      const top = hits[0];
       citations.push({
         kind: "file",
         path: top.path,

@@ -51,6 +51,28 @@ test("citations come from the top hits, not invented paths", () => {
   }
 });
 
+test("generateAnswer sends query and prompt, not a raw hit payload", async () => {
+  let seen: { query: string; instruction: string; task: string } | undefined;
+  const result = await generateAnswer(
+    "Tell me about your experience",
+    [hit({ score: 8, path: "resume.md", text: "Backend engineer, five years.", startLine: 2 })],
+    [],
+    performance.now(),
+    {
+      ask: async (payload) => {
+        seen = { query: payload.query, instruction: payload.instruction, task: payload.task };
+        return { say: "I have spent five years as a backend engineer." };
+      },
+    },
+  );
+  assert.ok(result?.say);
+  assert.ok(seen);
+  assert.equal(seen.query, "Tell me about your experience");
+  assert.equal(seen.task, "answer");
+  assert.match(seen.instruction, /resume\.md/);
+  assert.match(seen.instruction, /Backend engineer/);
+});
+
 test("generateAnswer speaks from the ask function, not from local evidence extraction", async () => {
   const result = await generateAnswer(
     "Why Python and not TypeScript?",

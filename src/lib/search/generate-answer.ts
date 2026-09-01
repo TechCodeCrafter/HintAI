@@ -110,16 +110,22 @@ export async function generateAnswer(
     author: isFileHit(hit) ? hit.author : undefined,
     message: isFileHit(hit) ? hit.message : undefined,
   }));
+  const prompt = buildAnswerPrompt(query, hits, threadHistory);
+  const threadContext = threadHistory.slice(-3).join("\n") || null;
   try {
-    const ask = opts?.ask ?? (await import("@/lib/e2e-hooks")).callCraftCard;
     const remote = await Promise.race([
-      ask({
-        query,
-        hits: contextHits,
-        task: "answer",
-        instruction: buildAnswerPrompt(query, hits, threadHistory),
-        threadContext: threadHistory.slice(-3).join("\n") || null,
-      }),
+      opts?.ask
+        ? opts.ask({
+            query,
+            hits: contextHits,
+            task: "answer",
+            instruction: prompt,
+            threadContext,
+          })
+        : (async () => {
+            const { speakAnswer } = await import("@/lib/ai/cardsmith");
+            return speakAnswer({ data: { query, prompt } });
+          })(),
       new Promise<never>((_, reject) => {
         globalThis.setTimeout(() => reject(new Error("timeout")), 8000);
       }),

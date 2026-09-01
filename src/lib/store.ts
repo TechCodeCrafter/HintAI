@@ -17,6 +17,7 @@ import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
+import { speakAnswer } from "@/lib/ai/cardsmith";
 import { callCraftCard } from "@/lib/e2e-hooks";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import type { Card, DocumentCitation, HeardEvent, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
@@ -1076,7 +1077,17 @@ export const useGround = create<GroundState>((set, get) => ({
       .map((entry) => (entry.say ? `Q: ${entry.query}\nA: ${entry.say}` : `Q: ${entry.query}`));
     const generated = await generateAnswer(query, hits, threadHistory, t0, {
       cite: shouldCiteFromDocs(state.answerMode),
-      ask: callCraftCard,
+      ask: async (payload) => {
+        if (typeof window !== "undefined" && window.__mockCraftCard) {
+          return callCraftCard(payload);
+        }
+        return speakAnswer({
+          data: {
+            query: payload.query,
+            prompt: payload.instruction,
+          },
+        });
+      },
     });
     if (epoch !== searchEpoch) return;
 
