@@ -17,16 +17,12 @@ import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
-import { speakAnswer } from "@/lib/ai/cardsmith";
-import { readClientKeys } from "@/lib/ai/client-keys";
 import { getDefaultModel, readStoredModelId } from "@/lib/ai/models";
-import { callCraftCard } from "@/lib/e2e-hooks";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import type { NormalizedDocument } from "@/lib/document/types";
 import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { isDocumentHit } from "@/lib/repo/types";
-import { readStoredAnswerMode, shouldCiteFromDocs, type AnswerMode } from "@/lib/search/answer-mode";
-import { generateAnswer } from "@/lib/search/generate-answer";
+import { readStoredAnswerMode, type AnswerMode } from "@/lib/search/answer-mode";
 import { localCard } from "@/lib/search/local-card";
 import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
@@ -1111,63 +1107,18 @@ export const useGround = create<GroundState>((set, get) => ({
     const t0 = performance.now();
     const canonical = normalizeSpokenQuestion(query).canonical;
     const resolved = Boolean(opts?.resolved);
-    set({ searching: true, refining: true, typedQuery: explicit ?? get().typedQuery });
+    set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
     const hits = await retrieveHits(canonical, state.chunks);
     if (epoch !== searchEpoch) return;
-    const threadHistory = state.ledger
-      .slice(0, 3)
-      .map((entry) => (entry.say ? `Q: ${entry.query}\nA: ${entry.say}` : `Q: ${entry.query}`));
-    const generated = await generateAnswer(query, hits, threadHistory, t0, {
-      cite: shouldCiteFromDocs(state.answerMode),
-      modelId: state.selectedModel,
-      ask: async (payload) => {
-        if (typeof window !== "undefined" && window.__mockCraftCard) {
-          return callCraftCard(payload);
-        }
-        return speakAnswer({
-          data: {
-            query: payload.query,
-            prompt: payload.instruction,
-            modelId: payload.modelId,
-            keys: readClientKeys(),
-          },
-        });
-      },
+    const documents = await documentsForHits(hits);
+    const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
+      document: (sourceId) => documents.get(sourceId),
     });
     if (epoch !== searchEpoch) return;
-
-    let card: Card;
-    if (generated?.missingKey) {
-      card = {
-        say: null,
-        reason: "Add API key",
-        citations: [],
-        query,
-        latencyMs: generated.latencyMs,
-        source: "grok",
-        answerMode: state.answerMode,
-        modelName: generated.modelName,
-      };
-    } else if (generated?.say) {
-      card = {
-        say: generated.say,
-        citations: generated.citations,
-        query,
-        latencyMs: generated.latencyMs,
-        source: generated.usedEvidence ? "grok" : "assisted",
-        answerMode: generated.usedEvidence ? "docs" : "free",
-        modelName: generated.modelName,
-      };
-    } else {
-      const documents = await documentsForHits(hits);
-      const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
-        document: (sourceId) => documents.get(sourceId),
-      });
-      card = {
-        ...composed,
-        answerMode: composed.say ? "docs" : state.answerMode,
-      };
-    }
+    const card: Card = {
+      ...composed,
+      answerMode: composed.say ? "docs" : state.answerMode,
+    };
 
     set((s) => ({
       searching: false,

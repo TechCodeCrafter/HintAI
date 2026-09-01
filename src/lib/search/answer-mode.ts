@@ -34,7 +34,8 @@ export function readStoredAnswerMode(value: string | null | undefined): AnswerMo
 }
 
 /**
- * Live search always generates. This only decides whether retrieval may cite.
+ * Live search is retrieve → localCard → admit. This only describes the
+ * historical "cite from docs" toggle; the spoken line is never generated.
  */
 export function shouldCiteFromDocs(mode: AnswerMode): boolean {
   return mode === "docs";
