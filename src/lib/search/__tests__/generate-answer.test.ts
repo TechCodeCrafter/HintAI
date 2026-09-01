@@ -136,5 +136,8 @@ test("the answer prompt includes the question and retrieved files", () => {
   assert.match(prompt, /src\/exporter\/retry\.ts:4/);
   assert.match(prompt, /Attempts are capped at three/);
   assert.match(prompt, /Why does export fail/);
+  assert.match(prompt, /staff engineer/i);
   assert.match(prompt, /paraphrase/i);
+  assert.match(prompt, /RETRIEVED FILES/);
+  assert.match(prompt, /concrete component/);
 });

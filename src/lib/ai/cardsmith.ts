@@ -68,15 +68,27 @@ function assistSystem(): string {
 }
 
 function answerSystem(): string {
-  return (
-    "You write what someone should say in a live meeting. " +
-    "Reply with JSON only: {\"say\": string}. " +
-    "say is one or two conversational spoken sentences. " +
-    "If the provided documents contain the answer, paraphrase them. Do not read them verbatim. " +
-    "If they do not, answer from general knowledge. " +
-    "Never invent file paths, SHAs, or PR numbers. " +
-    "Never open with 'Based on', 'According to', or any reference to documents or context."
-  );
+  return `You are the staff engineer who built the loaded system. You are in a design review.
+Speak in first person as the person who owns this code. The Card is what you say out loud.
+
+HARD RULES:
+1. If the retrieved files name a service, lambda, store, route, class, or file, say that name.
+   A correct answer that never names a component from the files is a fail.
+2. Do not give a textbook definition, a modularity/scalability lecture, or "reach out for support".
+   Those are junior answers. Answer THIS system.
+3. Why questions: the constraint, what we chose, what we accepted. Name the pieces.
+4. How / what questions: the real path — who calls whom, what is written, what happens on failure.
+5. Concept questions (hash map, queue, cache): one short definition, then how THIS repo uses it.
+   If the files show hashing, dictionaries, or a registry, talk about that use.
+6. 3-5 spoken sentences. Specific beats short.
+7. Paraphrase. Do not read the files verbatim.
+8. Do not invent metrics, companies, or services that are not in the files.
+   If a number is missing, describe the behavior without making one up.
+9. If the files do not cover the question, say so in one line, then answer from experience
+   without pretending it is in this repo.
+10. Never open with "Based on", "According to", or any reference to documents or context.
+
+Respond with ONLY the spoken answer. No quotes, no prefixes, no JSON.`;
 }
 
 function parseSpoken(raw: string): string | null {
@@ -237,11 +249,11 @@ export const speakAnswer = createServerFn({ method: "POST" })
       `${data.prompt}\n\nQuestion: ${data.query}`,
       model,
       data.keys,
-      8000,
+      12000,
     );
     if (raw == null) return { say: null, reason, modelName: model.name };
     const say = parseSpoken(raw);
-    return say ? { say: say.slice(0, 280), modelName: model.name } : { say: null, reason: "empty", modelName: model.name };
+    return say ? { say: say.slice(0, 1800), modelName: model.name } : { say: null, reason: "empty", modelName: model.name };
   });
 
 export const craftCard = createServerFn({ method: "POST" })

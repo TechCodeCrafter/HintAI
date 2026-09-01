@@ -13,6 +13,7 @@ test("every listed model has a provider and API name", () => {
     assert.ok(model.id);
     assert.ok(model.modelId);
     assert.ok(["openai", "anthropic", "xai"].includes(model.provider));
+    assert.equal(model.maxTokens, 400);
   }
 });
 
