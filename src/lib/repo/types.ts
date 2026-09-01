@@ -139,9 +139,9 @@ export type Card = {
   query: string;
   latencyMs: number;
   source: "grok" | "local" | "polished" | "assisted";
-  /** Which product mode produced this answer. Absent on older local cards. */
+  /** Live search sets `docs` when a card speaks. Other names are unused leftovers. */
   answerMode?: "docs" | "free" | "grounded" | "polished" | "assisted";
-  /** Display name of the model that wrote `say`, when generated. */
+  /** Unused on the live path. Search does not generate `say`. */
   modelName?: string;
 };
 

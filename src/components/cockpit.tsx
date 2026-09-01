@@ -21,8 +21,7 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
-import { AnswerModeBadge, AnswerModeControl } from "@/components/answer-mode-control";
-import { ModelSelector } from "@/components/model-selector";
+import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
@@ -46,7 +45,6 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const overlay = useGround((s) => s.overlay);
   const sharingCall = useGround((s) => s.sharingCall);
   const disarm = useGround((s) => s.disarm);
-  const refining = useGround((s) => s.refining);
   const card = useGround((s) => s.card);
   const utterances = useGround((s) => s.utterances);
   const liveDraft = useGround((s) => s.liveDraft);
@@ -234,8 +232,6 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               <Zap className="size-4" />
               <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
             </Button>
-            <AnswerModeControl />
-            <ModelSelector />
             <ContextSwitcher folderRef={folderRef} />
             <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
             <input
@@ -344,7 +340,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           data-pane="card"
           data-active={mobilePane === "card" ? "true" : undefined}
         >
-          <CardPane refining={refining} compact={overlay} onOpenCited={openCited} overlay={overlay} />
+          <CardPane compact={overlay} onOpenCited={openCited} overlay={overlay} />
         </div>
       </main>
     </div>
@@ -965,27 +961,21 @@ function TranscriptPane() {
   );
 }
 
-function cardMeta(card: { say: string | null; modelName?: string; latencyMs: number } | null, refining: boolean) {
+function cardMeta(card: { say: string | null; latencyMs: number } | null) {
   if (!card) return "Say this";
-  if (card.say && card.modelName) {
-    return `Answered by ${card.modelName} · ${(card.latencyMs / 1000).toFixed(1)}s`;
-  }
-  return `${card.latencyMs}ms${refining ? " · writing" : ""}`;
+  return `${card.latencyMs}ms`;
 }
 
 function CardPane({
-  refining,
   compact,
   onOpenCited,
   overlay,
 }: {
-  refining: boolean;
   compact: boolean;
   onOpenCited: (cite: Citation) => void;
   overlay: boolean;
 }) {
   const card = useGround((s) => s.card);
-  const lastAnswerMode = useGround((s) => s.lastAnswerMode);
   const pack = useGround((s) => s.pack);
   const search = useGround((s) => s.search);
   const searchReady = useGround((s) => s.contextStatus === "ready");
@@ -998,8 +988,6 @@ function CardPane({
   const citedFile = card?.citations.find(isFileCitation);
   const cited = pack.files.find((f) => f.path === citedFile?.path);
   const speaking = Boolean(card?.say);
-  const shownMode = card?.answerMode ?? lastAnswerMode;
-  const generated = speaking && (shownMode === "free" || shownMode === "assisted");
   const cardKey = `${card?.query ?? ""}|${card?.say ?? ""}|${card?.reason ?? ""}|${card?.latencyMs ?? 0}`;
   const longSay = (card?.say?.length ?? 0) > 180;
   const sayClamped = longSay && !sayOpen;
@@ -1053,16 +1041,15 @@ function CardPane({
       className={cn("ground-panel", speaking && "card-mode-on")}
       data-fit="content"
       data-testid="card"
-      data-answer-mode={speaking ? shownMode : undefined}
     >
       <div className="ground-head">
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
           <span>Card</span>
-          {speaking || card?.answerMode ? <AnswerModeBadge mode={shownMode} /> : null}
+          {speaking ? <AnswerModeBadge /> : null}
         </span>
-        <span className="ground-hint tabular-nums" data-testid={card?.say && card.modelName ? "card-model" : undefined}>
-          {cardMeta(card, refining)}
+        <span className="ground-hint tabular-nums">
+          {cardMeta(card)}
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">
@@ -1102,11 +1089,8 @@ function CardPane({
                   </Button>
                 ) : null}
               </div>
-              {generated ? (
-                <p className="text-xs text-muted">General knowledge. Verify before using.</p>
-              ) : null}
               {citations}
-              {compact && cited && citedFile && !generated ? (
+              {compact && cited && citedFile ? (
                 <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
                   {cited.content
                     .split("\n")
