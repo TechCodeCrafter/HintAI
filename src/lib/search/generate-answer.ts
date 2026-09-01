@@ -55,27 +55,27 @@ export function buildAnswerPrompt(query: string, hits: Hit[], threadHistory: str
     const where = isFileHit(hit)
       ? `${hit.path}:${hit.startLine}`
       : `${hit.path} (page ${hit.page})`;
-    return `[${i + 1}] ${where}\n${hit.text.slice(0, 800)}`;
+    return `[${i + 1}] ${where}\n${hit.text.slice(0, 1000)}`;
   });
   const contextText = contextChunks.length > 0 ? contextChunks.join("\n\n") : "(no matching documents)";
   const threadText =
-    threadHistory.length > 0 ? `Recent conversation:\n${threadHistory.slice(-3).join("\n")}\n\n` : "";
-  return `${threadText}User's documents:
+    threadHistory.length > 0 ? `Previous conversation:\n${threadHistory.slice(-3).join("\n")}\n\n` : "";
+  return `${threadText}You own the loaded system. Speak as its staff engineer in a design review.
+
+RETRIEVED FILES:
 ${contextText}
 
-Question: "${query}"
+QUESTION: "${query}"
 
 INSTRUCTIONS:
-You are helping someone answer a question in a live meeting. Generate a natural, spoken response.
+- Name at least one concrete component from the retrieved files (lambda, store, route, class, or file).
+- Answer this system, not a generic architecture lecture.
+- Why: constraint, choice, trade-off. How: the real call path and what is stored.
+- Concept questions: one sentence of definition, then how these files use it.
+- 3-5 spoken sentences. Paraphrase. Do not invent metrics or services.
+- If the files do not cover the question, say they do not, then answer from general knowledge.
 
-RULES:
-1. If the documents above contain the answer, paraphrase it naturally. Do NOT read verbatim.
-2. If the documents do NOT contain the answer, answer from general knowledge.
-3. Keep it to 1-2 sentences. Sound conversational, not robotic.
-4. NEVER invent specific facts that aren't in the documents or general knowledge.
-5. If unsure, say "I'm not sure, but I can follow up on that."
-
-Respond with ONLY the spoken answer. No quotes, no prefixes.`;
+SPOKEN RESPONSE:`;
 }
 
 export type AnswerAsk = (payload: {
@@ -109,7 +109,7 @@ export async function generateAnswer(
     kind: hit.kind,
     path: hit.path,
     startLine: isFileHit(hit) ? hit.startLine : 1,
-    text: hit.text.slice(0, 800),
+    text: hit.text.slice(0, 1000),
     sha: isFileHit(hit) ? hit.sha : undefined,
     pr: isFileHit(hit) ? hit.pr : undefined,
     author: isFileHit(hit) ? hit.author : undefined,
@@ -134,7 +134,7 @@ export async function generateAnswer(
             return speakAnswer({ data: { query, prompt, modelId: model.id } });
           })(),
       new Promise<never>((_, reject) => {
-        globalThis.setTimeout(() => reject(new Error("timeout")), 8000);
+        globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
       }),
     ]);
     const missingKey = /add api key/i.test(remote.reason ?? "");

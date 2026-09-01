@@ -993,6 +993,7 @@ function CardPane({
   const theySaid = card?.query || heardQuestion;
   const chips = useMemo(() => questionChips(pack), [pack]);
   const [copied, setCopied] = useState(false);
+  const [sayOpen, setSayOpen] = useState(true);
   // The inline excerpt can only be shown for evidence that is in a file.
   const citedFile = card?.citations.find(isFileCitation);
   const cited = pack.files.find((f) => f.path === citedFile?.path);
@@ -1000,6 +1001,12 @@ function CardPane({
   const shownMode = card?.answerMode ?? lastAnswerMode;
   const generated = speaking && (shownMode === "free" || shownMode === "assisted");
   const cardKey = `${card?.query ?? ""}|${card?.say ?? ""}|${card?.reason ?? ""}|${card?.latencyMs ?? 0}`;
+  const longSay = (card?.say?.length ?? 0) > 180;
+  const sayClamped = longSay && !sayOpen;
+
+  useEffect(() => {
+    setSayOpen(!compact);
+  }, [cardKey, compact]);
 
   function copySay() {
     if (!card?.say) return;
@@ -1073,7 +1080,8 @@ function CardPane({
                 data-testid="card-say"
                 className={cn(
                   "font-serif leading-snug text-fg",
-                  compact ? "text-2xl md:text-3xl" : "text-xl md:text-2xl",
+                  longSay ? "text-lg md:text-xl" : compact ? "text-2xl md:text-3xl" : "text-xl md:text-2xl",
+                  sayClamped && "line-clamp-2",
                 )}
               >
                 {card?.say}
@@ -1083,6 +1091,16 @@ function CardPane({
                   {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
                   {copied ? "Copied" : "Copy"}
                 </Button>
+                {longSay ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    data-testid="card-say-expand"
+                    onClick={() => setSayOpen((open) => !open)}
+                  >
+                    {sayOpen ? "Show less" : "Show full"}
+                  </Button>
+                ) : null}
               </div>
               {generated ? (
                 <p className="text-xs text-muted">General knowledge. Verify before using.</p>

@@ -19,7 +19,7 @@ export const AVAILABLE_MODELS: ModelOption[] = [
     provider: "openai",
     modelId: "gpt-4o-mini",
     description: "Fast, cheap, great for live meetings",
-    maxTokens: 150,
+    maxTokens: 400,
     default: true,
   },
   {
@@ -28,7 +28,7 @@ export const AVAILABLE_MODELS: ModelOption[] = [
     provider: "openai",
     modelId: "gpt-4o",
     description: "Smarter, slightly slower",
-    maxTokens: 150,
+    maxTokens: 400,
     default: false,
   },
   {
@@ -37,7 +37,7 @@ export const AVAILABLE_MODELS: ModelOption[] = [
     provider: "anthropic",
     modelId: "claude-3-5-haiku-20241022",
     description: "Fast, good reasoning",
-    maxTokens: 150,
+    maxTokens: 400,
     default: false,
   },
   {
@@ -46,7 +46,7 @@ export const AVAILABLE_MODELS: ModelOption[] = [
     provider: "xai",
     modelId: "grok-4.5",
     description: "xAI's latest model",
-    maxTokens: 150,
+    maxTokens: 400,
     default: false,
   },
 ];
