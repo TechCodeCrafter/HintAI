@@ -11,10 +11,6 @@ export async function openCockpit(page: Page) {
   });
 }
 
-export async function setMode(page: Page, mode: "docs" | "free") {
-  await page.getByTestId(`mode-${mode}`).click();
-}
-
 export async function typeQuestion(page: Page, text: string) {
   const input = page.getByTestId("search-input");
   await input.fill(text);

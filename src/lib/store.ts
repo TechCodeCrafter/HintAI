@@ -17,12 +17,10 @@ import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
-import { getDefaultModel, readStoredModelId } from "@/lib/ai/models";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import type { NormalizedDocument } from "@/lib/document/types";
 import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { isDocumentHit } from "@/lib/repo/types";
-import { readStoredAnswerMode, type AnswerMode } from "@/lib/search/answer-mode";
 import { localCard } from "@/lib/search/local-card";
 import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
@@ -45,40 +43,6 @@ import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread
 export { readSavedPack };
 
 const SESSION_KEY = "ground.session";
-const ANSWER_MODE_KEY = "ground.answerMode";
-const MODEL_KEY = "meethint.model";
-
-function readSelectedModel(): string {
-  try {
-    return readStoredModelId(localStorage.getItem(MODEL_KEY));
-  } catch {
-    return getDefaultModel().id;
-  }
-}
-
-function persistSelectedModel(id: string) {
-  try {
-    localStorage.setItem(MODEL_KEY, id);
-  } catch {
-    /* ignore quota */
-  }
-}
-
-function readAnswerMode(): AnswerMode {
-  try {
-    return readStoredAnswerMode(localStorage.getItem(ANSWER_MODE_KEY));
-  } catch {
-    return "docs";
-  }
-}
-
-function persistAnswerMode(mode: AnswerMode) {
-  try {
-    localStorage.setItem(ANSWER_MODE_KEY, mode);
-  } catch {
-    /* ignore quota */
-  }
-}
 const HERO_QUERY = "Why does that retry three times?";
 const WEAK_PACK = "This pack is mostly CI/config. Open the src folder, not the repo root.";
 
@@ -119,9 +83,6 @@ type GroundState = {
   playing: boolean;
   overlay: boolean;
   autoAnswer: boolean;
-  answerMode: AnswerMode;
-  lastAnswerMode: AnswerMode;
-  selectedModel: string;
   sharingCall: boolean;
   searching: boolean;
   refining: boolean;
@@ -151,8 +112,6 @@ type GroundState = {
   disarm: () => void;
   setOverlay: (value: boolean) => void;
   setAutoAnswer: (value: boolean) => void;
-  setAnswerMode: (mode: AnswerMode) => void;
-  setSelectedModel: (id: string) => void;
   setSharingCall: (value: boolean) => void;
   setTypedQuery: (q: string) => void;
   setHeardQuestion: (q: string | null) => void;
@@ -355,9 +314,6 @@ export const useGround = create<GroundState>((set, get) => ({
   playing: false,
   overlay: false,
   autoAnswer: true,
-  answerMode: typeof localStorage === "undefined" ? "docs" : readAnswerMode(),
-  lastAnswerMode: "docs",
-  selectedModel: typeof localStorage === "undefined" ? getDefaultModel().id : readSelectedModel(),
   sharingCall: false,
   searching: false,
   refining: false,
@@ -405,15 +361,6 @@ export const useGround = create<GroundState>((set, get) => ({
   },
   setOverlay: (value) => set({ overlay: value }),
   setAutoAnswer: (value) => set({ autoAnswer: value }),
-  setAnswerMode: (mode) => {
-    persistAnswerMode(mode);
-    set({ answerMode: mode });
-  },
-  setSelectedModel: (id) => {
-    const next = readStoredModelId(id);
-    persistSelectedModel(next);
-    set({ selectedModel: next });
-  },
   setSharingCall: (value) => set({ sharingCall: value }),
   setTypedQuery: (q) => set({ typedQuery: q }),
   setHeardQuestion: (q) => set({ heardQuestion: q }),
@@ -1111,19 +1058,19 @@ export const useGround = create<GroundState>((set, get) => ({
     const hits = await retrieveHits(canonical, state.chunks);
     if (epoch !== searchEpoch) return;
     const documents = await documentsForHits(hits);
+    // retrieve → localCard → admit. Do not generate a spoken line.
     const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
       document: (sourceId) => documents.get(sourceId),
     });
     if (epoch !== searchEpoch) return;
     const card: Card = {
       ...composed,
-      answerMode: composed.say ? "docs" : state.answerMode,
+      answerMode: composed.say ? "docs" : undefined,
     };
 
     set((s) => ({
       searching: false,
       refining: false,
-      lastAnswerMode: card.answerMode === "free" ? "free" : "docs",
       ...applyCard(card, s.openDocument),
       openFile: firstCitedPath(card) ?? s.openFile,
       ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger].slice(0, 12),

@@ -1,12 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { openCockpit, setMode, typeQuestion, waitForCard } from "./fixtures/helpers";
+import { openCockpit, typeQuestion, waitForCard } from "./fixtures/helpers";
 
-test("From my docs shows a spoken answer and opens the cited file", async ({ page }) => {
+test("a cited card opens the file the line came from", async ({ page }) => {
   await openCockpit(page);
-  await setMode(page, "docs");
   await typeQuestion(page, "Why does that retry three times?");
 
-  const card = await waitForCard(page, { badge: "From your docs" });
+  const card = await waitForCard(page, { badge: "From your files" });
   const cite = card.getByTestId("card-citation").filter({ hasText: "src/exporter/retry.ts" });
   await expect(cite).toBeVisible();
 

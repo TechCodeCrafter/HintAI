@@ -22,8 +22,8 @@ question, MeetHint says nothing — silence is a designed output, not a failure.
 
 The default configuration runs entirely in the browser: your files are read with
 the File API, indexed in memory, and never uploaded. Speech is transcribed
-on-device by Whisper compiled to WebAssembly. Two optional paths do call out, and
-both are inert unless `XAI_API_KEY` is set on the server — see §11 and limitation 3.
+on-device by Whisper compiled to WebAssembly. An optional server transcription
+path is inert unless `XAI_API_KEY` is set — see §11. Search never calls a model.
 
 ---
 
@@ -431,7 +431,7 @@ Routes: `/` is the landing page (with a link into `/app`), `/app` is the cockpit
   readable through Supabase's generated REST API. Nothing about a user's material
   touches a database.
 - **`XAI_API_KEY`** is optional and unset by default. It enables an optional
-  transcription path and an optional answer-refinement path.
+  transcription path only. Search does not use it.
 
 ---
 
@@ -490,11 +490,9 @@ Stated plainly, because the product's whole claim is about not overstating.
    auditable but it is not a `StructuralEvidence` type with a counted operation
    and source ids. That modelling is deliberately not built yet.
 
-3. **The optional xAI refinement path is not evidence-checked.** When
-   `XAI_API_KEY` is set, a manual Search may be refined by a model whose Card
-   carries no evidence and therefore bypasses the support gate. It is inert
-   without a key, which is the default, but it is the one path where a spoken line
-   is not word-verified.
+3. **Search does not generate or refine a spoken line.** The live path is
+   retrieve → localCard → admit. Leftover polish/assist helpers and `cardsmith`
+   are not called from `store.search()`. A key cannot change what the card says.
 
 4. **Support checking is lexical, not semantic.** A word must appear literally in
    the evidence. "rotated" fails against a message that says "rotate". This is a

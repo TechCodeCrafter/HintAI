@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { modeLabel, readStoredAnswerMode, shouldCiteFromDocs } from "../answer-mode.ts";
+import { modeLabel } from "../answer-mode.ts";
 import { applyAssist, silentAssist } from "../assist.ts";
 import { applyPolish } from "../polish.ts";
 import type { Card, FileCitation } from "../../repo/types.ts";
@@ -22,24 +22,11 @@ const evidenceCard: Card = {
   answerMode: "grounded",
 };
 
-test("mode labels are the ones the card shows", () => {
-  assert.equal(modeLabel("docs"), "From your docs");
-  assert.equal(modeLabel("grounded"), "From your docs");
-  assert.equal(modeLabel("free"), "Generated");
-  assert.equal(modeLabel("assisted"), "Generated");
-});
-
-test("older three-mode names map onto the two live modes", () => {
-  assert.equal(readStoredAnswerMode("grounded"), "docs");
-  assert.equal(readStoredAnswerMode("polished"), "docs");
-  assert.equal(readStoredAnswerMode("assisted"), "free");
-  assert.equal(readStoredAnswerMode("docs"), "docs");
-  assert.equal(readStoredAnswerMode(null), "docs");
-});
-
-test("only From my docs may attach citations", () => {
-  assert.equal(shouldCiteFromDocs("docs"), true);
-  assert.equal(shouldCiteFromDocs("free"), false);
+test("the card badge is always from your files", () => {
+  assert.equal(modeLabel(), "From your files");
+  assert.equal(modeLabel("docs"), "From your files");
+  assert.equal(modeLabel("free"), "From your files");
+  assert.equal(modeLabel("assisted"), "From your files");
 });
 
 test("polish keeps the original citations and evidence", () => {
