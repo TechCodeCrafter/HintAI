@@ -18,11 +18,11 @@ import {
   Minimize2,
   Play,
   Search,
-  Zap,
   Square,
   Trash2,
 } from "lucide-react";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
+import { MeetHintMark } from "@/components/meethint-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
@@ -183,59 +183,68 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
     >
       <header className="shrink-0 border-b border-line px-4 py-3 md:px-8">
         <div className="cockpit-header">
-          <div className="cockpit-masthead">
-            <div className="cockpit-brand max-md:w-full">
-              <GroundMark />
-              <span className="brand-word text-fg">MeetHint</span>
-              <StatusDot on={live} down={false} label={statusLabel} live={live} />
-              <Button
-                size="sm"
-                disabled={!searchReady}
-                onClick={() => void search()}
-                className={cn("ml-auto md:hidden", cueSearch && "ring-1 ring-accent/50")}
-              >
-                <Search className="size-4" />
-                Search
-              </Button>
-            </div>
-            <div className="cockpit-cluster" role="group" aria-label="Session">
-              <Button
-                variant={live ? "primary" : "ghost"}
-                size="sm"
-                aria-label={listenLabel}
-                title="Hear you and the computer. The Card is what you say."
-                disabled={!searchReady}
-                onClick={() => {
-                  if (live) {
-                    stopHear();
-                    disarm();
-                    return;
-                  }
-                  toggleHear();
-                }}
-              >
-                <Mic className={cn("size-4", live && "live-dot")} />
-                <span className="hidden md:inline">{listenLabel}</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-pressed={autoAnswer}
-                aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
-                title="When they ask about this repo, the Card fills"
-                disabled={!searchReady}
-                className={autoAnswer ? "border-accent text-fg" : undefined}
-                onClick={() => setAutoAnswer(!autoAnswer)}
-              >
-                <Zap className="size-4" />
-                <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
-              </Button>
-            </div>
-            <div className="cockpit-pack">
-              <ContextSwitcher folderRef={folderRef} />
-              <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
-              <UtilityMenu
-                className="md:hidden"
+          <div className="cockpit-brand">
+            <MeetHintMark className="cockpit-mark size-7" />
+            <span className="brand-word text-fg">MeetHint</span>
+            <StatusDot on={live} down={false} label={statusLabel} live={live} />
+            <span
+              className="cockpit-note hidden min-w-0 truncate font-serif text-base italic text-body xl:inline"
+              data-ingest-progress={ingestNote ?? undefined}
+            >
+              {statusNote}
+            </span>
+            <Button
+              size="sm"
+              disabled={!searchReady}
+              onClick={() => void search()}
+              className={cn("ml-auto md:hidden", cueSearch && "ring-1 ring-accent/50")}
+            >
+              <Search className="size-4" />
+              Search
+            </Button>
+          </div>
+          <div className="cockpit-cluster" role="group" aria-label="Session">
+            <Button
+              variant={live ? "primary" : "ghost"}
+              size="sm"
+              aria-label={listenLabel}
+              title="Hear you and the computer. The Card is what you say."
+              disabled={!searchReady}
+              onClick={() => {
+                if (live) {
+                  stopHear();
+                  disarm();
+                  return;
+                }
+                toggleHear();
+              }}
+            >
+              <Mic className={cn("size-4", live && "live-dot")} />
+              <span className="hidden lg:inline">{listenLabel}</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-pressed={autoAnswer}
+              aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
+              title="When they ask about this repo, the Card fills"
+              disabled={!searchReady}
+              className={autoAnswer ? "border-accent bg-accent-soft text-fg" : undefined}
+              onClick={() => setAutoAnswer(!autoAnswer)}
+            >
+              <span
+                className={cn("size-1.5 rounded-full", autoAnswer ? "bg-accent" : "bg-gutter")}
+                aria-hidden="true"
+              />
+              <span className="hidden lg:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
+            </Button>
+            <DocsOnlySeg />
+          </div>
+          <div className="cockpit-pack">
+            <ContextSwitcher folderRef={folderRef} />
+            <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
+            <div className="cockpit-utils">
+              <UtilityLinks
                 overlay={overlay}
                 demo={demo}
                 playing={playing}
@@ -243,15 +252,8 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
                 onReview={playing ? stopMeeting : playMeeting}
               />
             </div>
-          </div>
-          <div className="cockpit-utils">
-            <span
-              className="cockpit-note hidden min-w-0 truncate font-serif text-base italic text-body lg:inline"
-              data-ingest-progress={ingestNote ?? undefined}
-            >
-              {statusNote}
-            </span>
-            <UtilityLinks
+            <UtilityMenu
+              className="md:hidden"
               overlay={overlay}
               demo={demo}
               playing={playing}
@@ -564,20 +566,35 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
   );
 }
 
+function DocsOnlySeg() {
+  return (
+    <div className="docs-seg" role="group" aria-label="Answer source">
+      <button type="button" aria-pressed="true" title="Every line comes from a file you brought.">
+        From my docs
+      </button>
+      <button
+        type="button"
+        disabled
+        title="Nothing is generated. If the files do not cite it, you say nothing."
+      >
+        Freely
+      </button>
+    </div>
+  );
+}
+
 function UtilityLinks({
   overlay,
   demo,
   playing,
   onOverlay,
   onReview,
-  labels = true,
 }: {
   overlay: boolean;
   demo: boolean;
   playing: boolean;
   onOverlay: () => void;
   onReview: () => void;
-  labels?: boolean;
 }) {
   return (
     <>
@@ -587,42 +604,31 @@ function UtilityLinks({
         rel="noreferrer"
         aria-label="Live window"
         title="Live window"
-        className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
+        className="cockpit-icon"
       >
         <ExternalLink className="size-4" />
-        {labels ? <span className="hidden md:inline">Live window</span> : <span>Live window</span>}
       </a>
-      <Button
-        variant="ghost"
-        size="sm"
+      <button
+        type="button"
+        className="cockpit-icon"
         aria-label={overlay ? "Cockpit" : "Overlay"}
         title={overlay ? "Cockpit" : "Overlay"}
         onClick={onOverlay}
       >
         <Minimize2 className="size-4" />
-        {labels ? (
-          <span className="hidden md:inline">{overlay ? "Cockpit" : "Overlay"}</span>
-        ) : (
-          <span>{overlay ? "Cockpit" : "Overlay"}</span>
-        )}
-      </Button>
-      <ThemeToggle className="size-11 rounded-sm" />
+      </button>
       {demo ? (
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
+          type="button"
+          className="cockpit-icon"
           aria-label={playing ? "Stop" : "Play review"}
           title={playing ? "Stop" : "Play review"}
           onClick={onReview}
         >
           {playing ? <Square className="size-4" /> : <Play className="size-4" />}
-          {labels ? (
-            <span className="hidden md:inline">{playing ? "Stop" : "Play review"}</span>
-          ) : (
-            <span>{playing ? "Stop" : "Play review"}</span>
-          )}
-        </Button>
+        </button>
       ) : null}
+      <ThemeToggle className="cockpit-icon border-transparent" />
     </>
   );
 }
@@ -746,14 +752,6 @@ function PaneTab({
       {label}
       {mark ? <span className="ml-1 size-1.5 rounded-full bg-ok" aria-hidden="true" /> : null}
     </button>
-  );
-}
-
-function GroundMark() {
-  return (
-    <span className="ground-mark shrink-0" aria-hidden="true">
-      <span className="ground-mark-dot" />
-    </span>
   );
 }
 
