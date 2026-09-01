@@ -372,6 +372,92 @@ html[data-theme="light"] .mh-chip {
   color: var(--color-secondary);
 }
 
+.model-selector {
+  position: relative;
+  z-index: 20;
+  display: inline-flex;
+  min-width: 0;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+.model-selector-field {
+  min-width: 0;
+  max-width: 16rem;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-fg);
+  padding: 0 0.75rem;
+  font-size: 12px;
+}
+
+.model-selector-status,
+.model-selector-settings {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-secondary);
+  padding: 0 0.75rem;
+  font-size: 12px;
+}
+
+.model-selector-settings {
+  width: 44px;
+  padding: 0;
+}
+
+.model-selector-status.is-ready {
+  color: var(--color-fg);
+}
+
+.model-selector-status.is-missing,
+.model-selector-status:hover,
+.model-selector-settings:hover {
+  border-color: var(--color-accent);
+  color: var(--color-fg);
+}
+
+.key-settings-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+}
+
+.key-settings {
+  width: min(32rem, 100%);
+  max-height: min(90dvh, 40rem);
+  overflow: auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--panel-edge-strong);
+  background: var(--color-surface);
+  color: var(--color-body);
+  padding: 1.25rem;
+  box-shadow: var(--menu-shadow);
+}
+
+.key-settings-input {
+  min-width: 0;
+  flex: 1 1 12rem;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-input);
+  color: var(--color-fg);
+  padding: 0 0.75rem;
+  font-size: 12px;
+}
+
 .ground-hint {
   flex-shrink: 0;
   font-size: 11px;

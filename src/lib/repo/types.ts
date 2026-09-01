@@ -141,6 +141,8 @@ export type Card = {
   source: "grok" | "local" | "polished" | "assisted";
   /** Which product mode produced this answer. Absent on older local cards. */
   answerMode?: "docs" | "free" | "grounded" | "polished" | "assisted";
+  /** Display name of the model that wrote `say`, when generated. */
+  modelName?: string;
 };
 
 export type Utterance = {
