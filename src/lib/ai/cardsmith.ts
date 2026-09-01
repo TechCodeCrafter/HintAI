@@ -129,7 +129,7 @@ export const craftCard = createServerFn({ method: "POST" })
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        signal: AbortSignal.timeout(3500),
+        signal: AbortSignal.timeout(task === "answer" ? 8000 : 3500),
         body: JSON.stringify({
           model: "grok-4.5",
           temperature: task === "assist" || task === "answer" ? 0.3 : 0.2,

@@ -565,6 +565,51 @@ html[data-theme="light"] .mh-chip {
   color: var(--color-fg);
 }
 
+.context-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.1rem;
+}
+
+.context-row .context-option {
+  min-width: 0;
+  flex: 1;
+}
+
+.context-remove {
+  display: flex;
+  width: 2.5rem;
+  min-height: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  color: var(--color-muted);
+}
+
+.context-remove:hover {
+  background: var(--color-subtle);
+  color: var(--color-bad);
+}
+
+.context-remove-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.45rem 0.55rem 0.35rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+.context-option-danger {
+  color: var(--color-bad);
+}
+
+.context-option-danger:hover {
+  color: var(--color-bad);
+}
+
 .context-menu-rule {
   margin: 0.3rem 0.4rem;
   height: 1px;

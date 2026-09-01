@@ -74,36 +74,54 @@ RULES:
 Respond with ONLY the spoken answer. No quotes, no prefixes.`;
 }
 
+export type AnswerAsk = (payload: {
+  query: string;
+  hits: Array<{
+    kind: Hit["kind"];
+    path: string;
+    startLine: number;
+    text: string;
+    sha?: string;
+    pr?: string;
+    author?: string;
+    message?: string;
+  }>;
+  task: "answer";
+  instruction: string;
+  threadContext: string | null;
+}) => Promise<{ say: string | null }>;
+
 export async function generateAnswer(
   query: string,
   hits: Hit[],
   threadHistory: string[],
   t0: number,
-  opts?: { cite?: boolean },
+  opts?: { cite?: boolean; ask?: AnswerAsk },
 ): Promise<GeneratedAnswer | null> {
   const cite = opts?.cite !== false;
   const usedEvidence = cite && hitsGroundAnswer(hits);
+  const contextHits = hits.slice(0, 5).map((hit) => ({
+    kind: hit.kind,
+    path: hit.path,
+    startLine: isFileHit(hit) ? hit.startLine : 1,
+    text: hit.text.slice(0, 800),
+    sha: isFileHit(hit) ? hit.sha : undefined,
+    pr: isFileHit(hit) ? hit.pr : undefined,
+    author: isFileHit(hit) ? hit.author : undefined,
+    message: isFileHit(hit) ? hit.message : undefined,
+  }));
   try {
-    const { callCraftCard } = await import("@/lib/e2e-hooks");
+    const ask = opts?.ask ?? (await import("@/lib/e2e-hooks")).callCraftCard;
     const remote = await Promise.race([
-      callCraftCard({
+      ask({
         query,
-        hits: hits.slice(0, 5).map((hit) => ({
-          kind: hit.kind,
-          path: hit.path,
-          startLine: isFileHit(hit) ? hit.startLine : 1,
-          text: hit.text,
-          sha: isFileHit(hit) ? hit.sha : undefined,
-          pr: isFileHit(hit) ? hit.pr : undefined,
-          author: isFileHit(hit) ? hit.author : undefined,
-          message: isFileHit(hit) ? hit.message : undefined,
-        })),
+        hits: contextHits,
         task: "answer",
         instruction: buildAnswerPrompt(query, hits, threadHistory),
         threadContext: threadHistory.slice(-3).join("\n") || null,
       }),
       new Promise<never>((_, reject) => {
-        globalThis.setTimeout(() => reject(new Error("timeout")), 3000);
+        globalThis.setTimeout(() => reject(new Error("timeout")), 8000);
       }),
     ]);
     if (!remote.say) return null;

@@ -19,6 +19,7 @@ import {
   Search,
   Zap,
   Square,
+  Trash2,
 } from "lucide-react";
 import { AnswerModeBadge, AnswerModeControl } from "@/components/answer-mode-control";
 import { Button } from "@/components/ui/button";
@@ -425,19 +426,27 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
   const contextStatus = useGround((s) => s.contextStatus);
   const loadingFolder = useGround((s) => s.loadingFolder);
   const activateContext = useGround((s) => s.activateContext);
+  const deleteStoredContext = useGround((s) => s.deleteStoredContext);
   const resetPack = useGround((s) => s.resetPack);
   const [open, setOpen] = useState(false);
+  const [removeId, setRemoveId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const hydrating = contextStatus === "booting" || contextStatus === "hydrating" || loadingFolder;
   const label = hydrating ? "Loading…" : pack.name;
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setRemoveId(null);
+      return;
+    }
     const onPointer = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        if (removeId) setRemoveId(null);
+        else setOpen(false);
+      }
     };
     window.addEventListener("pointerdown", onPointer);
     window.addEventListener("keydown", onKey);
@@ -445,7 +454,7 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
       window.removeEventListener("pointerdown", onPointer);
       window.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [open, removeId]);
 
   return (
     <div ref={rootRef} className="relative">
@@ -478,22 +487,61 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
           >
             northstar-payments
           </button>
-          {contexts.map((context) => (
-            <button
-              key={context.id}
-              type="button"
-              role="option"
-              aria-selected={context.id === activeContextId}
-              className="context-option"
-              data-active={context.id === activeContextId ? "true" : undefined}
-              onClick={() => {
-                void activateContext(context.id);
-                setOpen(false);
-              }}
-            >
-              {context.name}
-            </button>
-          ))}
+          {contexts.map((context) =>
+            removeId === context.id ? (
+              <div key={context.id} className="context-remove-confirm" data-testid="confirm-remove-context">
+                <p>
+                  Remove <span className="text-fg">{context.name}</span> from this device?
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    className="context-option context-option-danger"
+                    onClick={() => {
+                      void deleteStoredContext(context.id);
+                      setRemoveId(null);
+                      setOpen(false);
+                    }}
+                  >
+                    Remove
+                  </button>
+                  <button type="button" className="context-option" onClick={() => setRemoveId(null)}>
+                    Keep
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div key={context.id} className="context-row">
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={context.id === activeContextId}
+                  className="context-option"
+                  data-active={context.id === activeContextId ? "true" : undefined}
+                  onClick={() => {
+                    void activateContext(context.id);
+                    setOpen(false);
+                  }}
+                >
+                  {context.name}
+                </button>
+                <button
+                  type="button"
+                  className="context-remove"
+                  data-testid={`remove-context-${context.id}`}
+                  aria-label={`Remove ${context.name}`}
+                  title="Remove from this device"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setRemoveId(context.id);
+                  }}
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
+            ),
+          )}
           <div className="context-menu-rule" />
           <a href="/home" className="context-option" onClick={() => setOpen(false)}>
             Your contexts
@@ -583,13 +631,13 @@ function ProofLine({ local }: { local?: string }) {
   if (local) {
     return (
       <p className="font-serif text-base italic text-body">
-        Proof from files in {local}. <span className="text-accent">Never a guess.</span>
+        Retrieved from {local}, then written to say.
       </p>
     );
   }
   return (
     <p className="font-serif text-base italic text-body">
-      Proof or silence. <span className="text-accent">Never a guess.</span>
+      Retrieve first, then write what to say.
     </p>
   );
 }
@@ -990,7 +1038,7 @@ function CardPane({
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
           <span>Card</span>
-          {speaking ? <AnswerModeBadge mode={shownMode} /> : null}
+          {speaking || card?.answerMode ? <AnswerModeBadge mode={shownMode} /> : null}
         </span>
         <span className="ground-hint tabular-nums">
           {card ? `${card.latencyMs}ms${refining ? " · writing" : ""}` : "Say this"}
