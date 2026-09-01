@@ -85,10 +85,45 @@ test("generateAnswer speaks from the ask function, not from local evidence extra
       }),
     },
   );
-  assert.ok(result);
+  assert.ok(result?.say);
   assert.match(result.say, /Python/);
   assert.equal(result.usedEvidence, true);
   assert.equal(result.citations[0] && result.citations[0].kind === "file" ? result.citations[0].path : "", "docs/stack.md");
+});
+
+test("a missing API key is flagged instead of a silent miss", async () => {
+  const result = await generateAnswer("What is MeetHint?", [], [], performance.now(), {
+    modelId: "gpt-4o-mini",
+    ask: async () => ({ say: null, reason: "Add API key" }),
+  });
+  assert.equal(result?.say, null);
+  assert.equal(result?.missingKey, true);
+  assert.equal(result?.modelName, "GPT-4o Mini");
+});
+
+test("timeouts are not treated as a missing key", async () => {
+  const result = await generateAnswer("What is MeetHint?", [], [], performance.now(), {
+    ask: async () => ({ say: null, reason: "timeout" }),
+  });
+  assert.equal(result?.missingKey, false);
+});
+
+test("generated answers carry the selected model name", async () => {
+  const result = await generateAnswer(
+    "What is MeetHint?",
+    [],
+    [],
+    performance.now(),
+    {
+      modelId: "gpt-4o",
+      ask: async (payload) => {
+        assert.equal(payload.modelId, "gpt-4o");
+        return { say: "MeetHint is a live meeting copilot." };
+      },
+    },
+  );
+  assert.equal(result?.say, "MeetHint is a live meeting copilot.");
+  assert.equal(result?.modelName, "GPT-4o");
 });
 
 test("the answer prompt includes the question and retrieved files", () => {

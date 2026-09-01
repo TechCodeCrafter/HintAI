@@ -22,6 +22,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { AnswerModeBadge, AnswerModeControl } from "@/components/answer-mode-control";
+import { ModelSelector } from "@/components/model-selector";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
@@ -112,7 +113,11 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       const typing =
-        target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         void search();
@@ -230,6 +235,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               <span className="hidden md:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
             </Button>
             <AnswerModeControl />
+            <ModelSelector />
             <ContextSwitcher folderRef={folderRef} />
             <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
             <input
@@ -959,6 +965,14 @@ function TranscriptPane() {
   );
 }
 
+function cardMeta(card: { say: string | null; modelName?: string; latencyMs: number } | null, refining: boolean) {
+  if (!card) return "Say this";
+  if (card.say && card.modelName) {
+    return `Answered by ${card.modelName} · ${(card.latencyMs / 1000).toFixed(1)}s`;
+  }
+  return `${card.latencyMs}ms${refining ? " · writing" : ""}`;
+}
+
 function CardPane({
   refining,
   compact,
@@ -1040,8 +1054,8 @@ function CardPane({
           <span>Card</span>
           {speaking || card?.answerMode ? <AnswerModeBadge mode={shownMode} /> : null}
         </span>
-        <span className="ground-hint tabular-nums">
-          {card ? `${card.latencyMs}ms${refining ? " · writing" : ""}` : "Say this"}
+        <span className="ground-hint tabular-nums" data-testid={card?.say && card.modelName ? "card-model" : undefined}>
+          {cardMeta(card, refining)}
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto p-5">

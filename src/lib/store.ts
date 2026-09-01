@@ -18,11 +18,16 @@ import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewe
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { speakAnswer } from "@/lib/ai/cardsmith";
+import { readClientKeys } from "@/lib/ai/client-keys";
+import { getDefaultModel, readStoredModelId } from "@/lib/ai/models";
 import { callCraftCard } from "@/lib/e2e-hooks";
 import { NORTHSTAR } from "@/lib/repo/northstar";
-import type { Card, DocumentCitation, HeardEvent, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
+import type { NormalizedDocument } from "@/lib/document/types";
+import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
+import { isDocumentHit } from "@/lib/repo/types";
 import { readStoredAnswerMode, shouldCiteFromDocs, type AnswerMode } from "@/lib/search/answer-mode";
 import { generateAnswer } from "@/lib/search/generate-answer";
+import { localCard } from "@/lib/search/local-card";
 import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
@@ -45,6 +50,23 @@ export { readSavedPack };
 
 const SESSION_KEY = "ground.session";
 const ANSWER_MODE_KEY = "ground.answerMode";
+const MODEL_KEY = "meethint.model";
+
+function readSelectedModel(): string {
+  try {
+    return readStoredModelId(localStorage.getItem(MODEL_KEY));
+  } catch {
+    return getDefaultModel().id;
+  }
+}
+
+function persistSelectedModel(id: string) {
+  try {
+    localStorage.setItem(MODEL_KEY, id);
+  } catch {
+    /* ignore quota */
+  }
+}
 
 function readAnswerMode(): AnswerMode {
   try {
@@ -103,6 +125,7 @@ type GroundState = {
   autoAnswer: boolean;
   answerMode: AnswerMode;
   lastAnswerMode: AnswerMode;
+  selectedModel: string;
   sharingCall: boolean;
   searching: boolean;
   refining: boolean;
@@ -133,6 +156,7 @@ type GroundState = {
   setOverlay: (value: boolean) => void;
   setAutoAnswer: (value: boolean) => void;
   setAnswerMode: (mode: AnswerMode) => void;
+  setSelectedModel: (id: string) => void;
   setSharingCall: (value: boolean) => void;
   setTypedQuery: (q: string) => void;
   setHeardQuestion: (q: string | null) => void;
@@ -241,6 +265,18 @@ function firstCitedPath(card: Card): string | null {
   return null;
 }
 
+async function documentsForHits(hits: Hit[]): Promise<Map<string, NormalizedDocument>> {
+  const documents = new Map<string, NormalizedDocument>();
+  if (!hits.some(isDocumentHit)) return documents;
+  const repo = getContextRepository();
+  for (const hit of hits) {
+    if (!isDocumentHit(hit) || documents.has(hit.sourceId)) continue;
+    const document = await repo.getNormalizedDocument(hit.sourceId, hit.contentHash);
+    if (document) documents.set(hit.sourceId, document);
+  }
+  return documents;
+}
+
 function windowText(utterances: Utterance[], ms = 15000): string {
   const cutoff = Date.now() - ms;
   return utterances
@@ -325,6 +361,7 @@ export const useGround = create<GroundState>((set, get) => ({
   autoAnswer: true,
   answerMode: typeof localStorage === "undefined" ? "docs" : readAnswerMode(),
   lastAnswerMode: "docs",
+  selectedModel: typeof localStorage === "undefined" ? getDefaultModel().id : readSelectedModel(),
   sharingCall: false,
   searching: false,
   refining: false,
@@ -375,6 +412,11 @@ export const useGround = create<GroundState>((set, get) => ({
   setAnswerMode: (mode) => {
     persistAnswerMode(mode);
     set({ answerMode: mode });
+  },
+  setSelectedModel: (id) => {
+    const next = readStoredModelId(id);
+    persistSelectedModel(next);
+    set({ selectedModel: next });
   },
   setSharingCall: (value) => set({ sharingCall: value }),
   setTypedQuery: (q) => set({ typedQuery: q }),
@@ -1077,6 +1119,7 @@ export const useGround = create<GroundState>((set, get) => ({
       .map((entry) => (entry.say ? `Q: ${entry.query}\nA: ${entry.say}` : `Q: ${entry.query}`));
     const generated = await generateAnswer(query, hits, threadHistory, t0, {
       cite: shouldCiteFromDocs(state.answerMode),
+      modelId: state.selectedModel,
       ask: async (payload) => {
         if (typeof window !== "undefined" && window.__mockCraftCard) {
           return callCraftCard(payload);
@@ -1085,30 +1128,46 @@ export const useGround = create<GroundState>((set, get) => ({
           data: {
             query: payload.query,
             prompt: payload.instruction,
+            modelId: payload.modelId,
+            keys: readClientKeys(),
           },
         });
       },
     });
     if (epoch !== searchEpoch) return;
 
-    const card: Card = generated?.say
-      ? {
-          say: generated.say,
-          citations: generated.citations,
-          query,
-          latencyMs: generated.latencyMs,
-          source: generated.usedEvidence ? "grok" : "assisted",
-          answerMode: generated.usedEvidence ? "docs" : "free",
-        }
-      : {
-          say: null,
-          reason: "Could not generate an answer.",
-          citations: [],
-          query,
-          latencyMs: Math.round(performance.now() - t0),
-          source: "grok",
-          answerMode: state.answerMode,
-        };
+    let card: Card;
+    if (generated?.missingKey) {
+      card = {
+        say: null,
+        reason: "Add API key",
+        citations: [],
+        query,
+        latencyMs: generated.latencyMs,
+        source: "grok",
+        answerMode: state.answerMode,
+        modelName: generated.modelName,
+      };
+    } else if (generated?.say) {
+      card = {
+        say: generated.say,
+        citations: generated.citations,
+        query,
+        latencyMs: generated.latencyMs,
+        source: generated.usedEvidence ? "grok" : "assisted",
+        answerMode: generated.usedEvidence ? "docs" : "free",
+        modelName: generated.modelName,
+      };
+    } else {
+      const documents = await documentsForHits(hits);
+      const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
+        document: (sourceId) => documents.get(sourceId),
+      });
+      card = {
+        ...composed,
+        answerMode: composed.say ? "docs" : state.answerMode,
+      };
+    }
 
     set((s) => ({
       searching: false,

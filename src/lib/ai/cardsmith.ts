@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getDefaultModel, getModelById, type ModelOption, type ModelProvider, type ProviderKeys } from "@/lib/ai/models";
 import type { Card, Citation, FileCitation, Hit } from "@/lib/repo/types";
 import { sayable } from "@/lib/search/say";
 
@@ -94,49 +95,153 @@ function asPayload(input: Payload | { data?: Payload }): Payload {
   return { query: "", hits: [] };
 }
 
-async function completeChat(system: string, user: string, timeoutMs: number, temperature: number) {
-  const apiKey = process.env.XAI_API_KEY;
-  if (!apiKey) return { raw: null as string | null, reason: "AI is not available" };
-  try {
-    const res = await fetch("https://api.x.ai/v1/chat/completions", {
-      method: "POST",
+function envKey(provider: ModelProvider): string | undefined {
+  if (provider === "openai") return process.env.OPENAI_API_KEY;
+  if (provider === "anthropic") return process.env.ANTHROPIC_API_KEY;
+  return process.env.XAI_API_KEY;
+}
+
+function resolveKey(provider: ModelProvider, keys?: ProviderKeys): string | undefined {
+  const fromClient = keys?.[provider]?.trim();
+  return fromClient || envKey(provider);
+}
+
+function missingKeyReason(): string {
+  return "Add API key";
+}
+
+function buildRequest(model: ModelOption, system: string, user: string, apiKey: string): {
+  url: string;
+  headers: Record<string, string>;
+  body: Record<string, unknown>;
+} {
+  if (model.provider === "anthropic") {
+    return {
+      url: "https://api.anthropic.com/v1/messages",
       headers: {
+        "x-api-key": apiKey,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        "anthropic-version": "2023-06-01",
       },
+      body: {
+        model: model.modelId,
+        max_tokens: model.maxTokens,
+        temperature: 0.3,
+        system,
+        messages: [{ role: "user", content: user }],
+      },
+    };
+  }
+  const url =
+    model.provider === "openai" ? "https://api.openai.com/v1/chat/completions" : "https://api.x.ai/v1/chat/completions";
+  return {
+    url,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: {
+      model: model.modelId,
+      temperature: 0.3,
+      max_tokens: model.maxTokens,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    },
+  };
+}
+
+function readCompletion(provider: ModelProvider, body: unknown): string {
+  if (!body || typeof body !== "object") return "";
+  if (provider === "anthropic") {
+    const blocks = (body as { content?: Array<{ type?: string; text?: string }> }).content ?? [];
+    return blocks
+      .filter((block) => block.type === "text" && block.text)
+      .map((block) => block.text)
+      .join("");
+  }
+  return (body as { choices?: { message?: { content?: string } }[] }).choices?.[0]?.message?.content ?? "";
+}
+
+async function completeChat(
+  system: string,
+  user: string,
+  model: ModelOption,
+  keys?: ProviderKeys,
+  timeoutMs = 8000,
+) {
+  const apiKey = resolveKey(model.provider, keys);
+  console.info("[completeChat] provider:", model.provider, "apiKey present:", Boolean(apiKey));
+  if (!apiKey) return { raw: null as string | null, reason: missingKeyReason() };
+  const request = buildRequest(model, system, user, apiKey);
+  try {
+    const res = await fetch(request.url, {
+      method: "POST",
+      headers: request.headers,
       signal: AbortSignal.timeout(timeoutMs),
-      body: JSON.stringify({
-        model: "grok-4.5",
-        temperature,
-        max_tokens: 220,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
-      }),
+      body: JSON.stringify(request.body),
     });
-    if (!res.ok) return { raw: null, reason: `xAI ${res.status}` };
-    const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    return { raw: body.choices?.[0]?.message?.content ?? "", reason: undefined };
+    if (!res.ok) {
+      console.info("[completeChat] status:", model.provider, res.status);
+      return { raw: null, reason: `${model.provider} ${res.status}` };
+    }
+    const raw = readCompletion(model.provider, await res.json());
+    return { raw, reason: undefined };
   } catch {
     return { raw: null, reason: "timeout" };
   }
 }
 
+const GROK_MODEL: ModelOption = {
+  id: "grok-4.5",
+  name: "Grok 4.5",
+  provider: "xai",
+  modelId: "grok-4.5",
+  description: "xAI",
+  maxTokens: 220,
+  default: false,
+};
+
+export const providerKeyStatus = createServerFn({ method: "GET" }).handler(async () => ({
+  openai: Boolean(process.env.OPENAI_API_KEY),
+  anthropic: Boolean(process.env.ANTHROPIC_API_KEY),
+  xai: Boolean(process.env.XAI_API_KEY),
+}));
+
+type SpeakInput = {
+  query?: string;
+  prompt?: string;
+  modelId?: string;
+  keys?: ProviderKeys;
+  data?: { query?: string; prompt?: string; modelId?: string; keys?: ProviderKeys };
+};
+
+function speakInput(input: SpeakInput) {
+  const inner = input && typeof input.query === "string" ? input : (input?.data ?? {});
+  return {
+    query: typeof inner.query === "string" ? inner.query : "",
+    prompt: typeof inner.prompt === "string" ? inner.prompt : "",
+    modelId: typeof inner.modelId === "string" ? inner.modelId : undefined,
+    keys: inner.keys,
+  };
+}
+
 /** Live RAG path: query + prompt only. Avoids the refine-hit payload. */
 export const speakAnswer = createServerFn({ method: "POST" })
-  .validator((input: { query?: string; prompt?: string; data?: { query?: string; prompt?: string } }) => {
-    const inner = input && typeof input.query === "string" ? input : input?.data;
-    return {
-      query: typeof inner?.query === "string" ? inner.query : "",
-      prompt: typeof inner?.prompt === "string" ? inner.prompt : "",
-    };
-  })
-  .handler(async ({ data }): Promise<{ say: string | null; reason?: string }> => {
-    const { raw, reason } = await completeChat(answerSystem(), `${data.prompt}\n\nQuestion: ${data.query}`, 8000, 0.3);
-    if (raw == null) return { say: null, reason };
+  .validator((input: SpeakInput) => speakInput(input))
+  .handler(async ({ data }): Promise<{ say: string | null; reason?: string; modelName?: string }> => {
+    const model = getModelById(data.modelId) ?? getDefaultModel();
+    const { raw, reason } = await completeChat(
+      answerSystem(),
+      `${data.prompt}\n\nQuestion: ${data.query}`,
+      model,
+      data.keys,
+      8000,
+    );
+    if (raw == null) return { say: null, reason, modelName: model.name };
     const say = parseSpoken(raw);
-    return say ? { say: say.slice(0, 280) } : { say: null, reason: "empty" };
+    return say ? { say: say.slice(0, 280), modelName: model.name } : { say: null, reason: "empty", modelName: model.name };
   });
 
 export const craftCard = createServerFn({ method: "POST" })
@@ -181,8 +286,9 @@ export const craftCard = createServerFn({ method: "POST" })
     const { raw, reason } = await completeChat(
       system,
       userParts.join("\n\n"),
+      GROK_MODEL,
+      undefined,
       task === "answer" ? 8000 : 3500,
-      task === "assist" || task === "answer" ? 0.3 : 0.2,
     );
     if (raw == null) {
       return { say: null, citations: [], source: "grok", reason };

@@ -17,6 +17,7 @@ export type MockCraftPayload = {
   instruction?: string;
   threadContext?: string | null;
   task?: "refine" | "polish" | "assist" | "answer";
+  modelId?: string;
 };
 
 declare global {
@@ -37,6 +38,7 @@ export async function callCraftCard(payload: MockCraftPayload): Promise<{ say: s
       data: {
         query: payload.query,
         prompt: payload.instruction ?? `Question: "${payload.query}"`,
+        modelId: payload.modelId,
       },
     });
   }

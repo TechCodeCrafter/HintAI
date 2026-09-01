@@ -1,12 +1,16 @@
+import { getDefaultModel, getModelById } from "../ai/models.ts";
 import { isDocumentHit, isFileHit, type Citation, type Hit } from "../repo/types.ts";
 
 export const EVIDENCE_SCORE = 3;
 
 export type GeneratedAnswer = {
-  say: string;
+  say: string | null;
   usedEvidence: boolean;
   citations: Citation[];
   latencyMs: number;
+  reason?: string;
+  missingKey?: boolean;
+  modelName?: string;
 };
 
 export function hitsGroundAnswer(hits: Hit[]): boolean {
@@ -89,14 +93,15 @@ export type AnswerAsk = (payload: {
   task: "answer";
   instruction: string;
   threadContext: string | null;
-}) => Promise<{ say: string | null }>;
+  modelId: string;
+}) => Promise<{ say: string | null; reason?: string; modelName?: string }>;
 
 export async function generateAnswer(
   query: string,
   hits: Hit[],
   threadHistory: string[],
   t0: number,
-  opts?: { cite?: boolean; ask?: AnswerAsk },
+  opts?: { cite?: boolean; ask?: AnswerAsk; modelId?: string },
 ): Promise<GeneratedAnswer | null> {
   const cite = opts?.cite !== false;
   const usedEvidence = cite && hitsGroundAnswer(hits);
@@ -112,6 +117,7 @@ export async function generateAnswer(
   }));
   const prompt = buildAnswerPrompt(query, hits, threadHistory);
   const threadContext = threadHistory.slice(-3).join("\n") || null;
+  const model = getModelById(opts?.modelId) ?? getDefaultModel();
   try {
     const remote = await Promise.race([
       opts?.ask
@@ -121,21 +127,34 @@ export async function generateAnswer(
             task: "answer",
             instruction: prompt,
             threadContext,
+            modelId: model.id,
           })
         : (async () => {
             const { speakAnswer } = await import("@/lib/ai/cardsmith");
-            return speakAnswer({ data: { query, prompt } });
+            return speakAnswer({ data: { query, prompt, modelId: model.id } });
           })(),
       new Promise<never>((_, reject) => {
         globalThis.setTimeout(() => reject(new Error("timeout")), 8000);
       }),
     ]);
-    if (!remote.say) return null;
+    const missingKey = /add api key/i.test(remote.reason ?? "");
+    if (!remote.say) {
+      return {
+        say: null,
+        usedEvidence: false,
+        citations: [],
+        latencyMs: Math.round(performance.now() - t0),
+        reason: remote.reason,
+        missingKey,
+        modelName: remote.modelName ?? model.name,
+      };
+    }
     return {
       say: remote.say,
       usedEvidence,
       citations: usedEvidence ? citationsFromHits(hits) : [],
       latencyMs: Math.round(performance.now() - t0),
+      modelName: remote.modelName ?? model.name,
     };
   } catch {
     return null;
