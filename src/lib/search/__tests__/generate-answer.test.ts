@@ -141,3 +141,20 @@ test("the answer prompt includes the question and retrieved files", () => {
   assert.match(prompt, /RETRIEVED FILES/);
   assert.match(prompt, /concrete component/);
 });
+
+test("lambda paths are listed as workers in the answer prompt", () => {
+  const prompt = buildAnswerPrompt(
+    "Why seven lambdas?",
+    [
+      hit({
+        score: 8,
+        path: "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        text: "Consumes SQS from S3 ObjectCreated.",
+        startLine: 1,
+      }),
+    ],
+    [],
+  );
+  assert.match(prompt, /WORKERS IN THESE PATHS: bda-ingest-worker/);
+  assert.match(prompt, /numbered list inside one function is not the fleet/);
+});

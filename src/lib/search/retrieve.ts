@@ -386,6 +386,11 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     /\barchitecture\b|\bstructure\b|\boverview\b|how is (?:this|the|it) (?:built|organized|structured)|what does (?:this|the) (?:app|application|service|project|repo|codebase) do/.test(
       q,
     );
+  // "Why seven lambdas?" used to rank a "7)" step list inside one function.
+  const wantsLambdaFleet =
+    /\b(?:\d+|two|three|four|five|six|seven|eight|nine|ten) lambdas?\b|\bwhy (?:are |do )?(?:there |you doing |we (?:have |use )?)?\w* ?lambdas\b/.test(
+      q,
+    );
   const idf = idfMap(terms, chunks);
 
   const scored: Hit[] = [];
@@ -410,7 +415,10 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     ) {
       score += RETRIEVAL_WEIGHTS.apiShapePath;
     }
-    if ((named.length > 0 || wantsShape) && chunk.kind === "code" && chunk.startLine <= 8) {
+    if (wantsLambdaFleet && /container-lambdas\//.test(idx.path)) {
+      score += RETRIEVAL_WEIGHTS.apiShapePath;
+    }
+    if ((named.length > 0 || wantsShape || wantsLambdaFleet) && chunk.kind === "code" && chunk.startLine <= 8) {
       score += RETRIEVAL_WEIGHTS.fileHead;
     }
     if (score > 0) scored.push({ ...chunk, score });
@@ -432,7 +440,14 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     const rest = sorted.slice(1).reduce((sum, h) => sum + h.score, 0);
     return { path, hits: sorted, score: best + Math.min(0.5 * best, 0.2 * rest) };
   });
-  files.sort((a, b) => b.score - a.score);
+  files.sort((a, b) => {
+    if (wantsLambdaFleet) {
+      const aWorker = /container-lambdas\//.test(a.path) ? 1 : 0;
+      const bWorker = /container-lambdas\//.test(b.path) ? 1 : 0;
+      if (aWorker !== bWorker) return bWorker - aWorker;
+    }
+    return b.score - a.score;
+  });
 
   const top = files[0].score;
   const floor = Math.max(named.length > 0 || wantsApi ? 0.6 : 1.0, top * 0.12);
