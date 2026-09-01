@@ -1,4 +1,4 @@
-import { craftCard } from "@/lib/ai/cardsmith";
+import { craftCard, speakAnswer } from "@/lib/ai/cardsmith";
 import type { Card } from "@/lib/repo/types";
 
 export type MockCraftPayload = {
@@ -31,6 +31,14 @@ export async function callCraftCard(payload: MockCraftPayload): Promise<{ say: s
   if (typeof window !== "undefined" && window.__mockCraftCard) {
     const mocked = await window.__mockCraftCard(payload);
     return { say: mocked?.say ?? null };
+  }
+  if (payload.task === "answer") {
+    return speakAnswer({
+      data: {
+        query: payload.query,
+        prompt: payload.instruction ?? `Question: "${payload.query}"`,
+      },
+    });
   }
   return craftCard({ data: payload });
 }
