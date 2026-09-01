@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { installE2eMocks, mockLLM, typeQuestion, waitForCard, waitForIndexing } from "./fixtures/helpers";
+import { installE2eMocks, typeQuestion, waitForCard, waitForIndexing } from "./fixtures/helpers";
 
 test("Create context, add files, search, delete", async ({ page }) => {
   await installE2eMocks(page);
@@ -39,7 +39,6 @@ export const MAX_ATTEMPTS = 3;
     timeout: 20000,
   });
 
-  await mockLLM(page, "It retries three times so a later attempt does not duplicate the settlement file.");
   await typeQuestion(page, "Why does that retry three times?");
   const card = await waitForCard(page, { allowNull: false });
   await expect(card.getByTestId("card-say")).toContainText("three");
