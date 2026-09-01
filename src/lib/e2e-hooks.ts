@@ -1,3 +1,4 @@
+import { craftCard } from "@/lib/ai/cardsmith";
 import type { Card } from "@/lib/repo/types";
 
 export type MockCraftPayload = {
@@ -31,6 +32,5 @@ export async function callCraftCard(payload: MockCraftPayload): Promise<{ say: s
     const mocked = await window.__mockCraftCard(payload);
     return { say: mocked?.say ?? null };
   }
-  const { craftCard } = await import("@/lib/ai/cardsmith");
   return craftCard({ data: payload });
 }

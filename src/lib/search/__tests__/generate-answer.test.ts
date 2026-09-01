@@ -5,6 +5,7 @@ import type { FileHit } from "../../repo/types.ts";
 import {
   buildAnswerPrompt,
   citationsFromHits,
+  generateAnswer,
   hitsGroundAnswer,
 } from "../generate-answer.ts";
 
@@ -48,6 +49,24 @@ test("citations come from the top hits, not invented paths", () => {
     assert.equal(cites[0].path, "src/exporter/retry.ts");
     assert.equal(cites[0].line, 12);
   }
+});
+
+test("generateAnswer speaks from the ask function, not from local evidence extraction", async () => {
+  const result = await generateAnswer(
+    "Why Python and not TypeScript?",
+    [hit({ score: 8, path: "docs/stack.md", text: "The API stays Python because of the ML pipeline.", startLine: 3 })],
+    [],
+    performance.now(),
+    {
+      ask: async () => ({
+        say: "We're on Python for the ML pipeline, and TypeScript stays on the frontend.",
+      }),
+    },
+  );
+  assert.ok(result);
+  assert.match(result.say, /Python/);
+  assert.equal(result.usedEvidence, true);
+  assert.equal(result.citations[0] && result.citations[0].kind === "file" ? result.citations[0].path : "", "docs/stack.md");
 });
 
 test("the answer prompt includes the question and retrieved files", () => {

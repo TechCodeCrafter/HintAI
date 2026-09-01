@@ -583,13 +583,13 @@ function ProofLine({ local }: { local?: string }) {
   if (local) {
     return (
       <p className="font-serif text-base italic text-body">
-        Proof from files in {local}. <span className="text-accent">Never a guess.</span>
+        Retrieved from {local}, then written to say.
       </p>
     );
   }
   return (
     <p className="font-serif text-base italic text-body">
-      Proof or silence. <span className="text-accent">Never a guess.</span>
+      Retrieve first, then write what to say.
     </p>
   );
 }
@@ -990,7 +990,7 @@ function CardPane({
         <span className="ground-head-left">
           <Search className="size-3.5 shrink-0 text-faint" />
           <span>Card</span>
-          {speaking ? <AnswerModeBadge mode={shownMode} /> : null}
+          {speaking || card?.answerMode ? <AnswerModeBadge mode={shownMode} /> : null}
         </span>
         <span className="ground-hint tabular-nums">
           {card ? `${card.latencyMs}ms${refining ? " · writing" : ""}` : "Say this"}

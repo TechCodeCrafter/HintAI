@@ -14,18 +14,16 @@ import {
 } from "@/lib/context/migration";
 import { getContextRepository, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
 import type { CreateContextInput } from "@/lib/context/repository";
-import type { NormalizedDocument } from "@/lib/document/types";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
+import { callCraftCard } from "@/lib/e2e-hooks";
 import { NORTHSTAR } from "@/lib/repo/northstar";
-import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
-import { isDocumentHit } from "@/lib/repo/types";
+import type { Card, DocumentCitation, HeardEvent, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { readStoredAnswerMode, shouldCiteFromDocs, type AnswerMode } from "@/lib/search/answer-mode";
 import { generateAnswer } from "@/lib/search/generate-answer";
 import { packFromFiles } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
-import { localCard } from "@/lib/search/local-card";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
 import { type GateRecord, recordGate } from "@/lib/search/gate-log";
@@ -240,18 +238,6 @@ function applyCard(card: Card | null, openDocument: DocumentOpenTarget | null) {
 function firstCitedPath(card: Card): string | null {
   for (const cite of card.citations) if (cite.kind === "file") return cite.path;
   return null;
-}
-
-async function documentsForHits(hits: Hit[]): Promise<Map<string, NormalizedDocument>> {
-  const documents = new Map<string, NormalizedDocument>();
-  if (!hits.some(isDocumentHit)) return documents;
-  const repo = getContextRepository();
-  for (const hit of hits) {
-    if (!isDocumentHit(hit) || documents.has(hit.sourceId)) continue;
-    const document = await repo.getNormalizedDocument(hit.sourceId, hit.contentHash);
-    if (document) documents.set(hit.sourceId, document);
-  }
-  return documents;
 }
 
 function windowText(utterances: Utterance[], ms = 15000): string {
@@ -1090,29 +1076,28 @@ export const useGround = create<GroundState>((set, get) => ({
       .map((entry) => (entry.say ? `Q: ${entry.query}\nA: ${entry.say}` : `Q: ${entry.query}`));
     const generated = await generateAnswer(query, hits, threadHistory, t0, {
       cite: shouldCiteFromDocs(state.answerMode),
+      ask: callCraftCard,
     });
     if (epoch !== searchEpoch) return;
 
-    let card: Card;
-    if (generated?.say) {
-      card = {
-        say: generated.say,
-        citations: generated.citations,
-        query,
-        latencyMs: generated.latencyMs,
-        source: generated.usedEvidence ? "grok" : "assisted",
-        answerMode: generated.usedEvidence ? "docs" : "free",
-      };
-    } else {
-      const documents = await documentsForHits(hits);
-      const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
-        document: (sourceId) => documents.get(sourceId),
-      });
-      card = {
-        ...composed,
-        answerMode: composed.say ? "docs" : "free",
-      };
-    }
+    const card: Card = generated?.say
+      ? {
+          say: generated.say,
+          citations: generated.citations,
+          query,
+          latencyMs: generated.latencyMs,
+          source: generated.usedEvidence ? "grok" : "assisted",
+          answerMode: generated.usedEvidence ? "docs" : "free",
+        }
+      : {
+          say: null,
+          reason: "Could not generate an answer.",
+          citations: [],
+          query,
+          latencyMs: Math.round(performance.now() - t0),
+          source: "grok",
+          answerMode: state.answerMode,
+        };
 
     set((s) => ({
       searching: false,
