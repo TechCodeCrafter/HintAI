@@ -58,11 +58,20 @@ export function buildAnswerPrompt(query: string, hits: Hit[], threadHistory: str
     return `[${i + 1}] ${where}\n${hit.text.slice(0, 1000)}`;
   });
   const contextText = contextChunks.length > 0 ? contextChunks.join("\n\n") : "(no matching documents)";
+  const workers = [
+    ...new Set(
+      hits
+        .map((hit) => hit.path.match(/container-lambdas\/([^/]+)/)?.[1])
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ];
+  const workerLine =
+    workers.length > 0 ? `WORKERS IN THESE PATHS: ${workers.join(", ")}\n\n` : "";
   const threadText =
     threadHistory.length > 0 ? `Previous conversation:\n${threadHistory.slice(-3).join("\n")}\n\n` : "";
   return `${threadText}You own the loaded system. Speak as its staff engineer in a design review.
 
-RETRIEVED FILES:
+${workerLine}RETRIEVED FILES:
 ${contextText}
 
 QUESTION: "${query}"
@@ -71,6 +80,8 @@ INSTRUCTIONS:
 - Name at least one concrete component from the retrieved files (lambda, store, route, class, or file).
 - Answer this system, not a generic architecture lecture.
 - Why: constraint, choice, trade-off. How: the real call path and what is stored.
+- If they ask why there are N lambdas, name each worker folder above and what it owns.
+  A numbered list inside one function is not the fleet. Do not praise modularity.
 - Concept questions: one sentence of definition, then how these files use it.
 - 3-5 spoken sentences. Paraphrase. Do not invent metrics or services.
 - If the files do not cover the question, say they do not, then answer from general knowledge.

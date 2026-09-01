@@ -192,6 +192,44 @@ test("a discriminative term beats a generic one in the same query", () => {
   assert.ok(ranked.includes("api/export.py"));
 });
 
+test("why-seven-lambdas prefers worker folders over a numbered step list", () => {
+  const pack: RepoPack = {
+    id: "lambdas",
+    name: "lambdas",
+    description: "",
+    commits: [],
+    files: [
+      file(
+        "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        `"""BDA Ingest Worker. Consumes SQS from S3 ObjectCreated."""\ndef handler(event):\n    return run(event)\n`,
+      ),
+      file(
+        "container-lambdas/synthes-query-processor/app/lambda_function.py",
+        `"""Query processor. Joins TP/TR rows."""\ndef handler(event):\n    return join(event)\n`,
+      ),
+      file(
+        "container-lambdas/global-rag-indexer/app/lambda_function.py",
+        `"""Indexes markdown into the global RAG store."""\ndef handler(event):\n    return index(event)\n`,
+      ),
+      file(
+        "services/matcher.py",
+        `# Cross-session matching flow\n# 1) anchor\n# 2) fetch\n# 3) candidates\n# 4) bedrock\n# 5) insert\n# 6) dedupe\n# 7) supersede old join rows\n`,
+      ),
+    ],
+  };
+  const hits = retrieve("Why seven lambdas?", buildChunks(pack));
+  const ranked = hits.map((h) => h.path);
+  assert.ok(
+    ranked.some((path) => path.includes("container-lambdas/")),
+    "fleet questions must reach worker folders",
+  );
+  assert.ok(
+    ranked.filter((path) => path.includes("container-lambdas/")).length >= 2,
+    "fleet questions should surface more than one worker",
+  );
+  assert.notEqual(ranked[0], "services/matcher.py");
+});
+
 test("numeral aliasing is one-way today — a spoken digit is lost", () => {
   // Word to digit works.
   assert.ok(tokenize("retry three times").includes("3"));
