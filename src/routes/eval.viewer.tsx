@@ -4,7 +4,7 @@ import { PdfPane } from "@/components/pdf-pane";
 import { installShotDocument, VIEWER_SHOTS } from "@/lib/document/viewer/qa-boot";
 import { openTargetFromEvidence } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 
 export const Route = createFileRoute("/eval/viewer")({
   component: ViewerEvalPage,
@@ -48,7 +48,7 @@ function ViewerEvalPage() {
           source: "local" as const,
         };
         syncViewerBlobPins(card, shot.stale ? null : target);
-        useGround.setState({ card, openDocument: target });
+        useMeetHint.setState({ card, openDocument: target });
         setReady(true);
       })
       .catch((err: unknown) => {

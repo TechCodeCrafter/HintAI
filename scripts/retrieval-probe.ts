@@ -20,7 +20,7 @@ function realPack(): RepoPack {
   const list = readdirSync(`${ROOT}src`, { recursive: true, encoding: "utf8" })
     .map((rel) => `src/${rel}`)
     .filter((p) => /\.(ts|tsx|css)$/.test(p) && !/\.test\.ts$/.test(p))
-    .concat("public/ground-asr-worker.js")
+    .concat("public/meethint-asr-worker.js")
     .filter((p) => statSync(`${ROOT}${p}`).isFile());
 
   return {

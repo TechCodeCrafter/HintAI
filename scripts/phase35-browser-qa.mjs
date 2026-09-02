@@ -239,7 +239,7 @@ try {
   await page.locator('[data-pane="card"] button:has(span.font-mono)').first().click();
   await page.waitForTimeout(400);
   check("reload highlight still present", (await highlightText()).length > 0);
-  const sessionAfterA = await page.evaluate(() => localStorage.getItem("ground.session"));
+  const sessionAfterA = await page.evaluate(() => localStorage.getItem("meethint.session"));
   await shot("04-context-a-reload");
 
   await openFolder(folderB);
@@ -283,10 +283,10 @@ try {
 
   // Relay: session must not contain source files
   const session = sessionAfterA ? JSON.parse(sessionAfterA) : null;
-  check("ground.session has a card", Boolean(session?.card?.say));
+  check("meethint.session has a card", Boolean(session?.card?.say));
   const sessionJson = sessionAfterA ?? "";
   check(
-    "ground.session has no source files",
+    "meethint.session has no source files",
     !session?.pack &&
       !session?.files &&
       !session?.chunks &&
@@ -296,7 +296,7 @@ try {
 
   const relayCtx = await browser.newContext();
   await relayCtx.addInitScript((raw) => {
-    if (raw) localStorage.setItem("ground.session", raw);
+    if (raw) localStorage.setItem("meethint.session", raw);
   }, sessionAfterA);
   const relay = await relayCtx.newPage();
   await relay.setViewportSize({ width: 390, height: 844 });

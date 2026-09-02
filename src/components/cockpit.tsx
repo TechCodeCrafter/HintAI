@@ -36,36 +36,36 @@ import { citationText, citedPath, isDocumentCitation, isFileCitation } from "@/l
 import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
 
 export function Cockpit({ contextId }: { contextId?: string } = {}) {
-  const armed = useGround((s) => s.armed);
-  const playing = useGround((s) => s.playing);
-  const overlay = useGround((s) => s.overlay);
-  const sharingCall = useGround((s) => s.sharingCall);
-  const disarm = useGround((s) => s.disarm);
-  const card = useGround((s) => s.card);
-  const utterances = useGround((s) => s.utterances);
-  const liveDraft = useGround((s) => s.liveDraft);
-  const listenError = useGround((s) => s.listenError);
-  const folderError = useGround((s) => s.folderError);
-  const pack = useGround((s) => s.pack);
-  const playMeeting = useGround((s) => s.playMeeting);
-  const stopMeeting = useGround((s) => s.stopMeeting);
-  const search = useGround((s) => s.search);
-  const setOverlay = useGround((s) => s.setOverlay);
-  const autoAnswer = useGround((s) => s.autoAnswer);
-  const setAutoAnswer = useGround((s) => s.setAutoAnswer);
-  const loadFolder = useGround((s) => s.loadFolder);
-  const addPdfFiles = useGround((s) => s.addPdfFiles);
-  const contextStatus = useGround((s) => s.contextStatus);
-  const contextError = useGround((s) => s.contextError);
-  const contextUpdating = useGround((s) => s.contextUpdating);
-  const ingestProgress = useGround((s) => s.ingestProgress);
-  const setOpenFile = useGround((s) => s.setOpenFile);
-  const openDocumentCitation = useGround((s) => s.openDocumentCitation);
+  const armed = useMeetHint((s) => s.armed);
+  const playing = useMeetHint((s) => s.playing);
+  const overlay = useMeetHint((s) => s.overlay);
+  const sharingCall = useMeetHint((s) => s.sharingCall);
+  const disarm = useMeetHint((s) => s.disarm);
+  const card = useMeetHint((s) => s.card);
+  const utterances = useMeetHint((s) => s.utterances);
+  const liveDraft = useMeetHint((s) => s.liveDraft);
+  const listenError = useMeetHint((s) => s.listenError);
+  const folderError = useMeetHint((s) => s.folderError);
+  const pack = useMeetHint((s) => s.pack);
+  const playMeeting = useMeetHint((s) => s.playMeeting);
+  const stopMeeting = useMeetHint((s) => s.stopMeeting);
+  const search = useMeetHint((s) => s.search);
+  const setOverlay = useMeetHint((s) => s.setOverlay);
+  const autoAnswer = useMeetHint((s) => s.autoAnswer);
+  const setAutoAnswer = useMeetHint((s) => s.setAutoAnswer);
+  const loadFolder = useMeetHint((s) => s.loadFolder);
+  const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
+  const contextStatus = useMeetHint((s) => s.contextStatus);
+  const contextError = useMeetHint((s) => s.contextError);
+  const contextUpdating = useMeetHint((s) => s.contextUpdating);
+  const ingestProgress = useMeetHint((s) => s.ingestProgress);
+  const setOpenFile = useMeetHint((s) => s.setOpenFile);
+  const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
   const folderRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
@@ -94,14 +94,14 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   useLiveListen();
 
   useEffect(() => {
-    useGround.getState().setListenError(null);
+    useMeetHint.getState().setListenError(null);
     void import("@/lib/listen/local-asr").then((m) => m.warmupAsr());
   }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("overlay") === "1") setOverlay(true);
-    void useGround.getState().boot(contextId).then(() => {
+    void useMeetHint.getState().boot(contextId).then(() => {
       if (params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
@@ -419,14 +419,14 @@ function AddMaterial({
 }
 
 function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement | null> }) {
-  const pack = useGround((s) => s.pack);
-  const contexts = useGround((s) => s.contexts);
-  const activeContextId = useGround((s) => s.activeContextId);
-  const contextStatus = useGround((s) => s.contextStatus);
-  const loadingFolder = useGround((s) => s.loadingFolder);
-  const activateContext = useGround((s) => s.activateContext);
-  const deleteStoredContext = useGround((s) => s.deleteStoredContext);
-  const resetPack = useGround((s) => s.resetPack);
+  const pack = useMeetHint((s) => s.pack);
+  const contexts = useMeetHint((s) => s.contexts);
+  const activeContextId = useMeetHint((s) => s.activeContextId);
+  const contextStatus = useMeetHint((s) => s.contextStatus);
+  const loadingFolder = useMeetHint((s) => s.loadingFolder);
+  const activateContext = useMeetHint((s) => s.activateContext);
+  const deleteStoredContext = useMeetHint((s) => s.deleteStoredContext);
+  const resetPack = useMeetHint((s) => s.resetPack);
   const [open, setOpen] = useState(false);
   const [removeId, setRemoveId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -789,13 +789,13 @@ function ProofLine() {
 }
 
 function RepoPane() {
-  const pack = useGround((s) => s.pack);
-  const sources = useGround((s) => s.sources);
-  const openFile = useGround((s) => s.openFile);
-  const setOpenFile = useGround((s) => s.setOpenFile);
-  const openDocument = useGround((s) => s.openDocument);
-  const openPdfSource = useGround((s) => s.openPdfSource);
-  const card = useGround((s) => s.card);
+  const pack = useMeetHint((s) => s.pack);
+  const sources = useMeetHint((s) => s.sources);
+  const openFile = useMeetHint((s) => s.openFile);
+  const setOpenFile = useMeetHint((s) => s.setOpenFile);
+  const openDocument = useMeetHint((s) => s.openDocument);
+  const openPdfSource = useMeetHint((s) => s.openPdfSource);
+  const card = useMeetHint((s) => s.card);
   const [filter, setFilter] = useState("");
   const pdfs = sources.filter(isPdfSource);
   const file = pack.files.find((f) => f.path === openFile) ?? (openDocument ? undefined : pack.files[0]);
@@ -982,22 +982,22 @@ function markAsked(transcript: string, asked: string | null): { text: string; hi
 }
 
 function TranscriptPane({ active }: { active: boolean }) {
-  const utterances = useGround((s) => s.utterances);
-  const typedQuery = useGround((s) => s.typedQuery);
-  const setTypedQuery = useGround((s) => s.setTypedQuery);
-  const search = useGround((s) => s.search);
-  const searchReady = useGround((s) => s.contextStatus === "ready");
-  const playing = useGround((s) => s.playing);
-  const armed = useGround((s) => s.armed);
-  const liveDraft = useGround((s) => s.liveDraft);
-  const draftRole = useGround((s) => s.draftRole);
-  const listenError = useGround((s) => s.listenError);
-  const sharingCall = useGround((s) => s.sharingCall);
-  const pack = useGround((s) => s.pack);
-  const hearLevel = useGround((s) => s.hearLevel);
-  const asrStatus = useGround((s) => s.asrStatus);
-  const asrNote = useGround((s) => s.asrNote);
-  const asked = useGround((s) => s.card?.query ?? s.heardQuestion);
+  const utterances = useMeetHint((s) => s.utterances);
+  const typedQuery = useMeetHint((s) => s.typedQuery);
+  const setTypedQuery = useMeetHint((s) => s.setTypedQuery);
+  const search = useMeetHint((s) => s.search);
+  const searchReady = useMeetHint((s) => s.contextStatus === "ready");
+  const playing = useMeetHint((s) => s.playing);
+  const armed = useMeetHint((s) => s.armed);
+  const liveDraft = useMeetHint((s) => s.liveDraft);
+  const draftRole = useMeetHint((s) => s.draftRole);
+  const listenError = useMeetHint((s) => s.listenError);
+  const sharingCall = useMeetHint((s) => s.sharingCall);
+  const pack = useMeetHint((s) => s.pack);
+  const hearLevel = useMeetHint((s) => s.hearLevel);
+  const asrStatus = useMeetHint((s) => s.asrStatus);
+  const asrNote = useMeetHint((s) => s.asrNote);
+  const asked = useMeetHint((s) => s.card?.query ?? s.heardQuestion);
   const queryRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const themLines = utterances.filter((u) => u.role === "them");
@@ -1151,11 +1151,11 @@ function CardPane({
   overlay: boolean;
   active: boolean;
 }) {
-  const card = useGround((s) => s.card);
-  const pack = useGround((s) => s.pack);
-  const search = useGround((s) => s.search);
-  const searchReady = useGround((s) => s.contextStatus === "ready");
-  const heardQuestion = useGround((s) => s.heardQuestion);
+  const card = useMeetHint((s) => s.card);
+  const pack = useMeetHint((s) => s.pack);
+  const search = useMeetHint((s) => s.search);
+  const searchReady = useMeetHint((s) => s.contextStatus === "ready");
+  const heardQuestion = useMeetHint((s) => s.heardQuestion);
   const theySaid = card?.query || heardQuestion;
   const chips = useMemo(() => questionChips(pack), [pack]);
   const [copied, setCopied] = useState(false);

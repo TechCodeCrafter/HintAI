@@ -6,7 +6,7 @@ import { persistActiveContextId } from "@/lib/context/migration";
 import { contextKindLabel } from "@/lib/context/kinds";
 import { getContextRepository } from "@/lib/context/service";
 import type { ContextRecord, StoredSource } from "@/lib/context/types";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 
 export function ContextDetail({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -18,9 +18,9 @@ export function ContextDetail({ id }: { id: string }) {
   const [missing, setMissing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const attachFolderToContext = useGround((s) => s.attachFolderToContext);
-  const addPdfFiles = useGround((s) => s.addPdfFiles);
-  const deleteStoredContext = useGround((s) => s.deleteStoredContext);
+  const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
+  const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
+  const deleteStoredContext = useMeetHint((s) => s.deleteStoredContext);
 
   async function load() {
     const repo = getContextRepository();
@@ -39,7 +39,7 @@ export function ContextDetail({ id }: { id: string }) {
 
   function bindActive() {
     persistActiveContextId(id);
-    useGround.setState({ activeContextId: id });
+    useMeetHint.setState({ activeContextId: id });
   }
 
   if (missing) {

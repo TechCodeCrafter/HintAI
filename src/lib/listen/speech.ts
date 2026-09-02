@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { markSpeechLive, roleForLane, stopCallShare } from "@/lib/listen/call-share";
 import { cleanCaption } from "@/lib/search/question";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 
 type RecResult = { isFinal: boolean; 0?: { transcript: string } };
 type RecEvent = { resultIndex: number; results: ArrayLike<RecResult> };
@@ -87,11 +87,11 @@ function ingestResult(event: RecEvent) {
     else interim += piece;
   }
   markSpeechLive();
-  useGround.getState().setLiveDraft(cleanCaption(interim), roleForLane("mic"));
+  useMeetHint.getState().setLiveDraft(cleanCaption(interim), roleForLane("mic"));
   const text = cleanCaption(finalText);
   if (!text) return;
   // SpeechRecognition can only hear a microphone, so it is always the mic lane.
-  useGround.getState().heard({
+  useMeetHint.getState().heard({
     id: `speech-${recSession}-${event.resultIndex}`,
     role: roleForLane("mic"),
     text,
@@ -100,10 +100,10 @@ function ingestResult(event: RecEvent) {
 
 function greet() {
   if (greeted) return;
-  if (useGround.getState().listenError) return;
+  if (useMeetHint.getState().listenError) return;
   greeted = true;
-  if (useGround.getState().sharingCall) return;
-  useGround.getState().appendUtterance({
+  if (useMeetHint.getState().sharingCall) return;
+  useMeetHint.getState().appendUtterance({
     at: Date.now(),
     speaker: "MeetHint",
     role: "system",
@@ -114,7 +114,7 @@ function greet() {
 function scheduleGreet() {
   window.clearTimeout(greetTimer);
   greetTimer = window.setTimeout(() => {
-    if (!stopped && running && !useGround.getState().listenError) greet();
+    if (!stopped && running && !useMeetHint.getState().listenError) greet();
   }, 900);
 }
 
@@ -130,12 +130,12 @@ function failSoft(reason: ListenBlock) {
   }
   rec = null;
   releaseMic();
-  useGround.getState().setListenError(null);
-  if (useGround.getState().sharingCall) return;
-  useGround.getState().disarm();
-  const last = useGround.getState().utterances.at(-1)?.text;
+  useMeetHint.getState().setListenError(null);
+  if (useMeetHint.getState().sharingCall) return;
+  useMeetHint.getState().disarm();
+  const last = useMeetHint.getState().utterances.at(-1)?.text;
   if (last !== MESSAGES[reason]) {
-    useGround.getState().appendUtterance({
+    useMeetHint.getState().appendUtterance({
       at: Date.now(),
       speaker: "MeetHint",
       role: "system",
@@ -197,7 +197,7 @@ function wire(instance: Recognition) {
     if (stopped) return;
     const delay = lastSpeechError === "network" ? 350 : 80;
     restartTimer = window.setTimeout(() => {
-      if (!stopped && !useGround.getState().listenError) startRecognition();
+      if (!stopped && !useMeetHint.getState().listenError) startRecognition();
     }, delay);
   };
 }
@@ -227,7 +227,7 @@ export function startCaptions(): boolean {
   if (!recognitionCtor()) return false;
   stopped = false;
   lastSpeechError = "";
-  useGround.getState().setListenError(null);
+  useMeetHint.getState().setListenError(null);
   return startRecognition();
 }
 
@@ -242,7 +242,7 @@ function beginListen() {
   }
   stopped = false;
   lastSpeechError = "";
-  useGround.getState().setListenError(null);
+  useMeetHint.getState().setListenError(null);
   const micPromise = ensureMic();
   const started = startRecognition();
   if (!started && !recognitionCtor()) {
@@ -273,7 +273,7 @@ export function retryListening() {
   }
   stopListeningAndMic();
   resetListenGreeting();
-  useGround.getState().arm();
+  useMeetHint.getState().arm();
   try {
     beginListen();
   } catch {
@@ -282,7 +282,7 @@ export function retryListening() {
 }
 
 export function toggleListening() {
-  const state = useGround.getState();
+  const state = useMeetHint.getState();
   if (state.armed && !state.listenError) {
     stopListeningAndMic();
     stopCallShare();
@@ -303,7 +303,7 @@ export function stopListening() {
     /* ignore */
   }
   rec = null;
-  useGround.getState().setLiveDraft("");
+  useMeetHint.getState().setLiveDraft("");
 }
 
 export function stopListeningAndMic() {
@@ -335,10 +335,10 @@ export function openLiveWindow(): Window | null {
 }
 
 export function useLiveListen() {
-  const armed = useGround((s) => s.armed);
-  const playing = useGround((s) => s.playing);
-  const listenError = useGround((s) => s.listenError);
-  const sharingCall = useGround((s) => s.sharingCall);
+  const armed = useMeetHint((s) => s.armed);
+  const playing = useMeetHint((s) => s.playing);
+  const listenError = useMeetHint((s) => s.listenError);
+  const sharingCall = useMeetHint((s) => s.sharingCall);
 
   useEffect(() => {
     if (sharingCall) return;
