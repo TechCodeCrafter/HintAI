@@ -22,7 +22,7 @@ import type { NormalizedDocument } from "@/lib/document/types";
 import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { isDocumentHit } from "@/lib/repo/types";
 import { localCard } from "@/lib/search/local-card";
-import { packFromFiles } from "@/lib/repo/folder";
+import { packFromFiles, truncationNotice } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
@@ -39,6 +39,15 @@ import { shapeOf } from "@/lib/search/intent";
 import { contentWords, normalizeSpokenQuestion } from "@/lib/search/spoken";
 import { subjectTerms } from "@/lib/search/subject";
 import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread";
+import {
+  downloadClaimReport as saveClaimReport,
+  reportFilename,
+} from "@/lib/audit/report";
+import { claimAdmit } from "@/lib/audit/admit";
+import { isClaimLine } from "@/lib/audit/claim-gate";
+import { getMeetingRepository } from "@/lib/audit/repository";
+import { finishMeeting, latestOpenMeeting, loadMeetings, meetingTitle, persistMeeting } from "@/lib/audit/session";
+import { newClaim, newMeetingRecord, type MeetingRecord } from "@/lib/audit/types";
 
 export { readSavedPack };
 
@@ -112,6 +121,7 @@ type MeetHintState = {
   listenError: string | null;
   listenBlocked: "iframe" | "denied" | "missing" | "speech" | null;
   folderError: string | null;
+  packNotice: string | null;
   utterances: Utterance[];
   typedQuery: string;
   heardQuestion: string | null;
@@ -161,6 +171,17 @@ type MeetHintState = {
   loadFolder: (list: FileList | File[]) => Promise<void>;
   addPdfFiles: (list: FileList | File[]) => Promise<void>;
   resetPack: () => void;
+  dismissPackNotice: () => void;
+  currentMeeting: MeetingRecord | null;
+  meetingHistory: MeetingRecord[];
+  selectedClaimId: string | null;
+  claimReport: string | null;
+  startClaimAudit: () => Promise<void>;
+  admitHeardClaim: (utterance: Utterance) => Promise<void>;
+  endClaimAudit: () => Promise<void>;
+  selectAuditClaim: (id: string | null) => void;
+  closeClaimAudit: () => void;
+  exportClaimReport: () => void;
 };
 
 const playTimeouts: number[] = [];
@@ -342,6 +363,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   listenError: null,
   listenBlocked: null,
   folderError: null,
+  packNotice: null,
+  currentMeeting: null,
+  meetingHistory: [],
+  selectedClaimId: null,
+  claimReport: null,
   utterances: [],
   typedQuery: "",
   heardQuestion: null,
@@ -355,6 +381,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     playTimeouts.splice(0).forEach((id) => window.clearTimeout(id));
     set({ armed: true, listening: true, playing: false, listenError: null, listenBlocked: null });
     persist({ card: get().card, armed: true, listening: true, searching: false });
+    void get().startClaimAudit();
   },
   disarm: () => {
     playTimeouts.splice(0).forEach((id) => window.clearTimeout(id));
@@ -374,6 +401,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       thread: null,
     });
     persist({ card: get().card, armed: false, listening: false, searching: false });
+    void get().endClaimAudit();
   },
   setOverlay: (value) => set({ overlay: value }),
   setAutoAnswer: (value) => set({ autoAnswer: value }),
@@ -468,9 +496,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           contextStatus: "ready",
           contextError: null,
         });
+        const history = await loadMeetings().catch(() => []);
+        if (epoch !== hydrationEpoch) return;
+        set({ meetingHistory: history, currentMeeting: latestOpenMeeting(history) });
         return;
       }
       await get().activateContext(target.id);
+      if (epoch !== hydrationEpoch) return;
+      const history = await loadMeetings().catch(() => []);
+      if (epoch !== hydrationEpoch) return;
+      set({ meetingHistory: history, currentMeeting: latestOpenMeeting(history) });
     } catch {
       if (epoch !== hydrationEpoch) return;
       set({
@@ -497,6 +532,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     set({
       loadingFolder: true,
       folderError: null,
+      packNotice: null,
       contextStatus: "hydrating",
       contextError: null,
       hydrationEpoch: epoch,
@@ -505,13 +541,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     persistActiveContextId(contextId);
     try {
-      const { pack: raw, skipped } = await packFromFiles(list);
+      const { pack: raw, skipped, truncated } = await packFromFiles(list);
       if (raw.files.length === 0) {
         if (epoch !== hydrationEpoch) return;
         set({
           loadingFolder: false,
           contextStatus: "ready",
           folderError: "No readable source files in that selection. Pick source, markdown, or text.",
+          packNotice: null,
         });
         return;
       }
@@ -538,7 +575,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextUpdating: false,
         ingestProgress: null,
         contextError: null,
-        folderError: hydrated.weak ? WEAK_PACK : skipped ? `Skipped ${skipped} files that are not source or text.` : null,
+        folderError: hydrated.weak ? WEAK_PACK : skipped && !truncated ? `Skipped ${skipped} files that are not source or text.` : null,
+        packNotice: truncated ? truncationNotice(hydrated.pack.files.length) : null,
       });
     } catch {
       if (epoch !== hydrationEpoch) return;
@@ -547,6 +585,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextStatus: "error",
         contextError: "Could not save that material.",
         folderError: "Could not read those files.",
+        packNotice: null,
       });
     }
   },
@@ -578,6 +617,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       contextError: null,
       contextUpdating: false,
       hydrationEpoch: epoch,
+      packNotice: null,
       ...clearSessionOnSwitch(),
     });
     persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
@@ -703,6 +743,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       ...applyCard(null, null),
       thread: null,
       folderError: packWarning(runtime.weak, runtime.pack.files.length),
+      packNotice: null,
     });
   },
   playMeeting: () => {
@@ -721,6 +762,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       ],
       ...applyCard(null, null),
     });
+    void get().startClaimAudit();
     const started = Date.now();
     for (const beat of DESIGN_REVIEW) {
       const id = window.setTimeout(() => {
@@ -739,12 +781,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       }, beat.delayMs);
       playTimeouts.push(id);
     }
-    const done = window.setTimeout(() => set({ playing: false }), 9000);
+    const done = window.setTimeout(() => {
+      set({ playing: false });
+      void get().endClaimAudit();
+    }, 9000);
     playTimeouts.push(done);
   },
   stopMeeting: () => {
     playTimeouts.splice(0).forEach((id) => window.clearTimeout(id));
     set({ playing: false });
+    void get().endClaimAudit();
   },
   appendUtterance: (u) =>
     set((s) => {
@@ -760,6 +806,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const outcome = applyHeard(get().utterances, event, Date.now());
     if (outcome.kind === "empty") return;
     set({ utterances: outcome.utterances, liveDraft: "" });
+    if (outcome.kind === "appended" || outcome.kind === "rewritten") {
+      const uttered = outcome.utterances.find((item) => item.id === id);
+      if (uttered) void get().admitHeardClaim(uttered);
+    }
 
     if (outcome.kind === "ignored") {
       if (role === "them") {
@@ -841,19 +891,21 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     set({
       loadingFolder: true,
       folderError: null,
+      packNotice: null,
       contextStatus: "hydrating",
       contextError: null,
       hydrationEpoch: epoch,
       ...clearSessionOnSwitch(),
     });
     try {
-      const { pack: raw, skipped } = await packFromFiles(list);
+      const { pack: raw, skipped, truncated } = await packFromFiles(list);
       if (raw.files.length === 0) {
         if (epoch !== hydrationEpoch) return;
         set({
           loadingFolder: false,
           contextStatus: "ready",
           folderError: "No readable source files in that folder. Pick src or a service folder, not CI or dist.",
+          packNotice: null,
         });
         return;
       }
@@ -885,6 +937,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         ingestProgress: null,
         contextError: null,
         folderError: hydrated.weak ? WEAK_PACK : null,
+        packNotice: truncated ? truncationNotice(hydrated.pack.files.length) : null,
       });
       get().appendUtterance({
         at: Date.now(),
@@ -892,7 +945,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         role: "system",
         text: hydrated.weak
           ? `Loaded ${hydrated.pack.name}, but these look like CI files. Open the src folder, then Search.`
-          : `Loaded ${hydrated.pack.name} — ${hydrated.pack.files.length} files${skipped ? `, skipped ${skipped}` : ""}. ${sample ? `Keeping ${sample}. ` : ""}Share the call or type a question — the Card is what you say.`,
+          : truncated
+            ? truncationNotice(hydrated.pack.files.length)
+            : `Loaded ${hydrated.pack.name} — ${hydrated.pack.files.length} files${skipped ? `, skipped ${skipped}` : ""}. ${sample ? `Keeping ${sample}. ` : ""}Share the call or type a question — the Card is what you say.`,
       });
     } catch {
       if (epoch !== hydrationEpoch) return;
@@ -901,6 +956,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextStatus: "error",
         contextError: "Could not save that folder.",
         folderError: "Could not read that folder.",
+        packNotice: null,
       });
     }
   },
@@ -1032,9 +1088,85 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       contextError: null,
       hydrationEpoch: epoch,
       folderError: null,
+      packNotice: null,
       ...clearSessionOnSwitch(),
       openFile: "src/exporter/retry.ts",
     });
+  },
+  dismissPackNotice: () => set({ packNotice: null }),
+  startClaimAudit: async () => {
+    const live = get().currentMeeting;
+    if (live && live.endedAt == null) return;
+    const startedAt = Date.now();
+    const meeting = newMeetingRecord(meetingTitle(get().pack, startedAt), startedAt);
+    set({ currentMeeting: meeting, selectedClaimId: null, claimReport: null });
+    try {
+      await getMeetingRepository().put(meeting);
+      set({ meetingHistory: await getMeetingRepository().listPast(meeting.id) });
+    } catch {
+      /* Dexie unavailable — monitor still tracks this session in memory */
+    }
+  },
+  admitHeardClaim: async (utterance) => {
+    if (utterance.role === "system") return;
+    const live = get().currentMeeting;
+    if (!live || live.endedAt != null) await get().startClaimAudit();
+    const meeting = get().currentMeeting;
+    if (!meeting || meeting.endedAt != null) return;
+
+    if (!isClaimLine(utterance.text)) {
+      if (!meeting.claims.some((claim) => claim.id === utterance.id)) return;
+      const next = { ...meeting, claims: meeting.claims.filter((claim) => claim.id !== utterance.id), utterances: get().utterances };
+      set({ currentMeeting: next });
+      await persistMeeting(next).catch(() => undefined);
+      return;
+    }
+
+    const admitted = claimAdmit(utterance.text, get().pack, get().chunks);
+    const claim = {
+      ...newClaim({
+        meetingId: meeting.id,
+        speaker: utterance.speaker,
+        text: utterance.text,
+        timestamp: utterance.at,
+      }),
+      id: utterance.id,
+      status: admitted.status,
+      evidence: admitted.evidence,
+    };
+    const claims = [...meeting.claims.filter((item) => item.id !== utterance.id), claim];
+    const next = { ...meeting, claims, utterances: get().utterances };
+    set({ currentMeeting: next });
+    await persistMeeting(next).catch(() => undefined);
+  },
+  endClaimAudit: async () => {
+    const meeting = get().currentMeeting;
+    if (!meeting || meeting.endedAt != null) return;
+    try {
+      const finished = await finishMeeting(meeting, get().utterances);
+      if (get().currentMeeting?.id !== meeting.id) return;
+      set({
+        currentMeeting: finished.meeting,
+        claimReport: finished.report,
+        meetingHistory: finished.history,
+      });
+    } catch {
+      set({
+        currentMeeting: { ...meeting, endedAt: Date.now(), utterances: get().utterances },
+      });
+    }
+  },
+  selectAuditClaim: (id) => set({ selectedClaimId: id }),
+  closeClaimAudit: () => {
+    const meeting = get().currentMeeting;
+    if (meeting && meeting.endedAt == null) return;
+    set({ currentMeeting: null, selectedClaimId: null, claimReport: null });
+  },
+  exportClaimReport: () => {
+    const meeting = get().currentMeeting;
+    const report = get().claimReport;
+    if (!meeting || !report) return;
+    saveClaimReport(report, reportFilename(meeting));
   },
   search: async (explicit, opts) => {
     const state = get();

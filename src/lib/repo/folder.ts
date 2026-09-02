@@ -57,6 +57,10 @@ export type FolderLoad = {
   truncated: boolean;
 };
 
+export function truncationNotice(fileCount: number): string {
+  return `Loaded ${fileCount} files. Some files were skipped due to size limits. For best results, load a service folder (src/) rather than the full repo root.`;
+}
+
 function relativePath(file: File): string {
   const webkit = (file as File & { webkitRelativePath?: string }).webkitRelativePath;
   return webkit && webkit.length > 0 ? webkit : file.name;

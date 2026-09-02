@@ -37,6 +37,14 @@ export function citedPath(cite: Citation): string | null {
   return cite.kind === "file" ? cite.path : null;
 }
 
+/** Inclusive file-line range a citation must paint and scroll into view. */
+export function citedLineRange(cite: Citation): { path: string; startLine: number; endLine: number } | null {
+  if (cite.kind !== "file") return null;
+  const startLine = cite.line;
+  const endLine = cite.endLine && cite.endLine > cite.line ? cite.endLine : cite.line;
+  return { path: cite.path, startLine, endLine };
+}
+
 /** Narrowing helper for the panes that can only render file coordinates. */
 export function isFileCitation(cite: Citation): cite is FileCitation {
   return cite.kind === "file";

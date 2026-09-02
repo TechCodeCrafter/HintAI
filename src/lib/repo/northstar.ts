@@ -1,6 +1,13 @@
 import type { RepoFile, RepoPack } from "./types";
 
-/** First-visit /home question. The demo pack must be able to cite this. */
+/** First-visit /home chips. Each must extract a cited line from the demo pack. */
+export const HOME_PROOF_CHIPS = [
+  "What is the architecture of this application?",
+  "What did we change in the exporter?",
+  "Why does that retry three times?",
+] as const;
+
+/** Kept so the pack still has a single-file cite the tests can pin. */
 export const HOME_TRY_QUESTION = "What does the auth service do?";
 export const AUTH_SERVICE_CLAIM =
   "The auth service verifies the session cookie on every non-public request and rotates it on the way out.";

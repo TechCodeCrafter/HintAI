@@ -22,6 +22,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
+import { ClaimMonitor } from "@/components/claim-monitor";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
@@ -32,7 +33,7 @@ import { PdfPane } from "@/components/pdf-pane";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
-import { citationText, citedPath, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
+import { citationText, citedLineRange, citedPath, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
@@ -51,6 +52,9 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const liveDraft = useMeetHint((s) => s.liveDraft);
   const listenError = useMeetHint((s) => s.listenError);
   const folderError = useMeetHint((s) => s.folderError);
+  const packNotice = useMeetHint((s) => s.packNotice);
+  const dismissPackNotice = useMeetHint((s) => s.dismissPackNotice);
+  const currentMeeting = useMeetHint((s) => s.currentMeeting);
   const pack = useMeetHint((s) => s.pack);
   const playMeeting = useMeetHint((s) => s.playMeeting);
   const stopMeeting = useMeetHint((s) => s.stopMeeting);
@@ -69,6 +73,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const folderRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
+  const [citeReveal, setCiteReveal] = useState(0);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
   const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
@@ -162,6 +167,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   function openCited(cite: Citation) {
     if (isFileCitation(cite)) {
       setOpenFile(cite.path);
+      setCiteReveal((n) => n + 1);
       setMobilePane("repo");
       if (overlay) setOverlay(false);
       return;
@@ -238,7 +244,6 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               />
               <span className="hidden lg:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
             </Button>
-            <DocsOnlySeg />
           </div>
           <div className="cockpit-pack">
             <ContextSwitcher folderRef={folderRef} />
@@ -295,6 +300,22 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           />
         </div>
       </header>
+      {packNotice ? (
+        <div
+          role="status"
+          data-testid="pack-limit-banner"
+          className="flex items-start justify-between gap-3 border-b border-line bg-accent-soft px-4 py-3 text-sm text-fg md:px-8"
+        >
+          <p>{packNotice}</p>
+          <button
+            type="button"
+            className="shrink-0 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
+            onClick={dismissPackNotice}
+          >
+            Dismiss
+          </button>
+        </div>
+      ) : null}
 
       <nav
         className={cn(
@@ -310,14 +331,23 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
         <PaneTab active={mobilePane === "card"} onClick={() => setMobilePane("card")} label="Card" mark={Boolean(card?.say)} />
       </nav>
 
-      <main className="cockpit-grid" data-mode={overlay ? "overlay" : "cockpit"}>
+      <main
+        className="cockpit-grid"
+        data-mode={overlay ? "overlay" : "cockpit"}
+        data-audit={currentMeeting ? "on" : undefined}
+      >
+        {currentMeeting ? (
+          <div className="cockpit-pane claim-monitor-pane max-md:hidden" data-pane="audit">
+            <ClaimMonitor />
+          </div>
+        ) : null}
         {overlay ? null : (
           <div
             className={cn("cockpit-pane", mobilePane !== "repo" && "max-md:hidden")}
             data-pane="repo"
             data-active={mobilePane === "repo" ? "true" : undefined}
           >
-            <RepoPane />
+            <RepoPane reveal={citeReveal} />
           </div>
         )}
         <div
@@ -566,23 +596,6 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
   );
 }
 
-function DocsOnlySeg() {
-  return (
-    <div className="docs-seg" role="group" aria-label="Answer source">
-      <button type="button" aria-pressed="true" title="Every line comes from a file you brought.">
-        From my docs
-      </button>
-      <button
-        type="button"
-        disabled
-        title="Nothing is generated. If the files do not cite it, you say nothing."
-      >
-        Freely
-      </button>
-    </div>
-  );
-}
-
 function UtilityLinks({
   overlay,
   demo,
@@ -788,7 +801,7 @@ function ProofLine() {
   );
 }
 
-function RepoPane() {
+function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const pack = useMeetHint((s) => s.pack);
   const sources = useMeetHint((s) => s.sources);
   const openFile = useMeetHint((s) => s.openFile);
@@ -802,7 +815,9 @@ function RepoPane() {
   // Only a file citation has a line to highlight in this pane. A commit
   // citation is about history and deliberately has no position in the file.
   const cite = card?.citations.find((c) => isFileCitation(c) && c.path === file?.path);
-  const citeLine = cite && isFileCitation(cite) ? cite.line : undefined;
+  const citeRange = cite ? citedLineRange(cite) : null;
+  const citeLine = citeRange?.startLine;
+  const citeEnd = citeRange?.endLine;
   const preRef = useRef<HTMLPreElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const why = pack.commits.find(
@@ -825,16 +840,23 @@ function RepoPane() {
   const painted = useMemo(() => {
     if (lines.length <= 480) return lines.map((line) => highlightLine(line));
     return lines.map((line, i) => {
-      if (citeLine && Math.abs(i + 1 - citeLine) < 24) return highlightLine(line);
+      const n = i + 1;
+      const near =
+        citeLine != null &&
+        n >= citeLine - 24 &&
+        n <= (citeEnd ?? citeLine) + 24;
+      if (near) return highlightLine(line);
       return line;
     });
-  }, [lines, citeLine]);
+  }, [lines, citeLine, citeEnd]);
 
   useEffect(() => {
     if (citeLine == null) return;
-    const node = preRef.current?.querySelector(`[data-line="${citeLine}"]`);
-    node?.scrollIntoView({ block: "center", behavior: "smooth" });
-  }, [citeLine, file?.path]);
+    const start = preRef.current?.querySelector(`[data-line="${citeLine}"]`);
+    const end = citeEnd != null ? preRef.current?.querySelector(`[data-line="${citeEnd}"]`) : null;
+    start?.scrollIntoView({ block: "center" });
+    end?.scrollIntoView({ block: "nearest" });
+  }, [citeLine, citeEnd, file?.path, reveal]);
 
   useEffect(() => {
     listRef.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" });
@@ -935,11 +957,12 @@ function RepoPane() {
               <pre ref={preRef} className="min-h-0 min-w-0 flex-1 overflow-auto px-3 py-2 text-xs leading-6 text-fg">
                 {painted.map((node, i) => {
                   const n = i + 1;
-                  const active = citeLine === n;
+                  const active = citeLine != null && n >= citeLine && n <= (citeEnd ?? citeLine);
                   return (
                     <div
                       key={n}
                       data-line={n}
+                      data-cited={active ? "true" : undefined}
                       className={cn("flex gap-3 md:min-w-max", active && "bg-pick")}
                     >
                       <span className="w-8 shrink-0 select-none text-right text-muted tabular-nums">{n}</span>
