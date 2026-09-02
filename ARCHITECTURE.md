@@ -111,7 +111,7 @@ utterance rather than dropped.
 Three paths exist; one is the default.
 
 - **Local Whisper (default).** `@xenova/transformers` in a web worker
-  (`public/ground-asr-worker.js`), ONNX via WASM, trying
+  (`public/meethint-asr-worker.js`), ONNX via WASM, trying
   `distil-whisper-small.en` then `whisper-tiny.en`. Warmed on boot. Every
   committed clip goes through this.
 - **Browser `SpeechRecognition` (parallel, mic only).** Runs on Chrome and Edge
@@ -395,8 +395,9 @@ Persistence for material is IndexedDB behind `ContextRepository`
 `sources` tables and adds `indexedSources` (ledger: content hash + chunker
 version + index version) and `storedChunks` (Context-scoped reusable file
 chunks). Existing Contexts upgrade in place; source rows are never wiped.
-`localStorage` keeps only `ground.session` (the current Card, for the `/relay`
-view), `ground.activeContextId` (which Context is open), and `meethint.waitlist`.
+`localStorage` keeps only `meethint.session` (the current Card, for the `/relay`
+view), `meethint.activeContextId` (which Context is open), and `meethint.waitlist`.
+A one-shot read still accepts the old `ground.*` keys and rewrites them.
 A one-shot migration reads a legacy `ground.pack`, writes it into IndexedDB,
 reads it back, and deletes the key only if file count, paths and hashes match.
 Transcript, thread and typed query are deliberately not persisted across a

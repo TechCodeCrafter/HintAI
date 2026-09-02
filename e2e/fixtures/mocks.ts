@@ -42,7 +42,7 @@ export async function mockLLM(page: Page, response: string | null) {
 export async function injectUtterance(page: Page, text: string, speaker: "them" | "you" = "them") {
   await page.evaluate(
     ({ text, speaker }) => {
-      const store = window.useGround?.getState?.();
+      const store = window.useMeetHint?.getState?.();
       if (!store) throw new Error("Store not found on window");
       store.appendUtterance({
         at: Date.now(),

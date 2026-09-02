@@ -5,7 +5,7 @@ import { ContextShell } from "@/components/context-shell";
 import { CONTEXT_KINDS } from "@/lib/context/kinds";
 import type { ContextKind } from "@/lib/context/types";
 import { cn } from "@/lib/cn";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 
 type Step = "identity" | "material" | "indexing";
 
@@ -24,16 +24,16 @@ export function CreateContextFlow() {
   const [contextId, setContextId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
 
-  const createNamedContext = useGround((s) => s.createNamedContext);
-  const attachFolderToContext = useGround((s) => s.attachFolderToContext);
-  const addPdfFiles = useGround((s) => s.addPdfFiles);
-  const contextStatus = useGround((s) => s.contextStatus);
-  const ingestProgress = useGround((s) => s.ingestProgress);
-  const loadingFolder = useGround((s) => s.loadingFolder);
-  const folderError = useGround((s) => s.folderError);
-  const sources = useGround((s) => s.sources);
-  const chunks = useGround((s) => s.chunks);
-  const activeContextId = useGround((s) => s.activeContextId);
+  const createNamedContext = useMeetHint((s) => s.createNamedContext);
+  const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
+  const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
+  const contextStatus = useMeetHint((s) => s.contextStatus);
+  const ingestProgress = useMeetHint((s) => s.ingestProgress);
+  const loadingFolder = useMeetHint((s) => s.loadingFolder);
+  const folderError = useMeetHint((s) => s.folderError);
+  const sources = useMeetHint((s) => s.sources);
+  const chunks = useMeetHint((s) => s.chunks);
+  const activeContextId = useMeetHint((s) => s.activeContextId);
 
   const busy = creating || loadingFolder || contextStatus === "hydrating" || contextStatus === "booting";
   const symbolCount = useMemo(() => chunks.filter((chunk) => "symbol" in chunk && chunk.symbol).length, [chunks]);

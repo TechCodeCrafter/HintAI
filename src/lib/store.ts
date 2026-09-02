@@ -42,7 +42,22 @@ import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread
 
 export { readSavedPack };
 
-const SESSION_KEY = "ground.session";
+export const SESSION_KEY = "meethint.session";
+const SESSION_KEY_LEGACY = "ground.session";
+
+function readSessionRaw(): string | null {
+  try {
+    const next = localStorage.getItem(SESSION_KEY);
+    if (next != null) return next;
+    const legacy = localStorage.getItem(SESSION_KEY_LEGACY);
+    if (legacy == null) return null;
+    localStorage.setItem(SESSION_KEY, legacy);
+    localStorage.removeItem(SESSION_KEY_LEGACY);
+    return legacy;
+  } catch {
+    return null;
+  }
+}
 const HERO_QUERY = "Why does that retry three times?";
 const WEAK_PACK = "This pack is mostly CI/config. Open the src folder, not the repo root.";
 
@@ -60,12 +75,13 @@ type SessionWire = {
 function persist(partial: SessionWire) {
   try {
     localStorage.setItem(SESSION_KEY, JSON.stringify(partial));
+    localStorage.removeItem(SESSION_KEY_LEGACY);
   } catch {
     /* ignore quota */
   }
 }
 
-type GroundState = {
+type MeetHintState = {
   pack: RepoPack;
   chunks: IndexedChunk[];
   contexts: ContextRecord[];
@@ -120,9 +136,9 @@ type GroundState = {
   openDocumentCitation: (cite: DocumentCitation) => void;
   setLiveDraft: (text: string, role?: "them" | "you") => void;
   setHearLevel: (level: number) => void;
-  setAsrStatus: (status: GroundState["asrStatus"]) => void;
+  setAsrStatus: (status: MeetHintState["asrStatus"]) => void;
   setAsrNote: (note: string) => void;
-  setListenError: (text: string | null, blocked?: GroundState["listenBlocked"]) => void;
+  setListenError: (text: string | null, blocked?: MeetHintState["listenBlocked"]) => void;
   boot: (preferredId?: string) => Promise<void>;
   activateContext: (id: string) => Promise<void>;
   createNamedContext: (input: CreateContextInput) => Promise<string>;
@@ -171,11 +187,11 @@ function nextHydrationEpoch(): number {
 }
 
 function searchIsLive(): boolean {
-  return useGround.getState().contextStatus === "ready";
+  return useMeetHint.getState().contextStatus === "ready";
 }
 
 function clearSessionOnSwitch(): Pick<
-  GroundState,
+  MeetHintState,
   | "thread"
   | "card"
   | "ledger"
@@ -252,7 +268,7 @@ const CONTEXT_LINES = 4;
  * What the question gate is allowed to know: the words in the loaded material,
  * and whether a cited Card is still fresh enough for a terse follow-up.
  */
-function gateFrom(state: Pick<GroundState, "vocab" | "ledger" | "thread">): Gate {
+function gateFrom(state: Pick<MeetHintState, "vocab" | "ledger" | "thread">): Gate {
   const recent = state.ledger[0];
   const alive = threadAlive(state.thread, THREAD_MS);
   return {
@@ -297,7 +313,7 @@ function isTyping(): boolean {
 
 const NORTHSTAR_CHUNKS = buildChunks(NORTHSTAR);
 
-export const useGround = create<GroundState>((set, get) => ({
+export const useMeetHint = create<MeetHintState>((set, get) => ({
   pack: NORTHSTAR,
   chunks: NORTHSTAR_CHUNKS,
   contexts: [],
@@ -1086,12 +1102,12 @@ export const useGround = create<GroundState>((set, get) => ({
 }));
 
 if (typeof window !== "undefined") {
-  window.useGround = useGround as unknown as Window["useGround"];
+  window.useMeetHint = useMeetHint as unknown as Window["useMeetHint"];
 }
 
 export function readRelaySession(): SessionWire | null {
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const raw = readSessionRaw();
     if (!raw) return null;
     return JSON.parse(raw) as SessionWire;
   } catch {

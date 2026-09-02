@@ -9,6 +9,7 @@ import {
   MIGRATION_MARKER_KEY,
   PACK_KEY,
   migrateLegacyPack,
+  readActiveContextId,
 } from "../migration.ts";
 import { hydrateContext } from "../hydrate.ts";
 import { hashContent } from "../hash.ts";
@@ -104,6 +105,13 @@ test("a failed write leaves the legacy pack in place", async () => {
   assert.equal(result.kind, "failed");
   assert.ok(storage.getItem(PACK_KEY));
   assert.equal((await repo.listContexts()).length, 0);
+});
+
+test("an old ground.activeContextId is rewritten to meethint.activeContextId", () => {
+  const storage = installStorage({ "ground.activeContextId": "ctx-legacy" });
+  assert.equal(readActiveContextId(), "ctx-legacy");
+  assert.equal(storage.getItem(ACTIVE_CONTEXT_KEY), "ctx-legacy");
+  assert.equal(storage.getItem("ground.activeContextId"), null);
 });
 
 test("no legacy pack is a no-op", async () => {
