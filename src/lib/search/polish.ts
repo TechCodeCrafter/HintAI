@@ -1,8 +1,14 @@
 import type { Card, Hit } from "../repo/types.ts";
+import { verifyClaim } from "./evidence.ts";
 import { refinePayload } from "./refine-payload.ts";
 
 export function applyPolish(evidenceCard: Card, remoteSay: string | null, latencyMs: number): Card {
   if (!remoteSay || remoteSay === evidenceCard.say) {
+    return { ...evidenceCard, answerMode: "grounded", latencyMs };
+  }
+  const evidence = evidenceCard.evidence ?? [];
+  // A rewrite that cannot be admitted is the model's sentence. Keep the extract.
+  if (evidence.length === 0 || !verifyClaim(remoteSay, evidence).ok) {
     return { ...evidenceCard, answerMode: "grounded", latencyMs };
   }
   return {

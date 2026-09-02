@@ -48,7 +48,7 @@ const GROUPS = [
       "src/lib/search/__tests__/document-card.test.ts",
       "src/lib/search/__tests__/question-contract.test.ts",
       "src/lib/search/__tests__/answer-mode.test.ts",
-      "src/lib/search/__tests__/generate-answer.test.ts",
+      "src/lib/search/__tests__/cite-or-silence.test.ts",
       "src/lib/ai/__tests__/models.test.ts",
       "src/lib/ai/__tests__/client-keys.test.ts",
       "src/lib/document/__tests__/evidence.test.ts",
