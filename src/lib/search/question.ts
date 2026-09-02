@@ -76,7 +76,7 @@ const FILLER = new RegExp(
 );
 
 /** True when this stretch of speech is chatter rather than something asked. */
-function isChatter(text: string): boolean {
+export function isChatter(text: string): boolean {
   return LOGISTICS.test(text) || FILLER.test(text);
 }
 

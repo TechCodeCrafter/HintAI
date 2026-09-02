@@ -1,7 +1,7 @@
 import { CONTEXT_SCHEMA_VERSION, type ContextRecord, type StoredSource } from "../types.ts";
 
 export const DATABASE_NAME = "meethint";
-export const DATABASE_VERSION = 3;
+export const DATABASE_VERSION = 4;
 
 export type ContextRow = ContextRecord;
 export type SourceRow = StoredSource;
@@ -12,6 +12,7 @@ export const INDEXED_SOURCE_INDEXES = "id, contextId, sourceId, [contextId+sourc
 export const STORED_CHUNK_INDEXES = "id, contextId, sourceId, [contextId+sourceId]";
 export const SOURCE_BLOB_INDEXES = "id, contextId, sourceId, contentHash, [sourceId+contentHash], [contextId+sourceId]";
 export const NORMALIZED_DOCUMENT_INDEXES = "id, contextId, sourceId, contentHash, [sourceId+contentHash]";
+export const MEETING_INDEXES = "id, startedAt, endedAt, name";
 
 export function newContextRecord(input: {
   name: string;

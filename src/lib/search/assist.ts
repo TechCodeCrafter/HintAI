@@ -9,41 +9,14 @@ export function silentAssist(query: string, reason: string, latencyMs = 0): Card
     query,
     latencyMs,
     source: "local",
-    answerMode: "grounded",
+    answerMode: "docs",
   };
 }
 
-export function applyAssist(query: string, remoteSay: string | null, latencyMs: number): Card {
-  if (!remoteSay) return silentAssist(query, "Nothing to suggest.", latencyMs);
-  return {
-    say: remoteSay,
-    reason: "Suggested — verify before using",
-    citations: [],
-    query,
-    latencyMs,
-    source: "assisted",
-    answerMode: "assisted",
-  };
+export function applyAssist(query: string, _remoteSay: string | null, latencyMs: number): Card {
+  return silentAssist(query, "Nothing to suggest.", latencyMs);
 }
 
-export async function assistCard(query: string, thread: ThreadContext | null, t0: number): Promise<Card> {
-  try {
-    const { callCraftCard } = await import("@/lib/e2e-hooks");
-    const remote = await Promise.race([
-      callCraftCard({
-        query,
-        hits: [],
-        threadContext: thread?.canonical ?? null,
-        task: "assist",
-        instruction:
-          "You are in Free mode. Suggest a brief spoken answer. Do not cite files. Do not claim the answer came from the user's material. If you cannot answer, return say null.",
-      }),
-      new Promise<never>((_, reject) => {
-        window.setTimeout(() => reject(new Error("timeout")), 4000);
-      }),
-    ]);
-    return applyAssist(query, remote.say, Math.round(performance.now() - t0));
-  } catch {
-    return silentAssist(query, "Could not suggest an answer.", Math.round(performance.now() - t0));
-  }
+export async function assistCard(query: string, _thread: ThreadContext | null, t0: number): Promise<Card> {
+  return silentAssist(query, "Nothing to suggest.", Math.round(performance.now() - t0));
 }

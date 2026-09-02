@@ -4,19 +4,19 @@ import { refinePayload } from "./refine-payload.ts";
 
 export function applyPolish(evidenceCard: Card, remoteSay: string | null, latencyMs: number): Card {
   if (!remoteSay || remoteSay === evidenceCard.say) {
-    return { ...evidenceCard, answerMode: "grounded", latencyMs };
+    return { ...evidenceCard, answerMode: "docs", latencyMs };
   }
   const evidence = evidenceCard.evidence ?? [];
   // A rewrite that cannot be admitted is the model's sentence. Keep the extract.
   if (evidence.length === 0 || !verifyClaim(remoteSay, evidence).ok) {
-    return { ...evidenceCard, answerMode: "grounded", latencyMs };
+    return { ...evidenceCard, answerMode: "docs", latencyMs };
   }
   return {
     ...evidenceCard,
     say: remoteSay,
     latencyMs,
-    source: "polished",
-    answerMode: "polished",
+    source: "local",
+    answerMode: "docs",
     evidence: evidenceCard.evidence,
     citations: evidenceCard.citations,
   };
@@ -45,6 +45,6 @@ export async function polishCard(
     ]);
     return applyPolish(evidenceCard, remote.say, Math.round(performance.now() - t0));
   } catch {
-    return { ...evidenceCard, answerMode: "grounded" };
+    return { ...evidenceCard, answerMode: "docs" };
   }
 }

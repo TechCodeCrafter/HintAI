@@ -59,7 +59,7 @@ export function ContextHome() {
             data-testid="create-context-button"
             className="inline-flex items-center gap-1.5 text-sm text-body hover:text-fg"
           >
-            Load your own folder
+            Create a named context
             <ArrowRight aria-hidden className="size-3.5" />
           </Link>
         </div>

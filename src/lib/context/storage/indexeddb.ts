@@ -17,10 +17,12 @@ import {
 } from "../source-write.ts";
 import type { ContextRecord, SourceDraft, StoredSource, UpsertDraft } from "../types.ts";
 import { isPdfSource, isTextSource, metadataOnly } from "../types.ts";
+import type { MeetingRecord } from "../../audit/types.ts";
 import {
   CONTEXT_INDEXES,
   DATABASE_NAME,
   INDEXED_SOURCE_INDEXES,
+  MEETING_INDEXES,
   newContextRecord,
   normalizePath,
   NORMALIZED_DOCUMENT_INDEXES,
@@ -38,6 +40,7 @@ class MeetHintDatabase extends Dexie {
   storedChunks!: Table<StoredChunkRow, string>;
   sourceBlobs!: Table<SourceBlobRecord, string>;
   normalizedDocuments!: Table<NormalizedDocumentRow, string>;
+  meetings!: Table<MeetingRecord, string>;
 
   constructor(name = DATABASE_NAME) {
     super(name);
@@ -58,6 +61,15 @@ class MeetHintDatabase extends Dexie {
       storedChunks: STORED_CHUNK_INDEXES,
       sourceBlobs: SOURCE_BLOB_INDEXES,
       normalizedDocuments: NORMALIZED_DOCUMENT_INDEXES,
+    });
+    this.version(4).stores({
+      contexts: CONTEXT_INDEXES,
+      sources: SOURCE_INDEXES,
+      indexedSources: INDEXED_SOURCE_INDEXES,
+      storedChunks: STORED_CHUNK_INDEXES,
+      sourceBlobs: SOURCE_BLOB_INDEXES,
+      normalizedDocuments: NORMALIZED_DOCUMENT_INDEXES,
+      meetings: MEETING_INDEXES,
     });
   }
 }

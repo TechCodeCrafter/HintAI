@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -8,9 +8,11 @@ import {
   AUTH_SERVICE_CLAIM,
   AUTH_SERVICE_LINE,
   AUTH_SERVICE_PATH,
+  HOME_PROOF_CHIPS,
   HOME_TRY_QUESTION,
   NORTHSTAR,
 } from "../../repo/northstar.ts";
+import { truncationNotice } from "../../repo/folder.ts";
 import { localCard } from "../local-card.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
 
@@ -19,12 +21,20 @@ const chunks = buildChunks(NORTHSTAR);
 
 test("search() never generates — retrieve, then localCard, then admit", () => {
   const store = readFileSync(join(root, "src/lib/store.ts"), "utf8");
+  assert.equal(existsSync(join(root, "src/lib/search/generate-answer.ts")), false);
   assert.doesNotMatch(store, /generateAnswer\s*\(/);
   assert.doesNotMatch(store, /hitsGroundAnswer/);
   assert.doesNotMatch(store, /speakAnswer/);
   assert.doesNotMatch(store, /craftCard/);
   assert.match(store, /retrieveHits/);
   assert.match(store, /localCard\(/);
+  const searchFn = store.slice(store.indexOf("search: async"));
+  assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
+});
+
+test("a truncated pack tells the user to load a service folder", () => {
+  assert.match(truncationNotice(160), /Loaded 160 files/);
+  assert.match(truncationNotice(160), /service folder \(src\/\)/);
 });
 
 test("a question the pack cannot cite stays silent", () => {
@@ -43,7 +53,15 @@ test("a question the files can admit speaks the cited line", () => {
   assert.ok(card.citations.some((c) => "path" in c && String(c.path).includes("retry")));
 });
 
-test("the first-visit question cites src/auth.ts line 47", () => {
+test("the first-visit chips extract a cited line", () => {
+  for (const question of HOME_PROOF_CHIPS) {
+    const card = localCard(question, retrieve(question, chunks), NORTHSTAR, 0);
+    assert.ok(card.say, `silent on: ${question}`);
+    assert.ok(card.citations.length > 0, `no cite for: ${question}`);
+  }
+});
+
+test("the auth service question cites src/auth.ts line 47", () => {
   const card = localCard(HOME_TRY_QUESTION, retrieve(HOME_TRY_QUESTION, chunks), NORTHSTAR, 0);
   assert.equal(card.say, AUTH_SERVICE_CLAIM);
   const cite = card.citations.find((c) => c.kind === "file");

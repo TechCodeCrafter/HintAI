@@ -2,7 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AUTH_SERVICE_LINE, AUTH_SERVICE_PATH, HOME_TRY_QUESTION } from "@/lib/repo/northstar";
+import { HOME_PROOF_CHIPS } from "@/lib/repo/northstar";
+import { citationText } from "@/lib/search/cite";
 import { useMeetHint } from "@/lib/store";
 
 export function HomeProof() {
@@ -13,12 +14,18 @@ export function HomeProof() {
   const ready = useMeetHint((s) => s.contextStatus === "ready" && s.pack.id === "northstar-payments");
   const card = useMeetHint((s) => s.card);
   const speaking = Boolean(card?.say);
+  const firstChip = HOME_PROOF_CHIPS[0];
 
   useLayoutEffect(() => {
     const store = useMeetHint.getState();
     store.resetPack();
-    store.setTypedQuery(HOME_TRY_QUESTION);
-  }, []);
+    store.setTypedQuery(firstChip);
+  }, [firstChip]);
+
+  function ask(question: string) {
+    setTypedQuery(question);
+    void search(question);
+  }
 
   return (
     <section className="space-y-5" data-testid="home-proof">
@@ -40,7 +47,7 @@ export function HomeProof() {
             }
           }}
           rows={2}
-          placeholder={HOME_TRY_QUESTION}
+          placeholder={firstChip}
           className="ground-input ground-question w-full"
         />
         <Button type="submit" size="sm" className="min-w-28" disabled={!ready || searching}>
@@ -49,15 +56,26 @@ export function HomeProof() {
         </Button>
       </form>
 
-      <button
-        type="button"
-        data-testid="home-try-question"
-        disabled={!ready || searching}
-        onClick={() => void search(HOME_TRY_QUESTION)}
-        className="text-left text-sm text-body hover:text-fg disabled:opacity-40"
-      >
-        Try: '{HOME_TRY_QUESTION}'
-      </button>
+      <div className="flex flex-wrap gap-2" data-testid="home-proof-chips">
+        {HOME_PROOF_CHIPS.map((question) => (
+          <button
+            key={question}
+            type="button"
+            data-testid="home-proof-chip"
+            disabled={!ready || searching}
+            onClick={() => ask(question)}
+            className="ground-chip text-xs disabled:opacity-40"
+          >
+            {question}
+          </button>
+        ))}
+      </div>
+
+      <p className="text-sm text-muted" data-testid="home-proof-hint">
+        <Link to="/app" className="text-body underline-offset-4 hover:text-fg hover:underline">
+          Load your own folder from the repo pane →
+        </Link>
+      </p>
 
       {speaking ? (
         <article className="mh-panel space-y-4 p-5" data-testid="card">
@@ -67,13 +85,11 @@ export function HomeProof() {
           {card && card.latencyMs > 0 ? (
             <p className="text-xs text-muted tabular-nums">Found in {card.latencyMs} ms</p>
           ) : null}
-          <p data-testid="home-proof-cite" className="text-sm text-body">
-            This line came from {AUTH_SERVICE_PATH} line {AUTH_SERVICE_LINE}.{" "}
-            <Link to="/create" className="text-accent underline-offset-4 hover:underline">
-              Load your own folder
-            </Link>{" "}
-            to ask about your code.
-          </p>
+          {card && card.citations.length > 0 ? (
+            <p data-testid="home-proof-cite" className="text-sm text-body">
+              {card.citations.map((cite) => citationText(cite)).join(" · ")}
+            </p>
+          ) : null}
         </article>
       ) : null}
     </section>

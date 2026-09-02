@@ -631,8 +631,17 @@ html[data-theme="light"] .mh-chip {
   overflow: hidden;
 }
 
+.cockpit-grid[data-audit="on"] {
+  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
+  max-width: 1840px;
+}
+
 .cockpit-grid[data-mode="overlay"] {
   grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+}
+
+.cockpit-grid[data-mode="overlay"][data-audit="on"] {
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 0.42fr) minmax(0, 0.58fr);
 }
 
 .cockpit-pane {
@@ -732,34 +741,6 @@ html[data-theme="light"] .mh-chip {
   color: var(--color-fg);
 }
 
-.docs-seg {
-  display: flex;
-  align-items: stretch;
-  overflow: hidden;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-subtle);
-}
-
-.docs-seg button {
-  min-height: 44px;
-  padding: 0 0.85rem;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  color: var(--color-secondary);
-}
-
-.docs-seg button[aria-pressed="true"] {
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-}
-
-.docs-seg button:disabled {
-  cursor: default;
-  opacity: 1;
-}
-
 .cockpit-header button svg,
 .cockpit-header a svg {
   width: 13px;
@@ -846,10 +827,6 @@ html[data-theme="light"] .mh-chip {
   }
 
   .cockpit-utils {
-    display: none;
-  }
-
-  .docs-seg {
     display: none;
   }
 }
@@ -1087,6 +1064,89 @@ html[data-theme="light"] .mh-chip {
   .mh-utterance {
     font-size: 1.125rem;
   }
+}
+
+.claim-monitor {
+  min-height: 0;
+}
+
+.claim-monitor-body {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.claim-monitor-list {
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+}
+
+.claim-row {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.55rem 0.85rem;
+  text-align: left;
+  color: var(--color-body);
+}
+
+.claim-row:hover,
+.claim-row-active {
+  background: rgba(139, 123, 245, 0.05);
+  color: var(--color-fg);
+}
+
+.claim-row-meta {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--color-muted);
+}
+
+.claim-row-text {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.claim-detail {
+  margin: 0 0.75rem 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-input);
+  font-size: 12px;
+}
+
+.claim-evidence {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.claim-monitor-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-top: 1px solid var(--color-line);
+  padding: 0.65rem 0.85rem;
+}
+
+.claim-export {
+  font-size: 12px;
+  color: var(--color-fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.claim-export-quiet {
+  color: var(--color-muted);
 }
 
 @keyframes live-dot {

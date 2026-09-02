@@ -5,7 +5,7 @@ import { architectureCard } from "./architecture.ts";
 import { localCard } from "./local-card.ts";
 import { buildChunks, retrieve } from "./retrieve.ts";
 import type { Card, RepoPack } from "../repo/types.ts";
-import { citationText } from "./cite.ts";
+import { citationText, citedLineRange } from "./cite.ts";
 
 /** The paths of the citations that name a file; a commit citation names none. */
 function filePaths(card: Card): string[] {
@@ -56,6 +56,17 @@ test("a grounded question produces a Card that cites a real loaded file", () => 
           : false;
     assert.ok(known, `citation must point at loaded material: ${citationText(cite)}`);
   }
+});
+
+test("the retry citation covers the full evidence range, not only the first line", () => {
+  const { card } = ask("Why does that retry three times?");
+  const cite = card.citations.find((c) => c.kind === "file");
+  assert.ok(cite && cite.kind === "file");
+  assert.equal(cite.path, "src/exporter/retry.ts");
+  assert.equal(cite.line, 4);
+  assert.equal(cite.endLine, 6);
+  const range = citedLineRange(cite);
+  assert.deepEqual(range, { path: "src/exporter/retry.ts", startLine: 4, endLine: 6 });
 });
 
 test("the scripted demo answer stays silent without a supporting hit", () => {
