@@ -21,7 +21,7 @@ import { gateFor, observeFrame } from "@/lib/listen/vad";
 import { mark, markClip, probeOn } from "@/lib/listen/onset-probe";
 import { encodeWavFromStreamChunk, pcm16kFromFrames, wavBytesMono } from "@/lib/listen/wav";
 import { cleanCaption } from "@/lib/search/question";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 
 const FIRST_MS = 1400;
 /** Only the live draft reads a trailing window; a committed clip is never trimmed. */
@@ -156,9 +156,9 @@ function release() {
   pumpSeq += 1;
   speechLiveAt = 0;
   draftFrom = null;
-  useGround.getState().setHearLevel(0);
-  useGround.getState().setLiveDraft("");
-  useGround.getState().setAsrStatus("off");
+  useMeetHint.getState().setHearLevel(0);
+  useMeetHint.getState().setLiveDraft("");
+  useMeetHint.getState().setAsrStatus("off");
   held.forEach((stream) => {
     stream.getTracks().forEach((track) => {
       try {
@@ -234,7 +234,7 @@ export function micCarriesRoom(): boolean {
 function ingestHeard(text: string, lane: LaneName, eventId: string) {
   const cleaned = cleanCaption(text);
   if (!cleaned) return;
-  const state = useGround.getState();
+  const state = useMeetHint.getState();
   draftFrom = null;
   state.heard({ id: eventId, role: roleForLane(lane), text: cleaned });
   mark("committed", lane, { text: cleaned, role: roleForLane(lane), eventId });
@@ -373,7 +373,7 @@ async function pump() {
       if (!running || seq !== pumpSeq) continue;
       if (!text || speechHeardRecently()) continue;
       draftFrom = job.lane;
-      useGround.getState().setLiveDraft(text, roleForLane(job.lane));
+      useMeetHint.getState().setLiveDraft(text, roleForLane(job.lane));
     } catch {
       /* keep streaming */
     }
@@ -464,7 +464,7 @@ function closeLane(lane: Lane, forced = false) {
   pumpSeq += 1;
   if (!enough) {
     if (draftFrom === name) {
-      useGround.getState().setLiveDraft("");
+      useMeetHint.getState().setLiveDraft("");
       draftFrom = null;
     }
     return;
@@ -489,7 +489,7 @@ async function transcribeSegment(
     if (!running) return;
     if (text) ingestHeard(text, name, eventId);
     else if (draftFrom === name) {
-      useGround.getState().setLiveDraft("");
+      useMeetHint.getState().setLiveDraft("");
       draftFrom = null;
     }
   } catch {
@@ -514,7 +514,7 @@ function attachLane(processor: ScriptProcessorNode, lane: Lane) {
     const now = Date.now();
     if (now - lastLevelAt > 80) {
       lastLevelAt = now;
-      useGround.getState().setHearLevel(Math.min(1, level * 10));
+      useMeetHint.getState().setHearLevel(Math.min(1, level * 10));
     }
     if (lane.skip()) return;
     // Classified against the floor left by earlier frames, and only allowed to
@@ -552,7 +552,7 @@ function attachLane(processor: ScriptProcessorNode, lane: Lane) {
           playbackTime: event.playbackTime,
           preRollMs: Math.round(rollMsOf(lane)),
         });
-        if (!draftFrom) useGround.getState().setLiveDraft("…", roleForLane(lane.name));
+        if (!draftFrom) useMeetHint.getState().setLiveDraft("…", roleForLane(lane.name));
       }
       return;
     }
@@ -720,14 +720,14 @@ export async function startHear(): Promise<void> {
   });
   held = streams;
   hasComputer = Boolean(computer);
-  useGround.getState().clearThem();
+  useMeetHint.getState().clearThem();
   startGraph(mic, computer);
   running = true;
-  useGround.getState().setSharingCall(true);
-  useGround.getState().arm();
-  useGround.getState().setListenError(null);
-  useGround.getState().setAsrStatus("live");
-  useGround.getState().setAsrNote("");
+  useMeetHint.getState().setSharingCall(true);
+  useMeetHint.getState().arm();
+  useMeetHint.getState().setListenError(null);
+  useMeetHint.getState().setAsrStatus("live");
+  useMeetHint.getState().setAsrNote("");
 
   const what =
     mic && computer
@@ -735,7 +735,7 @@ export async function startHear(): Promise<void> {
       : computer
         ? "Hearing the call tab. Questions from it become Cards."
         : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
-  useGround.getState().appendUtterance({
+  useMeetHint.getState().appendUtterance({
     at: Date.now(),
     speaker: "MeetHint",
     role: "system",
@@ -758,7 +758,7 @@ export async function startCallShare(): Promise<void> {
 export function stopHear() {
   release();
   void import("@/lib/listen/speech").then((speech) => speech.stopListeningAndMic());
-  useGround.getState().setSharingCall(false);
+  useMeetHint.getState().setSharingCall(false);
 }
 
 export function stopCallShare() {
@@ -766,15 +766,15 @@ export function stopCallShare() {
 }
 
 export function toggleHear() {
-  const state = useGround.getState();
+  const state = useMeetHint.getState();
   if (running || (state.armed && !state.listenError)) {
     stopHear();
     state.disarm();
     return;
   }
   void startHear().catch((err) => {
-    useGround.getState().setListenError(null);
-    useGround.getState().appendUtterance({
+    useMeetHint.getState().setListenError(null);
+    useMeetHint.getState().appendUtterance({
       at: Date.now(),
       speaker: "MeetHint",
       role: "system",

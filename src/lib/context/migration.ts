@@ -6,7 +6,8 @@ import type { ContextRecord } from "./types.ts";
 
 export const PACK_KEY = "ground.pack";
 export const MIGRATION_MARKER_KEY = "ground.pack.migrating";
-export const ACTIVE_CONTEXT_KEY = "ground.activeContextId";
+export const ACTIVE_CONTEXT_KEY = "meethint.activeContextId";
+const ACTIVE_CONTEXT_KEY_LEGACY = "ground.activeContextId";
 
 export function readSavedPack(): RepoPack | null {
   try {
@@ -26,7 +27,13 @@ export function isNorthstarPack(pack: RepoPack): boolean {
 
 export function readActiveContextId(): string | null {
   try {
-    return localStorage.getItem(ACTIVE_CONTEXT_KEY);
+    const next = localStorage.getItem(ACTIVE_CONTEXT_KEY);
+    if (next != null) return next;
+    const legacy = localStorage.getItem(ACTIVE_CONTEXT_KEY_LEGACY);
+    if (legacy == null) return null;
+    localStorage.setItem(ACTIVE_CONTEXT_KEY, legacy);
+    localStorage.removeItem(ACTIVE_CONTEXT_KEY_LEGACY);
+    return legacy;
   } catch {
     return null;
   }
@@ -36,6 +43,7 @@ export function persistActiveContextId(id: string | null): void {
   try {
     if (id) localStorage.setItem(ACTIVE_CONTEXT_KEY, id);
     else localStorage.removeItem(ACTIVE_CONTEXT_KEY);
+    localStorage.removeItem(ACTIVE_CONTEXT_KEY_LEGACY);
   } catch {
     /* ignore quota */
   }

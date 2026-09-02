@@ -9,7 +9,7 @@ import { lastViewerMetric, recordViewerMetric, type ViewerLatency } from "@/lib/
 import { createPdfRenderer, exactRectsForRange } from "@/lib/document/viewer/render";
 import { evidenceForOpenTarget } from "@/lib/document/viewer/resolve";
 import type { HighlightMode, ViewerBox } from "@/lib/document/viewer/types";
-import { useGround } from "@/lib/store";
+import { useMeetHint } from "@/lib/store";
 import { cn } from "@/lib/cn";
 
 type PaintBox = ViewerBox | { itemIndex: number; x: number; y: number; w: number; h: number };
@@ -35,10 +35,10 @@ const emptyLatency = (cold: boolean): ViewerLatency => ({
 });
 
 export function PdfPane({ forceMode }: { forceMode?: HighlightMode }) {
-  const target = useGround((s) => s.openDocument);
-  const card = useGround((s) => s.card);
-  const sources = useGround((s) => s.sources);
-  const hydrationEpoch = useGround((s) => s.hydrationEpoch);
+  const target = useMeetHint((s) => s.openDocument);
+  const card = useMeetHint((s) => s.card);
+  const sources = useMeetHint((s) => s.sources);
+  const hydrationEpoch = useMeetHint((s) => s.hydrationEpoch);
   const evidence = evidenceForOpenTarget(card, target);
   const sourcePath = sources.find((row) => row.id === target?.sourceId)?.path ?? "";
   const [view, setView] = useState<PaneView | null>(null);

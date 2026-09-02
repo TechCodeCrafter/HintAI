@@ -9,7 +9,7 @@ import type { DocumentEvidence } from "../../search/evidence.ts";
 import type { HighlightMode } from "./types.ts";
 import { openTargetFromEvidence } from "./resolve.ts";
 import { syncViewerBlobPins } from "./retain.ts";
-import { useGround } from "../../store.ts";
+import { useMeetHint } from "../../store.ts";
 
 export const HYPHEN_PDF = buildPdfBytes({
   pages: [
@@ -120,6 +120,6 @@ export async function bootCockpitViewerQa() {
     source: "local" as const,
   };
   syncViewerBlobPins(card, null);
-  useGround.setState({ card, openDocument: null, contextStatus: "ready" });
+  useMeetHint.setState({ card, openDocument: null, contextStatus: "ready" });
   return { evidence, target: openTargetFromEvidence(evidence) };
 }

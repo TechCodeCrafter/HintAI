@@ -10,8 +10,8 @@ let seq = 0;
 const waits = new Map<number, Waiter>();
 
 function setNote(text: string) {
-  void import("@/lib/store").then(({ useGround }) => {
-    useGround.getState().setAsrNote(text);
+  void import("@/lib/store").then(({ useMeetHint }) => {
+    useMeetHint.getState().setAsrNote(text);
   });
 }
 
@@ -59,7 +59,7 @@ function ensureWorker(): Promise<boolean> {
   if (ready) return ready;
   ready = new Promise((resolve) => {
     try {
-      const next = new Worker("/ground-asr-worker.js", { type: "module" });
+      const next = new Worker("/meethint-asr-worker.js", { type: "module" });
       worker = next;
       attach(next);
       const bootWait = (event: MessageEvent) => {
