@@ -1055,10 +1055,10 @@ export const useGround = create<GroundState>((set, get) => ({
     const canonical = normalizeSpokenQuestion(query).canonical;
     const resolved = Boolean(opts?.resolved);
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
+    // retrieve → localCard → admit. If the files cannot admit a line, stay silent.
     const hits = await retrieveHits(canonical, state.chunks);
     if (epoch !== searchEpoch) return;
     const documents = await documentsForHits(hits);
-    // retrieve → localCard → admit. Do not generate a spoken line.
     const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
       document: (sourceId) => documents.get(sourceId),
     });

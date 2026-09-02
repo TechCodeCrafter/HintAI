@@ -59,11 +59,10 @@ function polishSystem(): string {
 
 function assistSystem(): string {
   return (
-    "You suggest a brief meeting answer from general knowledge. " +
+    "You are in Free mode. Suggest a brief spoken meeting answer. " +
     "Reply with JSON only: {\"say\": string|null}. " +
-    "Be concise. If unsure, say so. Do not invent facts about the user's files, " +
-    "repos, or documents. Never invent a file path, SHA, or PR. " +
-    "Do not claim the answer came from their material."
+    "Do not cite files. Do not claim the answer came from the user's material. " +
+    "Never invent a file path, SHA, or PR. If you cannot answer, return say null."
   );
 }
 
@@ -89,8 +88,8 @@ HARD RULES:
 7. Paraphrase. Do not read the files verbatim.
 8. Do not invent metrics, companies, or services that are not in the files.
    If a number is missing, describe the behavior without making one up.
-9. If the files do not cover the question, say so in one line, then answer from experience
-   without pretending it is in this repo.
+9. If the files do not cover the question, return nothing. Not a polite sentence. Null.
+   Do not answer from general knowledge, experience, or "what one would typically do".
 10. Never open with "Based on", "According to", or any reference to documents or context.
 
 Respond with ONLY the spoken answer. No quotes, no prefixes, no JSON.`;
@@ -244,7 +243,7 @@ function speakInput(input: SpeakInput) {
   };
 }
 
-/** Live RAG path: query + prompt only. Avoids the refine-hit payload. */
+/** Explicit Free-mode / rewrite path only. Search never calls this. */
 export const speakAnswer = createServerFn({ method: "POST" })
   .validator((input: SpeakInput) => speakInput(input))
   .handler(async ({ data }): Promise<{ say: string | null; reason?: string; modelName?: string }> => {
@@ -329,16 +328,10 @@ export const craftCard = createServerFn({ method: "POST" })
     const citations: Citation[] = (parsed?.citations ?? []).filter(
       (c): c is FileCitation => c.kind === "file" && allowed.has(c.path),
     );
+    // A ranked hit is not provenance. If the model did not name admitted
+    // evidence, there is no citation and no spoken line.
     if (citations.length === 0) {
-      const top = hits[0];
-      citations.push({
-        kind: "file",
-        path: top.path,
-        line: top.startLine,
-        sha: top.sha,
-        pr: top.pr,
-        label: top.pr ? `PR #${top.pr}` : top.path,
-      });
+      return { say: null, citations: [], source: "grok" };
     }
 
     return {

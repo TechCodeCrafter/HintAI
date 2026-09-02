@@ -36,7 +36,7 @@ export async function assistCard(query: string, thread: ThreadContext | null, t0
         threadContext: thread?.canonical ?? null,
         task: "assist",
         instruction:
-          "Answer this meeting question from general knowledge. Be concise. If unsure, say so. Do not invent specific facts about the user's material.",
+          "You are in Free mode. Suggest a brief spoken answer. Do not cite files. Do not claim the answer came from the user's material. If you cannot answer, return say null.",
       }),
       new Promise<never>((_, reject) => {
         window.setTimeout(() => reject(new Error("timeout")), 4000);
