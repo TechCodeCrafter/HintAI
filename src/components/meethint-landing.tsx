@@ -521,7 +521,8 @@ export function MeetHintLanding() {
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)] lg:gap-16">
               <div className="space-y-5">
                 <h2 className="mh-display text-3xl sm:text-4xl">
-                  You can't hold forty repositories in working memory.
+                  Load a service folder, an ADR set, or a contract pack. MeetHint keeps it local and
+                  cites exactly.
                 </h2>
                 <p className="text-body">
                   Someone asks about a service you shipped fourteen months ago. You shouldn't be
@@ -535,7 +536,7 @@ export function MeetHintLanding() {
               </div>
               <ol className="space-y-3">
                 {[
-                  { icon: FolderOpen, step: "Bring the material", body: "A repository, a folder of ADRs, a contract, a deck — or all of them at once." },
+                  { icon: FolderOpen, step: "Bring the material", body: "A service folder, an ADR set, or a contract pack. One folder at a time, kept local." },
                   { icon: Mic, step: "It follows the conversation", body: "MeetHint catches the question actually being asked and searches on the spot." },
                   { icon: Quote, step: "It cites, you talk", body: "You get the file and the line it came from. The words are still yours." },
                 ].map((item, i) => (

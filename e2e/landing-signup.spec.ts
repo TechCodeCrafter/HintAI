@@ -4,6 +4,8 @@ test("landing shows the demo and accepts a waitlist signup", async ({ page }) =>
   await page.goto("/");
   await expect(page.getByTestId("landing")).toBeVisible();
   await expect(page.getByRole("heading", { name: /The meeting just became searchable/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Load a service folder/ })).toBeVisible();
+  await expect(page.getByText("forty repositories")).toHaveCount(0);
   await expect(page.getByText("They asked", { exact: true })).toBeVisible();
 
   const email = page.getByTestId("hero-email-input");
