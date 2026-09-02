@@ -17,6 +17,7 @@ import {
   pushRing,
   ringMs,
 } from "@/lib/listen/ring";
+import { createSileroTap, type SileroTap } from "@/lib/listen/silero";
 import { gateFor, observeFrame } from "@/lib/listen/vad";
 import { mark, markClip, probeOn } from "@/lib/listen/onset-probe";
 import { encodeWavFromStreamChunk, pcm16kFromFrames, wavBytesMono } from "@/lib/listen/wav";
@@ -99,8 +100,10 @@ type Lane = {
 
 let held: MediaStream[] = [];
 let audioCtx: AudioContext | null = null;
-let processors: ScriptProcessorNode[] = [];
+let processors: AudioWorkletNode[] = [];
 let sources: MediaStreamAudioSourceNode[] = [];
+let sileroByLane = new Map<LaneName, SileroTap>();
+let pcmWorkletReady: Promise<void> | null = null;
 let sampleRate = 16000;
 let running = false;
 let hasComputer = false;
@@ -135,6 +138,11 @@ function stopGraph() {
     }
   }
   processors = [];
+  pcmWorkletReady = null;
+  for (const tap of sileroByLane.values()) {
+    void tap.destroy();
+  }
+  sileroByLane = new Map();
   for (const src of sources) {
     try {
       src.disconnect();
@@ -497,18 +505,20 @@ async function transcribeSegment(
   }
 }
 
-function attachLane(processor: ScriptProcessorNode, lane: Lane) {
+function attachLane(node: AudioWorkletNode, lane: Lane) {
   let sawFirstFrame = false;
-  processor.onaudioprocess = (event) => {
+  node.port.onmessage = (event: MessageEvent<{ type?: string; samples?: Float32Array; time?: number }>) => {
     if (!running) return;
-    const frame = event.inputBuffer.getChannelData(0);
+    const frame = event.data?.samples;
+    if (!frame?.length) return;
+    const playbackTime = event.data.time ?? 0;
     // First thing in the callback, before any work of ours could distort it.
-    tickFrame(lane.name, event.playbackTime, frame.length);
-    const copy = new Float32Array(frame);
+    tickFrame(lane.name, playbackTime, frame.length);
+    const copy = frame;
     if (!sawFirstFrame) {
       sawFirstFrame = true;
       mark("pcm-first-frame", lane.name, { sampleRate, frameSamples: copy.length });
-      captureMark("pcm-first-frame", lane.name, { playbackTime: event.playbackTime });
+      captureMark("pcm-first-frame", lane.name, { playbackTime });
     }
     const level = rms(copy);
     const now = Date.now();
@@ -516,13 +526,13 @@ function attachLane(processor: ScriptProcessorNode, lane: Lane) {
       lastLevelAt = now;
       useMeetHint.getState().setHearLevel(Math.min(1, level * 10));
     }
+    sileroByLane.get(lane.name)?.push(copy, sampleRate);
     if (lane.skip()) return;
-    // Classified against the floor left by earlier frames, and only allowed to
-    // inform the floor afterwards. Reversing these two steps is what let a
-    // question's first frame raise the bar above itself.
-    const { gate: startGate, voiced, floorBefore } = observeFrame(lane, level);
+    // Energy still trains the floor (and is the fallback). Silero, once it has
+    // scored a frame, owns the voiced decision.
+    const { gate: startGate, voiced: energyVoiced, floorBefore } = observeFrame(lane, level);
+    const voiced = sileroByLane.get(lane.name)?.voiced() ?? energyVoiced;
     if (probeOn()) {
-      // Every frame, so the pre-VAD run-up to an onset is measurable.
       mark("frame", lane.name, {
         level: Number(level.toFixed(5)),
         gate: Number(startGate.toFixed(5)),
@@ -531,10 +541,7 @@ function attachLane(processor: ScriptProcessorNode, lane: Lane) {
         frameMs: Math.round(frameMs(copy)),
       });
     }
-    // The VAD decision itself, frame by frame: the energy, the bar it had to
-    // clear, and the state it was in. This is what shows whether a late open was
-    // a threshold that speech never reached or a transition that never fired.
-    captureVad(lane.name, event.playbackTime, {
+    captureVad(lane.name, playbackTime, {
       level,
       gate: startGate,
       floor: floorBefore,
@@ -549,7 +556,7 @@ function attachLane(processor: ScriptProcessorNode, lane: Lane) {
       if (voiced) {
         openLane(lane, now);
         captureMark("vad-open", lane.name, {
-          playbackTime: event.playbackTime,
+          playbackTime,
           preRollMs: Math.round(rollMsOf(lane)),
         });
         if (!draftFrom) useMeetHint.getState().setLiveDraft("…", roleForLane(lane.name));
@@ -558,9 +565,7 @@ function attachLane(processor: ScriptProcessorNode, lane: Lane) {
     }
 
     lane.pending.push(copy);
-    // Hysteresis: once speaking, the level only has to clear a lower bar, so a
-    // quiet syllable does not read as the end of the sentence.
-    if (level >= startGate * tuning.stopRatio) lane.silenceAt = now;
+    if (voiced) lane.silenceAt = now;
     if (now - lane.startedAt >= MAX_UTTER_MS) {
       closeLane(lane, true);
       return;
@@ -608,7 +613,7 @@ async function openComputer(): Promise<MediaStream | null> {
 
 /**
  * Attaches the shadow AudioWorklet used only to prove where PCM is lost. It
- * reads the same source node as the ScriptProcessorNode and reports counters;
+ * reads the same source node as the PCM worklet and reports counters;
  * its output is left unconnected so it contributes nothing to the graph.
  */
 async function shadowMonitor(ctx: AudioContext, src: MediaStreamAudioSourceNode, lane: LaneName) {
@@ -627,11 +632,22 @@ async function shadowMonitor(ctx: AudioContext, src: MediaStreamAudioSourceNode,
   }
 }
 
-function listenTo(stream: MediaStream, lane: Lane) {
+async function ensurePcmWorklet(ctx: AudioContext) {
+  pcmWorkletReady ??= ctx.audioWorklet.addModule("/meethint-pcm-worklet.js");
+  await pcmWorkletReady;
+}
+
+async function listenTo(stream: MediaStream, lane: Lane) {
   if (!audioCtx) return;
+  await ensurePcmWorklet(audioCtx);
   const src = audioCtx.createMediaStreamSource(stream);
   sources.push(src);
-  const processor = audioCtx.createScriptProcessor(2048, 1, 1);
+  const processor = new AudioWorkletNode(audioCtx, "meethint-pcm-capture", {
+    numberOfInputs: 1,
+    numberOfOutputs: 1,
+    channelCount: 1,
+    processorOptions: { lane: lane.name },
+  });
   processors.push(processor);
   attachLane(processor, lane);
   const mute = audioCtx.createGain();
@@ -639,6 +655,17 @@ function listenTo(stream: MediaStream, lane: Lane) {
   src.connect(processor);
   processor.connect(mute);
   mute.connect(audioCtx.destination);
+  void createSileroTap()
+    .then((tap) => {
+      if (!running) {
+        void tap.destroy();
+        return;
+      }
+      sileroByLane.set(lane.name, tap);
+    })
+    .catch(() => {
+      /* energy VAD stays in charge */
+    });
   // Test-only observer on the same source. Never connected to anything, so it
   // cannot affect the graph, the VAD, or a single word of the transcript.
   if (captureOn()) void shadowMonitor(audioCtx, src, lane.name);
@@ -649,7 +676,7 @@ function listenTo(stream: MediaStream, lane: Lane) {
   });
 }
 
-function startGraph(mic: MediaStream | null, computer: MediaStream | null) {
+async function startGraph(mic: MediaStream | null, computer: MediaStream | null) {
   const ctx = (() => {
     try {
       return new AudioContext({ sampleRate: 16000 });
@@ -677,11 +704,11 @@ function startGraph(mic: MediaStream | null, computer: MediaStream | null) {
   });
 
   if (computer) {
-    listenTo(computer, { name: "computer", vad: 0.024, skip: () => false, ...blank() });
+    await listenTo(computer, { name: "computer", vad: 0.024, skip: () => false, ...blank() });
   }
 
   if (mic) {
-    listenTo(mic, {
+    await listenTo(mic, {
       name: "mic",
       vad: 0.013,
       // Browser captions already cover the mic; skip until they go quiet.
@@ -721,8 +748,13 @@ export async function startHear(): Promise<void> {
   held = streams;
   hasComputer = Boolean(computer);
   useMeetHint.getState().clearThem();
-  startGraph(mic, computer);
   running = true;
+  try {
+    await startGraph(mic, computer);
+  } catch (error) {
+    release();
+    throw error instanceof Error ? error : new Error("Could not start the audio worklet.");
+  }
   useMeetHint.getState().setSharingCall(true);
   useMeetHint.getState().arm();
   useMeetHint.getState().setListenError(null);

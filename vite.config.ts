@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Plugin } from "vite";
 import { defineConfig } from "vite";
@@ -30,6 +30,33 @@ function hasGlobbedMigrations(root: string): boolean {
  * migrations — no schema to apply — skips it entirely rather than paying for a
  * PGLite instance it never queries.
  */
+/** Copies Silero / ONNX Runtime files so MicVAD can load them from /vad/. */
+function vadAssetsPlugin(): Plugin {
+  const copy = () => {
+    const dest = join(process.cwd(), "public/vad");
+    const vadDist = join(process.cwd(), "node_modules/@ricky0123/vad-web/dist");
+    const ortDist = existsSync(join(process.cwd(), "node_modules/onnxruntime-web/dist"))
+      ? join(process.cwd(), "node_modules/onnxruntime-web/dist")
+      : join(process.cwd(), "node_modules/@ricky0123/vad-web/node_modules/onnxruntime-web/dist");
+    if (!existsSync(vadDist) || !existsSync(ortDist)) return;
+    mkdirSync(dest, { recursive: true });
+    for (const name of ["vad.worklet.bundle.min.js", "silero_vad_legacy.onnx", "silero_vad_v5.onnx"]) {
+      const from = join(vadDist, name);
+      if (existsSync(from)) cpSync(from, join(dest, name));
+    }
+    for (const name of readdirSync(ortDist)) {
+      if (/\.(wasm|mjs)$/.test(name) && !name.endsWith(".map")) {
+        cpSync(join(ortDist, name), join(dest, name));
+      }
+    }
+  };
+  return {
+    name: "meethint-vad-assets",
+    buildStart: copy,
+    configureServer: copy,
+  };
+}
+
 function pgliteBootstrapPlugin(): Plugin {
   return {
     name: "app-builder:pglite-bootstrap",
@@ -159,12 +186,13 @@ export default defineConfig(({ command, isPreview }) => ({
   resolve: { tsconfigPaths: true },
   optimizeDeps: {
     include: ["pdfjs-dist"],
-    exclude: ["@huggingface/transformers", "onnxruntime-web"],
+    exclude: ["@huggingface/transformers", "onnxruntime-web", "@ricky0123/vad-web"],
   },
   ssr: {
-    external: ["@huggingface/transformers", "onnxruntime-web", "onnxruntime-node"],
+    external: ["@huggingface/transformers", "onnxruntime-web", "onnxruntime-node", "@ricky0123/vad-web"],
   },
   plugins: [
+    vadAssetsPlugin(),
     pgliteBootstrapPlugin(),
     // Before tanstackStart so /auth/popup never falls through to the SPA.
     authPopupPlugin(),
