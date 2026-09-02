@@ -19,6 +19,13 @@
  * the caller owns it.
  */
 
+/** Silero `isSpeech` at or above this is voiced. Energy VAD is the fallback. */
+export const SILERO_SPEECH = 0.5;
+
+export function sileroVoiced(isSpeech: number, threshold = SILERO_SPEECH): boolean {
+  return isSpeech >= threshold;
+}
+
 /** How far above the measured quiet level speech has to sit to count. */
 export const FLOOR_MULTIPLIER = 1.8;
 /** The floor is a decaying minimum, allowed to creep up slowly. */

@@ -4,7 +4,7 @@ import { test } from "node:test";
 import { clearRing, keepSamplesFor, newRing, pushRing, ringMs } from "./ring.ts";
 
 const RATE = 16000;
-/** The production frame: createScriptProcessor(2048) on a 16kHz context. */
+/** A convenient test chunk. Production frames come from the PCM AudioWorklet. */
 const FRAME = 2048;
 const FRAME_MS = (FRAME / RATE) * 1000; // 128
 

@@ -15,6 +15,7 @@ screenshots
 attachments
 artifacts
 .qa-audio
+public/vad
 .DS_Store
 .grok/status
 .grok/preview.log

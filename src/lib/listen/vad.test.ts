@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { FLOOR_MULTIPLIER, type VadLane, gateFor, observeFrame } from "./vad.ts";
+import {
+  FLOOR_MULTIPLIER,
+  SILERO_SPEECH,
+  type VadLane,
+  gateFor,
+  observeFrame,
+  sileroVoiced,
+} from "./vad.ts";
 
 /** The production CALL lane threshold and frame size. */
 const BASE = 0.024;
@@ -139,6 +146,12 @@ test("the floor is frozen while a lane is active", () => {
   const lane: VadLane = { vad: BASE, floor: 0.01, mode: "active" };
   observeFrame(lane, 0.0001);
   assert.equal(lane.floor, 0.01, "quiet between syllables is not background");
+});
+
+test("Silero speech probability at the threshold is voiced", () => {
+  assert.equal(sileroVoiced(SILERO_SPEECH), true);
+  assert.equal(sileroVoiced(SILERO_SPEECH - 0.01), false);
+  assert.equal(sileroVoiced(0.92), true);
 });
 
 test("silence after an utterance retrains the floor once the lane is idle", () => {
