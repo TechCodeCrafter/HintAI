@@ -4,11 +4,10 @@ import { ContextHome } from "@/components/context-home";
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Your contexts — MeetHint" },
+      { title: "MeetHint" },
       {
         name: "description",
-        content:
-          "Create a context from the material you work with. MeetHint cites a line from that material when the room asks.",
+        content: "Ask a question. The card is a cited line from a file, or empty.",
       },
     ],
   }),

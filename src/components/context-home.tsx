@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { HomeProof } from "@/components/home-proof";
+import { ContextShell } from "@/components/context-shell";
 import { contextHasSources, formatContextCounts } from "@/lib/context/kinds";
 import { migrateLegacyPack, readSavedPack } from "@/lib/context/migration";
 import { listContextSummaries, type ContextSummary } from "@/lib/context/service";
-import { ContextShell } from "@/components/context-shell";
 
 export function ContextHome() {
   const [summaries, setSummaries] = useState<ContextSummary[] | null>(null);
@@ -40,9 +41,6 @@ export function ContextHome() {
     }
   }
 
-  const ready = summaries !== null;
-  const empty = ready && summaries.length === 0;
-
   return (
     <ContextShell
       aside={
@@ -55,14 +53,14 @@ export function ContextHome() {
       <main className="mh-rise space-y-10 pb-16 pt-6 sm:pt-10">
         <div className="space-y-5">
           <h1 className="mh-display text-5xl sm:text-6xl">MeetHint</h1>
-          <p className="mh-lede max-w-md">Your knowledge, right when you need it.</p>
+          <HomeProof />
           <Link
             to="/create"
             data-testid="create-context-button"
-            className="mh-cta inline-flex items-center justify-center gap-2"
+            className="inline-flex items-center gap-1.5 text-sm text-body hover:text-fg"
           >
-            Create Context
-            <ArrowRight aria-hidden className="size-4" />
+            Load your own folder
+            <ArrowRight aria-hidden className="size-3.5" />
           </Link>
         </div>
 
@@ -82,12 +80,6 @@ export function ContextHome() {
           <p className="text-sm text-bad" role="alert">
             {error}
           </p>
-        ) : null}
-
-        {!ready ? <p className="text-sm text-muted">Looking for saved contexts…</p> : null}
-
-        {empty ? (
-          <p className="text-sm text-muted">No contexts yet. Create one and add the material you work from.</p>
         ) : null}
 
         {summaries && summaries.length > 0 ? (

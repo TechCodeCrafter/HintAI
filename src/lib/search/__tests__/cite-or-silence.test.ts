@@ -4,7 +4,13 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 
-import { NORTHSTAR } from "../../repo/northstar.ts";
+import {
+  AUTH_SERVICE_CLAIM,
+  AUTH_SERVICE_LINE,
+  AUTH_SERVICE_PATH,
+  HOME_TRY_QUESTION,
+  NORTHSTAR,
+} from "../../repo/northstar.ts";
 import { localCard } from "../local-card.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
 
@@ -35,4 +41,13 @@ test("a question the files can admit speaks the cited line", () => {
   assert.ok(card.say);
   assert.match(card.say, /three/i);
   assert.ok(card.citations.some((c) => "path" in c && String(c.path).includes("retry")));
+});
+
+test("the first-visit question cites src/auth.ts line 47", () => {
+  const card = localCard(HOME_TRY_QUESTION, retrieve(HOME_TRY_QUESTION, chunks), NORTHSTAR, 0);
+  assert.equal(card.say, AUTH_SERVICE_CLAIM);
+  const cite = card.citations.find((c) => c.kind === "file");
+  assert.ok(cite && cite.kind === "file");
+  assert.equal(cite.path, AUTH_SERVICE_PATH);
+  assert.equal(cite.line, AUTH_SERVICE_LINE);
 });

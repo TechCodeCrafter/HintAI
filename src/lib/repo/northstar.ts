@@ -1,4 +1,28 @@
-import type { RepoPack } from "./types";
+import type { RepoFile, RepoPack } from "./types";
+
+/** First-visit /home question. The demo pack must be able to cite this. */
+export const HOME_TRY_QUESTION = "What does the auth service do?";
+export const AUTH_SERVICE_CLAIM =
+  "The auth service verifies the session cookie on every non-public request and rotates it on the way out.";
+export const AUTH_SERVICE_PATH = "src/auth.ts";
+export const AUTH_SERVICE_LINE = 47;
+
+/** A barrel whose only speakable sentence sits on AUTH_SERVICE_LINE. */
+function authServiceFile(): RepoFile {
+  const lines = ["/**", " * Auth service.", " *"];
+  while (lines.length < AUTH_SERVICE_LINE - 1) lines.push(" *");
+  lines.push(` * ${AUTH_SERVICE_CLAIM}`);
+  lines.push(" */");
+  lines.push("");
+  lines.push('export { runAuthFlow } from "./auth/flow";');
+  lines.push('export { authMiddleware } from "./auth/middleware";');
+  lines.push('export { rotateCookie } from "./auth/session";');
+  return {
+    path: AUTH_SERVICE_PATH,
+    language: "ts",
+    content: `${lines.join("\n")}\n`,
+  };
+}
 
 /**
  * The built-in demo pack.
@@ -173,6 +197,7 @@ export type SettlementRow = {
 };
 `,
     },
+    authServiceFile(),
     {
       path: "src/auth/flow.ts",
       language: "ts",
