@@ -24,11 +24,11 @@ const VO_CLIPS = voManifest.clips as VoClip[];
 const SCENES = [
   { kind: "hook" as const, duration: 375 },
   { kind: "intro" as const, duration: 160 },
-  { kind: "load" as const, duration: 240 },
+  { kind: "load" as const, duration: 330 },
   { kind: "ask" as const, duration: 450 },
   { kind: "empty" as const, duration: 240 },
-  { kind: "live" as const, duration: 180 },
-  { kind: "end" as const, duration: 195 },
+  { kind: "live" as const, duration: 240 },
+  { kind: "end" as const, duration: 210 },
 ];
 
 export const DEMO_DURATION = SCENES.reduce((total, scene) => total + scene.duration, 0);
@@ -43,7 +43,7 @@ const SCENE_VIEW = {
   end: SceneEnd,
 };
 
-const CLICKS = [18.6, 31.2, 49.4, 50.2, 51.0];
+const CLICKS = [19.0, 34.2, 53.3, 54.2, 55.2];
 
 export function Demo({ narration }: DemoProps) {
   let at = 0;

@@ -2,14 +2,14 @@
   "comment": "Cite or Silence. Problem first, then sell. `at` is the second the line starts.",
   "films": {
     "master": {
-      "seconds": 61,
+      "seconds": 67,
       "lines": [
-        { "at": 0.35, "role": "narrator", "text": "You ever get asked a question on a call, and now you're flipping through tabs while the whole room waits?" },
+        { "at": 0.35, "role": "narrator", "text": "You ever get asked a question on a Zoom, and now you're flipping through notes while the whole room waits?" },
         { "at": 5.6, "role": "narrator", "text": "Maybe you don't know the answer. Or maybe you do, but you want to double-check before you say it out loud." },
         { "at": 10.2, "role": "narrator", "text": "Either way, everyone's just sitting there." },
         { "at": 12.6, "role": "narrator", "text": "Well, you don't have to do that anymore." },
         { "at": 15.2, "role": "narrator", "text": "Introducing MeetHint." },
-        { "at": 18.0, "role": "narrator", "text": "You give it your projects. Code, docs, contracts — whatever you're going to get asked about." },
+        { "at": 18.0, "role": "narrator", "text": "You give it your material. Notes, lectures, the syllabus, a folder of docs — whatever you're going to get asked about." },
         { "at": 24.5, "role": "narrator", "text": "It goes through all of it in your browser. Nothing gets uploaded anywhere." },
         { "at": 29.0, "role": "narrator", "text": "Then when the question comes up, you just ask. MeetHint pulls the exact line, and tells you the file and the lines." },
         { "at": 35.3, "role": "narrator", "text": "So you're not guessing. You're reading it." },
@@ -18,14 +18,14 @@
         { "at": 44.2, "role": "narrator", "text": "If the answer isn't in your files, it doesn't make something up. The card just stays empty." },
         { "at": 49.1, "role": "narrator", "text": "It either cites it, or it stays quiet." },
         { "at": 51.6, "role": "narrator", "text": "Turn on listen mode and it follows the call. Overlay it on your second monitor." },
-        { "at": 56.6, "role": "narrator", "text": "MeetHint. Cite or silence. meethint.ai" }
+        { "at": 61.2, "role": "narrator", "text": "MeetHint. Cite or silence. meethint.ai" }
       ]
     },
     "social": {
       "seconds": 15,
       "lines": [
-        { "at": 0.2, "role": "narrator", "text": "You ever get asked something on a call and start digging through tabs? Yeah." },
-        { "at": 4.8, "role": "narrator", "text": "MeetHint pulls the exact line. Nothing uploaded." },
+        { "at": 0.2, "role": "narrator", "text": "You ever get asked something on a Zoom and start digging through notes? Yeah." },
+        { "at": 4.8, "role": "narrator", "text": "Drop your notes. MeetHint pulls the exact line. Nothing uploaded." },
         { "at": 8.6, "role": "narrator", "text": "If it's not in your files, it stays quiet." },
         { "at": 12.0, "role": "narrator", "text": "MeetHint. Cite or silence." }
       ]

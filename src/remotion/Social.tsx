@@ -14,9 +14,9 @@ const SCENES = [
   {
     kind: "hook" as const,
     duration: 150,
-    caption: "You ever get asked something on a call and start digging through tabs while everyone waits?",
+    caption: "You ever get asked something on a Zoom and start digging through notes while everyone waits?",
   },
-  { kind: "ask" as const, duration: 150, caption: "MeetHint pulls the exact line, file and range. Nothing uploaded." },
+  { kind: "ask" as const, duration: 150, caption: "Drop your notes. MeetHint pulls the exact line. Nothing uploaded." },
   { kind: "empty" as const, duration: 90, caption: "If it's not in your files, it stays quiet." },
   { kind: "end" as const, duration: 60, caption: "MeetHint. Cite or silence. meethint.ai" },
 ];

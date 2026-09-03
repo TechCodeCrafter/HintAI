@@ -28,7 +28,7 @@ const CAST = {
   narrator: {
     voice: "ash",
     style:
-      "You are a SaaS account exec on a Zoom with one engineer. You've sat in that meeting. Talk like a person, not an ad. A little smile. Name the pain, then sell the product. Keep moving — no dramatic pauses. Not a radio announcer. Not a documentary. Read the words only.",
+      "You are a SaaS account exec on a Zoom with a student in office hours. You've sat in that meeting. Talk like a person, not an ad. A little smile. Name the pain, then sell the product. Keep moving — no dramatic pauses. Not a radio announcer. Not a documentary. Read the words only.",
   },
 };
 

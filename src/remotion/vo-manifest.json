@@ -5,13 +5,13 @@
     {
       "file": "vo/01.wav",
       "at": 0.35,
-      "seconds": 5.17,
-      "text": "You ever get asked a question on a call, and now you're flipping through tabs while the whole room waits?"
+      "seconds": 5.18,
+      "text": "You ever get asked a question on a Zoom, and now you're flipping through notes while the whole room waits?"
     },
     {
       "file": "vo/02.wav",
       "at": 5.6,
-      "seconds": 4.49,
+      "seconds": 4.5,
       "text": "Maybe you don't know the answer. Or maybe you do, but you want to double-check before you say it out loud."
     },
     {
@@ -23,20 +23,20 @@
     {
       "file": "vo/04.wav",
       "at": 12.6,
-      "seconds": 2.53,
+      "seconds": 2.25,
       "text": "Well, you don't have to do that anymore."
     },
     {
       "file": "vo/05.wav",
       "at": 15.2,
-      "seconds": 2.72,
+      "seconds": 2.65,
       "text": "Introducing MeetHint."
     },
     {
       "file": "vo/06.wav",
       "at": 18,
-      "seconds": 6.41,
-      "text": "You give it your projects. Code, docs, contracts — whatever you're going to get asked about."
+      "seconds": 6.42,
+      "text": "You give it your material. Notes, lectures, the syllabus, a folder of docs — whatever you're going to get asked about."
     },
     {
       "file": "vo/07.wav",
@@ -47,19 +47,19 @@
     {
       "file": "vo/08.wav",
       "at": 29,
-      "seconds": 6.21,
+      "seconds": 6.22,
       "text": "Then when the question comes up, you just ask. MeetHint pulls the exact line, and tells you the file and the lines."
     },
     {
       "file": "vo/09.wav",
       "at": 35.3,
-      "seconds": 2.63,
+      "seconds": 2.62,
       "text": "So you're not guessing. You're reading it."
     },
     {
       "file": "vo/10.wav",
       "at": 38,
-      "seconds": 4.11,
+      "seconds": 4.14,
       "text": "It uses a language model so you can say exactly what needs to be said."
     },
     {
@@ -71,25 +71,25 @@
     {
       "file": "vo/12.wav",
       "at": 44.2,
-      "seconds": 4.8,
+      "seconds": 4.82,
       "text": "If the answer isn't in your files, it doesn't make something up. The card just stays empty."
     },
     {
       "file": "vo/13.wav",
       "at": 49.1,
-      "seconds": 2.42,
+      "seconds": 2.39,
       "text": "It either cites it, or it stays quiet."
     },
     {
       "file": "vo/14.wav",
       "at": 51.6,
-      "seconds": 4.92,
+      "seconds": 6.6,
       "text": "Turn on listen mode and it follows the call. Overlay it on your second monitor."
     },
     {
       "file": "vo/15.wav",
-      "at": 56.6,
-      "seconds": 4.33,
+      "at": 61.2,
+      "seconds": 5.2,
       "text": "MeetHint. Cite or silence. meethint.ai"
     }
   ]
