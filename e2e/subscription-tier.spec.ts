@@ -10,8 +10,17 @@ test("free locks Synthesize and Audit; Extract Search still cites", async ({ pag
   await expect(selector.getByTestId("mode-audit")).toHaveAttribute("data-locked", "true");
 
   await selector.getByTestId("mode-synthesize").click();
+  const modal = page.getByTestId("upgrade-modal");
+  await expect(modal).toBeVisible();
   await expect(page.getByTestId("upgrade-prompt")).toContainText("Synthesize mode requires Pro");
+  await expect(modal.getByTestId("upgrade-cta")).toHaveText("Upgrade to Pro — $12/month");
   await expect(selector.getByTestId("mode-extract")).toHaveAttribute("aria-pressed", "true");
+  await modal.getByTestId("upgrade-close").click();
+  await expect(modal).toHaveCount(0);
+
+  await selector.getByTestId("mode-audit").click();
+  await expect(page.getByTestId("upgrade-prompt")).toContainText("Claim Audit requires Pro");
+  await page.getByTestId("upgrade-close").click();
 
   await page.evaluate(() => {
     const store = window.useMeetHint?.getState();
@@ -22,6 +31,14 @@ test("free locks Synthesize and Audit; Extract Search still cites", async ({ pag
   });
   await typeQuestion(page, "Why does that retry three times?");
   await expect(page.getByTestId("card-reason")).toContainText("Synthesize mode requires Pro");
+
+  await page.evaluate(() => {
+    window.useMeetHint?.getState().setSubscription?.("pro");
+  });
+  await selector.getByTestId("mode-synthesize").click();
+  await expect(page.getByTestId("upgrade-modal")).toHaveCount(0);
+  await expect(selector.getByTestId("mode-synthesize")).toHaveAttribute("aria-pressed", "true");
+  await selector.getByTestId("mode-extract").click();
 
   await page.evaluate(async () => {
     const store = window.useMeetHint?.getState() as {

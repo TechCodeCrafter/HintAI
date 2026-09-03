@@ -662,38 +662,6 @@ html[data-theme="light"] .mh-chip {
   margin-bottom: 0.75rem;
 }
 
-.mode-selector-row {
-  display: flex;
-  gap: 0.35rem;
-}
-
-.mode-selector-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  min-height: 2rem;
-  padding: 0.25rem 0.65rem;
-  border: 1px solid var(--color-line);
-  border-radius: 999px;
-  background: var(--color-bg);
-  color: var(--color-body);
-  font-size: 0.75rem;
-  line-height: 1;
-}
-
-.mode-selector-btn-active {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
-  color: var(--color-fg);
-}
-
-.mode-selector-upgrade {
-  margin: 0.45rem 0 0;
-  color: var(--color-body);
-  font-size: 0.75rem;
-  line-height: 1.35;
-}
-
 .cockpit-pane[data-pane="room"],
 .cockpit-pane[data-pane="card"] {
   display: flex;

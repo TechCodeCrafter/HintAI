@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Lock } from "lucide-react";
+import { UpgradeModal } from "@/components/upgrade-modal";
 import { cn } from "@/lib/cn";
 import { isPaidTier, type SubscriptionTier } from "@/lib/billing/subscription";
 import { useMeetHint, type ComposeMode } from "@/lib/store";
@@ -30,8 +32,12 @@ export function ModeSelector() {
   const [upgrade, setUpgrade] = useState<string | null>(null);
 
   return (
-    <div className="mode-selector" data-testid="mode-selector">
-      <div className="mode-selector-row" role="group" aria-label="Answer mode">
+    <div className="mode-selector shrink-0" data-testid="mode-selector">
+      <div
+        className="flex w-full overflow-hidden rounded-md border border-line bg-bg"
+        role="group"
+        aria-label="Answer mode"
+      >
         {MODES.map((item) => {
           const locked = lockedFor(item.id, subscription);
           const active = mode === item.id;
@@ -43,7 +49,12 @@ export function ModeSelector() {
               data-locked={locked ? "true" : undefined}
               aria-pressed={active}
               aria-label={locked ? `${item.label} (requires Pro)` : item.label}
-              className={cn("mode-selector-btn", active && "mode-selector-btn-active", locked && "opacity-50")}
+              className={cn(
+                "inline-flex min-h-8 min-w-0 flex-1 items-center justify-center gap-1 border-r border-line px-1.5 text-[11px] leading-none last:border-r-0",
+                active && "bg-accent-soft text-fg",
+                !active && "bg-transparent text-body",
+                locked && "opacity-50",
+              )}
               onClick={() => {
                 if (locked) {
                   setUpgrade(item.upgrade);
@@ -53,17 +64,13 @@ export function ModeSelector() {
                 setComposeMode(item.id);
               }}
             >
-              {item.label}
-              {locked ? <span aria-hidden="true">🔒</span> : null}
+              <span className="truncate">{item.label}</span>
+              {locked ? <Lock className="size-3 shrink-0" aria-hidden="true" /> : null}
             </button>
           );
         })}
       </div>
-      {upgrade ? (
-        <p data-testid="upgrade-prompt" className="mode-selector-upgrade">
-          {upgrade}
-        </p>
-      ) : null}
+      {upgrade ? <UpgradeModal reason={upgrade} onClose={() => setUpgrade(null)} /> : null}
     </div>
   );
 }
