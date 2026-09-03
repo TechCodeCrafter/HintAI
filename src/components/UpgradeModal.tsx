@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { isWaitlistEmail } from "@/lib/billing/waitlist-email";
+import { hasWaitlistSignup, joinProWaitlist } from "@/lib/billing/waitlist-local";
 
 const FEATURE_COPY: Record<string, string> = {
   synthesize:
@@ -34,7 +36,13 @@ export function UpgradeModal({
   onClose: () => void;
 }) {
   const titleId = useId();
+  const emailId = useId();
   const reason = (feature && FEATURE_COPY[feature]) || FEATURE_COPY.synthesize;
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const valid = isWaitlistEmail(email);
 
   useEffect(() => {
     if (!open) return;
@@ -48,7 +56,34 @@ export function UpgradeModal({
     return () => window.removeEventListener("keydown", onKey, true);
   }, [open, onClose]);
 
+  useEffect(() => {
+    if (!open) {
+      setEmail("");
+      setSending(false);
+      setError(null);
+      return;
+    }
+    void hasWaitlistSignup().then((signed) => {
+      if (signed) setDone(true);
+    });
+  }, [open]);
+
   if (!open) return null;
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!valid || sending) return;
+    setSending(true);
+    setError(null);
+    const source = feature === "audit" ? "upgrade-audit" : "upgrade-synthesize";
+    const result = await joinProWaitlist(email, source);
+    setSending(false);
+    if (!result.ok) {
+      setError(result.reason);
+      return;
+    }
+    setDone(true);
+  }
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-bg/70 p-5" role="presentation" onClick={onClose}>
@@ -102,15 +137,42 @@ export function UpgradeModal({
           </div>
         </div>
 
-        <Button
-          className="mt-5 w-full bg-blue-600 text-white hover:bg-blue-500"
-          data-testid="upgrade-cta"
-          onClick={() => {
-            console.log("Stripe integration pending");
-          }}
-        >
-          Upgrade to Pro — $12/month
-        </Button>
+        {done ? (
+          <p className="mt-5 text-sm text-accent" data-testid="upgrade-waitlist-done" role="status">
+            Thanks, you're on the list
+          </p>
+        ) : (
+          <form className="mt-5 space-y-2" onSubmit={(event) => void submit(event)} noValidate>
+            <label className="sr-only" htmlFor={emailId}>
+              Email address
+            </label>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                id={emailId}
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                data-testid="upgrade-email"
+                placeholder="you@company.com"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  if (error) setError(null);
+                }}
+                className="min-h-11 min-w-0 flex-1 rounded-sm border border-line bg-input px-3 text-xs text-fg"
+              />
+              <Button
+                type="submit"
+                className="bg-blue-600 text-white hover:bg-blue-500"
+                data-testid="upgrade-cta"
+                disabled={!valid || sending}
+              >
+                {sending ? "Saving…" : "Get early access"}
+              </Button>
+            </div>
+            {error ? <p className="text-xs text-bad">{error}</p> : null}
+          </form>
+        )}
       </div>
     </div>
   );

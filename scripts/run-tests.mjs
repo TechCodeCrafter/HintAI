@@ -51,6 +51,7 @@ const GROUPS = [
       "src/lib/search/__tests__/cite-or-silence.test.ts",
       "src/lib/search/__tests__/generate-answer.test.ts",
       "src/lib/billing/__tests__/subscription.test.ts",
+      "src/lib/billing/__tests__/waitlist-local.test.ts",
       "src/lib/audit/__tests__/claim-gate.test.ts",
       "src/lib/audit/__tests__/admit.test.ts",
       "src/lib/audit/__tests__/report.test.ts",

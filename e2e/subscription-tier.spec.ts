@@ -13,7 +13,10 @@ test("free locks Synthesize and Audit; Extract Search still cites", async ({ pag
   const modal = page.getByTestId("upgrade-modal");
   await expect(modal).toBeVisible();
   await expect(page.getByTestId("upgrade-prompt")).toContainText("Synthesize mode requires Pro");
-  await expect(modal.getByTestId("upgrade-cta")).toHaveText("Upgrade to Pro — $12/month");
+  await expect(modal.getByTestId("upgrade-cta")).toHaveText("Get early access");
+  await modal.getByTestId("upgrade-email").fill("demo@meethint.ai");
+  await modal.getByTestId("upgrade-cta").click();
+  await expect(page.getByTestId("upgrade-waitlist-done")).toHaveText("Thanks, you're on the list");
   await expect(selector.getByTestId("mode-extract")).toHaveAttribute("aria-pressed", "true");
   await modal.getByTestId("upgrade-close").click();
   await expect(modal).toHaveCount(0);
