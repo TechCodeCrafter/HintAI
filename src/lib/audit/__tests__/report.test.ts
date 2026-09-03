@@ -19,3 +19,26 @@ test("the report lists supported and unverified claims", () => {
   assert.doesNotMatch(markdown, /Contradicted/);
   assert.match(reportFilename(meeting), /claim-audit-northstar-payments-review/);
 });
+
+test("team reports list temporal contradictions; pro skips them", () => {
+  const past = newMeetingRecord("earlier", Date.parse("2026-08-15T12:00:00Z"));
+  past.endedAt = past.startedAt + 1_000;
+  const prior = {
+    ...newClaim({ meetingId: past.id, speaker: "Alice", text: "The timeline is Q4 at earliest" }),
+    status: "supported" as const,
+  };
+  past.claims = [prior];
+
+  const meeting = newMeetingRecord("today", Date.parse("2026-09-02T12:00:00Z"));
+  meeting.claims = [
+    newClaim({ meetingId: meeting.id, speaker: "Alice", text: "We can ship by Friday" }),
+  ];
+
+  const pro = claimAuditReport(meeting, [past], "pro");
+  assert.doesNotMatch(pro, /## Contradictions/);
+
+  const team = claimAuditReport(meeting, [past], "team");
+  assert.match(team, /## Contradictions/);
+  assert.match(team, /\*\*Alice:\*\* "We can ship by Friday"/);
+  assert.match(team, /⚠️ Contradicted by meeting on 2026-08-15: "The timeline is Q4 at earliest"/);
+});

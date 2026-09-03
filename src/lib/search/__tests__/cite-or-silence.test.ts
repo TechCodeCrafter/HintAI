@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -21,14 +21,22 @@ const chunks = buildChunks(NORTHSTAR);
 
 test("search() never generates — retrieve, then localCard, then admit", () => {
   const store = readFileSync(join(root, "src/lib/store.ts"), "utf8");
-  assert.equal(existsSync(join(root, "src/lib/search/generate-answer.ts")), false);
-  assert.doesNotMatch(store, /generateAnswer\s*\(/);
+  const synthesis = readFileSync(join(root, "src/lib/search/generate-answer.ts"), "utf8");
+  assert.doesNotMatch(synthesis, /answer from general knowledge/i);
+  assert.doesNotMatch(synthesis, /buildAnswerPrompt/);
+  assert.match(synthesis, /buildSynthesisPrompt/);
   assert.doesNotMatch(store, /hitsGroundAnswer/);
   assert.doesNotMatch(store, /speakAnswer/);
   assert.doesNotMatch(store, /craftCard/);
   assert.match(store, /retrieveHits/);
   assert.match(store, /localCard\(/);
+  assert.match(store, /mode === "synthesize" && state.subscription === "free"/);
+  assert.match(store, /Synthesize mode requires Pro/);
+  assert.match(store, /Claim Audit requires Pro/);
   const searchFn = store.slice(store.indexOf("search: async"));
+  const extract = searchFn.slice(searchFn.indexOf("const documents = await documentsForHits"));
+  assert.match(extract, /localCard\(/);
+  assert.doesNotMatch(extract.slice(0, 800), /generateAnswer\s*\(/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 });
 

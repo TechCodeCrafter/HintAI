@@ -1,9 +1,13 @@
+import { canDetectContradictions, type SubscriptionTier } from "../billing/subscription.ts";
 import { citationText } from "../search/cite.ts";
 import type { Evidence } from "../search/evidence.ts";
+import { detectContradictions, findHistoryClaim } from "./contradict.ts";
 import type { Claim, ClaimStatus, MeetingRecord } from "./types.ts";
 
 function heading(status: ClaimStatus): string {
-  return status === "supported" ? "Supported by the pack" : "Unverified";
+  if (status === "supported") return "Supported by the pack";
+  if (status === "contradicted") return "Contradicted";
+  return "Unverified";
 }
 
 function evidenceLine(evidence: Evidence): string {
@@ -24,8 +28,23 @@ function claimBlock(claim: Claim): string {
   return lines.join("\n");
 }
 
+function contradictionLines(claim: Claim, history: MeetingRecord[]): string[] {
+  const lines = [`- **${claim.speaker}:** "${claim.text}"`];
+  for (const id of claim.relatedClaimIds) {
+    const found = findHistoryClaim(id, history);
+    if (!found) continue;
+    const day = new Date(found.meeting.startedAt).toISOString().slice(0, 10);
+    lines.push(`  - ⚠️ Contradicted by meeting on ${day}: "${found.claim.text}"`);
+  }
+  return lines;
+}
+
 /** Markdown Claim Audit Report. Host-only; not spoken in the room. */
-export function claimAuditReport(meeting: MeetingRecord, _history: MeetingRecord[] = []): string {
+export function claimAuditReport(
+  meeting: MeetingRecord,
+  history: MeetingRecord[] = [],
+  subscription: SubscriptionTier = "free",
+): string {
   const ended = meeting.endedAt ? new Date(meeting.endedAt).toISOString() : "in progress";
   const sections: string[] = [
     `# Claim Audit Report`,
@@ -56,6 +75,20 @@ export function claimAuditReport(meeting: MeetingRecord, _history: MeetingRecord
       continue;
     }
     for (const claim of group) sections.push(claimBlock(claim), ``);
+  }
+
+  if (canDetectContradictions(subscription)) {
+    const contradictions = meeting.claims
+      .map((claim) => detectContradictions(claim, history))
+      .filter((claim): claim is Claim => Boolean(claim));
+    sections.push(`## Contradictions`, ``);
+    if (contradictions.length === 0) {
+      sections.push("_None._", ``);
+    } else {
+      for (const claim of contradictions) {
+        sections.push(...contradictionLines(claim, history), ``);
+      }
+    }
   }
 
   return sections.join("\n");

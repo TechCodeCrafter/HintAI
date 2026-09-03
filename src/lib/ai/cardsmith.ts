@@ -243,6 +243,23 @@ function speakInput(input: SpeakInput) {
   };
 }
 
+/** Raw completion for grounded synthesis. Search never calls this. */
+export const completeSynthesis = createServerFn({ method: "POST" })
+  .validator((input: SpeakInput) => speakInput(input))
+  .handler(async ({ data }): Promise<{ text: string | null; reason?: string; modelName?: string }> => {
+    const model = getModelById(data.modelId) ?? getDefaultModel();
+    const { raw, reason } = await completeChat(
+      "Follow the user instructions exactly. Use only the document chunks in the prompt. Never use general knowledge. Reply with only the spoken answer or INSUFFICIENT.",
+      data.prompt || data.query,
+      model,
+      data.keys,
+      12000,
+    );
+    if (raw == null) return { text: null, reason, modelName: model.name };
+    const text = raw.replace(/\s+/g, " ").trim();
+    return text ? { text: text.slice(0, 1800), modelName: model.name } : { text: null, reason: "empty", modelName: model.name };
+  });
+
 /** Explicit Free-mode / rewrite path only. Search never calls this. */
 export const speakAnswer = createServerFn({ method: "POST" })
   .validator((input: SpeakInput) => speakInput(input))

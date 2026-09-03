@@ -18,9 +18,16 @@ import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewe
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { NORTHSTAR } from "@/lib/repo/northstar";
+import {
+  canDetectContradictions,
+  readSubscription,
+  writeSubscription,
+  type SubscriptionTier,
+} from "@/lib/billing/subscription";
 import type { NormalizedDocument } from "@/lib/document/types";
 import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { isDocumentHit } from "@/lib/repo/types";
+import { generateAnswer } from "@/lib/search/generate-answer";
 import { localCard } from "@/lib/search/local-card";
 import { packFromFiles, truncationNotice } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
@@ -44,6 +51,7 @@ import {
   reportFilename,
 } from "@/lib/audit/report";
 import { claimAdmit } from "@/lib/audit/admit";
+import { detectContradictions } from "@/lib/audit/contradict";
 import { isClaimLine } from "@/lib/audit/claim-gate";
 import { getMeetingRepository } from "@/lib/audit/repository";
 import { finishMeeting, latestOpenMeeting, loadMeetings, meetingTitle, persistMeeting } from "@/lib/audit/session";
@@ -90,6 +98,9 @@ function persist(partial: SessionWire) {
   }
 }
 
+export type ComposeMode = "extract" | "synthesize" | "audit";
+export type { SubscriptionTier };
+
 type MeetHintState = {
   pack: RepoPack;
   chunks: IndexedChunk[];
@@ -108,6 +119,8 @@ type MeetHintState = {
   playing: boolean;
   overlay: boolean;
   autoAnswer: boolean;
+  subscription: SubscriptionTier;
+  composeMode: ComposeMode;
   sharingCall: boolean;
   searching: boolean;
   refining: boolean;
@@ -138,6 +151,8 @@ type MeetHintState = {
   disarm: () => void;
   setOverlay: (value: boolean) => void;
   setAutoAnswer: (value: boolean) => void;
+  setSubscription: (tier: SubscriptionTier) => void;
+  setComposeMode: (mode: ComposeMode) => void;
   setSharingCall: (value: boolean) => void;
   setTypedQuery: (q: string) => void;
   setHeardQuestion: (q: string | null) => void;
@@ -351,6 +366,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   playing: false,
   overlay: false,
   autoAnswer: true,
+  subscription: readSubscription(),
+  composeMode: "extract",
   sharingCall: false,
   searching: false,
   refining: false,
@@ -405,6 +422,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   },
   setOverlay: (value) => set({ overlay: value }),
   setAutoAnswer: (value) => set({ autoAnswer: value }),
+  setSubscription: (tier) => {
+    writeSubscription(tier);
+    set({ subscription: tier, folderError: get().folderError?.includes("requires Pro") ? null : get().folderError });
+  },
+  setComposeMode: (mode) => set({ composeMode: mode }),
   setSharingCall: (value) => set({ sharingCall: value }),
   setTypedQuery: (q) => set({ typedQuery: q }),
   setHeardQuestion: (q) => set({ heardQuestion: q }),
@@ -1095,7 +1117,12 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   },
   dismissPackNotice: () => set({ packNotice: null }),
   startClaimAudit: async () => {
-    const live = get().currentMeeting;
+    const state = get();
+    if (state.subscription === "free") {
+      set({ folderError: "Claim Audit requires Pro. Upgrade to track and verify claims across meetings." });
+      return;
+    }
+    const live = state.currentMeeting;
     if (live && live.endedAt == null) return;
     const startedAt = Date.now();
     const meeting = newMeetingRecord(meetingTitle(get().pack, startedAt), startedAt);
@@ -1123,7 +1150,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     }
 
     const admitted = claimAdmit(utterance.text, get().pack, get().chunks);
-    const claim = {
+    const drafted = {
       ...newClaim({
         meetingId: meeting.id,
         speaker: utterance.speaker,
@@ -1134,6 +1161,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       status: admitted.status,
       evidence: admitted.evidence,
     };
+    const claim =
+      canDetectContradictions(get().subscription)
+        ? detectContradictions(drafted, get().meetingHistory) ?? drafted
+        : drafted;
     const claims = [...meeting.claims.filter((item) => item.id !== utterance.id), claim];
     const next = { ...meeting, claims, utterances: get().utterances };
     set({ currentMeeting: next });
@@ -1143,7 +1174,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const meeting = get().currentMeeting;
     if (!meeting || meeting.endedAt != null) return;
     try {
-      const finished = await finishMeeting(meeting, get().utterances);
+      const finished = await finishMeeting(meeting, get().utterances, get().subscription);
       if (get().currentMeeting?.id !== meeting.id) return;
       set({
         currentMeeting: finished.meeting,
@@ -1198,6 +1229,23 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
       return;
     }
+    const mode = state.composeMode;
+    if (mode === "synthesize" && state.subscription === "free") {
+      set({
+        ...applyCard(
+          {
+            say: null,
+            reason: "Synthesize mode requires Pro. Upgrade to combine insights from multiple files with verified citations.",
+            citations: [],
+            query,
+            latencyMs: 0,
+            source: "local",
+          },
+          get().openDocument,
+        ),
+      });
+      return;
+    }
     const epoch = ++searchEpoch;
     const t0 = performance.now();
     const canonical = normalizeSpokenQuestion(query).canonical;
@@ -1206,6 +1254,42 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     // retrieve → localCard → admit. If the files cannot admit a line, stay silent.
     const hits = await retrieveHits(canonical, state.chunks);
     if (epoch !== searchEpoch) return;
+    if (mode === "synthesize") {
+      const generated = await generateAnswer(query, hits, t0, { pack: state.pack });
+      if (epoch !== searchEpoch) return;
+      const card: Card = generated
+        ? {
+            say: generated.say,
+            citations: generated.citations,
+            query,
+            latencyMs: generated.latencyMs,
+            source: "grok",
+            answerMode: "docs",
+            modelName: generated.modelName,
+          }
+        : {
+            say: null,
+            citations: [],
+            query,
+            latencyMs: Math.round(performance.now() - t0),
+            source: "local",
+          };
+      set((s) => ({
+        searching: false,
+        refining: false,
+        ...applyCard(card, s.openDocument),
+        openFile: firstCitedPath(card) ?? s.openFile,
+        ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger].slice(0, 12),
+        thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
+      }));
+      persist({
+        card,
+        armed: get().armed,
+        listening: get().listening,
+        searching: false,
+      });
+      return;
+    }
     const documents = await documentsForHits(hits);
     const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
       document: (sourceId) => documents.get(sourceId),

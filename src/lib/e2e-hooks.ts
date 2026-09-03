@@ -22,7 +22,15 @@ export type MockCraftPayload = {
 
 declare global {
   interface Window {
-    useMeetHint?: { getState: () => { heard: (event: unknown) => void; appendUtterance: (u: unknown) => void; search: (q?: string, opts?: { fast?: boolean }) => Promise<void>; autoAnswer: boolean } };
+    useMeetHint?: {
+      getState: () => {
+        heard: (event: unknown) => void;
+        appendUtterance: (u: unknown) => void;
+        search: (q?: string, opts?: { fast?: boolean }) => Promise<void>;
+        autoAnswer: boolean;
+        setSubscription: (tier: "free" | "pro" | "team" | "enterprise") => void;
+      };
+    };
     __mockCraftCard?: (payload: MockCraftPayload) => Promise<Pick<Card, "say"> | null>;
     __mockEmbedder?: (text: string) => Promise<number[]>;
   }
