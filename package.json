@@ -25,6 +25,8 @@
     "video:studio": "npm run score && remotion studio src/remotion/index.ts",
     "video:still": "remotion still src/remotion/index.ts Demo",
     "video:render": "npm run score && remotion render src/remotion/index.ts Demo public/demo/meethint-demo.mp4",
+    "video:render:social": "remotion render src/remotion/index.ts Social public/demo/meethint-demo-social.mp4",
+    "video:render:square": "remotion render src/remotion/index.ts Square public/demo/meethint-demo-square.mp4",
     "video:render:vo": "npm run score && remotion render src/remotion/index.ts Demo public/demo/meethint-demo.mp4 --props='{\"narration\":\"vo.mp3\"}'",
     "lint": "eslint .",
     "format": "prettier --write ."
