@@ -1,8 +1,8 @@
 import type { Utterance } from "../repo/types.ts";
 import type { Evidence } from "../search/evidence.ts";
 
-/** Product ledger: green supported or yellow unverified. Red is icebox. */
-export type ClaimStatus = "supported" | "unverified";
+/** Green supported, yellow unverified, red contradicted (Team/Enterprise history). */
+export type ClaimStatus = "supported" | "unverified" | "contradicted";
 
 export type Claim = {
   id: string;

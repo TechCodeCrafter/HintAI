@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
+import { ModeSelector } from "@/components/mode-selector";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
@@ -358,10 +359,11 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           <TranscriptPane active={live && !card?.query} />
         </div>
         <div
-          className={cn("cockpit-pane", mobilePane !== "card" && "max-md:hidden")}
+          className={cn("cockpit-pane cockpit-card-col", mobilePane !== "card" && "max-md:hidden")}
           data-pane="card"
           data-active={mobilePane === "card" ? "true" : undefined}
         >
+          <ModeSelector />
           <CardPane
             compact={overlay}
             onOpenCited={openCited}

@@ -7,11 +7,13 @@ test("Listen admits claims without Search, and Search only updates the Card", as
 
   await page.evaluate(async () => {
     const store = window.useMeetHint?.getState() as {
+      setSubscription: (tier: "free" | "pro" | "team" | "enterprise") => void;
       startClaimAudit: () => Promise<void>;
       heard: (event: { id: string; role: "you"; text: string }) => void;
       admitHeardClaim: (u: { id: string; at: number; speaker: string; role: "you"; text: string }) => Promise<void>;
       utterances: Array<{ id: string; at: number; speaker: string; role: "you" | "them" | "system"; text: string }>;
     };
+    store.setSubscription("pro");
     await store.startClaimAudit();
     store.heard({
       id: "claim-retry",

@@ -6,10 +6,13 @@ import { useMeetHint } from "@/lib/store";
 const STATUS_MARK: Record<ClaimStatus, string> = {
   supported: "🟢",
   unverified: "🟡",
+  contradicted: "🔴",
 };
 
 function statusLabel(status: ClaimStatus): string {
-  return status === "supported" ? "Supported" : "Unverified";
+  if (status === "supported") return "Supported";
+  if (status === "contradicted") return "Contradicted";
+  return "Unverified";
 }
 
 export function ClaimMonitor() {
@@ -92,7 +95,9 @@ function ClaimDetail({ claim }: { claim: Claim }) {
   const evidence = claim.evidence?.[0];
   return (
     <div className="claim-detail" data-testid="claim-detail">
-      <p className="ground-hint">{claim.status === "supported" ? "Citation" : "Unverified"}</p>
+      <p className="ground-hint">
+        {claim.status === "supported" ? "Citation" : claim.status === "contradicted" ? "Contradicted" : "Unverified"}
+      </p>
       {evidence ? (
         <p className="claim-evidence">
           <span className="font-mono text-fg">{evidenceCitation(evidence)}</span>
