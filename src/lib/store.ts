@@ -1118,10 +1118,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   dismissPackNotice: () => set({ packNotice: null }),
   startClaimAudit: async () => {
     const state = get();
-    if (state.subscription === "free") {
-      set({ folderError: "Claim Audit requires Pro. Upgrade to track and verify claims across meetings." });
-      return;
-    }
+    if (state.subscription === "free") return;
     const live = state.currentMeeting;
     if (live && live.endedAt == null) return;
     const startedAt = Date.now();

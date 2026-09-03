@@ -32,7 +32,8 @@ test("search() never generates — retrieve, then localCard, then admit", () => 
   assert.match(store, /localCard\(/);
   assert.match(store, /mode === "synthesize" && state.subscription === "free"/);
   assert.match(store, /Synthesize mode requires Pro/);
-  assert.match(store, /Claim Audit requires Pro/);
+  const modal = readFileSync(join(root, "src/components/UpgradeModal.tsx"), "utf8");
+  assert.match(modal, /Claim Audit requires Pro/);
   const searchFn = store.slice(store.indexOf("search: async"));
   const extract = searchFn.slice(searchFn.indexOf("const documents = await documentsForHits"));
   assert.match(extract, /localCard\(/);
