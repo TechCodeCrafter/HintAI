@@ -18,7 +18,22 @@ const CAST = {
   narrator: {
     voice: "ash",
     style:
-      "You are a sharp SaaS account exec. You've sat in class, a client call, and a standup. Talk like a person, not an ad. A little smile. Brisk. Cut off on the last word — no trailing silence. Not a radio announcer. Not a documentary. Read the words only.",
+      "You are a sharp SaaS account exec who has sat in the back of a lecture. Talk like a person, not an ad. A little smile. Name the fear, then sell. Brisk. Cut off on the last word — no trailing silence. Not a radio announcer. Not a documentary. Read the words only.",
+  },
+  chen: {
+    voice: "verse",
+    style:
+      "You are a tenured CS professor on Zoom. Calm once you have the line. Classroom, no drama. Brisk. No trailing silence. Read the words only.",
+  },
+  jessica: {
+    voice: "nova",
+    style:
+      "You are a sharp undergrad on Zoom. Eager, precise, a little terrifying. Conversational. Brisk. No trailing silence. Read the words only.",
+  },
+  mike: {
+    voice: "alloy",
+    style:
+      "You are a student asking about the final. Casual, compressed laptop mic. Brisk. No trailing silence. Read the words only.",
   },
   professor: {
     voice: "verse",

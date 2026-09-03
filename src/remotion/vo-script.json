@@ -1,34 +1,36 @@
 {
-  "comment": "Everyone cut. Same script, timed to the spoken lines. `at` is the second the line starts.",
+  "comment": "The Question. Dr. Chen. Timed to spoken lines.",
   "films": {
     "master": {
-      "seconds": 81,
+      "seconds": 108,
       "lines": [
-        { "at": 0.2, "role": "narrator", "text": "It happens to everyone. The question comes, and now you're flipping through tabs while the whole room waits." },
-        { "at": 5.1, "role": "narrator", "text": "MeetHint lives in your browser. You give it your world — code, contracts, lecture notes, curriculum, whatever you're gonna get asked about." },
-        { "at": 15.0, "role": "narrator", "text": "Nothing uploads. It stays local." },
-        { "at": 16.8, "role": "professor", "text": "Can anyone tell me the three failure modes of the TCP handshake?" },
-        { "at": 21.9, "role": "student", "text": "Connection refused, timeout, and reset. Page 12 of the lecture notes." },
-        { "at": 26.8, "role": "client", "text": "The contract says 30-day SLA." },
-        { "at": 30.6, "role": "alice", "text": "Actually — Amendment B, Section 3. Sixty days. March 15. Page 8." },
-        { "at": 38.3, "role": "pm", "text": "Why does the retry logic cap at three?" },
-        { "at": 40.3, "role": "engineer", "text": "The gateway stalls rather than failing fast. A fourth attempt duplicates the file. Line 4." },
-        { "at": 47.5, "role": "pm", "text": "Can we also handle Stripe webhooks?" },
-        { "at": 50.1, "role": "engineer", "text": "That's not in our current material. I'd need to check before I answer." },
-        { "at": 52.6, "role": "narrator", "text": "If it's not in your files, nothing is made up. The card stays empty. Cite or silence." },
-        { "at": 57.6, "role": "narrator", "text": "And when the meeting ends, you don't get a transcript. You get an audit. Every claim checked. Every contradiction flagged." },
-        { "at": 64.6, "role": "narrator", "text": "Turn on Listen, and it follows the call. Pop it on your second monitor. It only speaks when it can prove it." },
-        { "at": 69.7, "role": "narrator", "text": "Stop flipping. Stop guessing. Your files are the source of truth. The meeting just became searchable." },
-        { "at": 74.8, "role": "narrator", "text": "Join the waitlist — free during beta. MeetHint AI. Cite or silence." }
+        { "at": 0.25, "role": "narrator", "text": "Dr. Chen has taught Network Protocols for eleven years. He wrote the textbook. He knows this stuff cold." },
+        { "at": 8.0, "role": "narrator", "text": "But every semester, there's that one student." },
+        { "at": 10.7, "role": "jessica", "text": "Dr. Chen, in Week 4 you said TCP uses three-way handshake. But RFC 8312 mentions a two-way variant for constrained devices. Why don't we cover that?" },
+        { "at": 16.9, "role": "narrator", "text": "He has no idea. It's not in the lecture notes. It's not in the curriculum. It's not even in his textbook." },
+        { "at": 24.9, "role": "narrator", "text": "And forty students are watching him flip." },
+        { "at": 26.8, "role": "narrator", "text": "But this semester, Chen has MeetHint." },
+        { "at": 29.5, "role": "chen", "text": "Great question, Jessica. RFC 8312 defines a two-way handshake for constrained IoT devices." },
+        { "at": 36.7, "role": "chen", "text": "It's outside our standard curriculum, but if you're interested, I have supplementary reading — page 8." },
+        { "at": 43.9, "role": "mike", "text": "Dr. Chen, will this be on the final?" },
+        { "at": 46.0, "role": "chen", "text": "That's not in our current material. I'll confirm and email the class by Friday." },
+        { "at": 51.3, "role": "narrator", "text": "If it's not in his files, MeetHint stays empty. No guessing. No BS. Cite or silence." },
+        { "at": 60.1, "role": "narrator", "text": "When the lecture ends, he doesn't have a transcript. He has an audit." },
+        { "at": 66.8, "role": "narrator", "text": "Every claim checked. Every gap flagged. Every student question he couldn't answer — tracked for next semester." },
+        { "at": 73.5, "role": "narrator", "text": "Whatever you get asked about — lectures, contracts, code, curriculum — MeetHint lives in your browser. Nothing uploads. Nothing leaks." },
+        { "at": 82.2, "role": "narrator", "text": "It just finds the exact line, so you say what the file says, not what you hope is true." },
+        { "at": 88.4, "role": "narrator", "text": "Stop flipping. Stop guessing. Stop hoping nobody asks the one thing you can't find." },
+        { "at": 97.5, "role": "narrator", "text": "Your files are the source of truth. The meeting just became searchable." },
+        { "at": 103.5, "role": "narrator", "text": "MeetHint AI. Cite or silence." }
       ]
     },
     "social": {
       "seconds": 15,
       "lines": [
-        { "at": 0.2, "role": "narrator", "text": "It happens to everyone. The question comes, and you're flipping through tabs." },
-        { "at": 4.6, "role": "narrator", "text": "Open the folder. Nothing uploads. It stays local." },
-        { "at": 8.6, "role": "narrator", "text": "If it's not in your files, the card stays empty." },
-        { "at": 12.0, "role": "narrator", "text": "MeetHint. Cite or silence." }
+        { "at": 0.2, "role": "narrator", "text": "Forty students are watching. Then someone asks the thing that isn't in the lecture." },
+        { "at": 4.8, "role": "narrator", "text": "MeetHint pulls the line from his files. Nothing uploaded." },
+        { "at": 8.6, "role": "narrator", "text": "If it's not in the pack, the card stays empty." },
+        { "at": 12.0, "role": "narrator", "text": "Cite or silence." }
       ]
     }
   }

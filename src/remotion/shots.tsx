@@ -240,12 +240,20 @@ const PACK_FILES = [
   "load-test.md",
 ];
 
-function FileList({ shown, active }: { shown: number; active?: string }) {
+function FileList({
+  shown,
+  active,
+  files = PACK_FILES,
+}: {
+  shown: number;
+  active?: string;
+  files?: string[];
+}) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   return (
     <div>
-      {PACK_FILES.slice(0, shown).map((file, i) => {
+      {files.slice(0, shown).map((file, i) => {
         const enter = spring({ frame: frame - i * 7, fps, config: { damping: 15, mass: 0.55 } });
         const on = file === active;
         return (
@@ -850,9 +858,7 @@ export function SceneClose() {
             opacity: ease(frame, 40, 58),
           }}
         >
-          Your files are the source of truth.
-          <br />
-          The meeting just became searchable.
+          Stop hoping nobody asks the one thing you can’t find.
         </p>
       </div>
     </Stage>
@@ -875,6 +881,28 @@ export function SceneEnd() {
             fontSize: 28,
             color: T.body,
             opacity: ease(frame, 8, 18),
+          }}
+        >
+          Your files are the source of truth.
+        </p>
+        <p
+          style={{
+            margin: "10px 0 0",
+            fontFamily: T.serif,
+            fontSize: 24,
+            color: T.muted,
+            opacity: ease(frame, 20, 34),
+          }}
+        >
+          The meeting just became searchable.
+        </p>
+        <p
+          style={{
+            margin: "22px 0 0",
+            fontFamily: T.serif,
+            fontSize: 22,
+            color: T.body,
+            opacity: ease(frame, 40, 56),
           }}
         >
           Join the waitlist — free during beta.
@@ -912,12 +940,397 @@ export function SceneEnd() {
             fontFamily: T.serif,
             fontSize: 32,
             color: T.body,
-            opacity: ease(frame, 70, 90),
+            opacity: ease(frame, 175, 195),
           }}
         >
           Cite or silence.
         </p>
       </div>
+    </Stage>
+  );
+}
+
+const COURSE = [
+  "lecture-04-tcp.pdf",
+  "week-4-slides.pdf",
+  "syllabus.pdf",
+  "textbook-ch4.pdf",
+  "supplementary-reading/iot-protocols.pdf",
+  "rfc-793.md",
+  "office-hours.md",
+  "curriculum.md",
+];
+
+const RFC = {
+  query: "RFC 8312 TCP two-way handshake",
+  say: "RFC 8312 defines a 2-way handshake for constrained IoT devices — not covered in standard curriculum.",
+  cite: "supplementary-reading/iot-protocols.pdf:8",
+  lines: [
+    "Constrained devices may skip SYN-ACK wait.",
+    "RFC 8312 defines a 2-way handshake for constrained IoT devices.",
+    "Not covered in the standard CS 540 curriculum.",
+  ],
+  from: 7,
+  hi: [8, 8] as [number, number],
+};
+
+function PersonTile({
+  name,
+  role,
+  initials,
+  speak,
+  tall = false,
+}: {
+  name: string;
+  role: string;
+  initials: string;
+  speak?: boolean;
+  tall?: boolean;
+}) {
+  const frame = useCurrentFrame();
+  const pulse = 0.55 + 0.45 * Math.sin(frame * 0.28);
+  return (
+    <div
+      style={{
+        minHeight: tall ? 220 : 140,
+        borderRadius: 12,
+        border: speak ? `1px solid rgba(34,197,94,${0.35 + pulse * 0.4})` : `1px solid ${T.hairline}`,
+        background: speak ? "rgba(34,197,94,0.06)" : "rgba(255,255,255,0.025)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        boxShadow: speak ? `0 0 0 1px rgba(34,197,94,${0.2 + pulse * 0.25})` : undefined,
+      }}
+    >
+      <div
+        style={{
+          width: tall ? 56 : 44,
+          height: tall ? 56 : 44,
+          borderRadius: 99,
+          background: speak ? "rgba(34,197,94,0.18)" : "rgba(255,255,255,0.08)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: tall ? 22 : 18,
+          color: T.body,
+        }}
+      >
+        {initials}
+      </div>
+      <p style={{ margin: 0, fontSize: 15, color: T.muted }}>
+        {name}
+        <span style={{ color: T.faint }}> · {role}</span>
+      </p>
+    </div>
+  );
+}
+
+export function SceneFear() {
+  const frame = useCurrentFrame();
+  const down = frame >= 248 && frame < 260;
+  const x = interpolate(frame, [200, 248], [900, 1180], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const y = interpolate(frame, [200, 248], [420, 390], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <Stage>
+      <div style={{ width: "100%", maxWidth: 1100, alignSelf: "center" }}>
+        <p style={{ ...eyebrow, margin: 0, opacity: ease(frame, 0, 12) }}>CS 540 · Network Protocols</p>
+        <p
+          style={{
+            margin: "18px 0 0",
+            fontFamily: T.serif,
+            fontSize: 56,
+            color: T.fg,
+            opacity: ease(frame, 6, 18),
+          }}
+        >
+          Dr. Chen
+        </p>
+        <p
+          style={{
+            margin: "16px 0 0",
+            fontFamily: T.serif,
+            fontSize: 28,
+            color: T.body,
+            opacity: ease(frame, 20, 36),
+          }}
+        >
+          Eleven years. He wrote the textbook.
+        </p>
+        <div
+          style={{
+            marginTop: 40,
+            display: "inline-block",
+            padding: "12px 20px",
+            borderRadius: 10,
+            border: `1px solid ${T.line}`,
+            background: down ? "rgba(139,123,245,0.16)" : "rgba(255,255,255,0.04)",
+            fontSize: 18,
+            opacity: ease(frame, 70, 90),
+          }}
+        >
+          Join Zoom
+        </div>
+      </div>
+      {frame >= 200 ? <Cursor x={x} y={y} down={down} /> : null}
+    </Stage>
+  );
+}
+
+export function SceneMoment() {
+  const frame = useCurrentFrame();
+  const social = isSocial();
+  const onTabs = frame >= 360;
+  const x = interpolate(frame, [360, 470], [80, 1100], { extrapolateRight: "clamp" });
+  if (!onTabs) {
+    return (
+      <Stage>
+        <div style={{ width: "100%", maxWidth: 1400, alignSelf: "center" }}>
+          <p style={{ ...eyebrow, margin: "0 0 14px" }}>CS 540 · Lecture · Zoom · 40</p>
+          <div style={{ display: "grid", gridTemplateColumns: social ? "1fr" : "1.1fr 0.9fr", gap: 12 }}>
+            <PersonTile name="Dr. Chen" role="You" initials="C" tall />
+            <PersonTile name="Jessica" role="Student" initials="J" speak tall />
+          </div>
+          <p
+            style={{
+              margin: "22px 0 0",
+              fontFamily: T.serif,
+              fontSize: 26,
+              lineHeight: 1.4,
+              color: T.body,
+              opacity: ease(frame, 12, 28),
+            }}
+          >
+            “RFC 8312 mentions a two-way variant for constrained devices. Why don’t we cover that?”
+          </p>
+        </div>
+      </Stage>
+    );
+  }
+  const tabs = [
+    "lecture-04.pdf",
+    "textbook ch4",
+    "RFC 793",
+    "Wikipedia",
+    "syllabus",
+    "slides",
+    "Gmail",
+    "Canvas",
+    "notes",
+    "Drive",
+    "iot-protocols",
+    "Chat",
+    "curriculum",
+    "office hours",
+  ];
+  return (
+    <Stage>
+      <div style={{ width: "100%", maxWidth: 1680, alignSelf: "center", position: "relative" }}>
+        <div style={{ borderRadius: 16, border: `1px solid ${T.line}`, background: T.panelSolid, overflow: "hidden" }}>
+          <div style={{ display: "flex", overflow: "hidden", borderBottom: `1px solid ${T.hairline}` }}>
+            {tabs.map((tab, i) => {
+              const on = Math.floor((frame - 360) / 12) % tabs.length === i;
+              return (
+                <div
+                  key={tab}
+                  style={{
+                    flex: "0 0 auto",
+                    padding: "14px 16px",
+                    fontSize: 15,
+                    color: on ? T.fg : T.faint,
+                    borderRight: `1px solid ${T.hairline}`,
+                    background: on ? "rgba(255,255,255,0.04)" : "transparent",
+                  }}
+                >
+                  {tab}
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ height: 260, position: "relative" }}>
+            <p
+              style={{
+                position: "absolute",
+                left: 28,
+                top: 28,
+                fontFamily: T.serif,
+                fontSize: 28,
+                color: T.body,
+              }}
+            >
+              Forty students are watching him flip.
+            </p>
+            <Cursor x={x} y={160} down={frame % 20 < 4} />
+          </div>
+        </div>
+      </div>
+    </Stage>
+  );
+}
+
+export function SceneSave() {
+  const frame = useCurrentFrame();
+  const typed = typeChars(frame, 8, 2, RFC.query);
+  const done = typed.length >= RFC.query.length;
+  const clickAt = 70;
+  const cardAt = 88;
+  const pressed = frame >= clickAt && frame < clickAt + 8;
+  return (
+    <Stage>
+      <CockpitShell pack="cs-540-network-protocols" note={frame >= cardAt ? "Cited from the pack" : "This semester he has MeetHint"}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr)",
+            gap: 16,
+            minHeight: isSocial() ? 680 : 620,
+          }}
+        >
+          {isSocial() ? null : (
+            <Panel label="Repo" status="8 files" active={frame >= cardAt}>
+              <FileList shown={8} files={COURSE} active={frame >= cardAt ? "supplementary-reading/iot-protocols.pdf" : undefined} />
+              {frame >= cardAt ? <CodeView lines={RFC.lines} from={RFC.from} hi={RFC.hi} /> : null}
+            </Panel>
+          )}
+          <Panel label="Room" status="Search" active={frame < cardAt}>
+            <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+            <p style={{ margin: 0, fontFamily: T.serif, fontSize: 18, color: T.body }}>
+              RFC 8312 mentions a two-way variant. Why don’t we cover that?
+            </p>
+            <div style={{ marginTop: 16 }}>
+              <SearchBar typed={typed} query={RFC.query} pressed={pressed} />
+            </div>
+          </Panel>
+          <Panel label="Card" status={frame >= cardAt ? "Found · 41 ms" : "Idle"} active={frame >= cardAt}>
+            <ProductCard
+              searching={done && frame >= clickAt && frame < cardAt}
+              appear={frame >= cardAt}
+              say={RFC.say}
+              cite={RFC.cite}
+            />
+          </Panel>
+        </div>
+      </CockpitShell>
+      <Cursor
+        x={interpolate(frame, [done ? clickAt - 14 : 0, clickAt], [980, 760], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
+        y={interpolate(frame, [done ? clickAt - 14 : 0, clickAt], [420, 450], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
+        down={pressed}
+      />
+    </Stage>
+  );
+}
+
+export function SceneChenEmpty() {
+  const frame = useCurrentFrame();
+  const query = "will this be on the final";
+  const typed = typeChars(frame, 6, 2, query);
+  const cardAt = 70;
+  return (
+    <Stage>
+      <CockpitShell pack="cs-540-network-protocols" note={frame >= cardAt ? "Not in the pack" : "Mike asked about the final"}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
+            gap: 16,
+            minHeight: 620,
+          }}
+        >
+          <Panel label="Room" status="Search">
+            <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+            <p style={{ margin: 0, fontFamily: T.serif, fontSize: 22, color: T.body }}>
+              Dr. Chen, will this be on the final?
+            </p>
+            <div style={{ marginTop: 16 }}>
+              <SearchBar typed={typed} query={query} pressed={frame >= 58 && frame < 66} />
+            </div>
+          </Panel>
+          <Panel label="Card" status={frame >= cardAt ? "Silent" : "Idle"} active={frame >= cardAt}>
+            <ProductCard appear={frame >= cardAt} empty />
+          </Panel>
+        </div>
+      </CockpitShell>
+    </Stage>
+  );
+}
+
+const CHEN_AUDIT = [
+  { mark: "#5aa87a", claim: "RFC 8312 handshake", status: "Supported", cite: "iot-protocols.pdf:8" },
+  { mark: "#c4a35a", claim: "Final exam coverage", status: "Unverified", cite: "—" },
+  { mark: "#5aa87a", claim: "TCP three-way handshake", status: "Supported", cite: "lecture-04-tcp.pdf:12" },
+];
+
+export function SceneChenAudit() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const slide = spring({ frame: frame - 6, fps, config: { damping: 16, mass: 0.75 } });
+  return (
+    <Stage>
+      <CockpitShell pack="cs-540-network-protocols" note="After the lecture">
+        <div style={{ opacity: slide, transform: `translateX(${interpolate(slide, [0, 1], [40, 0])}px)` }}>
+          <Panel label="Claim monitor" status="3 claims">
+            {CHEN_AUDIT.map((row, i) => {
+              const enter = spring({ frame: frame - (18 + i * 18), fps, config: { damping: 14, mass: 0.55 } });
+              return (
+                <div
+                  key={row.claim}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "14px 1.2fr 0.7fr",
+                    gap: 12,
+                    alignItems: "center",
+                    padding: "14px 4px",
+                    borderBottom: `1px solid ${T.hairline}`,
+                    opacity: enter,
+                    transform: `translateY(${interpolate(enter, [0, 1], [14, 0])}px)`,
+                  }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: 99, background: row.mark }} />
+                  <div>
+                    <p style={{ margin: 0, fontFamily: T.serif, fontSize: 20, color: T.fg }}>{row.claim}</p>
+                    <p style={{ margin: "4px 0 0", fontSize: 14, color: T.muted }}>{row.cite}</p>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 15, color: T.body }}>{row.status}</p>
+                </div>
+              );
+            })}
+          </Panel>
+        </div>
+      </CockpitShell>
+    </Stage>
+  );
+}
+
+const BROADER = [
+  { pack: "faculty-meeting", file: "tenure-policy.pdf", note: "Faculty meeting", say: "Review is in year six. The file is the policy." },
+  { pack: "office-hours", file: "student-record.pdf", note: "Office hours", say: "She already has the prerequisite. Page 2." },
+  { pack: "curriculum-committee", file: "university-guidelines.pdf", note: "Committee", say: "The guideline is two hours of credit per lab." },
+];
+
+export function SceneBroader() {
+  const frame = useCurrentFrame();
+  const beat = Math.min(2, Math.floor(frame / 90));
+  const item = BROADER[beat];
+  return (
+    <Stage>
+      <CockpitShell pack={item.pack} note={item.note}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.2fr)",
+            gap: 16,
+            minHeight: 560,
+          }}
+        >
+          <Panel label="Repo" status="Local" active>
+            <FileList shown={4} files={[item.file, "notes.md", "agenda.pdf", "minutes.md"]} active={item.file} />
+          </Panel>
+          <Panel label="Card" status="Found" active>
+            <ProductCard appear say={item.say} cite={`${item.file}:1`} />
+          </Panel>
+        </div>
+      </CockpitShell>
     </Stage>
   );
 }
