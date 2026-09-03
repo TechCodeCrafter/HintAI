@@ -767,12 +767,7 @@ export async function startHear(): Promise<void> {
       : computer
         ? "Hearing the call tab. Questions from it become Cards."
         : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
-  useMeetHint.getState().appendUtterance({
-    at: Date.now(),
-    speaker: "MeetHint",
-    role: "system",
-    text: what,
-  });
+  useMeetHint.getState().setAsrNote(what);
 
   void transcribeAvailable()
     .then((ok) => {
@@ -806,11 +801,6 @@ export function toggleHear() {
   }
   void startHear().catch((err) => {
     useMeetHint.getState().setListenError(null);
-    useMeetHint.getState().appendUtterance({
-      at: Date.now(),
-      speaker: "MeetHint",
-      role: "system",
-      text: err instanceof Error ? err.message : "Could not start hearing.",
-    });
+    useMeetHint.getState().setAsrNote(err instanceof Error ? err.message : "Could not start hearing.");
   });
 }

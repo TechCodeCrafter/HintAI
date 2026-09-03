@@ -103,12 +103,7 @@ function greet() {
   if (useMeetHint.getState().listenError) return;
   greeted = true;
   if (useMeetHint.getState().sharingCall) return;
-  useMeetHint.getState().appendUtterance({
-    at: Date.now(),
-    speaker: "MeetHint",
-    role: "system",
-    text: "Hearing you. When they ask, the Card is what you say.",
-  });
+  useMeetHint.getState().setAsrNote("Hearing you. When they ask, Search the pack.");
 }
 
 function scheduleGreet() {
@@ -133,15 +128,7 @@ function failSoft(reason: ListenBlock) {
   useMeetHint.getState().setListenError(null);
   if (useMeetHint.getState().sharingCall) return;
   useMeetHint.getState().disarm();
-  const last = useMeetHint.getState().utterances.at(-1)?.text;
-  if (last !== MESSAGES[reason]) {
-    useMeetHint.getState().appendUtterance({
-      at: Date.now(),
-      speaker: "MeetHint",
-      role: "system",
-      text: MESSAGES[reason],
-    });
-  }
+  useMeetHint.getState().setAsrNote(MESSAGES[reason]);
 }
 
 function releaseMic() {
