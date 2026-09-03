@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
 import { stopHear, toggleHear } from "@/lib/listen/call-share";
-import { useLiveListen } from "@/lib/listen/speech";
+import { isFramed, useLiveListen } from "@/lib/listen/speech";
 import { PdfPane } from "@/components/pdf-pane";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { isPdfSource } from "@/lib/context/types";
@@ -1025,6 +1025,56 @@ function markAsked(transcript: string, asked: string | null): { text: string; hi
   ];
 }
 
+const BUBBLE_LIMIT = 140;
+const LISTEN_HINT_KEY = "meethint.listen-hint-dismissed";
+const IFRAME_HINT =
+  "This preview cannot hear the mic. Open Live window, allow the mic there, or paste the question.";
+
+function TurnBubble({
+  text,
+  role,
+  asked,
+  draft,
+}: {
+  text: string;
+  role: "them" | "you";
+  asked: string | null;
+  draft?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const long = text.length > BUBBLE_LIMIT;
+  const shown = long && !open ? `${text.slice(0, BUBBLE_LIMIT).trimEnd()}…` : text;
+  const parts = markAsked(shown, asked);
+
+  return (
+    <div className={cn("room-turn", role === "you" && "room-turn-you")} data-testid="room-turn">
+      <p className="ground-hint">{role === "them" ? "They" : "You"}</p>
+      <p className={cn("ground-transcript", draft && "live-caret")}>
+        {parts.map((part, i) =>
+          part.hit ? (
+            <mark key={i} className="ground-transcript-ask">
+              {part.text}
+            </mark>
+          ) : (
+            <span key={i} className={asked ? "ground-transcript-fill" : undefined}>
+              {part.text}
+            </span>
+          ),
+        )}
+      </p>
+      {long ? (
+        <button
+          type="button"
+          className="mt-1 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
+          onClick={() => setOpen((value) => !value)}
+        >
+          {open ? "Show less" : "Show more"}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelector: ReactNode }) {
   const utterances = useMeetHint((s) => s.utterances);
   const typedQuery = useMeetHint((s) => s.typedQuery);
@@ -1036,6 +1086,7 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
   const liveDraft = useMeetHint((s) => s.liveDraft);
   const draftRole = useMeetHint((s) => s.draftRole);
   const listenError = useMeetHint((s) => s.listenError);
+  const listenBlocked = useMeetHint((s) => s.listenBlocked);
   const sharingCall = useMeetHint((s) => s.sharingCall);
   const pack = useMeetHint((s) => s.pack);
   const hearLevel = useMeetHint((s) => s.hearLevel);
@@ -1044,19 +1095,56 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
   const asked = useMeetHint((s) => s.card?.query ?? s.heardQuestion);
   const queryRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
-  const themLines = utterances.filter((u) => u.role === "them");
-  const transcript = themLines.map((u) => cleanCaption(u.text)).filter(Boolean).join(" ");
-  const askedParts = useMemo(() => markAsked(transcript, asked), [transcript, asked]);
+  const [asrDismissed, setAsrDismissed] = useState<string | null>(null);
+  const [iframeDismissed, setIframeDismissed] = useState(false);
+  const [framed, setFramed] = useState(false);
   const draft = liveDraft === "…" ? "…" : cleanCaption(liveDraft);
   const themDraft = draftRole === "them" ? draft : "";
   const youDraft = draftRole === "you" ? draft : "";
-  const youLast = cleanCaption(utterances.filter((u) => u.role === "you").at(-1)?.text ?? "");
+  const turns = useMemo(() => {
+    const spoken = utterances
+      .filter((u) => u.role === "them" || u.role === "you")
+      .map((u) => ({
+        id: u.id,
+        role: u.role as "them" | "you",
+        text: cleanCaption(u.text),
+      }))
+      .filter((u) => u.text);
+    if (themDraft) spoken.push({ id: "draft-them", role: "them", text: themDraft });
+    if (youDraft) spoken.push({ id: "draft-you", role: "you", text: youDraft });
+    return spoken;
+  }, [utterances, themDraft, youDraft]);
   const live = (armed && !playing && !listenError) || sharingCall;
   const demo = pack.id === "northstar-payments";
+  const iframeHint =
+    !iframeDismissed && (listenBlocked === "iframe" || framed) ? IFRAME_HINT : null;
+  const listenHint = (asrNote && asrDismissed !== asrNote ? asrNote : null) || iframeHint;
+
+  useEffect(() => {
+    setFramed(isFramed());
+    try {
+      if (sessionStorage.getItem(LISTEN_HINT_KEY) === "1") setIframeDismissed(true);
+    } catch {
+      /* private mode */
+    }
+  }, []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [utterances.length, liveDraft]);
+  }, [turns.length, liveDraft]);
+
+  function dismissListenHint() {
+    if (asrNote && asrDismissed !== asrNote) {
+      setAsrDismissed(asrNote);
+      return;
+    }
+    try {
+      sessionStorage.setItem(LISTEN_HINT_KEY, "1");
+    } catch {
+      /* private mode */
+    }
+    setIframeDismissed(true);
+  }
 
   async function pasteQuery() {
     try {
@@ -1084,54 +1172,43 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-3 overflow-auto p-4">
+        {listenHint ? (
+          <div
+            role="status"
+            data-testid="listen-hint"
+            className="flex items-start justify-between gap-3 rounded-md border border-line bg-accent-soft px-3 py-2 text-sm text-fg"
+          >
+            <p>{listenHint}</p>
+            <button
+              type="button"
+              className="shrink-0 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
+              onClick={dismissListenHint}
+            >
+              Dismiss
+            </button>
+          </div>
+        ) : null}
         <div className="flex min-h-0 min-w-0 flex-col rounded-md border border-line bg-input px-3 py-3">
-          <p className="ground-hint">They said</p>
-          <div className="mt-2 max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
-            {transcript || themDraft ? (
-              <p className="ground-transcript">
-                {askedParts.map((part, i) =>
-                  part.hit ? (
-                    <mark key={i} className="ground-transcript-ask">
-                      {part.text}
-                    </mark>
-                  ) : (
-                    <span key={i} className={asked ? "ground-transcript-fill" : undefined}>
-                      {part.text}
-                    </span>
-                  ),
-                )}
-                {themDraft ? (
-                  <span className={cn(asked ? "ground-transcript-fill" : "text-muted", live && "live-caret")}>
-                    {transcript ? " " : ""}
-                    {themDraft}
-                  </span>
-                ) : null}
-              </p>
+          <div className="max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
+            {turns.length > 0 ? (
+              turns.map((turn) => (
+                <TurnBubble
+                  key={turn.id}
+                  text={turn.text}
+                  role={turn.role}
+                  asked={asked}
+                  draft={turn.id.startsWith("draft-")}
+                />
+              ))
             ) : (
               <p className="font-serif text-lg italic leading-snug text-body">
-                {asrNote
-                  ? asrNote
-                  : asrStatus === "loading"
-                    ? "Loading captions…"
-                    : live
-                      ? "Hearing you. The next line lands here."
-                      : "Press Listen, then share the call tab with audio. The transcript lands here."}
+                {asrStatus === "loading"
+                  ? "Loading captions…"
+                  : live
+                    ? "Hearing you. The next line lands here."
+                    : "Press Listen, then share the call tab with audio. The transcript lands here."}
               </p>
             )}
-            {youLast || youDraft ? (
-              <p className="mt-3 border-t border-line pt-2 text-xs text-faint">
-                <span className="text-muted">You · </span>
-                {youDraft || youLast}
-              </p>
-            ) : null}
-            {utterances
-              .filter((u) => u.role === "system")
-              .slice(-2)
-              .map((u) => (
-                <p key={u.id} className="mt-3 text-xs text-faint">
-                  {u.text}
-                </p>
-              ))}
             <div ref={endRef} />
           </div>
           {live ? (
@@ -1171,7 +1248,7 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
             </Button>
             <Button type="button" variant="ghost" size="sm" onClick={() => void pasteQuery()}>
               <ClipboardPaste className="size-3.5" />
-              Paste
+              Paste question
             </Button>
           </div>
         </form>
@@ -1281,7 +1358,6 @@ function CardPane({
           ) : null}
           {speaking ? (
             <div className="space-y-5">
-              <p className="ground-hint">You say · Say this</p>
               <p
                 data-testid="card-say"
                 className={cn(
@@ -1322,7 +1398,7 @@ function CardPane({
             <div className="space-y-5">
               <p data-testid="card-reason" className="font-serif text-lg italic text-body">
                 {card?.reason ??
-                  "Room is the transcript. A question about this pack becomes You say. Small talk stays in Room."}
+                  "Ask a question about this pack. Small talk stays in Room."}
               </p>
               {citations}
             </div>
