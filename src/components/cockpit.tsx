@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import {
   Check,
   ChevronDown,
@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
-import { ModeSelector } from "@/components/mode-selector";
+import { ModeSelector } from "@/components/ModeSelector";
+import { UpgradeModal } from "@/components/UpgradeModal";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
@@ -71,11 +72,15 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const ingestProgress = useMeetHint((s) => s.ingestProgress);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
+  const composeMode = useMeetHint((s) => s.composeMode);
+  const subscription = useMeetHint((s) => s.subscription);
+  const setComposeMode = useMeetHint((s) => s.setComposeMode);
   const folderRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
   const [citeReveal, setCiteReveal] = useState(0);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
+  const [upgradeFeature, setUpgradeFeature] = useState<string | null>(null);
   const live = (armed && !playing && !listenError) || sharingCall;
   const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
   const demo = pack.id === "northstar-payments";
@@ -356,14 +361,23 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           data-pane="room"
           data-active={mobilePane === "room" ? "true" : undefined}
         >
-          <TranscriptPane active={live && !card?.query} />
+          <TranscriptPane
+            active={live && !card?.query}
+            modeSelector={
+              <ModeSelector
+                mode={composeMode}
+                subscription={subscription}
+                onChangeMode={setComposeMode}
+                onUpgradePrompt={setUpgradeFeature}
+              />
+            }
+          />
         </div>
         <div
           className={cn("cockpit-pane cockpit-card-col", mobilePane !== "card" && "max-md:hidden")}
           data-pane="card"
           data-active={mobilePane === "card" ? "true" : undefined}
         >
-          <ModeSelector />
           <CardPane
             compact={overlay}
             onOpenCited={openCited}
@@ -372,6 +386,11 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           />
         </div>
       </main>
+      <UpgradeModal
+        open={upgradeFeature !== null}
+        feature={upgradeFeature}
+        onClose={() => setUpgradeFeature(null)}
+      />
     </div>
   );
 }
@@ -1006,7 +1025,7 @@ function markAsked(transcript: string, asked: string | null): { text: string; hi
   ];
 }
 
-function TranscriptPane({ active }: { active: boolean }) {
+function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelector: ReactNode }) {
   const utterances = useMeetHint((s) => s.utterances);
   const typedQuery = useMeetHint((s) => s.typedQuery);
   const setTypedQuery = useMeetHint((s) => s.setTypedQuery);
@@ -1121,6 +1140,7 @@ function TranscriptPane({ active }: { active: boolean }) {
             </div>
           ) : null}
         </div>
+        {modeSelector}
         <form
           className="flex min-w-0 flex-col gap-2"
           onSubmit={(e) => {
