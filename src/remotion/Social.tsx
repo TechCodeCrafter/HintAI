@@ -4,7 +4,7 @@ import socialManifest from "./vo-social-manifest.json";
 import { Caption, Fade, SceneAsk, SceneEmpty, SceneEnd, SceneHook } from "./shots";
 
 /**
- * 15-second social cut. Problem first, then the cite, then the empty card.
+ * 15-second social cut of The Folder.
  */
 
 type VoClip = { file: string; at: number; seconds: number; text?: string };
@@ -13,12 +13,12 @@ const VO_CLIPS = socialManifest.clips as VoClip[];
 const SCENES = [
   {
     kind: "hook" as const,
-    duration: 150,
-    caption: "You ever get asked something on a Zoom and start digging through notes while everyone waits?",
+    duration: 140,
+    caption: "It happens to everyone. The question comes, and you're flipping through tabs.",
   },
-  { kind: "ask" as const, duration: 150, caption: "Drop your notes. MeetHint pulls the exact line. Nothing uploaded." },
-  { kind: "empty" as const, duration: 90, caption: "If it's not in your files, it stays quiet." },
-  { kind: "end" as const, duration: 60, caption: "MeetHint. Cite or silence. meethint.ai" },
+  { kind: "ask" as const, duration: 140, caption: "Open the folder. Nothing uploads. It stays local." },
+  { kind: "empty" as const, duration: 100, caption: "If it's not in your files, the card stays empty." },
+  { kind: "end" as const, duration: 70, caption: "MeetHint. Cite or silence." },
 ];
 
 export const SOCIAL_DURATION = SCENES.reduce((total, scene) => total + scene.duration, 0);
@@ -30,7 +30,7 @@ const SCENE_VIEW = {
   end: SceneEnd,
 };
 
-const CLICKS = [7.4];
+const CLICKS = [6.8];
 
 export function Social() {
   let at = 0;

@@ -5,20 +5,20 @@
     {
       "file": "vo/s01.wav",
       "at": 0.2,
-      "seconds": 4.53,
-      "text": "You ever get asked something on a Zoom and start digging through notes? Yeah."
+      "seconds": 4.33,
+      "text": "It happens to everyone. The question comes, and you're flipping through tabs."
     },
     {
       "file": "vo/s02.wav",
-      "at": 4.8,
-      "seconds": 3.73,
-      "text": "Drop your notes. MeetHint pulls the exact line. Nothing uploaded."
+      "at": 4.6,
+      "seconds": 3.93,
+      "text": "Open the folder. Nothing uploads. It stays local."
     },
     {
       "file": "vo/s03.wav",
       "at": 8.6,
-      "seconds": 3.32,
-      "text": "If it's not in your files, it stays quiet."
+      "seconds": 3.33,
+      "text": "If it's not in your files, the card stays empty."
     },
     {
       "file": "vo/s04.wav",

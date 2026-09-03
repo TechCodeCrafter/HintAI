@@ -3,17 +3,21 @@ import { FPS, T } from "./theme";
 import voManifest from "./vo-manifest.json";
 import {
   Fade,
-  SceneAsk,
+  SceneAudit,
+  SceneClose,
   SceneEmpty,
   SceneEnd,
+  SceneEngineer,
   SceneHook,
-  SceneIntro,
+  SceneLawyer,
   SceneLive,
   SceneLoad,
+  ScenePromise,
+  SceneStudent,
 } from "./shots";
 
 /**
- * Cite or Silence — problem, then the sell. Voice and UI clicks only.
+ * Everyone cut — your script, cockpit picture, voice and UI clicks.
  */
 
 export type DemoProps = { narration: string | null };
@@ -22,28 +26,36 @@ type VoClip = { file: string; at: number; seconds: number };
 const VO_CLIPS = voManifest.clips as VoClip[];
 
 const SCENES = [
-  { kind: "hook" as const, duration: 375 },
-  { kind: "intro" as const, duration: 160 },
-  { kind: "load" as const, duration: 330 },
-  { kind: "ask" as const, duration: 450 },
-  { kind: "empty" as const, duration: 240 },
-  { kind: "live" as const, duration: 240 },
-  { kind: "end" as const, duration: 210 },
+  { kind: "hook" as const, duration: 156 },
+  { kind: "load" as const, duration: 348 },
+  { kind: "student" as const, duration: 300 },
+  { kind: "lawyer" as const, duration: 345 },
+  { kind: "engineer" as const, duration: 276 },
+  { kind: "empty" as const, duration: 153 },
+  { kind: "promise" as const, duration: 150 },
+  { kind: "audit" as const, duration: 210 },
+  { kind: "live" as const, duration: 153 },
+  { kind: "close" as const, duration: 153 },
+  { kind: "end" as const, duration: 186 },
 ];
 
 export const DEMO_DURATION = SCENES.reduce((total, scene) => total + scene.duration, 0);
 
 const SCENE_VIEW = {
   hook: SceneHook,
-  intro: SceneIntro,
   load: SceneLoad,
-  ask: SceneAsk,
+  student: SceneStudent,
+  lawyer: SceneLawyer,
+  engineer: SceneEngineer,
   empty: SceneEmpty,
+  promise: ScenePromise,
+  audit: SceneAudit,
   live: SceneLive,
+  close: SceneClose,
   end: SceneEnd,
 };
 
-const CLICKS = [19.0, 34.2, 53.3, 54.2, 55.2];
+const CLICKS = [5.8, 18.6, 28.6, 40.1, 49.2];
 
 export function Demo({ narration }: DemoProps) {
   let at = 0;

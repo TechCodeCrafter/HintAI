@@ -4,93 +4,99 @@
   "clips": [
     {
       "file": "vo/01.wav",
-      "at": 0.35,
-      "seconds": 5.18,
-      "text": "You ever get asked a question on a Zoom, and now you're flipping through notes while the whole room waits?"
+      "at": 0.2,
+      "seconds": 4.83,
+      "text": "It happens to everyone. The question comes, and now you're flipping through tabs while the whole room waits."
     },
     {
       "file": "vo/02.wav",
-      "at": 5.6,
-      "seconds": 4.5,
-      "text": "Maybe you don't know the answer. Or maybe you do, but you want to double-check before you say it out loud."
+      "at": 5.1,
+      "seconds": 8.9,
+      "text": "MeetHint lives in your browser. You give it your world — code, contracts, lecture notes, curriculum, whatever you're gonna get asked about."
     },
     {
       "file": "vo/03.wav",
-      "at": 10.2,
-      "seconds": 2.33,
-      "text": "Either way, everyone's just sitting there."
+      "at": 15,
+      "seconds": 1.72,
+      "text": "Nothing uploads. It stays local."
     },
     {
       "file": "vo/04.wav",
-      "at": 12.6,
-      "seconds": 2.25,
-      "text": "Well, you don't have to do that anymore."
+      "at": 16.8,
+      "seconds": 4.97,
+      "text": "Can anyone tell me the three failure modes of the TCP handshake?"
     },
     {
       "file": "vo/05.wav",
-      "at": 15.2,
-      "seconds": 2.65,
-      "text": "Introducing MeetHint."
+      "at": 21.9,
+      "seconds": 4.5,
+      "text": "Connection refused, timeout, and reset. Page 12 of the lecture notes."
     },
     {
       "file": "vo/06.wav",
-      "at": 18,
-      "seconds": 6.42,
-      "text": "You give it your material. Notes, lectures, the syllabus, a folder of docs — whatever you're going to get asked about."
+      "at": 26.8,
+      "seconds": 2.67,
+      "text": "The contract says 30-day SLA."
     },
     {
       "file": "vo/07.wav",
-      "at": 24.5,
-      "seconds": 4.42,
-      "text": "It goes through all of it in your browser. Nothing gets uploaded anywhere."
+      "at": 30.6,
+      "seconds": 7.62,
+      "text": "Actually — Amendment B, Section 3. Sixty days. March 15. Page 8."
     },
     {
       "file": "vo/08.wav",
-      "at": 29,
-      "seconds": 6.22,
-      "text": "Then when the question comes up, you just ask. MeetHint pulls the exact line, and tells you the file and the lines."
+      "at": 38.3,
+      "seconds": 1.92,
+      "text": "Why does the retry logic cap at three?"
     },
     {
       "file": "vo/09.wav",
-      "at": 35.3,
-      "seconds": 2.62,
-      "text": "So you're not guessing. You're reading it."
+      "at": 40.3,
+      "seconds": 6.62,
+      "text": "The gateway stalls rather than failing fast. A fourth attempt duplicates the file. Line 4."
     },
     {
       "file": "vo/10.wav",
-      "at": 38,
-      "seconds": 4.14,
-      "text": "It uses a language model so you can say exactly what needs to be said."
+      "at": 47.5,
+      "seconds": 2.52,
+      "text": "Can we also handle Stripe webhooks?"
     },
     {
       "file": "vo/11.wav",
-      "at": 42.2,
-      "seconds": 1.92,
-      "text": "And here's the part I actually like."
+      "at": 50.1,
+      "seconds": 2.41,
+      "text": "That's not in our current material. I'd need to check before I answer."
     },
     {
       "file": "vo/12.wav",
-      "at": 44.2,
-      "seconds": 4.82,
-      "text": "If the answer isn't in your files, it doesn't make something up. The card just stays empty."
+      "at": 52.6,
+      "seconds": 4.92,
+      "text": "If it's not in your files, nothing is made up. The card stays empty. Cite or silence."
     },
     {
       "file": "vo/13.wav",
-      "at": 49.1,
-      "seconds": 2.39,
-      "text": "It either cites it, or it stays quiet."
+      "at": 57.6,
+      "seconds": 6.92,
+      "text": "And when the meeting ends, you don't get a transcript. You get an audit. Every claim checked. Every contradiction flagged."
     },
     {
       "file": "vo/14.wav",
-      "at": 51.6,
-      "seconds": 6.6,
-      "text": "Turn on listen mode and it follows the call. Overlay it on your second monitor."
+      "at": 64.6,
+      "seconds": 5.03,
+      "text": "Turn on Listen, and it follows the call. Pop it on your second monitor. It only speaks when it can prove it."
     },
     {
       "file": "vo/15.wav",
-      "at": 61.2,
-      "seconds": 5.2,
-      "text": "MeetHint. Cite or silence. meethint.ai"
+      "at": 69.7,
+      "seconds": 5.03,
+      "text": "Stop flipping. Stop guessing. Your files are the source of truth. The meeting just became searchable."
+    },
+    {
+      "file": "vo/16.wav",
+      "at": 74.8,
+      "seconds": 6.12,
+      "text": "Join the waitlist — free during beta. MeetHint AI. Cite or silence."
     }
   ]
 }

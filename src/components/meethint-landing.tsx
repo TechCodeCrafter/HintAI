@@ -327,8 +327,8 @@ function DemoVideo() {
       <video
         ref={video}
         className="block aspect-video w-full"
-        src="/demo/meethint-demo-bio210-office-hours.mp4"
-        poster="/demo/meethint-demo-bio210-office-hours-poster.jpg"
+        src="/demo/meethint-demo-everyone.mp4"
+        poster="/demo/meethint-demo-everyone-poster.jpg"
         preload="metadata"
         autoPlay
         muted
@@ -510,8 +510,8 @@ export function MeetHintLanding() {
             <SectionLabel>Cite or silence</SectionLabel>
             <DemoVideo />
             <p className="text-xs text-faint">
-              A class on Zoom. Notes, lectures, the syllabus. It starts muted because browsers
-              insist — the sound is worth turning on.
+              Student, lawyer, engineer — then cite or silence. It starts muted because
+              browsers insist. The sound is worth turning on.
             </p>
           </section>
 
