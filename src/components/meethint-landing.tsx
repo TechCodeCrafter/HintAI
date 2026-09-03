@@ -507,11 +507,11 @@ export function MeetHintLanding() {
 
           {/* Demo */}
           <section className="space-y-6 py-14">
-            <SectionLabel>A session, end to end</SectionLabel>
+            <SectionLabel>Cite or silence</SectionLabel>
             <DemoVideo />
             <p className="text-xs text-faint">
-              Forty-three seconds, scored. It starts muted because browsers insist — the
-              sound is worth turning on.
+              About a minute. Problem first, then the sell. It starts muted because browsers
+              insist — the sound is worth turning on.
             </p>
           </section>
 
