@@ -3,17 +3,18 @@ import { FPS, T } from "./theme";
 import voManifest from "./vo-manifest.json";
 import {
   Fade,
-  SceneAsk,
-  SceneEmpty,
+  SceneBroader,
+  SceneChenAudit,
+  SceneChenEmpty,
+  SceneClose,
   SceneEnd,
-  SceneHook,
-  SceneIntro,
-  SceneLive,
-  SceneLoad,
+  SceneFear,
+  SceneMoment,
+  SceneSave,
 } from "./shots";
 
 /**
- * Cite or Silence — problem, then the sell. Voice and UI clicks only.
+ * The Question — Dr. Chen. Voice and UI clicks only.
  */
 
 export type DemoProps = { narration: string | null };
@@ -22,28 +23,30 @@ type VoClip = { file: string; at: number; seconds: number };
 const VO_CLIPS = voManifest.clips as VoClip[];
 
 const SCENES = [
-  { kind: "hook" as const, duration: 375 },
-  { kind: "intro" as const, duration: 160 },
-  { kind: "load" as const, duration: 240 },
-  { kind: "ask" as const, duration: 450 },
-  { kind: "empty" as const, duration: 240 },
-  { kind: "live" as const, duration: 180 },
-  { kind: "end" as const, duration: 195 },
+  { kind: "fear" as const, duration: 321 },
+  { kind: "moment" as const, duration: 483 },
+  { kind: "save" as const, duration: 516 },
+  { kind: "empty" as const, duration: 489 },
+  { kind: "audit" as const, duration: 402 },
+  { kind: "broader" as const, duration: 435 },
+  { kind: "close" as const, duration: 279 },
+  { kind: "end" as const, duration: 330 },
 ];
 
 export const DEMO_DURATION = SCENES.reduce((total, scene) => total + scene.duration, 0);
 
 const SCENE_VIEW = {
-  hook: SceneHook,
-  intro: SceneIntro,
-  load: SceneLoad,
-  ask: SceneAsk,
-  empty: SceneEmpty,
-  live: SceneLive,
+  fear: SceneFear,
+  moment: SceneMoment,
+  save: SceneSave,
+  empty: SceneChenEmpty,
+  audit: SceneChenAudit,
+  broader: SceneBroader,
+  close: SceneClose,
   end: SceneEnd,
 };
 
-const CLICKS = [18.6, 31.2, 49.4, 50.2, 51.0];
+const CLICKS = [8.3, 22.8, 29.2, 46.0];
 
 export function Demo({ narration }: DemoProps) {
   let at = 0;

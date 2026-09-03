@@ -15,20 +15,55 @@ const SCRIPT = JSON.parse(readFileSync(join(ROOT, "src/remotion/vo-script.json")
 const RATE = Number(process.env.RATE ?? 152);
 
 const CAST = {
-  pm: {
+  narrator: {
+    voice: "ash",
+    style:
+      "You are a sharp SaaS account exec who has sat in the back of a lecture. Talk like a person, not an ad. A little smile. Name the fear, then sell. Brisk. Cut off on the last word — no trailing silence. Not a radio announcer. Not a documentary. Read the words only.",
+  },
+  chen: {
+    voice: "verse",
+    style:
+      "You are a tenured CS professor on Zoom. Calm once you have the line. Classroom, no drama. Brisk. No trailing silence. Read the words only.",
+  },
+  jessica: {
     voice: "nova",
     style:
-      "You are a product manager on a laptop video call. Slightly compressed, conversational. Do not linger. Read the words only.",
+      "You are a sharp undergrad on Zoom. Eager, precise, a little terrifying. Conversational. Brisk. No trailing silence. Read the words only.",
+  },
+  mike: {
+    voice: "alloy",
+    style:
+      "You are a student asking about the final. Casual, compressed laptop mic. Brisk. No trailing silence. Read the words only.",
+  },
+  professor: {
+    voice: "verse",
+    style:
+      "You are a computer science professor on Zoom lecture. Clear, classroom, a little dry. Brisk. No trailing silence. Read the words only.",
+  },
+  student: {
+    voice: "nova",
+    style:
+      "You are a student who just found the answer. Relieved, sure, conversational. Brisk. No trailing silence. Read the words only.",
+  },
+  client: {
+    voice: "echo",
+    style:
+      "You are a client on a video call, slightly uncertain, checking a memory. Conversational. Brisk. No trailing silence. Read the words only.",
+  },
+  alice: {
+    voice: "sage",
+    style:
+      "You are a lawyer on a client Zoom. Calm, in control, no drama. Brisk. No trailing silence. Read the words only.",
+  },
+  pm: {
+    voice: "alloy",
+    style:
+      "You are a product manager on a laptop standup. Slightly compressed, conversational. Brisk. No trailing silence. Read the words only.",
   },
   engineer: {
     voice: "onyx",
     style:
-      "You are an engineer reading a line from a second monitor. Relaxed, sure, conversational pace. Do not linger. Read the words only.",
-  },
-  narrator: {
-    voice: "ash",
-    style:
-      "You are a SaaS account exec on a Zoom with one engineer. You've sat in that meeting. Talk like a person, not an ad. A little smile. Name the pain, then sell the product. Keep moving — no dramatic pauses. Not a radio announcer. Not a documentary. Read the words only.",
+      "You are an engineer reading a line from a second monitor. Relaxed, sure. Brisk. No trailing silence. Read the words only.",
   },
 };
 
@@ -82,10 +117,14 @@ function wavSeconds(file) {
 }
 
 function toPcm48(src, dest, tempo = 1) {
-  const args = ["-y", "-i", src];
-  if (tempo > 1.01) args.push("-filter:a", `atempo=${tempo.toFixed(3)}`);
-  args.push("-acodec", "pcm_s16le", "-ar", "48000", "-ac", "1", dest);
-  execFileSync("ffmpeg", args, { stdio: "ignore" });
+  const trim =
+    "areverse,silenceremove=start_periods=1:start_threshold=-36dB:start_silence=0.07,areverse,silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02";
+  const filter = tempo > 1.01 ? `${trim},atempo=${tempo.toFixed(3)}` : trim;
+  execFileSync(
+    "ffmpeg",
+    ["-y", "-i", src, "-filter:a", filter, "-acodec", "pcm_s16le", "-ar", "48000", "-ac", "1", dest],
+    { stdio: "ignore" },
+  );
 }
 
 function speakSay(text, file) {
@@ -145,7 +184,7 @@ async function speakFilm(name, film, prefix) {
     used = spoken.voice;
     const next = film.lines[i + 1]?.at ?? film.seconds;
     const room = next - line.at;
-    if (spoken.seconds > room && spoken.seconds / room <= 1.65) {
+    if (spoken.seconds > room && spoken.seconds / room <= 1.8) {
       const fitted = `${dest}.fit.wav`;
       toPcm48(dest, fitted, spoken.seconds / (room - 0.08));
       rmSync(dest);

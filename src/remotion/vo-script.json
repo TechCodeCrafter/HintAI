@@ -1,33 +1,36 @@
 {
-  "comment": "Cite or Silence. Problem first, then sell. `at` is the second the line starts.",
+  "comment": "The Question. Dr. Chen. Timed to spoken lines.",
   "films": {
     "master": {
-      "seconds": 61,
+      "seconds": 108,
       "lines": [
-        { "at": 0.35, "role": "narrator", "text": "You ever get asked a question on a call, and now you're flipping through tabs while the whole room waits?" },
-        { "at": 5.6, "role": "narrator", "text": "Maybe you don't know the answer. Or maybe you do, but you want to double-check before you say it out loud." },
-        { "at": 10.2, "role": "narrator", "text": "Either way, everyone's just sitting there." },
-        { "at": 12.6, "role": "narrator", "text": "Well, you don't have to do that anymore." },
-        { "at": 15.2, "role": "narrator", "text": "Introducing MeetHint." },
-        { "at": 18.0, "role": "narrator", "text": "You give it your projects. Code, docs, contracts — whatever you're going to get asked about." },
-        { "at": 24.5, "role": "narrator", "text": "It goes through all of it in your browser. Nothing gets uploaded anywhere." },
-        { "at": 29.0, "role": "narrator", "text": "Then when the question comes up, you just ask. MeetHint pulls the exact line, and tells you the file and the lines." },
-        { "at": 35.3, "role": "narrator", "text": "So you're not guessing. You're reading it." },
-        { "at": 38.0, "role": "narrator", "text": "It uses a language model so you can say exactly what needs to be said." },
-        { "at": 42.2, "role": "narrator", "text": "And here's the part I actually like." },
-        { "at": 44.2, "role": "narrator", "text": "If the answer isn't in your files, it doesn't make something up. The card just stays empty." },
-        { "at": 49.1, "role": "narrator", "text": "It either cites it, or it stays quiet." },
-        { "at": 51.6, "role": "narrator", "text": "Turn on listen mode and it follows the call. Overlay it on your second monitor." },
-        { "at": 56.6, "role": "narrator", "text": "MeetHint. Cite or silence. meethint.ai" }
+        { "at": 0.25, "role": "narrator", "text": "Dr. Chen has taught Network Protocols for eleven years. He wrote the textbook. He knows this stuff cold." },
+        { "at": 8.0, "role": "narrator", "text": "But every semester, there's that one student." },
+        { "at": 10.7, "role": "jessica", "text": "Dr. Chen, in Week 4 you said TCP uses three-way handshake. But RFC 8312 mentions a two-way variant for constrained devices. Why don't we cover that?" },
+        { "at": 16.9, "role": "narrator", "text": "He has no idea. It's not in the lecture notes. It's not in the curriculum. It's not even in his textbook." },
+        { "at": 24.9, "role": "narrator", "text": "And forty students are watching him flip." },
+        { "at": 26.8, "role": "narrator", "text": "But this semester, Chen has MeetHint." },
+        { "at": 29.5, "role": "chen", "text": "Great question, Jessica. RFC 8312 defines a two-way handshake for constrained IoT devices." },
+        { "at": 36.7, "role": "chen", "text": "It's outside our standard curriculum, but if you're interested, I have supplementary reading — page 8." },
+        { "at": 43.9, "role": "mike", "text": "Dr. Chen, will this be on the final?" },
+        { "at": 46.0, "role": "chen", "text": "That's not in our current material. I'll confirm and email the class by Friday." },
+        { "at": 51.3, "role": "narrator", "text": "If it's not in his files, MeetHint stays empty. No guessing. No BS. Cite or silence." },
+        { "at": 60.1, "role": "narrator", "text": "When the lecture ends, he doesn't have a transcript. He has an audit." },
+        { "at": 66.8, "role": "narrator", "text": "Every claim checked. Every gap flagged. Every student question he couldn't answer — tracked for next semester." },
+        { "at": 73.5, "role": "narrator", "text": "Whatever you get asked about — lectures, contracts, code, curriculum — MeetHint lives in your browser. Nothing uploads. Nothing leaks." },
+        { "at": 82.2, "role": "narrator", "text": "It just finds the exact line, so you say what the file says, not what you hope is true." },
+        { "at": 88.4, "role": "narrator", "text": "Stop flipping. Stop guessing. Stop hoping nobody asks the one thing you can't find." },
+        { "at": 97.5, "role": "narrator", "text": "Your files are the source of truth. The meeting just became searchable." },
+        { "at": 103.5, "role": "narrator", "text": "MeetHint AI. Cite or silence." }
       ]
     },
     "social": {
       "seconds": 15,
       "lines": [
-        { "at": 0.2, "role": "narrator", "text": "You ever get asked something on a call and start digging through tabs? Yeah." },
-        { "at": 4.8, "role": "narrator", "text": "MeetHint pulls the exact line. Nothing uploaded." },
-        { "at": 8.6, "role": "narrator", "text": "If it's not in your files, it stays quiet." },
-        { "at": 12.0, "role": "narrator", "text": "MeetHint. Cite or silence." }
+        { "at": 0.2, "role": "narrator", "text": "Forty students are watching. Then someone asks the thing that isn't in the lecture." },
+        { "at": 4.8, "role": "narrator", "text": "MeetHint pulls the line from his files. Nothing uploaded." },
+        { "at": 8.6, "role": "narrator", "text": "If it's not in the pack, the card stays empty." },
+        { "at": 12.0, "role": "narrator", "text": "Cite or silence." }
       ]
     }
   }

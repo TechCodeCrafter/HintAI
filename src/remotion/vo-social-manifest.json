@@ -6,25 +6,25 @@
       "file": "vo/s01.wav",
       "at": 0.2,
       "seconds": 4.52,
-      "text": "You ever get asked something on a call and start digging through tabs? Yeah."
+      "text": "Forty students are watching. Then someone asks the thing that isn't in the lecture."
     },
     {
       "file": "vo/s02.wav",
       "at": 4.8,
       "seconds": 3.71,
-      "text": "MeetHint pulls the exact line. Nothing uploaded."
+      "text": "MeetHint pulls the line from his files. Nothing uploaded."
     },
     {
       "file": "vo/s03.wav",
       "at": 8.6,
-      "seconds": 3.31,
-      "text": "If it's not in your files, it stays quiet."
+      "seconds": 3.33,
+      "text": "If it's not in the pack, the card stays empty."
     },
     {
       "file": "vo/s04.wav",
       "at": 12,
-      "seconds": 2.91,
-      "text": "MeetHint. Cite or silence."
+      "seconds": 1.91,
+      "text": "Cite or silence."
     }
   ]
 }

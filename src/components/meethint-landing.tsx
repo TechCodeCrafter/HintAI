@@ -9,6 +9,7 @@ import {
   FolderOpen,
   GitBranch,
   GitPullRequest,
+  GraduationCap,
   Handshake,
   Loader2,
   Mic,
@@ -51,21 +52,17 @@ const SOURCE_ICON: Record<SourceKind, typeof FileCode2> = {
 /**
  * Deliberately shares no question, file or session with the film below: the card
  * and the video are two windows onto the same product, not the same clip twice.
- * The checkout-recovery story and the SOC 2 refusal belong to the video.
+ * The film below is office hours; this card is a different window on the same product.
  */
 const BEATS: Beat[] = [
   {
-    session: "Ingest handover",
-    material: "repo · operations-guide.pdf",
-    cold: "last commit by you: Nov 2024",
-    asked: "What happens if the processing fails?",
+    session: "BIO 210 office hours",
+    material: "syllabus · lecture notes · my notes",
+    cold: "lecture 4 was two weeks ago",
+    asked: "What does the lab report actually have to include?",
     sources: [
-      {
-        at: "lambda_function.py:83",
-        fact: "retries to MAX_ATTEMPTS, then dead-letters",
-        kind: "code",
-      },
-      { at: "operations-guide.pdf · p. 14", fact: "failed jobs stay FAILED until replay", kind: "doc" },
+      { at: "lab-02.pdf · p. 2", fact: "methods, results, and a one-page discussion", kind: "doc" },
+      { at: "my-notes.txt:14", fact: "figures need a caption and units", kind: "doc" },
     ],
   },
   {
@@ -98,22 +95,25 @@ const BEATS: Beat[] = [
 ];
 
 const MATERIAL = [
+  { icon: FileText, label: "Notes", soon: false },
+  { icon: FileText, label: "Lectures", soon: false },
+  { icon: FileText, label: "Syllabus", soon: false },
+  { icon: FolderOpen, label: "Whole folder", soon: false },
   { icon: FileText, label: "PDF", soon: true },
   { icon: FileText, label: "DOCX", soon: true },
   { icon: Presentation, label: "PPTX", soon: true },
   { icon: FileSpreadsheet, label: "Sheets", soon: true },
   { icon: FileCode2, label: "Markdown", soon: false },
   { icon: FileCode2, label: "Code", soon: false },
-  { icon: FolderOpen, label: "Whole folder", soon: false },
   { icon: GitBranch, label: "Repository", soon: false },
 ];
 
 /** Ordered by how cold the material usually is, not by how flashy the demo is. */
 const USE_CASES = [
   {
-    icon: FileCode2,
-    title: "Architecture review",
-    bring: ["The repo", "ADRs", "Design docs", "Requirements"],
+    icon: GraduationCap,
+    title: "Class & office hours",
+    bring: ["Lecture notes", "Syllabus", "Slides", "Your own notes"],
   },
   {
     icon: Activity,
@@ -327,8 +327,8 @@ function DemoVideo() {
       <video
         ref={video}
         className="block aspect-video w-full"
-        src="/demo/meethint-demo.mp4"
-        poster="/demo/meethint-demo-poster.jpg"
+        src="/demo/meethint-demo-the-question.mp4"
+        poster="/demo/meethint-demo-the-question-poster.jpg"
         preload="metadata"
         autoPlay
         muted
@@ -482,8 +482,8 @@ export function MeetHintLanding() {
                 </span>
               </h1>
               <p className="mh-lede max-w-xl">
-                They asked about checkout recovery. You last touched that service in March. MeetHint
-                finds the note, the PR, and the line — while they're still talking.
+                They asked what lecture four covered. Your notes are in four tabs. MeetHint
+                finds the line — while they're still talking.
               </p>
               <div className="max-w-lg space-y-3 pt-1">
                 <WaitlistForm id="hero-email" />
@@ -510,8 +510,8 @@ export function MeetHintLanding() {
             <SectionLabel>Cite or silence</SectionLabel>
             <DemoVideo />
             <p className="text-xs text-faint">
-              About a minute. Problem first, then the sell. It starts muted because browsers
-              insist — the sound is worth turning on.
+              The Question. A professor, forty students, and the one thing that isn’t in
+              the lecture. It starts muted — the sound is worth turning on.
             </p>
           </section>
 
@@ -521,13 +521,13 @@ export function MeetHintLanding() {
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)] lg:gap-16">
               <div className="space-y-5">
                 <h2 className="mh-display text-3xl sm:text-4xl">
-                  Load a service folder, an ADR set, or a contract pack. MeetHint keeps it local and
-                  cites exactly.
+                  Load your notes, a lecture pack, the syllabus, or a folder of docs. MeetHint keeps
+                  it local and cites exactly.
                 </h2>
                 <p className="text-body">
-                  Someone asks about a service you shipped fourteen months ago. You shouldn't be
-                  flipping through Confluence while the room waits. MeetHint pulls the function, the
-                  ADR and the incident note, and puts the citation in front of you.
+                  Someone asks a question from a lecture you half-remember. You shouldn't be
+                  flipping through Drive while the room waits. MeetHint pulls the note, the slide,
+                  and the line, and puts the citation in front of you.
                 </p>
                 <p className="text-body">
                   It won't write your sentence for you. And when your material doesn't cover the
@@ -536,7 +536,7 @@ export function MeetHintLanding() {
               </div>
               <ol className="space-y-3">
                 {[
-                  { icon: FolderOpen, step: "Bring the material", body: "A service folder, an ADR set, or a contract pack. One folder at a time, kept local." },
+                  { icon: FolderOpen, step: "Bring the material", body: "Notes, lectures, the syllabus, a folder of docs. One folder at a time, kept local." },
                   { icon: Mic, step: "It follows the conversation", body: "MeetHint catches the question actually being asked and searches on the spot." },
                   { icon: Quote, step: "It cites, you talk", body: "You get the file and the line it came from. The words are still yours." },
                 ].map((item, i) => (

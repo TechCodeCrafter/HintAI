@@ -1,9 +1,8 @@
 import type { CSSProperties, ReactNode } from "react";
-import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { eyebrow, T } from "./theme";
 
-/** Accent is reserved for the cited line. Everything else stays off-white. */
 const CITE = T.accent;
 
 export const ease = (frame: number, from: number, to: number) =>
@@ -11,24 +10,15 @@ export const ease = (frame: number, from: number, to: number) =>
 
 export function Fade({ duration, children }: { duration: number; children: ReactNode }) {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 6, duration - 6, duration], [0, 1, 1, 0], {
+  const opacity = interpolate(frame, [0, 5, duration - 5, duration], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
   return <div style={{ position: "absolute", inset: 0, opacity }}>{children}</div>;
 }
 
-export function Stage({
-  children,
-  desaturate = false,
-  pad,
-}: {
-  children: ReactNode;
-  desaturate?: boolean;
-  pad?: number;
-}) {
+export function Stage({ children, pad }: { children: ReactNode; pad?: number }) {
   const { width } = useVideoConfig();
-  const padding = pad ?? Math.round(width * 0.055);
   return (
     <div
       style={
@@ -36,12 +26,13 @@ export function Stage({
           position: "absolute",
           inset: 0,
           display: "flex",
-          alignItems: "center",
+          alignItems: "stretch",
           justifyContent: "center",
-          padding,
+          padding: pad ?? Math.round(width * 0.028),
           fontFamily: T.mono,
           color: T.fg,
-          filter: desaturate ? "grayscale(0.82) contrast(0.92) brightness(0.72)" : undefined,
+          background:
+            "radial-gradient(80% 70% at 20% 0%, rgba(47,107,247,0.08), transparent 55%), radial-gradient(70% 60% at 90% 10%, rgba(138,79,240,0.07), transparent 50%), #07090c",
           "--color-brand-blue": T.brandBlue,
           "--color-brand-violet": T.brandViolet,
           "--color-brand-signal": T.signal,
@@ -71,7 +62,7 @@ export function Keycap({ children, show }: { children: ReactNode; show: boolean 
         borderRadius: 8,
         border: `1px solid ${T.line}`,
         background: "rgba(255,255,255,0.04)",
-        fontSize: 22,
+        fontSize: 20,
         letterSpacing: "0.08em",
         color: T.fg,
         opacity: show ? 1 : 0,
@@ -82,313 +73,9 @@ export function Keycap({ children, show }: { children: ReactNode; show: boolean 
   );
 }
 
-function Chrome({ children, url = "meethint.ai/app" }: { children: ReactNode; url?: string }) {
-  const { width } = useVideoConfig();
-  return (
-    <div
-      style={{
-        width: Math.min(1680, width - 80),
-        borderRadius: 16,
-        border: `1px solid ${T.line}`,
-        background: T.panelSolid,
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          padding: "12px 16px",
-          borderBottom: `1px solid ${T.hairline}`,
-        }}
-      >
-        <span style={{ width: 10, height: 10, borderRadius: 99, background: "#3d4450" }} />
-        <span style={{ width: 10, height: 10, borderRadius: 99, background: "#3d4450" }} />
-        <span style={{ width: 10, height: 10, borderRadius: 99, background: "#3d4450" }} />
-        <span style={{ marginLeft: 12, fontSize: 16, color: T.faint }}>{url}</span>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-const PEOPLE = [
-  { name: "Maya", role: "PM", initials: "M" },
-  { name: "Alex", role: "Eng", initials: "A" },
-  { name: "Priya", role: "Design", initials: "P" },
-  { name: "Sam", role: "Eng", initials: "S" },
-];
-
-export function CallGrid({ speak = 0 }: { speak?: number }) {
-  const { width } = useVideoConfig();
-  const tile = Math.min(340, Math.round(width * 0.22));
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-      {PEOPLE.map((person, i) => (
-        <div
-          key={person.name}
-          style={{
-            width: tile,
-            height: Math.round(tile * 0.72),
-            borderRadius: 12,
-            border: `1px solid ${T.line}`,
-            background: i === speak ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-            transform: i === speak ? "scale(1.03)" : undefined,
-          }}
-        >
-          <div
-            style={{
-              width: 54,
-              height: 54,
-              borderRadius: 99,
-              background: "rgba(255,255,255,0.08)",
-              color: T.body,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 22,
-            }}
-          >
-            {person.initials}
-          </div>
-          <p style={{ margin: 0, fontSize: 16, color: T.muted }}>
-            {person.name} · {person.role}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const TABS = [
-  "auth/handler.ts",
-  "auth/token.ts",
-  "routes/session.ts",
-  "docs/api.md",
-  "handlers/refresh.ts",
-  "contracts/sso.md",
-  "lib/jwt.ts",
-  "middleware/auth.ts",
-  "tests/auth.spec.ts",
-  "README.md",
-  "package.json",
-  "schema.sql",
-  "errors.ts",
-  "types.ts",
-];
-
-export function TabBar() {
-  const frame = useCurrentFrame();
-  const x = interpolate(frame, [0, 110], [40, 720], { extrapolateRight: "clamp" });
-  return (
-    <div style={{ width: "100%" }}>
-      <div
-        style={{
-          display: "flex",
-          gap: 0,
-          borderBottom: `1px solid ${T.hairline}`,
-          overflow: "hidden",
-        }}
-      >
-        {TABS.map((tab, i) => (
-          <div
-            key={tab}
-            style={{
-              flex: "0 0 auto",
-              padding: "14px 16px",
-              fontSize: 15,
-              color: i === 3 ? T.body : T.faint,
-              borderRight: `1px solid ${T.hairline}`,
-              background: i === 3 ? "rgba(255,255,255,0.03)" : "transparent",
-            }}
-          >
-            {tab}
-          </div>
-        ))}
-      </div>
-      <div style={{ position: "relative", height: 220, background: T.bg }}>
-        <div
-          style={{
-            position: "absolute",
-            top: 28,
-            left: x,
-            width: 14,
-            height: 20,
-            border: `1px solid ${T.muted}`,
-            borderRadius: 2,
-            opacity: 0.7,
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 function isSocial() {
   const { width, height } = useVideoConfig();
   return height >= width;
-}
-
-export function SceneHook() {
-  const frame = useCurrentFrame();
-  const onTabs = frame >= (isSocial() ? 48 : 110);
-  return (
-    <Stage desaturate={!onTabs}>
-      <div style={{ width: "100%", maxWidth: 1680 }}>
-        {!onTabs ? (
-          <div style={{ opacity: ease(frame, 0, 14) }}>
-            <p style={{ ...eyebrow, margin: "0 0 22px" }}>Standup · four on the call</p>
-            <CallGrid speak={0} />
-            <p
-              style={{
-                margin: "28px 0 0",
-                fontFamily: T.serif,
-                fontSize: 36,
-                color: T.body,
-                opacity: ease(frame, 18, 30),
-              }}
-            >
-              “Wait — what does the API return if the token expires?”
-            </p>
-          </div>
-        ) : (
-          <Chrome url="localhost:8080 — 14 tabs">
-            <TabBar />
-          </Chrome>
-        )}
-      </div>
-    </Stage>
-  );
-}
-
-export function SceneSilence() {
-  const frame = useCurrentFrame();
-  const onTabs = frame >= (isSocial() ? 48 : 70);
-  return (
-    <Stage desaturate={!onTabs}>
-      <div style={{ width: "100%", maxWidth: 1680 }}>
-        {!onTabs ? (
-          <div style={{ opacity: ease(frame, 0, 14) }}>
-            <p style={{ ...eyebrow, margin: "0 0 22px" }}>Standup · four on the call</p>
-            <CallGrid speak={0} />
-            <p
-              style={{
-                margin: "28px 0 0",
-                fontFamily: T.serif,
-                fontSize: 36,
-                color: T.body,
-                opacity: ease(frame, 18, 30),
-              }}
-            >
-              “Wait — what does the API return if the token expires?”
-            </p>
-          </div>
-        ) : (
-          <Chrome url="localhost:8080 — 14 tabs">
-            <TabBar />
-          </Chrome>
-        )}
-      </div>
-    </Stage>
-  );
-}
-
-const FILES = [
-  "auth/handler.ts",
-  "auth/token.ts",
-  "handlers/refresh.ts",
-  "routes/session.ts",
-  "routes/login.ts",
-  "contracts/sso.md",
-  "docs/api.md",
-  "docs/errors.md",
-];
-
-export function SceneIntro() {
-  const frame = useCurrentFrame();
-  return (
-    <Stage>
-      <div style={{ textAlign: "center", opacity: ease(frame, 4, 16) }}>
-        <Wordmark size={72} />
-        <p style={{ margin: "28px 0 0", fontFamily: T.serif, fontSize: 42, color: T.body }}>
-          Introducing MeetHint.
-        </p>
-      </div>
-    </Stage>
-  );
-}
-
-export function SceneLoad() {
-  const frame = useCurrentFrame();
-  const drop = ease(frame, 8, 28);
-  const list = ease(frame, 36, 50);
-  const scroll = interpolate(frame, [50, 230], [0, -220], { extrapolateRight: "clamp" });
-  return (
-    <Stage>
-      <div style={{ width: "100%", maxWidth: 1680 }}>
-        <Chrome>
-          <div style={{ padding: 36, minHeight: 420 }}>
-            <p style={{ ...eyebrow, margin: 0 }}>Drop a folder</p>
-            <div
-              style={{
-                marginTop: 22,
-                height: 280,
-                borderRadius: 12,
-                border: `1px dashed ${T.line}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                position: "relative",
-              }}
-            >
-              <div
-                style={{
-                  opacity: 1 - list,
-                  transform: `translateY(${interpolate(drop, [0, 1], [-70, 0])}px)`,
-                  fontFamily: T.serif,
-                  fontSize: 40,
-                  color: T.fg,
-                }}
-              >
-                src/
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 24,
-                  opacity: list,
-                  transform: `translateY(${scroll}px)`,
-                }}
-              >
-                {FILES.map((file) => (
-                  <p key={file} style={{ margin: "0 0 12px", fontSize: 26, color: T.body }}>
-                    {file}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <p
-              style={{
-                margin: "20px 0 0",
-                fontSize: 20,
-                color: T.faint,
-                opacity: ease(frame, 40, 56),
-              }}
-            >
-              Local only · Nothing uploaded
-            </p>
-          </div>
-        </Chrome>
-      </div>
-    </Stage>
-  );
 }
 
 function typeChars(frame: number, start: number, per: number, text: string) {
@@ -396,205 +83,783 @@ function typeChars(frame: number, start: number, per: number, text: string) {
   return text.slice(0, Math.min(text.length, n));
 }
 
-const QUERY = "token expired response";
-const LINE = 'return res.status(401).json({ error: "TOKEN_EXPIRED" });';
-
-export function CitedCard({ appear }: { appear: boolean }) {
+function Cursor({ x, y, down = false }: { x: number; y: number; down?: boolean }) {
   return (
     <div
       style={{
-        marginTop: 28,
-        borderRadius: 12,
-        border: `1px solid ${T.line}`,
-        background: "rgba(255,255,255,0.03)",
-        padding: "28px 30px",
-        opacity: appear ? 1 : 0,
-      }}
-    >
-      <p style={{ margin: 0, fontFamily: T.serif, fontSize: 32, lineHeight: 1.35, color: CITE }}>{LINE}</p>
-      <p style={{ margin: "18px 0 0", fontSize: 22, color: T.body }}>auth/handler.ts : 142–146</p>
-    </div>
-  );
-}
-
-export function SceneAsk() {
-  const frame = useCurrentFrame();
-  const social = isSocial();
-  const typed = typeChars(frame, social ? 12 : 36, social ? 3 : 4, QUERY);
-  const done = typed.length >= QUERY.length;
-  const card = frame >= (social ? 70 : 160);
-  return (
-    <Stage>
-      <div style={{ width: "100%", maxWidth: 1680 }}>
-        <div style={{ marginBottom: 18, opacity: ease(frame, 0, 10) }}>
-          <Keycap show>Ctrl + K</Keycap>
-        </div>
-        <Chrome>
-          <div style={{ padding: 36, minHeight: 440 }}>
-            <p style={{ ...eyebrow, margin: 0 }}>Question</p>
-            <p
-              style={{
-                margin: "16px 0 0",
-                fontFamily: T.serif,
-                fontSize: 44,
-                color: T.fg,
-                minHeight: 58,
-              }}
-            >
-              {typed}
-              <span style={{ color: T.faint }}>{done ? "" : "▍"}</span>
-            </p>
-            <CitedCard appear={card} />
-          </div>
-        </Chrome>
-      </div>
-    </Stage>
-  );
-}
-
-export function SceneAnswer() {
-  const frame = useCurrentFrame();
-  return (
-    <Stage desaturate>
-      <div style={{ width: "100%", maxWidth: 1480 }}>
-        <CallGrid speak={1} />
-        <p
-          style={{
-            margin: "32px 0 0",
-            fontFamily: T.serif,
-            fontSize: 34,
-            lineHeight: 1.35,
-            color: T.body,
-            opacity: ease(frame, 8, 22),
-          }}
-        >
-          “Returns a 401 with TOKEN_EXPIRED in the body — handler.ts, line 142.”
-        </p>
-      </div>
-    </Stage>
-  );
-}
-
-const SAML = "do we support SAML?";
-
-export function EmptyCard({ appear }: { appear: boolean }) {
-  return (
-    <div
-      style={{
-        marginTop: 28,
-        height: 168,
-        borderRadius: 12,
-        border: `1px solid ${T.line}`,
-        background: "transparent",
-        opacity: appear ? 1 : 0,
+        position: "absolute",
+        left: x,
+        top: y,
+        width: 16,
+        height: 22,
+        background: T.fg,
+        clipPath: "polygon(0 0, 100% 62%, 42% 62%, 58% 100%, 42% 100%, 28% 62%, 0 62%)",
+        transform: `scale(${down ? 0.82 : 1})`,
+        filter: "drop-shadow(0 3px 8px rgba(0,0,0,0.55))",
+        zIndex: 30,
+        pointerEvents: "none",
       }}
     />
   );
 }
 
-export function SceneEmpty() {
+function Panel({
+  label,
+  status,
+  active = false,
+  children,
+}: {
+  label: string;
+  status?: string;
+  active?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        minWidth: 0,
+        minHeight: 0,
+        height: "100%",
+        borderRadius: 14,
+        border: `1px solid ${T.line}`,
+        background: "linear-gradient(180deg, rgba(255,255,255,0.038), rgba(255,255,255,0.016))",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: active ? `inset 3px 0 0 ${T.accent}` : undefined,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "11px 14px",
+          borderBottom: `1px solid ${T.hairline}`,
+        }}
+      >
+        <span style={{ fontSize: 15, color: T.fg }}>{label}</span>
+        <span style={{ fontSize: 13, color: T.faint }}>{status}</span>
+      </div>
+      <div style={{ padding: 14, flex: 1, minHeight: 0, overflow: "hidden" }}>{children}</div>
+    </div>
+  );
+}
+
+function CockpitShell({
+  pack,
+  listening = false,
+  note,
+  children,
+  overlay = false,
+}: {
+  pack: string;
+  listening?: boolean;
+  note: string;
+  children: ReactNode;
+  overlay?: boolean;
+}) {
+  const frame = useCurrentFrame();
+  const pulse = 0.45 + 0.55 * Math.sin(frame * 0.35);
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 1680,
+        display: "flex",
+        flexDirection: "column",
+        minHeight: 0,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 6px 16px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Wordmark size={28} />
+          <span
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: 99,
+              background: listening ? T.accent : T.faint,
+              boxShadow: listening ? `0 0 10px rgba(${T.accentRgb}, ${pulse})` : undefined,
+            }}
+          />
+          <span style={{ fontSize: 14, color: listening ? T.accent : T.faint }}>
+            {listening ? "Listening" : "Idle"}
+          </span>
+          <span style={{ fontSize: 14, color: T.muted, fontStyle: "italic" }}>{note}</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span
+            style={{
+              padding: "7px 12px",
+              borderRadius: 8,
+              border: `1px solid ${T.line}`,
+              fontSize: 14,
+              color: T.body,
+            }}
+          >
+            {listening ? "Stop listen" : "Listen"}
+          </span>
+          <span
+            style={{
+              padding: "7px 12px",
+              borderRadius: 8,
+              border: `1px solid ${T.line}`,
+              fontSize: 14,
+              color: T.fg,
+              background: overlay ? "rgba(139,123,245,0.12)" : "rgba(255,255,255,0.03)",
+            }}
+          >
+            Open folder
+          </span>
+          <span style={{ fontSize: 14, color: T.muted }}>{pack}</span>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+const PACK_FILES = [
+  "lecture-04-notes.md",
+  "Lecture-4-Networking.pdf",
+  "week-4-slides.pdf",
+  "contract-amendment-v2.pdf",
+  "MSA-v3.pdf",
+  "src/exporter/retry.ts",
+  "src/auth/handler.ts",
+  "lab-02.pdf",
+  "project-brief.md",
+  "load-test.md",
+];
+
+function FileList({
+  shown,
+  active,
+  files = PACK_FILES,
+}: {
+  shown: number;
+  active?: string;
+  files?: string[];
+}) {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  return (
+    <div>
+      {files.slice(0, shown).map((file, i) => {
+        const enter = spring({ frame: frame - i * 7, fps, config: { damping: 15, mass: 0.55 } });
+        const on = file === active;
+        return (
+          <div
+            key={file}
+            style={{
+              height: 32,
+              display: "flex",
+              alignItems: "center",
+              padding: "0 8px",
+              borderRadius: 6,
+              background: on ? "rgba(139,123,245,0.12)" : "transparent",
+              boxShadow: on ? `inset 2px 0 0 ${T.accent}` : undefined,
+              opacity: enter,
+              transform: `translateX(${interpolate(enter, [0, 1], [-16, 0])}px)`,
+            }}
+          >
+            <span style={{ fontSize: 14, color: on ? T.fg : T.muted }}>{file}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CodeView({ lines, from, hi }: { lines: string[]; from: number; hi?: [number, number] }) {
+  const frame = useCurrentFrame();
+  return (
+    <div style={{ marginTop: 10 }}>
+      {lines.map((line, i) => {
+        const n = from + i;
+        const on = hi ? n >= hi[0] && n <= hi[1] : false;
+        const wipe = on ? ease(frame, 8, 20) : 0;
+        return (
+          <div
+            key={n}
+            style={{
+              display: "flex",
+              gap: 10,
+              padding: "3px 6px",
+              background: on ? `rgba(139,123,245,${0.14 * wipe})` : "transparent",
+            }}
+          >
+            <span style={{ width: 22, color: T.faintest, fontSize: 13 }}>{n}</span>
+            <span style={{ color: on ? T.fg : T.body, fontSize: 13, whiteSpace: "pre" }}>{line}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SearchBar({ typed, query, pressed }: { typed: string; query: string; pressed: boolean }) {
+  return (
+    <div>
+      <p style={{ ...eyebrow, margin: 0, fontSize: 12, letterSpacing: "0.12em" }}>Question</p>
+      <div
+        style={{
+          marginTop: 8,
+          borderRadius: 8,
+          border: `1px solid ${T.line}`,
+          background: "rgba(255,255,255,0.03)",
+          padding: "10px 12px",
+          minHeight: 52,
+          fontFamily: T.serif,
+          fontSize: 22,
+          color: T.fg,
+        }}
+      >
+        {typed}
+        <span style={{ color: T.faint }}>{typed.length >= query.length ? "" : "▍"}</span>
+      </div>
+      <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
+        <span
+          style={{
+            padding: "7px 12px",
+            borderRadius: 8,
+            border: `1px solid ${T.line}`,
+            background: pressed ? "rgba(139,123,245,0.2)" : "rgba(255,255,255,0.04)",
+            fontSize: 14,
+            color: T.fg,
+            transform: `scale(${pressed ? 0.96 : 1})`,
+          }}
+        >
+          Search
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function ProductCard({
+  searching,
+  say,
+  cite,
+  empty,
+  appear,
+}: {
+  searching?: boolean;
+  say?: string;
+  cite?: string;
+  empty?: boolean;
+  appear: boolean;
+}) {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const rise = spring({ frame: frame - 4, fps, config: { damping: 14, mass: 0.7 } });
+  const scan = (frame % 40) / 40;
+  if (searching) {
+    return (
+      <div>
+        <p style={{ ...eyebrow, margin: 0, fontSize: 12 }}>Card</p>
+        <p style={{ margin: "16px 0 0", fontFamily: T.serif, fontSize: 20, color: T.muted }}>Searching the pack…</p>
+        <div style={{ marginTop: 16, height: 3, borderRadius: 99, background: T.hairline, overflow: "hidden" }}>
+          <div
+            style={{
+              width: "36%",
+              height: "100%",
+              background: T.accent,
+              transform: `translateX(${interpolate(scan, [0, 1], [-40, 220])}%)`,
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+  if (!appear) {
+    return (
+      <p style={{ fontFamily: T.serif, fontSize: 20, fontStyle: "italic", color: T.body }}>
+        Room is the transcript. A question about this pack becomes You say.
+      </p>
+    );
+  }
+  if (empty) {
+    return (
+      <div style={{ opacity: rise, transform: `translateY(${interpolate(rise, [0, 1], [18, 0])}px)` }}>
+        <p style={{ fontFamily: T.serif, fontSize: 24, fontStyle: "italic", color: T.body }}>
+          Nothing in this pack cites that.
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div style={{ opacity: rise, transform: `translateY(${interpolate(rise, [0, 1], [18, 0])}px)` }}>
+      <p style={{ ...eyebrow, margin: 0, fontSize: 12 }}>You say · Say this</p>
+      <p style={{ margin: "12px 0 0", fontFamily: T.serif, fontSize: 24, lineHeight: 1.35, color: T.fg }}>{say}</p>
+      <div
+        style={{
+          marginTop: 16,
+          borderRadius: 8,
+          border: `1px solid ${T.line}`,
+          padding: "10px 12px",
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 15, color: CITE }}>{cite}</p>
+      </div>
+    </div>
+  );
+}
+
+const CASES = {
+  student: {
+    query: "three failure modes tcp",
+    heard: "Can anyone tell me the three failure modes of the TCP handshake?",
+    say: "Connection refused, timeout, and reset. Page 12 of the lecture notes.",
+    cite: "Lecture-4-Networking.pdf:12",
+    file: "Lecture-4-Networking.pdf",
+    lines: ["Handshake completes only on ACK.", "Failure modes:", "Connection refused, timeout, and RST."],
+    from: 10,
+    hi: [12, 12] as [number, number],
+  },
+  lawyer: {
+    query: "SLA amendment 60 days",
+    heard: "The contract says 30-day SLA.",
+    say: "Actually — Amendment B, Section 3. Sixty days. March 15. Page 8.",
+    cite: "contract-amendment-v2.pdf:8",
+    file: "contract-amendment-v2.pdf",
+    lines: ["Amendment B", "Section 3. Service levels.", "SLA extended to 60 days effective March 15."],
+    from: 6,
+    hi: [8, 8] as [number, number],
+  },
+  engineer: {
+    query: "why retry cap at three",
+    heard: "Why does the retry logic cap at three?",
+    say: "The gateway stalls rather than failing fast. A fourth attempt duplicates the file. Line 4.",
+    cite: "src/exporter/retry.ts:4-6",
+    file: "src/exporter/retry.ts",
+    lines: ["const MAX_ATTEMPTS = 3;", "export function settle(file) {", "  for (let i = 0; i < MAX_ATTEMPTS; i++) {", "    if (await push(file)) return;", "  }"],
+    from: 1,
+    hi: [4, 6] as [number, number],
+  },
+};
+
+function SceneSearch({
+  name,
+  empty = false,
+}: {
+  name: keyof typeof CASES;
+  empty?: boolean;
+}) {
   const frame = useCurrentFrame();
   const social = isSocial();
-  const typed = typeChars(frame, social ? 4 : 8, social ? 2 : 3, SAML);
-  const card = frame >= (social ? 48 : 78);
+  const pack = CASES[name];
+  const query = empty ? "can we handle Stripe webhooks" : pack.query;
+  const typed = typeChars(frame, 4, 2, query);
+  const done = typed.length >= query.length;
+  const clickAt = empty ? 50 : 54;
+  const searchAt = clickAt + 3;
+  const cardAt = searchAt + 14;
+  const searching = done && frame >= searchAt && frame < cardAt;
+  const appear = frame >= cardAt;
+  const pressed = frame >= clickAt && frame < clickAt + 8;
+  const cursorX = interpolate(frame, [done ? clickAt - 16 : 0, clickAt], [social ? 220 : 980, social ? 90 : 760], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const cursorY = interpolate(frame, [done ? clickAt - 16 : 0, clickAt], [social ? 360 : 420, social ? 410 : 455], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const columns = social
+    ? "1fr"
+    : "minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr)";
+
   return (
     <Stage>
-      <div style={{ width: "100%", maxWidth: 1680 }}>
-        <Chrome>
-          <div style={{ padding: 36, minHeight: 440 }}>
-            <p style={{ ...eyebrow, margin: 0 }}>Question</p>
-            <p style={{ margin: "16px 0 0", fontFamily: T.serif, fontSize: 44, color: T.fg, minHeight: 58 }}>
-              {typed}
-              <span style={{ color: T.faint }}>{typed.length >= SAML.length ? "" : "▍"}</span>
+      <CockpitShell pack="the-folder" note={appear ? "Cited from the pack" : "The pack is the brief"}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: columns,
+            gap: 16,
+            flex: 1,
+            minHeight: social ? 720 : 620,
+          }}
+        >
+          {social ? null : (
+            <Panel label="Repo" status="10 files" active={appear && !empty}>
+              <FileList shown={10} active={appear && !empty ? pack.file : undefined} />
+              {appear && !empty ? <CodeView lines={pack.lines} from={pack.from} hi={pack.hi} /> : null}
+            </Panel>
+          )}
+          <Panel label="Room" status="Search" active={!appear}>
+            <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+            <p style={{ margin: 0, fontFamily: T.serif, fontSize: 18, color: T.body }}>
+              {empty ? "Can we also handle Stripe webhooks?" : pack.heard}
             </p>
-            <EmptyCard appear={card} />
+            <div style={{ marginTop: 16 }}>
+              <SearchBar typed={typed} query={query} pressed={pressed} />
+            </div>
+          </Panel>
+          <Panel label="Card" status={appear ? (empty ? "Silent" : "Found · 48 ms") : "Idle"} active={appear}>
+            <ProductCard
+              searching={searching}
+              appear={appear}
+              empty={empty}
+              say={pack.say}
+              cite={pack.cite}
+            />
+          </Panel>
+        </div>
+      </CockpitShell>
+      <Cursor x={cursorX} y={cursorY} down={pressed} />
+    </Stage>
+  );
+}
+
+const TABS = [
+  "syllabus.pdf",
+  "Amendment B",
+  "Gmail",
+  "retry.ts",
+  "Drive",
+  "Canvas",
+  "Slack",
+  "Lecture 4",
+  "MSA v3",
+  "Notes",
+  "Notion",
+  "Chat",
+];
+
+export function SceneHook() {
+  const frame = useCurrentFrame();
+  const x = interpolate(frame, [0, 200], [80, 1180], { extrapolateRight: "clamp" });
+  const down = frame % 28 < 4;
+  return (
+    <Stage>
+      <div style={{ width: "100%", maxWidth: 1680, alignSelf: "center" }}>
+        <div
+          style={{
+            borderRadius: 16,
+            border: `1px solid ${T.line}`,
+            background: T.panelSolid,
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 0,
+              borderBottom: `1px solid ${T.hairline}`,
+              overflow: "hidden",
+            }}
+          >
+            {TABS.map((tab, i) => {
+              const on = Math.floor(frame / 16) % TABS.length === i;
+              return (
+                <div
+                  key={tab}
+                  style={{
+                    flex: "0 0 auto",
+                    padding: "14px 16px",
+                    fontSize: 15,
+                    color: on ? T.fg : T.faint,
+                    borderRight: `1px solid ${T.hairline}`,
+                    background: on ? "rgba(255,255,255,0.04)" : "transparent",
+                  }}
+                >
+                  {tab}
+                </div>
+              );
+            })}
           </div>
-        </Chrome>
+          <div style={{ height: 280, position: "relative", background: T.bg }}>
+            <p
+              style={{
+                position: "absolute",
+                left: 28,
+                top: 28,
+                fontFamily: T.serif,
+                fontSize: 28,
+                color: T.body,
+                opacity: ease(frame, 8, 22),
+              }}
+            >
+              12 tabs. The room is waiting.
+            </p>
+            <Cursor x={x} y={148} down={down} />
+          </div>
+        </div>
       </div>
     </Stage>
   );
 }
 
-const LIVE_CARDS = [
-  { line: 'return res.status(401).json({ error: "TOKEN_EXPIRED" });', cite: "auth/handler.ts : 142–146" },
-  { line: "Refresh tokens rotate once. Reuse is a revoke.", cite: "auth/token.ts : 88–91" },
-  { line: "Expired access tokens are not retried by the client.", cite: "docs/api.md : 40–43" },
+export function SceneLoad() {
+  const frame = useCurrentFrame();
+  const opened = frame >= 18;
+  const shown = opened ? Math.min(PACK_FILES.length, Math.floor((frame - 18) / 6) + 1) : 0;
+  const cursorX = interpolate(frame, [0, 16], [1180, 1320], { extrapolateRight: "clamp" });
+  const cursorY = interpolate(frame, [0, 16], [80, 28], { extrapolateRight: "clamp" });
+  const down = frame >= 16 && frame < 24;
+  return (
+    <Stage>
+      <CockpitShell
+        pack={opened ? "the-folder" : "No pack"}
+        note={opened ? `${shown} files · nothing uploaded` : "Open a local folder to cite your repo."}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr)",
+            gap: 16,
+            minHeight: 620,
+          }}
+        >
+          <Panel label="Repo" status={opened ? `${shown} files` : "Empty"} active={opened}>
+            {opened ? (
+              <FileList shown={shown} />
+            ) : (
+              <p style={{ fontFamily: T.serif, fontSize: 22, fontStyle: "italic", color: T.body }}>
+                Open a local folder to cite your repo.
+              </p>
+            )}
+          </Panel>
+          {isSocial() ? null : (
+            <>
+              <Panel label="Room" status="Idle">
+                <p style={{ fontFamily: T.serif, fontSize: 18, fontStyle: "italic", color: T.body }}>
+                  Press Listen, then share the call tab with audio.
+                </p>
+              </Panel>
+              <Panel label="Card" status="Idle">
+                <p style={{ fontFamily: T.serif, fontSize: 18, fontStyle: "italic", color: T.body }}>
+                  A question about this pack becomes You say.
+                </p>
+              </Panel>
+            </>
+          )}
+        </div>
+      </CockpitShell>
+      <Cursor x={cursorX} y={cursorY} down={down} />
+    </Stage>
+  );
+}
+
+export function SceneStudent() {
+  return <SceneSearch name="student" />;
+}
+export function SceneLawyer() {
+  return <SceneSearch name="lawyer" />;
+}
+export function SceneEngineer() {
+  return <SceneSearch name="engineer" />;
+}
+export function SceneAsk() {
+  return <SceneSearch name="student" />;
+}
+export function SceneEmpty() {
+  return <SceneSearch name="engineer" empty />;
+}
+
+export function ScenePromise() {
+  const frame = useCurrentFrame();
+  return (
+    <Stage>
+      <CockpitShell pack="the-folder" note="Cite or silence">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
+            gap: 16,
+            minHeight: 620,
+          }}
+        >
+          <Panel label="Room" status="Search">
+            <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+            <p style={{ margin: 0, fontFamily: T.serif, fontSize: 22, color: T.body }}>
+              Can we also handle Stripe webhooks?
+            </p>
+            <div style={{ marginTop: 16 }}>
+              <SearchBar typed="can we handle Stripe webhooks" query="can we handle Stripe webhooks" pressed={false} />
+            </div>
+          </Panel>
+          <Panel label="Card" status="Silent" active>
+            <ProductCard appear empty />
+            <p
+              style={{
+                margin: "28px 0 0",
+                fontFamily: T.serif,
+                fontSize: 32,
+                color: T.fg,
+                opacity: ease(frame, 20, 40),
+              }}
+            >
+              Cite or silence.
+            </p>
+          </Panel>
+        </div>
+      </CockpitShell>
+    </Stage>
+  );
+}
+
+const AUDIT = [
+  { mark: "#5aa87a", claim: "SLA is 60 days", status: "Supported", cite: "contract-amendment-v2.pdf:8" },
+  { mark: "#5aa87a", claim: "Retry capped at 3", status: "Supported", cite: "src/exporter/retry.ts:4-6" },
+  { mark: "#c4a35a", claim: "Stripe webhooks", status: "Unverified", cite: "—" },
+  { mark: "#c45c5c", claim: "Auth handles 10k RPS", status: "Contradicted", cite: "load-test.md:19" },
 ];
+
+export function SceneAudit() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const slide = spring({ frame: frame - 8, fps, config: { damping: 16, mass: 0.8 } });
+  return (
+    <Stage>
+      <CockpitShell pack="the-folder" note="After the call">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 0.9fr) minmax(0, 1.2fr)",
+            gap: 16,
+            minHeight: 620,
+          }}
+        >
+          <Panel label="Card" status="Last cite">
+            <ProductCard appear say={CASES.engineer.say} cite={CASES.engineer.cite} />
+          </Panel>
+          <div style={{ opacity: slide, transform: `translateX(${interpolate(slide, [0, 1], [80, 0])}px)` }}>
+            <Panel label="Claim monitor" status="4 claims">
+              {AUDIT.map((row, i) => {
+                const enter = spring({
+                  frame: frame - (24 + i * 16),
+                  fps,
+                  config: { damping: 14, mass: 0.55 },
+                });
+                return (
+                  <div
+                    key={row.claim}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "14px 1.1fr 0.7fr",
+                      gap: 10,
+                      alignItems: "center",
+                      padding: "12px 4px",
+                      borderBottom: `1px solid ${T.hairline}`,
+                      opacity: enter,
+                      transform: `translateY(${interpolate(enter, [0, 1], [14, 0])}px)`,
+                    }}
+                  >
+                    <span style={{ width: 8, height: 8, borderRadius: 99, background: row.mark }} />
+                    <div>
+                      <p style={{ margin: 0, fontFamily: T.serif, fontSize: 18, color: T.fg }}>{row.claim}</p>
+                      <p style={{ margin: "4px 0 0", fontSize: 13, color: T.muted }}>{row.cite}</p>
+                    </div>
+                    <p style={{ margin: 0, fontSize: 14, color: T.body }}>{row.status}</p>
+                  </div>
+                );
+              })}
+            </Panel>
+          </div>
+        </div>
+      </CockpitShell>
+    </Stage>
+  );
+}
 
 export function SceneLive() {
   const frame = useCurrentFrame();
-  const overlay = frame >= 150;
-  const wave = 0.35 + 0.25 * Math.sin(frame * 0.22);
+  const { fps } = useVideoConfig();
+  const dock = spring({ frame: frame - 10, fps, config: { damping: 15, mass: 0.7 } });
+  const wave = 0.3 + 0.45 * Math.abs(Math.sin(frame * 0.2));
+  const heard = typeChars(frame, 20, 2, "why does the retry logic cap at three");
   return (
     <Stage>
-      <div style={{ width: "100%", maxWidth: 1680, position: "relative" }}>
-        <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-          <Keycap show={frame >= 6}>L Listen</Keycap>
-          <Keycap show={overlay}>O Overlay</Keycap>
+      <div style={{ width: "100%", maxWidth: 1680 }}>
+        <div style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+          <Keycap show={frame >= 4}>L Listen</Keycap>
+          <Keycap show={frame >= 16}>O Overlay</Keycap>
         </div>
-        <div
-          style={{
-            width: overlay ? 620 : "100%",
-            marginLeft: overlay ? "auto" : 0,
-            transform: overlay ? "translateY(40px)" : undefined,
-            transition: "none",
-          }}
-        >
-          <Chrome>
-            <div style={{ padding: 28, minHeight: overlay ? 280 : 400 }}>
+        <CockpitShell pack="the-folder" listening note="Hearing the call" overlay>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 0.42fr) minmax(0, 0.58fr)",
+              gap: 16,
+              minHeight: 560,
+              opacity: dock,
+            }}
+          >
+            <Panel label="Room" status="Live" active>
               <div
                 style={{
                   height: 4,
                   borderRadius: 99,
                   background: T.hairline,
                   overflow: "hidden",
-                  marginBottom: 22,
+                  marginBottom: 16,
                 }}
               >
-                <div style={{ width: `${wave * 100}%`, height: "100%", background: T.fg, opacity: 0.35 }} />
+                <div style={{ width: `${wave * 100}%`, height: "100%", background: T.accent }} />
               </div>
-              {LIVE_CARDS.map((card, i) => (
-                <div
-                  key={card.cite}
-                  style={{
-                    marginBottom: 14,
-                    padding: "14px 16px",
-                    borderRadius: 10,
-                    border: `1px solid ${T.line}`,
-                    opacity: ease(frame, 48 + i * 28, 60 + i * 28),
-                  }}
-                >
-                  <p style={{ margin: 0, fontFamily: T.serif, fontSize: overlay ? 18 : 24, color: CITE }}>
-                    {card.line}
-                  </p>
-                  <p style={{ margin: "8px 0 0", fontSize: overlay ? 14 : 18, color: T.muted }}>{card.cite}</p>
-                </div>
-              ))}
-            </div>
-          </Chrome>
-        </div>
-        {overlay ? (
-          <div style={{ position: "absolute", left: 0, top: 80, opacity: 0.45, filter: "grayscale(0.8)" }}>
-            <CallGrid speak={0} />
+              <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+              <p style={{ margin: 0, fontFamily: T.serif, fontSize: 22, color: T.fg }}>
+                {heard}
+                <span style={{ color: T.accent }}>▍</span>
+              </p>
+            </Panel>
+            <Panel label="Card" status="Auto" active>
+              <ProductCard
+                appear={frame >= 36}
+                say={CASES.engineer.say}
+                cite={CASES.engineer.cite}
+              />
+            </Panel>
           </div>
-        ) : null}
+        </CockpitShell>
       </div>
     </Stage>
   );
 }
 
-export function SceneTagline() {
+export function SceneClose() {
   const frame = useCurrentFrame();
   return (
-    <Stage>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 36, width: "100%", maxWidth: 1200 }}>
-        <div style={{ width: "100%", opacity: ease(frame, 0, 12) }}>
-          <CitedCard appear />
+    <Stage pad={80}>
+      <div style={{ width: "100%", maxWidth: 1100, textAlign: "center", alignSelf: "center" }}>
+        <div style={{ opacity: ease(frame, 2, 12), display: "flex", justifyContent: "center" }}>
+          <Wordmark size={48} />
         </div>
-        <div style={{ opacity: ease(frame, 28, 44), textAlign: "center" }}>
-          <Wordmark size={56} />
-          <p style={{ margin: "18px 0 0", fontFamily: T.serif, fontSize: 40, color: T.body }}>Cite or silence.</p>
-        </div>
+        <p
+          style={{
+            margin: "24px 0 0",
+            fontFamily: T.serif,
+            fontSize: 36,
+            color: T.body,
+            opacity: ease(frame, 8, 20),
+          }}
+        >
+          Stop flipping. Stop guessing.
+        </p>
+        <p
+          style={{
+            margin: "18px 0 0",
+            fontFamily: T.serif,
+            fontSize: 40,
+            lineHeight: 1.25,
+            color: T.fg,
+            opacity: ease(frame, 40, 58),
+          }}
+        >
+          Stop hoping nobody asks the one thing you can’t find.
+        </p>
       </div>
     </Stage>
   );
@@ -602,18 +867,470 @@ export function SceneTagline() {
 
 export function SceneEnd() {
   const frame = useCurrentFrame();
+  const form = ease(frame, 8, 22);
   return (
-    <Stage>
-      <div style={{ textAlign: "center", opacity: ease(frame, 4, 16) }}>
-        <Wordmark size={56} />
-        <p style={{ margin: "22px 0 0", fontFamily: T.serif, fontSize: 40, color: T.body }}>Cite or silence.</p>
-        <p style={{ margin: "36px 0 0", fontSize: 32, letterSpacing: "0.04em", color: T.fg }}>
-          meethint.ai
+    <Stage pad={80}>
+      <div style={{ width: "100%", maxWidth: 1000, textAlign: "center", alignSelf: "center" }}>
+        <div style={{ opacity: ease(frame, 2, 12), display: "flex", justifyContent: "center" }}>
+          <Wordmark size={52} />
+        </div>
+        <p
+          style={{
+            margin: "22px 0 0",
+            fontFamily: T.serif,
+            fontSize: 28,
+            color: T.body,
+            opacity: ease(frame, 8, 18),
+          }}
+        >
+          Your files are the source of truth.
         </p>
-        <p style={{ margin: "16px 0 0", fontFamily: T.serif, fontSize: 26, color: T.muted }}>
-          Free to run. Your files never leave your machine.
+        <p
+          style={{
+            margin: "10px 0 0",
+            fontFamily: T.serif,
+            fontSize: 24,
+            color: T.muted,
+            opacity: ease(frame, 20, 34),
+          }}
+        >
+          The meeting just became searchable.
+        </p>
+        <p
+          style={{
+            margin: "22px 0 0",
+            fontFamily: T.serif,
+            fontSize: 22,
+            color: T.body,
+            opacity: ease(frame, 40, 56),
+          }}
+        >
+          Join the waitlist — free during beta.
+        </p>
+        <div style={{ margin: "28px auto 0", maxWidth: 620, display: "flex", gap: 10, opacity: form }}>
+          <div
+            style={{
+              flex: 1,
+              borderRadius: 10,
+              border: `1px solid ${T.line}`,
+              padding: "16px 18px",
+              textAlign: "left",
+              color: T.faint,
+              fontSize: 20,
+            }}
+          >
+            you@work.com
+          </div>
+          <div
+            style={{
+              borderRadius: 10,
+              border: `1px solid ${T.line}`,
+              padding: "16px 22px",
+              fontSize: 18,
+              color: T.fg,
+            }}
+          >
+            Get early access
+          </div>
+        </div>
+        <p style={{ margin: "12px 0 0", fontSize: 16, color: T.faint, opacity: form }}>MeetHint AI</p>
+        <p
+          style={{
+            margin: "28px 0 0",
+            fontFamily: T.serif,
+            fontSize: 32,
+            color: T.body,
+            opacity: ease(frame, 175, 195),
+          }}
+        >
+          Cite or silence.
         </p>
       </div>
+    </Stage>
+  );
+}
+
+const COURSE = [
+  "lecture-04-tcp.pdf",
+  "week-4-slides.pdf",
+  "syllabus.pdf",
+  "textbook-ch4.pdf",
+  "supplementary-reading/iot-protocols.pdf",
+  "rfc-793.md",
+  "office-hours.md",
+  "curriculum.md",
+];
+
+const RFC = {
+  query: "RFC 8312 TCP two-way handshake",
+  say: "RFC 8312 defines a 2-way handshake for constrained IoT devices — not covered in standard curriculum.",
+  cite: "supplementary-reading/iot-protocols.pdf:8",
+  lines: [
+    "Constrained devices may skip SYN-ACK wait.",
+    "RFC 8312 defines a 2-way handshake for constrained IoT devices.",
+    "Not covered in the standard CS 540 curriculum.",
+  ],
+  from: 7,
+  hi: [8, 8] as [number, number],
+};
+
+function PersonTile({
+  name,
+  role,
+  initials,
+  speak,
+  tall = false,
+}: {
+  name: string;
+  role: string;
+  initials: string;
+  speak?: boolean;
+  tall?: boolean;
+}) {
+  const frame = useCurrentFrame();
+  const pulse = 0.55 + 0.45 * Math.sin(frame * 0.28);
+  return (
+    <div
+      style={{
+        minHeight: tall ? 220 : 140,
+        borderRadius: 12,
+        border: speak ? `1px solid rgba(34,197,94,${0.35 + pulse * 0.4})` : `1px solid ${T.hairline}`,
+        background: speak ? "rgba(34,197,94,0.06)" : "rgba(255,255,255,0.025)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        boxShadow: speak ? `0 0 0 1px rgba(34,197,94,${0.2 + pulse * 0.25})` : undefined,
+      }}
+    >
+      <div
+        style={{
+          width: tall ? 56 : 44,
+          height: tall ? 56 : 44,
+          borderRadius: 99,
+          background: speak ? "rgba(34,197,94,0.18)" : "rgba(255,255,255,0.08)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: tall ? 22 : 18,
+          color: T.body,
+        }}
+      >
+        {initials}
+      </div>
+      <p style={{ margin: 0, fontSize: 15, color: T.muted }}>
+        {name}
+        <span style={{ color: T.faint }}> · {role}</span>
+      </p>
+    </div>
+  );
+}
+
+export function SceneFear() {
+  const frame = useCurrentFrame();
+  const down = frame >= 248 && frame < 260;
+  const x = interpolate(frame, [200, 248], [900, 1180], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const y = interpolate(frame, [200, 248], [420, 390], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <Stage>
+      <div style={{ width: "100%", maxWidth: 1100, alignSelf: "center" }}>
+        <p style={{ ...eyebrow, margin: 0, opacity: ease(frame, 0, 12) }}>CS 540 · Network Protocols</p>
+        <p
+          style={{
+            margin: "18px 0 0",
+            fontFamily: T.serif,
+            fontSize: 56,
+            color: T.fg,
+            opacity: ease(frame, 6, 18),
+          }}
+        >
+          Dr. Chen
+        </p>
+        <p
+          style={{
+            margin: "16px 0 0",
+            fontFamily: T.serif,
+            fontSize: 28,
+            color: T.body,
+            opacity: ease(frame, 20, 36),
+          }}
+        >
+          Eleven years. He wrote the textbook.
+        </p>
+        <div
+          style={{
+            marginTop: 40,
+            display: "inline-block",
+            padding: "12px 20px",
+            borderRadius: 10,
+            border: `1px solid ${T.line}`,
+            background: down ? "rgba(139,123,245,0.16)" : "rgba(255,255,255,0.04)",
+            fontSize: 18,
+            opacity: ease(frame, 70, 90),
+          }}
+        >
+          Join Zoom
+        </div>
+      </div>
+      {frame >= 200 ? <Cursor x={x} y={y} down={down} /> : null}
+    </Stage>
+  );
+}
+
+export function SceneMoment() {
+  const frame = useCurrentFrame();
+  const social = isSocial();
+  const onTabs = frame >= 360;
+  const x = interpolate(frame, [360, 470], [80, 1100], { extrapolateRight: "clamp" });
+  if (!onTabs) {
+    return (
+      <Stage>
+        <div style={{ width: "100%", maxWidth: 1400, alignSelf: "center" }}>
+          <p style={{ ...eyebrow, margin: "0 0 14px" }}>CS 540 · Lecture · Zoom · 40</p>
+          <div style={{ display: "grid", gridTemplateColumns: social ? "1fr" : "1.1fr 0.9fr", gap: 12 }}>
+            <PersonTile name="Dr. Chen" role="You" initials="C" tall />
+            <PersonTile name="Jessica" role="Student" initials="J" speak tall />
+          </div>
+          <p
+            style={{
+              margin: "22px 0 0",
+              fontFamily: T.serif,
+              fontSize: 26,
+              lineHeight: 1.4,
+              color: T.body,
+              opacity: ease(frame, 12, 28),
+            }}
+          >
+            “RFC 8312 mentions a two-way variant for constrained devices. Why don’t we cover that?”
+          </p>
+        </div>
+      </Stage>
+    );
+  }
+  const tabs = [
+    "lecture-04.pdf",
+    "textbook ch4",
+    "RFC 793",
+    "Wikipedia",
+    "syllabus",
+    "slides",
+    "Gmail",
+    "Canvas",
+    "notes",
+    "Drive",
+    "iot-protocols",
+    "Chat",
+    "curriculum",
+    "office hours",
+  ];
+  return (
+    <Stage>
+      <div style={{ width: "100%", maxWidth: 1680, alignSelf: "center", position: "relative" }}>
+        <div style={{ borderRadius: 16, border: `1px solid ${T.line}`, background: T.panelSolid, overflow: "hidden" }}>
+          <div style={{ display: "flex", overflow: "hidden", borderBottom: `1px solid ${T.hairline}` }}>
+            {tabs.map((tab, i) => {
+              const on = Math.floor((frame - 360) / 12) % tabs.length === i;
+              return (
+                <div
+                  key={tab}
+                  style={{
+                    flex: "0 0 auto",
+                    padding: "14px 16px",
+                    fontSize: 15,
+                    color: on ? T.fg : T.faint,
+                    borderRight: `1px solid ${T.hairline}`,
+                    background: on ? "rgba(255,255,255,0.04)" : "transparent",
+                  }}
+                >
+                  {tab}
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ height: 260, position: "relative" }}>
+            <p
+              style={{
+                position: "absolute",
+                left: 28,
+                top: 28,
+                fontFamily: T.serif,
+                fontSize: 28,
+                color: T.body,
+              }}
+            >
+              Forty students are watching him flip.
+            </p>
+            <Cursor x={x} y={160} down={frame % 20 < 4} />
+          </div>
+        </div>
+      </div>
+    </Stage>
+  );
+}
+
+export function SceneSave() {
+  const frame = useCurrentFrame();
+  const typed = typeChars(frame, 8, 2, RFC.query);
+  const done = typed.length >= RFC.query.length;
+  const clickAt = 70;
+  const cardAt = 88;
+  const pressed = frame >= clickAt && frame < clickAt + 8;
+  return (
+    <Stage>
+      <CockpitShell pack="cs-540-network-protocols" note={frame >= cardAt ? "Cited from the pack" : "This semester he has MeetHint"}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr)",
+            gap: 16,
+            minHeight: isSocial() ? 680 : 620,
+          }}
+        >
+          {isSocial() ? null : (
+            <Panel label="Repo" status="8 files" active={frame >= cardAt}>
+              <FileList shown={8} files={COURSE} active={frame >= cardAt ? "supplementary-reading/iot-protocols.pdf" : undefined} />
+              {frame >= cardAt ? <CodeView lines={RFC.lines} from={RFC.from} hi={RFC.hi} /> : null}
+            </Panel>
+          )}
+          <Panel label="Room" status="Search" active={frame < cardAt}>
+            <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+            <p style={{ margin: 0, fontFamily: T.serif, fontSize: 18, color: T.body }}>
+              RFC 8312 mentions a two-way variant. Why don’t we cover that?
+            </p>
+            <div style={{ marginTop: 16 }}>
+              <SearchBar typed={typed} query={RFC.query} pressed={pressed} />
+            </div>
+          </Panel>
+          <Panel label="Card" status={frame >= cardAt ? "Found · 41 ms" : "Idle"} active={frame >= cardAt}>
+            <ProductCard
+              searching={done && frame >= clickAt && frame < cardAt}
+              appear={frame >= cardAt}
+              say={RFC.say}
+              cite={RFC.cite}
+            />
+          </Panel>
+        </div>
+      </CockpitShell>
+      <Cursor
+        x={interpolate(frame, [done ? clickAt - 14 : 0, clickAt], [980, 760], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
+        y={interpolate(frame, [done ? clickAt - 14 : 0, clickAt], [420, 450], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
+        down={pressed}
+      />
+    </Stage>
+  );
+}
+
+export function SceneChenEmpty() {
+  const frame = useCurrentFrame();
+  const query = "will this be on the final";
+  const typed = typeChars(frame, 6, 2, query);
+  const cardAt = 70;
+  return (
+    <Stage>
+      <CockpitShell pack="cs-540-network-protocols" note={frame >= cardAt ? "Not in the pack" : "Mike asked about the final"}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
+            gap: 16,
+            minHeight: 620,
+          }}
+        >
+          <Panel label="Room" status="Search">
+            <p style={{ ...eyebrow, margin: "0 0 8px", fontSize: 12 }}>They said</p>
+            <p style={{ margin: 0, fontFamily: T.serif, fontSize: 22, color: T.body }}>
+              Dr. Chen, will this be on the final?
+            </p>
+            <div style={{ marginTop: 16 }}>
+              <SearchBar typed={typed} query={query} pressed={frame >= 58 && frame < 66} />
+            </div>
+          </Panel>
+          <Panel label="Card" status={frame >= cardAt ? "Silent" : "Idle"} active={frame >= cardAt}>
+            <ProductCard appear={frame >= cardAt} empty />
+          </Panel>
+        </div>
+      </CockpitShell>
+    </Stage>
+  );
+}
+
+const CHEN_AUDIT = [
+  { mark: "#5aa87a", claim: "RFC 8312 handshake", status: "Supported", cite: "iot-protocols.pdf:8" },
+  { mark: "#c4a35a", claim: "Final exam coverage", status: "Unverified", cite: "—" },
+  { mark: "#5aa87a", claim: "TCP three-way handshake", status: "Supported", cite: "lecture-04-tcp.pdf:12" },
+];
+
+export function SceneChenAudit() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const slide = spring({ frame: frame - 6, fps, config: { damping: 16, mass: 0.75 } });
+  return (
+    <Stage>
+      <CockpitShell pack="cs-540-network-protocols" note="After the lecture">
+        <div style={{ opacity: slide, transform: `translateX(${interpolate(slide, [0, 1], [40, 0])}px)` }}>
+          <Panel label="Claim monitor" status="3 claims">
+            {CHEN_AUDIT.map((row, i) => {
+              const enter = spring({ frame: frame - (18 + i * 18), fps, config: { damping: 14, mass: 0.55 } });
+              return (
+                <div
+                  key={row.claim}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "14px 1.2fr 0.7fr",
+                    gap: 12,
+                    alignItems: "center",
+                    padding: "14px 4px",
+                    borderBottom: `1px solid ${T.hairline}`,
+                    opacity: enter,
+                    transform: `translateY(${interpolate(enter, [0, 1], [14, 0])}px)`,
+                  }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: 99, background: row.mark }} />
+                  <div>
+                    <p style={{ margin: 0, fontFamily: T.serif, fontSize: 20, color: T.fg }}>{row.claim}</p>
+                    <p style={{ margin: "4px 0 0", fontSize: 14, color: T.muted }}>{row.cite}</p>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 15, color: T.body }}>{row.status}</p>
+                </div>
+              );
+            })}
+          </Panel>
+        </div>
+      </CockpitShell>
+    </Stage>
+  );
+}
+
+const BROADER = [
+  { pack: "faculty-meeting", file: "tenure-policy.pdf", note: "Faculty meeting", say: "Review is in year six. The file is the policy." },
+  { pack: "office-hours", file: "student-record.pdf", note: "Office hours", say: "She already has the prerequisite. Page 2." },
+  { pack: "curriculum-committee", file: "university-guidelines.pdf", note: "Committee", say: "The guideline is two hours of credit per lab." },
+];
+
+export function SceneBroader() {
+  const frame = useCurrentFrame();
+  const beat = Math.min(2, Math.floor(frame / 90));
+  const item = BROADER[beat];
+  return (
+    <Stage>
+      <CockpitShell pack={item.pack} note={item.note}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.2fr)",
+            gap: 16,
+            minHeight: 560,
+          }}
+        >
+          <Panel label="Repo" status="Local" active>
+            <FileList shown={4} files={[item.file, "notes.md", "agenda.pdf", "minutes.md"]} active={item.file} />
+          </Panel>
+          <Panel label="Card" status="Found" active>
+            <ProductCard appear say={item.say} cite={`${item.file}:1`} />
+          </Panel>
+        </div>
+      </CockpitShell>
     </Stage>
   );
 }
@@ -622,15 +1339,7 @@ export function Caption({ text }: { text: string }) {
   const { width } = useVideoConfig();
   if (!text) return null;
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: 40,
-        right: 40,
-        bottom: 48,
-        textAlign: "center",
-      }}
-    >
+    <div style={{ position: "absolute", left: 40, right: 40, bottom: 48, textAlign: "center" }}>
       <p
         style={{
           margin: 0,
