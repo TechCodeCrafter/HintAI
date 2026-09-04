@@ -18,7 +18,7 @@ const CAST = {
   narrator: {
     voice: "ash",
     style:
-      "You are a sharp SaaS account exec who has sat in the back of a lecture. Talk like a person, not an ad. A little smile. Name the fear, then sell. Brisk. Cut off on the last word — no trailing silence. Not a radio announcer. Not a documentary. Read the words only.",
+      "You are a sharp sitcom narrator with a smirk. Adult cartoon energy, not a documentary. Name the fear, then sell. Brisk. Cut off on the last word — no trailing silence. Not Seth MacFarlane. Not a radio announcer. Read the words only.",
   },
   chen: {
     voice: "verse",

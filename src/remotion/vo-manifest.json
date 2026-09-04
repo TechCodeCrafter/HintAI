@@ -5,110 +5,68 @@
     {
       "file": "vo/01.wav",
       "at": 0.25,
-      "seconds": 7.7,
-      "text": "Dr. Chen has taught Network Protocols for eleven years. He wrote the textbook. He knows this stuff cold."
+      "seconds": 4.88,
+      "text": "This is Dr. Chen. He wrote the textbook. He knows this stuff cold."
     },
     {
       "file": "vo/02.wav",
-      "at": 8,
-      "seconds": 2.63,
-      "text": "But every semester, there's that one student."
+      "at": 5.2,
+      "seconds": 2.72,
+      "text": "Then every semester — that one student."
     },
     {
       "file": "vo/03.wav",
-      "at": 10.7,
-      "seconds": 6.12,
-      "text": "Dr. Chen, in Week 4 you said TCP uses three-way handshake. But RFC 8312 mentions a two-way variant for constrained devices. Why don't we cover that?"
+      "at": 8,
+      "seconds": 4.73,
+      "text": "Dr. Chen, RFC 8312 has a two-way handshake. Why don't we cover that?"
     },
     {
       "file": "vo/04.wav",
-      "at": 16.9,
-      "seconds": 6.67,
-      "text": "He has no idea. It's not in the lecture notes. It's not in the curriculum. It's not even in his textbook."
+      "at": 12.8,
+      "seconds": 3.33,
+      "text": "He had no idea. Forty students. Fourteen tabs."
     },
     {
       "file": "vo/05.wav",
-      "at": 24.9,
-      "seconds": 1.82,
-      "text": "And forty students are watching him flip."
-    },
-    {
-      "file": "vo/06.wav",
-      "at": 26.8,
-      "seconds": 2.62,
+      "at": 16.2,
+      "seconds": 2.73,
       "text": "But this semester, Chen has MeetHint."
     },
     {
+      "file": "vo/06.wav",
+      "at": 19,
+      "seconds": 4.33,
+      "text": "Great question, Jessica. Page 8. Supplementary reading."
+    },
+    {
       "file": "vo/07.wav",
-      "at": 29.5,
-      "seconds": 7.12,
-      "text": "Great question, Jessica. RFC 8312 defines a two-way handshake for constrained IoT devices."
-    },
-    {
-      "file": "vo/08.wav",
-      "at": 36.7,
-      "seconds": 7.12,
-      "text": "It's outside our standard curriculum, but if you're interested, I have supplementary reading — page 8."
-    },
-    {
-      "file": "vo/09.wav",
-      "at": 43.9,
-      "seconds": 2.02,
+      "at": 23.4,
+      "seconds": 1.92,
       "text": "Dr. Chen, will this be on the final?"
     },
     {
+      "file": "vo/08.wav",
+      "at": 25.4,
+      "seconds": 2.96,
+      "text": "That's not in the pack. I'll email the class."
+    },
+    {
+      "file": "vo/09.wav",
+      "at": 28.8,
+      "seconds": 5.73,
+      "text": "You know what I can't stand? Guessing. If it's not in the file, the card stays empty."
+    },
+    {
       "file": "vo/10.wav",
-      "at": 46,
-      "seconds": 5.2,
-      "text": "That's not in our current material. I'll confirm and email the class by Friday."
+      "at": 34.6,
+      "seconds": 3.93,
+      "text": "Cite or silence. The meeting just became searchable."
     },
     {
       "file": "vo/11.wav",
-      "at": 51.3,
-      "seconds": 8.12,
-      "text": "If it's not in his files, MeetHint stays empty. No guessing. No BS. Cite or silence."
-    },
-    {
-      "file": "vo/12.wav",
-      "at": 60.1,
-      "seconds": 5.23,
-      "text": "When the lecture ends, he doesn't have a transcript. He has an audit."
-    },
-    {
-      "file": "vo/13.wav",
-      "at": 66.8,
-      "seconds": 6.62,
-      "text": "Every claim checked. Every gap flagged. Every student question he couldn't answer — tracked for next semester."
-    },
-    {
-      "file": "vo/14.wav",
-      "at": 73.5,
-      "seconds": 8.63,
-      "text": "Whatever you get asked about — lectures, contracts, code, curriculum — MeetHint lives in your browser. Nothing uploads. Nothing leaks."
-    },
-    {
-      "file": "vo/15.wav",
-      "at": 82.2,
-      "seconds": 6.13,
-      "text": "It just finds the exact line, so you say what the file says, not what you hope is true."
-    },
-    {
-      "file": "vo/16.wav",
-      "at": 88.4,
-      "seconds": 7.72,
-      "text": "Stop flipping. Stop guessing. Stop hoping nobody asks the one thing you can't find."
-    },
-    {
-      "file": "vo/17.wav",
-      "at": 97.5,
-      "seconds": 5.37,
-      "text": "Your files are the source of truth. The meeting just became searchable."
-    },
-    {
-      "file": "vo/18.wav",
-      "at": 103.5,
-      "seconds": 4.16,
-      "text": "MeetHint AI. Cite or silence."
+      "at": 38.6,
+      "seconds": 4.31,
+      "text": "MeetHint AI. Free during beta."
     }
   ]
 }

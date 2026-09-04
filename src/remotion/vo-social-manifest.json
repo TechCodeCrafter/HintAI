@@ -5,25 +5,25 @@
     {
       "file": "vo/s01.wav",
       "at": 0.2,
-      "seconds": 4.52,
-      "text": "Forty students are watching. Then someone asks the thing that isn't in the lecture."
+      "seconds": 4.33,
+      "text": "Forty students. Then someone asks the thing that isn't in the lecture."
     },
     {
       "file": "vo/s02.wav",
-      "at": 4.8,
-      "seconds": 3.71,
+      "at": 4.6,
+      "seconds": 3.73,
       "text": "MeetHint pulls the line from his files. Nothing uploaded."
     },
     {
       "file": "vo/s03.wav",
-      "at": 8.6,
-      "seconds": 3.33,
+      "at": 8.4,
+      "seconds": 3.14,
       "text": "If it's not in the pack, the card stays empty."
     },
     {
       "file": "vo/s04.wav",
       "at": 12,
-      "seconds": 1.91,
+      "seconds": 1.63,
       "text": "Cite or silence."
     }
   ]
