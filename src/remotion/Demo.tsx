@@ -1,20 +1,11 @@
 import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
+import { SceneCutAsk, SceneCutEnd, SceneCutIntro, SceneCutMike, SceneCutRant, SceneCutTabs } from "./cutaway-shots";
+import { Fade, SceneChenEmpty, SceneSave } from "./shots";
 import { FPS, T } from "./theme";
 import voManifest from "./vo-manifest.json";
-import {
-  Fade,
-  SceneBroader,
-  SceneChenAudit,
-  SceneChenEmpty,
-  SceneClose,
-  SceneEnd,
-  SceneFear,
-  SceneMoment,
-  SceneSave,
-} from "./shots";
 
 /**
- * The Question — Dr. Chen. Voice and UI clicks only.
+ * Cutaway cut — sitcom wrapper, real cockpit in the middle. Voice and clicks only.
  */
 
 export type DemoProps = { narration: string | null };
@@ -23,30 +14,30 @@ type VoClip = { file: string; at: number; seconds: number };
 const VO_CLIPS = voManifest.clips as VoClip[];
 
 const SCENES = [
-  { kind: "fear" as const, duration: 321 },
-  { kind: "moment" as const, duration: 483 },
-  { kind: "save" as const, duration: 516 },
-  { kind: "empty" as const, duration: 489 },
-  { kind: "audit" as const, duration: 402 },
-  { kind: "broader" as const, duration: 435 },
-  { kind: "close" as const, duration: 279 },
-  { kind: "end" as const, duration: 330 },
+  { kind: "intro" as const, duration: 156 },
+  { kind: "ask" as const, duration: 228 },
+  { kind: "tabs" as const, duration: 102 },
+  { kind: "save" as const, duration: 216 },
+  { kind: "mike" as const, duration: 60 },
+  { kind: "empty" as const, duration: 102 },
+  { kind: "rant" as const, duration: 294 },
+  { kind: "end" as const, duration: 162 },
 ];
 
 export const DEMO_DURATION = SCENES.reduce((total, scene) => total + scene.duration, 0);
 
 const SCENE_VIEW = {
-  fear: SceneFear,
-  moment: SceneMoment,
+  intro: SceneCutIntro,
+  ask: SceneCutAsk,
+  tabs: SceneCutTabs,
   save: SceneSave,
+  mike: SceneCutMike,
   empty: SceneChenEmpty,
-  audit: SceneChenAudit,
-  broader: SceneBroader,
-  close: SceneClose,
-  end: SceneEnd,
+  rant: SceneCutRant,
+  end: SceneCutEnd,
 };
 
-const CLICKS = [8.3, 22.8, 29.2, 46.0];
+const CLICKS = [12.9, 18.5, 27.3];
 
 export function Demo({ narration }: DemoProps) {
   let at = 0;
