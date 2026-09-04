@@ -138,7 +138,8 @@ export type Card = {
   evidence?: Evidence[];
   query: string;
   latencyMs: number;
-  source: "grok" | "local" | "polished" | "assisted";
+  /** Extract is "local". Synthesize stores the model name, or "synthesize". */
+  source: "grok" | "local" | "polished" | "assisted" | "synthesize" | string;
   /** Live search is extract-only. */
   answerMode?: "docs";
   /** Unused on the live path. Search does not generate `say`. */

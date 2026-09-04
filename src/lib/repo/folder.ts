@@ -47,9 +47,9 @@ const ALLOW_EXT = new Set([
   "hpp",
 ]);
 
-const MAX_FILES = 160;
-const MAX_FILE_BYTES = 80_000;
-const MAX_TOTAL_BYTES = 2_000_000;
+const MAX_FILES = 500;
+const MAX_FILE_BYTES = 150_000;
+const MAX_TOTAL_BYTES = 8_000_000;
 
 export type FolderLoad = {
   pack: RepoPack;

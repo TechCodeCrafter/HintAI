@@ -1260,7 +1260,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             citations: generated.citations,
             query,
             latencyMs: generated.latencyMs,
-            source: "grok",
+            source: generated.modelName ?? "synthesize",
             answerMode: "docs",
             modelName: generated.modelName,
           }
