@@ -19,7 +19,7 @@ import { buildChunks, retrieve } from "../retrieve.ts";
 const root = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
 const chunks = buildChunks(NORTHSTAR);
 
-test("search() never generates — retrieve, then localCard, then admit", () => {
+test("search() extract generates with Mini and a daily cap; Synthesize stays Pro", () => {
   const store = readFileSync(join(root, "src/lib/store.ts"), "utf8");
   const synthesis = readFileSync(join(root, "src/lib/search/generate-answer.ts"), "utf8");
   assert.doesNotMatch(synthesis, /answer from general knowledge/i);
@@ -29,15 +29,18 @@ test("search() never generates — retrieve, then localCard, then admit", () => 
   assert.doesNotMatch(store, /speakAnswer/);
   assert.doesNotMatch(store, /craftCard/);
   assert.match(store, /retrieveHits/);
-  assert.match(store, /localCard\(/);
+  assert.match(store, /generateAnswer\(/);
+  assert.match(store, /EXTRACT_MODEL_ID/);
+  assert.match(store, /EXTRACT_MAX_TOKENS/);
+  assert.match(store, /SYNTHESIZE_MAX_TOKENS/);
+  assert.match(store, /consumeExtractQuestion/);
   assert.match(store, /mode === "synthesize" && state.subscription === "free"/);
   assert.match(store, /Synthesize mode requires Pro/);
   const modal = readFileSync(join(root, "src/components/UpgradeModal.tsx"), "utf8");
   assert.match(modal, /Claim Audit requires Pro/);
+  assert.match(modal, /20 Extract questions/);
   const searchFn = store.slice(store.indexOf("search: async"));
-  const extract = searchFn.slice(searchFn.indexOf("const documents = await documentsForHits"));
-  assert.match(extract, /localCard\(/);
-  assert.doesNotMatch(extract.slice(0, 800), /generateAnswer\s*\(/);
+  assert.match(searchFn, /localCard\(/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 });
 

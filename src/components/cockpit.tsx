@@ -11,7 +11,6 @@ import {
   FileText,
   FolderGit2,
   FolderOpen,
-  GitCommitHorizontal,
   Mic,
   MoreHorizontal,
   Plus,
@@ -21,9 +20,11 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
+import { AnswerSay } from "@/components/answer-say";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
 import { ModeSelector } from "@/components/ModeSelector";
+import { ModelPicker } from "@/components/ModelPicker";
 import { UpgradeModal } from "@/components/UpgradeModal";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,8 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const autoAnswer = useMeetHint((s) => s.autoAnswer);
   const setAutoAnswer = useMeetHint((s) => s.setAutoAnswer);
   const loadFolder = useMeetHint((s) => s.loadFolder);
+  const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
+  const activeContextId = useMeetHint((s) => s.activeContextId);
   const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const contextError = useMeetHint((s) => s.contextError);
@@ -74,13 +77,18 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
   const composeMode = useMeetHint((s) => s.composeMode);
   const subscription = useMeetHint((s) => s.subscription);
+  const selectedModelId = useMeetHint((s) => s.selectedModelId);
   const setComposeMode = useMeetHint((s) => s.setComposeMode);
+  const setSelectedModelId = useMeetHint((s) => s.setSelectedModelId);
+  const requestUpgrade = useMeetHint((s) => s.requestUpgrade);
+  const clearUpgrade = useMeetHint((s) => s.clearUpgrade);
+  const upgradeFeature = useMeetHint((s) => s.upgradeFeature);
   const folderRef = useRef<HTMLInputElement>(null);
+  const filesRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
   const [citeReveal, setCiteReveal] = useState(0);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
-  const [upgradeFeature, setUpgradeFeature] = useState<string | null>(null);
   const live = (armed && !playing && !listenError) || sharingCall;
   const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
   const demo = pack.id === "northstar-payments";
@@ -97,10 +105,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
       : contextUpdating
         ? "Updating…"
         : null;
-  const statusNote =
-    contextError ??
-    ingestNote ??
-    (folderError && !listenError ? folderError : "The pack is the brief");
+  const statusNote = contextError ?? ingestNote ?? (folderError && !listenError ? folderError : null);
 
   useLiveListen();
 
@@ -193,18 +198,20 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
       data-context-status={contextStatus}
       data-context-updating={contextUpdating ? "true" : undefined}
     >
-      <header className="shrink-0 border-b border-line px-4 py-3 md:px-8">
+      <header className="shrink-0 border-b border-hairline bg-bg px-5 md:px-8">
         <div className="cockpit-header">
           <div className="cockpit-brand">
-            <MeetHintMark className="cockpit-mark size-7" />
-            <span className="brand-word text-fg">MeetHint</span>
+            <MeetHintMark className="cockpit-mark" />
+            <span className="brand-word">Hint</span>
             <StatusDot on={live} down={false} label={statusLabel} live={live} />
-            <span
-              className="cockpit-note hidden min-w-0 truncate font-serif text-base italic text-body xl:inline"
-              data-ingest-progress={ingestNote ?? undefined}
-            >
-              {statusNote}
-            </span>
+            {statusNote ? (
+              <span
+                className="cockpit-note hidden min-w-0 truncate text-[13px] text-body xl:inline"
+                data-ingest-progress={ingestNote ?? undefined}
+              >
+                {statusNote}
+              </span>
+            ) : null}
             <Button
               size="sm"
               disabled={!searchReady}
@@ -217,10 +224,10 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           </div>
           <div className="cockpit-cluster" role="group" aria-label="Session">
             <Button
-              variant={live ? "primary" : "ghost"}
+              variant="primary"
               size="sm"
               aria-label={listenLabel}
-              title="Hear you and the computer. The Card is what you say."
+              title="Hear you and the computer. The answer is what you say."
               disabled={!searchReady}
               onClick={() => {
                 if (live) {
@@ -235,25 +242,25 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               <span className="hidden lg:inline">{listenLabel}</span>
             </Button>
             <Button
-              variant="ghost"
+              variant="quiet"
               size="sm"
               aria-pressed={autoAnswer}
               aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
-              title="When they ask about this repo, the Card fills"
+              title="When they ask about this folder, the answer fills"
               disabled={!searchReady}
-              className={autoAnswer ? "border-accent bg-accent-soft text-fg" : undefined}
+              className={autoAnswer ? "border-transparent bg-accent-soft text-fg" : undefined}
               onClick={() => setAutoAnswer(!autoAnswer)}
             >
               <span
                 className={cn("size-1.5 rounded-full", autoAnswer ? "bg-accent" : "bg-gutter")}
                 aria-hidden="true"
               />
-              <span className="hidden lg:inline">{autoAnswer ? "Auto answer" : "Manual"}</span>
+              <span className="hidden lg:inline">Auto answer</span>
             </Button>
           </div>
           <div className="cockpit-pack">
             <ContextSwitcher folderRef={folderRef} />
-            <AddMaterial folderRef={folderRef} pdfRef={pdfRef} />
+            <AddMaterial folderRef={folderRef} filesRef={filesRef} pdfRef={pdfRef} />
             <div className="cockpit-utils">
               <UtilityLinks
                 overlay={overlay}
@@ -287,6 +294,24 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               e.target.value = "";
             }}
             {...{ webkitdirectory: "", directory: "" }}
+          />
+          <input
+            ref={filesRef}
+            type="file"
+            multiple
+            accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
+            className="sr-only"
+            aria-hidden="true"
+            tabIndex={-1}
+            data-files-input="true"
+            suppressHydrationWarning
+            onChange={(e) => {
+              const files = e.target.files;
+              if (!files || files.length === 0) return;
+              if (activeContextId) void attachFolderToContext(activeContextId, files);
+              else void loadFolder(files);
+              e.target.value = "";
+            }}
           />
           <input
             ref={pdfRef}
@@ -325,22 +350,29 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
 
       <nav
         className={cn(
-          "grid w-full shrink-0 grid-cols-3 gap-1 border-b border-line bg-bg px-3 py-1.5 md:hidden",
+          "grid w-full shrink-0 grid-cols-3 gap-1 border-b border-hairline bg-nav px-3 py-1.5 lg:hidden",
           overlay && "grid-cols-2",
         )}
         aria-label="Cockpit panes"
       >
-        {overlay ? null : (
-          <PaneTab active={mobilePane === "repo"} onClick={() => setMobilePane("repo")} label="Repo" />
-        )}
         <PaneTab active={mobilePane === "room"} onClick={() => setMobilePane("room")} label="Room" />
-        <PaneTab active={mobilePane === "card"} onClick={() => setMobilePane("card")} label="Card" mark={Boolean(card?.say)} />
+        <PaneTab active={mobilePane === "card"} onClick={() => setMobilePane("card")} label="Answer" mark={Boolean(card?.say)} />
+        {overlay ? null : (
+          <PaneTab active={mobilePane === "repo"} onClick={() => setMobilePane("repo")} label="Files" />
+        )}
       </nav>
 
       <main
+        className="cockpit-workspace"
+        data-mode={overlay ? "overlay" : "cockpit"}
+        data-audit={currentMeeting ? "on" : undefined}
+        data-files={mobilePane === "repo" ? "open" : undefined}
+      >
+      <div
         className="cockpit-grid"
         data-mode={overlay ? "overlay" : "cockpit"}
         data-audit={currentMeeting ? "on" : undefined}
+        data-files={mobilePane === "repo" ? "open" : undefined}
       >
         {currentMeeting ? (
           <div className="cockpit-pane claim-monitor-pane max-md:hidden" data-pane="audit">
@@ -364,12 +396,20 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
           <TranscriptPane
             active={live && !card?.query}
             modeSelector={
-              <ModeSelector
-                mode={composeMode}
-                subscription={subscription}
-                onChangeMode={setComposeMode}
-                onUpgradePrompt={setUpgradeFeature}
-              />
+              <div className="space-y-2">
+                <ModeSelector
+                  mode={composeMode}
+                  subscription={subscription}
+                  onChangeMode={setComposeMode}
+                  onUpgradePrompt={requestUpgrade}
+                />
+                <ModelPicker
+                  mode={composeMode}
+                  subscription={subscription}
+                  value={selectedModelId}
+                  onChange={setSelectedModelId}
+                />
+              </div>
             }
           />
         </div>
@@ -385,11 +425,12 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
             active={Boolean(card?.query)}
           />
         </div>
+      </div>
       </main>
       <UpgradeModal
         open={upgradeFeature !== null}
         feature={upgradeFeature}
-        onClose={() => setUpgradeFeature(null)}
+        onClose={clearUpgrade}
       />
     </div>
   );
@@ -397,9 +438,11 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
 
 function AddMaterial({
   folderRef,
+  filesRef,
   pdfRef,
 }: {
   folderRef: RefObject<HTMLInputElement | null>;
+  filesRef: RefObject<HTMLInputElement | null>;
   pdfRef: RefObject<HTMLInputElement | null>;
 }) {
   const [open, setOpen] = useState(false);
@@ -424,7 +467,7 @@ function AddMaterial({
   return (
     <div ref={rootRef} className="relative">
       <Button
-        variant="ghost"
+        variant="quiet"
         size="sm"
         aria-label="Add material"
         aria-haspopup="menu"
@@ -449,6 +492,19 @@ function AddMaterial({
           >
             <FolderOpen className="size-3.5 shrink-0" />
             Open folder
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option"
+            data-add-files="true"
+            onClick={() => {
+              setOpen(false);
+              filesRef.current?.click();
+            }}
+          >
+            <FileCode2 className="size-3.5 shrink-0" />
+            Upload files
           </button>
           <button
             type="button"
@@ -509,7 +565,7 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
   return (
     <div ref={rootRef} className="relative">
       <Button
-        variant="ghost"
+        variant="quiet"
         size="sm"
         aria-label={label}
         aria-haspopup="listbox"
@@ -815,11 +871,24 @@ function StatusDot({
 }
 
 function ProofLine() {
+  const subscription = useMeetHint((s) => s.subscription);
+  const remaining = useMeetHint((s) => s.extractRemaining);
+  const free = subscription === "free";
   return (
-    <p className="font-serif text-sm italic text-body">
-      Every line comes from a file you brought.
+    <p className="quota-line" data-testid="extract-quota">
+      {free
+        ? remaining > 0
+          ? `${remaining} questions remaining · GPT-4o Mini`
+          : "Today's 20 questions are used. Upgrade for unlimited."
+        : "Cited when possible, generated when needed."}
     </p>
   );
+}
+
+function splitPath(path: string) {
+  const slash = path.lastIndexOf("/");
+  if (slash < 0) return { name: path, dir: "" };
+  return { name: path.slice(slash + 1), dir: path.slice(0, slash) };
 }
 
 function RepoPane({ reveal = 0 }: { reveal?: number }) {
@@ -886,7 +955,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   if (!file && !openDocument && pdfs.length === 0) {
     return (
       <section className="ground-panel p-5">
-        <p className="font-serif text-lg italic text-body">Open a local folder to cite your repo.</p>
+        <p className="text-[15px] leading-relaxed text-body">Open a local folder to search your files.</p>
       </section>
     );
   }
@@ -895,7 +964,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
     <section className="ground-panel">
       <div className="ground-head">
         <span className="ground-head-left">
-          <FolderGit2 className="size-3.5 shrink-0 text-faint" />
+          <FolderGit2 className="size-3.5 shrink-0 text-muted" />
           <span className="truncate">{pack.name}</span>
         </span>
         <span className="ground-status tabular-nums">
@@ -905,22 +974,27 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
       {weak ? (
         <p className="px-3 pb-2 text-xs text-warn">Mostly CI/config. Open the src folder, then Search.</p>
       ) : null}
-      <div className="grid min-h-0 min-w-0 flex-1 grid-rows-[minmax(16rem,0.55fr)_minmax(0,1fr)] gap-2 overflow-hidden">
+      <div className="grid min-h-0 min-w-0 flex-1 grid-rows-[minmax(16rem,0.55fr)_minmax(0,1fr)] gap-4 overflow-hidden px-4 pb-4">
         <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
-          <input
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="Filter files"
-            className="ground-input mx-2 mb-1 h-9 shrink-0 rounded-sm px-2.5 text-xs placeholder:text-faint"
-          />
+          <label className="relative mb-3 block shrink-0">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
+            <input
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="Search files..."
+              className="ground-input h-10 rounded-[10px] pl-9 pr-3 text-[13px] placeholder:text-muted"
+            />
+          </label>
           <ul
             ref={listRef}
-            className="file-list min-h-0 min-w-0 flex-1 space-y-0.5 overflow-auto px-1 pt-1.5 pb-2"
+            className="file-list min-h-0 min-w-0 flex-1 space-y-1 overflow-auto"
           >
             {visible.length === 0 && visiblePdfs.length === 0 ? (
               <li className="px-2 py-3 text-xs text-muted">No files match that filter.</li>
             ) : null}
-            {visible.map((f) => (
+            {visible.map((f) => {
+              const parts = splitPath(f.path);
+              return (
               <li key={f.path} className="min-w-0">
                 <button
                   type="button"
@@ -928,16 +1002,21 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                   data-source-path={f.path}
                   data-active={!openDocument && file && f.path === file.path ? "true" : undefined}
                   onClick={() => setOpenFile(f.path)}
-                  className="file-row flex h-9 w-full min-w-0 items-center gap-2 px-2 text-left text-xs text-muted hover:text-fg"
+                  className="file-row flex w-full min-w-0 items-center gap-2 px-2.5 text-left"
                 >
-                  <FileCode2 className="size-3.5 shrink-0" />
-                  <span className="truncate font-mono">{f.path}</span>
+                  <FileCode2 className="size-3.5 shrink-0 text-muted" />
+                  <span className="min-w-0 flex-1">
+                    <span className="file-name block truncate text-[13px]">{parts.name}</span>
+                    {parts.dir ? <span className="file-path block truncate">{parts.dir}</span> : null}
+                  </span>
                 </button>
               </li>
-            ))}
+              );
+            })}
             {visiblePdfs.map((source) => {
               const status = pdfSourceStatus(source);
               const active = openDocument?.sourceId === source.id;
+              const parts = splitPath(source.path);
               return (
                 <li key={source.id} className="min-w-0">
                   <button
@@ -948,17 +1027,21 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                     data-active={active ? "true" : undefined}
                     title={status.detail}
                     onClick={() => openPdfSource(source.id)}
-                    className="file-row flex min-h-9 w-full min-w-0 items-center gap-2 px-2 py-1 text-left text-xs text-muted hover:text-fg"
+                    className="file-row flex w-full min-w-0 items-center gap-2 px-2.5 text-left"
                   >
-                    <FileText className="size-3.5 shrink-0" />
+                    <FileText className="size-3.5 shrink-0 text-muted" />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-mono">{source.path}</span>
+                      <span className="file-name block truncate text-[13px]">{parts.name}</span>
                       {status.short !== "Ready" || source.lastFailedNote ? (
-                        <span className="block truncate text-[11px] text-faint" data-source-label>
+                        <span className="file-path block truncate" data-source-label>
                           {source.lastFailedNote && source.readiness === "ready" ? "Update failed" : status.short}
                         </span>
+                      ) : parts.dir ? (
+                        <span className="file-path block truncate font-mono" data-source-label>
+                          {parts.dir}
+                        </span>
                       ) : (
-                        <span className="block truncate text-[11px] text-faint" data-source-label>
+                        <span className="file-path block truncate" data-source-label>
                           Ready
                         </span>
                       )}
@@ -969,7 +1052,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
             })}
           </ul>
         </div>
-        <div className="ground-code mx-2 mb-2 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" data-testid="file-viewer">
+        <div className="ground-code flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" data-testid="file-viewer">
           {openDocument ? (
             <PdfPane />
           ) : file ? (
@@ -1075,11 +1158,12 @@ function TurnBubble({
   );
 }
 
-function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelector: ReactNode }) {
+function TranscriptPane({ modeSelector }: { active: boolean; modeSelector: ReactNode }) {
   const utterances = useMeetHint((s) => s.utterances);
   const typedQuery = useMeetHint((s) => s.typedQuery);
   const setTypedQuery = useMeetHint((s) => s.setTypedQuery);
   const search = useMeetHint((s) => s.search);
+  const searching = useMeetHint((s) => s.searching);
   const searchReady = useMeetHint((s) => s.contextStatus === "ready");
   const playing = useMeetHint((s) => s.playing);
   const armed = useMeetHint((s) => s.armed);
@@ -1161,22 +1245,21 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
   }
 
   return (
-    <section className={cn("ground-panel", active && "panel-active")} data-fit="content">
+    <section className="ground-panel" data-fit="content">
       <div className="ground-head">
         <span className="ground-head-left">
-          <ChevronDown className="size-3.5 shrink-0 text-faint" />
           <span>Room</span>
         </span>
         <span className="ground-status">
-          {playing ? "Playing design review" : live ? "Transcript" : "Idle"}
+          {playing ? "Playing design review" : live ? "Listening" : "Idle"}
         </span>
       </div>
-      <div className="flex min-h-0 min-w-0 flex-col gap-3 overflow-auto p-4">
+      <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto px-5 py-4">
         {listenHint ? (
           <div
             role="status"
             data-testid="listen-hint"
-            className="flex items-start justify-between gap-3 rounded-md border border-line bg-accent-soft px-3 py-2 text-sm text-fg"
+            className="flex items-start justify-between gap-3 rounded-[10px] bg-accent-soft px-3 py-2 text-sm text-fg"
           >
             <p>{listenHint}</p>
             <button
@@ -1188,7 +1271,7 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
             </button>
           </div>
         ) : null}
-        <div className="flex min-h-0 min-w-0 flex-col rounded-md border border-line bg-input px-3 py-3">
+        <div className="flex min-h-0 min-w-0 flex-col">
           <div className="max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
             {turns.length > 0 ? (
               turns.map((turn) => (
@@ -1200,14 +1283,20 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
                   draft={turn.id.startsWith("draft-")}
                 />
               ))
+            ) : asrStatus === "loading" ? (
+              <p className="text-[15px] leading-relaxed text-body">Loading captions…</p>
+            ) : live ? (
+              <p className="text-[15px] leading-relaxed text-body">Hearing you. The next line lands here.</p>
             ) : (
-              <p className="font-serif text-lg italic leading-snug text-body">
-                {asrStatus === "loading"
-                  ? "Loading captions…"
-                  : live
-                    ? "Hearing you. The next line lands here."
-                    : "Press Listen, then share the call tab with audio. The transcript lands here."}
-              </p>
+              <div className="empty-listen">
+                <Mic className="size-4 text-muted" aria-hidden="true" />
+                <p className="text-[15px] font-medium text-fg">Start listening</p>
+                <p className="text-[13px] leading-relaxed text-muted">
+                  Share the call or meeting tab with audio.
+                  <br />
+                  Hint will pick up questions as they are asked.
+                </p>
+              </div>
             )}
             <div ref={endRef} />
           </div>
@@ -1219,7 +1308,7 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
         </div>
         {modeSelector}
         <form
-          className="flex min-w-0 flex-col gap-2"
+          className="flex min-w-0 flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
             void search();
@@ -1238,15 +1327,15 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
               }
             }}
             rows={2}
-            placeholder={demo ? "why does that retry three times?" : "Type what they asked if words do not appear"}
+            placeholder={demo ? "Why does that retry three times?" : "What is the architecture of this application?"}
             className="ground-input ground-question"
           />
-          <div className="flex min-w-0 flex-wrap gap-2">
-            <Button type="submit" size="sm" className="min-w-28 flex-1" disabled={!searchReady}>
-              <Search className="size-3.5" />
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <Button type="submit" size="sm" className="min-w-24" disabled={!searchReady}>
+              {searching ? <span className="search-spin" aria-hidden="true" /> : <Search className="size-3.5" />}
               Search
             </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={() => void pasteQuery()}>
+            <Button type="button" variant="outline" size="sm" onClick={() => void pasteQuery()}>
               <ClipboardPaste className="size-3.5" />
               Paste question
             </Button>
@@ -1259,14 +1348,13 @@ function TranscriptPane({ active, modeSelector }: { active: boolean; modeSelecto
 
 function cardMeta(card: { latencyMs: number } | null) {
   if (!card || card.latencyMs <= 0) return null;
-  return `Found in ${card.latencyMs} ms`;
+  return `Found in ${(card.latencyMs / 1000).toFixed(2)}s`;
 }
 
 function CardPane({
   compact,
   onOpenCited,
   overlay,
-  active,
 }: {
   compact: boolean;
   onOpenCited: (cite: Citation) => void;
@@ -1276,6 +1364,7 @@ function CardPane({
   const card = useMeetHint((s) => s.card);
   const pack = useMeetHint((s) => s.pack);
   const search = useMeetHint((s) => s.search);
+  const searching = useMeetHint((s) => s.searching);
   const searchReady = useMeetHint((s) => s.contextStatus === "ready");
   const heardQuestion = useMeetHint((s) => s.heardQuestion);
   const theySaid = card?.query || heardQuestion;
@@ -1304,30 +1393,39 @@ function CardPane({
 
   const citations =
     card && card.citations.length > 0 ? (
-      <ul className="space-y-2">
+      <ul className="answer-receipt-cites">
         {card.citations.map((c) => {
           const opensFile = Boolean(citedPath(c));
           const opensPdf = isDocumentCitation(c) && !overlay;
           const opens = opensFile || opensPdf;
+          const range = citedLineRange(c);
+          const lines =
+            range == null
+              ? null
+              : range.startLine === range.endLine
+                ? `line ${range.startLine}`
+                : `lines ${range.startLine}–${range.endLine}`;
+          const path = isFileCitation(c) || isDocumentCitation(c) ? c.path : citationText(c);
+          const extra =
+            isDocumentCitation(c) && !lines
+              ? `Page ${c.page}`
+              : c.kind === "commit"
+                ? null
+                : lines;
           return (
-            <li key={c.evidenceId ?? citationText(c)} className="min-w-0" data-testid="card-citation">
+            <li key={c.evidenceId ?? citationText(c)} className="min-w-0 cite-fade" data-testid="card-citation">
               <button
                 type="button"
                 onClick={opens ? () => onOpenCited(c) : undefined}
                 disabled={!opens}
-                className="flex min-h-11 w-full min-w-0 items-start gap-2 rounded-md border border-line bg-input px-3 py-2 text-left text-xs enabled:hover:border-accent disabled:cursor-default"
+                className="cite-chip"
               >
-                {isDocumentCitation(c) ? (
-                  <FileText className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                ) : (
-                  <GitCommitHorizontal className="mt-0.5 size-3.5 shrink-0 text-muted" />
-                )}
-                <span className="min-w-0">
-                  <span className="block break-all font-mono text-fg">{citationText(c)}</span>
-                  {c.label ? (
-                    <span className="mt-0.5 block break-words text-muted">{c.label}</span>
-                  ) : null}
-                </span>
+                <Check className="size-3.5 shrink-0 text-ok" aria-hidden="true" />
+                <span className="cite-status">Verified</span>
+                <span className="break-all font-mono text-[12px] text-fg">{path}</span>
+                {extra ? <span className="font-mono text-[12px] text-fg">{extra}</span> : null}
+                {c.label ? <span className="text-[12px] text-muted">{c.label}</span> : null}
+                <span className="sr-only">{citationText(c)}</span>
               </button>
             </li>
           );
@@ -1336,57 +1434,68 @@ function CardPane({
     ) : null;
 
   return (
-    <section
-      className={cn("ground-panel", active && "panel-active")}
-      data-testid="card"
-    >
+    <section className="ground-panel answer-panel" data-testid="card">
       <div className="ground-head">
         <span className="ground-head-left">
-          <Search className="size-3.5 shrink-0 text-faint" />
-          <span>Card</span>
+          <span>Answer</span>
           {speaking ? <AnswerModeBadge /> : null}
+          {searching ? <span className="search-spin" aria-label="Searching" /> : null}
         </span>
-        {found ? <span className="ground-status tabular-nums">{found}</span> : null}
+        <span className="ground-status tabular-nums">
+          {found ?? (searching ? "Searching" : speaking ? "Ready" : "Ready")}
+        </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <div key={cardKey} className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-auto p-5">
-          {theySaid ? (
-            <div className="min-w-0 rounded-md border border-line bg-input px-3 py-3">
-              <p className="ground-hint">Heard</p>
-              <p className="mt-2 font-serif text-base leading-snug text-body">{theySaid}</p>
-            </div>
-          ) : null}
-          {speaking ? (
-            <div className="space-y-5">
-              <p
-                data-testid="card-say"
-                className={cn(
-                  "font-serif leading-snug text-fg",
-                  longSay ? "text-lg md:text-xl" : compact ? "text-2xl md:text-3xl" : "text-xl md:text-2xl",
-                  sayClamped && "line-clamp-2",
-                )}
-              >
-                {card?.say}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Button variant="ghost" size="sm" className="border-accent text-fg" onClick={copySay}>
-                  {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-                  {copied ? "Copied" : "Copy"}
-                </Button>
-                {longSay ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    data-testid="card-say-expand"
-                    onClick={() => setSayOpen((open) => !open)}
-                  >
-                    {sayOpen ? "Show less" : "Show full"}
-                  </Button>
+        <div key={cardKey} className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-auto px-5 py-5">
+          {theySaid || speaking ? (
+            <div className="answer-receipt">
+              <div className="answer-receipt-body">
+                {theySaid ? (
+                  <div className="heard-block min-w-0">
+                    <p className="receipt-kicker">They asked</p>
+                    <p className="mt-2 text-[17px] font-semibold leading-snug text-fg">“{theySaid}”</p>
+                  </div>
                 ) : null}
+                {speaking ? (
+                  <div className="space-y-3">
+                    <p className="receipt-kicker receipt-kicker-accent">From your material</p>
+                    {card?.say ? (
+                      <AnswerSay text={card.say} className={sayClamped ? "line-clamp-2" : undefined} />
+                    ) : null}
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="quiet"
+                        size="sm"
+                        className={copied ? "text-ok" : undefined}
+                        onClick={copySay}
+                      >
+                        {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                        {copied ? "Copied" : "Copy"}
+                      </Button>
+                      {longSay ? (
+                        <Button
+                          variant="quiet"
+                          size="sm"
+                          data-testid="card-say-expand"
+                          onClick={() => setSayOpen((open) => !open)}
+                        >
+                          {sayOpen ? "Show less" : "Show full"}
+                        </Button>
+                      ) : null}
+                    </div>
+                    {citations}
+                  </div>
+                ) : (
+                  <>
+                    <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
+                      {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
+                    </p>
+                    {citations}
+                  </>
+                )}
               </div>
-              {citations}
               {compact && cited && citedFile ? (
-                <pre className="ground-code max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
+                <pre className="ground-code mx-4 mb-4 max-h-40 overflow-auto whitespace-pre px-3 py-2 font-mono text-xs leading-5 text-muted">
                   {cited.content
                     .split("\n")
                     .slice(Math.max(0, citedFile.line - 3), citedFile.line + 5)
@@ -1395,23 +1504,20 @@ function CardPane({
               ) : null}
             </div>
           ) : (
-            <div className="space-y-5">
-              <p data-testid="card-reason" className="font-serif text-lg italic text-body">
-                {card?.reason ??
-                  "Ask a question about this pack. Small talk stays in Room."}
-              </p>
-              {citations}
-            </div>
+            <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
+              {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
+            </p>
           )}
         </div>
-        <div className="shrink-0 space-y-3 border-t border-line px-5 py-3">
-          <p className="ground-hint">Try a question</p>
+        <div className="shrink-0 space-y-3 px-5 py-4">
+          <p className="ground-hint">Try another question</p>
           <div className="card-chips">
             {chips.map((q) => (
               <button
                 key={q}
                 type="button"
                 disabled={!searchReady}
+                data-current={theySaid && q.toLowerCase() === theySaid.toLowerCase() ? "true" : undefined}
                 onClick={() => void search(q)}
                 className="ground-chip text-xs disabled:opacity-40"
               >

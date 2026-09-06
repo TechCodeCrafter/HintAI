@@ -41,11 +41,11 @@ await shoot("landing-mobile", { width: 390, height: 844 });
 
 // The card cycles on its own; wait for the state rather than guessing a delay.
 await shoot("card-answer", { width: 1280, height: 820 }, async (page) => {
-  await page.getByText("lambda_function.py:83").first().waitFor({ timeout: 30000 });
+  await page.getByText("lab-requirements.pdf").first().waitFor({ timeout: 30000 });
 });
 // Citations are path + fact on one row at desktop and stacked at 390px.
 await shoot("card-mobile", { width: 390, height: 844 }, async (page) => {
-  const cite = page.getByText("lambda_function.py:83").first();
+  const cite = page.getByText("lab-requirements.pdf").first();
   await cite.waitFor({ timeout: 30000 });
   await cite.scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 120);

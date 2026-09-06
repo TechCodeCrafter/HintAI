@@ -1,3 +1,4 @@
+import { isOfficeExt, officeReadError, parseOfficeBuffer } from "../document/parsers/office-parsers.ts";
 import type { RepoFile, RepoPack } from "./types";
 
 const SKIP_DIR =
@@ -45,17 +46,25 @@ const ALLOW_EXT = new Set([
   "cc",
   "cpp",
   "hpp",
+  "txt",
+  "docx",
+  "xlsx",
+  "csv",
 ]);
 
 const MAX_FILES = 500;
 const MAX_FILE_BYTES = 150_000;
+const OFFICE_MAX_FILE_BYTES = 4_000_000;
 const MAX_TOTAL_BYTES = 8_000_000;
 
 export type FolderLoad = {
   pack: RepoPack;
   skipped: number;
   truncated: boolean;
+  failed: string[];
 };
+
+export { officeReadError };
 
 export function truncationNotice(fileCount: number): string {
   return `Loaded ${fileCount} files. Some files were skipped due to size limits. For best results, load a service folder (src/) rather than the full repo root.`;
@@ -76,6 +85,7 @@ function langOf(path: string): string {
   const ext = extOf(path);
   if (ext === "tsx" || ext === "ts" || ext === "jsx" || ext === "js" || ext === "mjs" || ext === "cjs") return "ts";
   if (ext === "md" || ext === "mdx") return "md";
+  if (isOfficeExt(ext)) return ext;
   return ext || "txt";
 }
 
@@ -97,6 +107,7 @@ function scorePath(path: string): number {
     score += 10;
   }
   if (/\.(ts|tsx|go|py|java|rs|kt)$/.test(p)) score += 6;
+  if (/\.(docx|xlsx|csv)$/.test(p)) score += 8;
   if (/\.(js|jsx|rb|cs)$/.test(p)) score += 3;
   if (/(adr|architecture|rfc|design-doc)/.test(p)) score += 7;
   if (/(^|\/)docs\//.test(p) && /\.md$/.test(p)) score += 4;
@@ -130,8 +141,9 @@ export function prunePack(pack: RepoPack): { pack: RepoPack; weak: boolean; drop
     .sort((a, b) => scorePath(b.path) - scorePath(a.path) || a.path.localeCompare(b.path));
   const dropped = pack.files.length - kept.length;
   const code = kept.filter((f) => /\.(ts|tsx|js|jsx|go|py|java|rs|kt)$/i.test(f.path)).length;
+  const office = kept.filter((f) => /\.(docx|xlsx|csv)$/i.test(f.path)).length;
   const next = kept.length > 0 ? { ...pack, files: kept, description: `Local folder · ${kept.length} files` } : pack;
-  return { pack: next, dropped, weak: code < 3 };
+  return { pack: next, dropped, weak: code < 3 && office === 0 };
 }
 
 export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad> {
@@ -153,7 +165,7 @@ export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad
       skipped += 1;
       continue;
     }
-    if (file.size > MAX_FILE_BYTES) {
+    if (file.size > (isOfficeExt(ext) ? OFFICE_MAX_FILE_BYTES : MAX_FILE_BYTES)) {
       skipped += 1;
       continue;
     }
@@ -167,6 +179,7 @@ export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad
   candidates.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
 
   const packFiles: RepoFile[] = [];
+  const failed: string[] = [];
   let total = 0;
   let truncated = false;
   for (const item of candidates) {
@@ -180,14 +193,25 @@ export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad
       skipped += 1;
       continue;
     }
+    const ext = extOf(item.path);
     let content = "";
     try {
-      content = await item.file.text();
-    } catch {
+      if (isOfficeExt(ext)) {
+        content = await parseOfficeBuffer(ext, await item.file.arrayBuffer());
+      } else {
+        content = await item.file.text();
+        if (!looksText(content)) {
+          skipped += 1;
+          continue;
+        }
+      }
+    } catch (error) {
+      console.warn(`Could not read ${item.path}`, error);
+      failed.push(item.path.split("/").pop() ?? item.path);
       skipped += 1;
       continue;
     }
-    if (!looksText(content)) {
+    if (!content.trim()) {
       skipped += 1;
       continue;
     }
@@ -205,5 +229,6 @@ export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad
     },
     skipped,
     truncated,
+    failed,
   };
 }

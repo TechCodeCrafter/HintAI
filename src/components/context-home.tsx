@@ -52,7 +52,6 @@ export function ContextHome() {
     >
       <main className="mh-rise space-y-10 pb-16 pt-6 sm:pt-10">
         <div className="space-y-5">
-          <h1 className="mh-display text-5xl sm:text-6xl">MeetHint</h1>
           <HomeProof />
           <Link
             to="/create"

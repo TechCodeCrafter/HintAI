@@ -84,6 +84,19 @@ test("citation markers map to hit indexes", () => {
   assert.equal(stripCitationMarkers("Attempts are capped at three. [1]"), "Attempts are capped at three.");
 });
 
+test("maxTokens is forwarded to the ask", async () => {
+  let seen: number | undefined;
+  await generateAnswer("Why does that retry three times?", retryHits, 0, {
+    maxTokens: 250,
+    pack: NORTHSTAR,
+    ask: async (payload) => {
+      seen = payload.maxTokens;
+      return { text: "INSUFFICIENT" };
+    },
+  });
+  assert.equal(seen, 250);
+});
+
 test("empty hits stay silent without calling the model", async () => {
   let called = false;
   const generated = await generateAnswer("Why?", [], 0, {

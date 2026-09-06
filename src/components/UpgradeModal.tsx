@@ -1,28 +1,56 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { isPaidTier } from "@/lib/billing/subscription";
 import { isWaitlistEmail } from "@/lib/billing/waitlist-email";
 import { hasWaitlistSignup, joinProWaitlist } from "@/lib/billing/waitlist-local";
+import { cn } from "@/lib/cn";
+import { useMeetHint } from "@/lib/store";
 
-const FEATURE_COPY: Record<string, string> = {
-  synthesize:
-    "Synthesize mode requires Pro. Upgrade to combine insights from multiple files with verified citations.",
-  audit: "Claim Audit requires Pro. Upgrade to track and verify claims across meetings.",
+const FEATURE_COPY: Record<string, { kicker: string; headline: string; reason: string }> = {
+  synthesize: {
+    kicker: "Synthesize requires Pro",
+    headline: "Combine insights across files",
+    reason:
+      "Synthesize mode requires Pro. Upgrade to combine insights from multiple files with verified citations.",
+  },
+  audit: {
+    kicker: "Claim Audit requires Pro",
+    headline: "Track claims across the meeting",
+    reason: "Claim Audit requires Pro. Upgrade to track and verify claims across meetings.",
+  },
+  "extract-limit": {
+    kicker: "Today's Extract limit",
+    headline: "Keep asking after today's 20",
+    reason:
+      "You've used today's 20 Extract questions. Upgrade to Pro for unlimited answers and model switching.",
+  },
 };
 
 const TIERS = [
-  { name: "Free", price: "—", points: ["Extract only", "1 pack"] },
+  {
+    name: "Free",
+    price: "$0",
+    cadence: "",
+    points: ["Extract mode", "20 questions/day", "GPT-4o Mini", "1 pack"],
+    action: "Current plan",
+  },
   {
     name: "Pro",
-    price: "$12/mo",
-    points: ["Extract + Synthesize + Claim Audit", "Unlimited packs", "Export"],
+    price: "$12",
+    cadence: "/mo",
+    points: ["Unlimited Extract", "Synthesize + Claim Audit", "Model switching", "Export"],
+    action: "Get early access",
+    recommended: true,
   },
   {
     name: "Team",
-    price: "$49/seat/mo",
-    points: ["Everything in Pro", "Temporal contradiction", "Shared corpus"],
+    price: "$49",
+    cadence: "/seat/mo",
+    points: ["Everything in Pro", "Shared corpus", "Temporal contradiction"],
+    action: "Contact us",
   },
 ] as const;
 
@@ -37,12 +65,18 @@ export function UpgradeModal({
 }) {
   const titleId = useId();
   const emailId = useId();
-  const reason = (feature && FEATURE_COPY[feature]) || FEATURE_COPY.synthesize;
+  const emailRef = useRef<HTMLInputElement>(null);
+  const subscription = useMeetHint((s) => s.subscription);
+  const copy = (feature && FEATURE_COPY[feature]) || FEATURE_COPY.synthesize;
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const valid = isWaitlistEmail(email);
+
+  useEffect(() => {
+    if (open && isPaidTier(subscription)) onClose();
+  }, [open, subscription, onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -86,28 +120,33 @@ export function UpgradeModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-bg/70 p-5" role="presentation" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-bg/70 p-5 backdrop-blur-[2px]"
+      role="presentation"
+      onClick={onClose}
+    >
       <div
-        className="w-full max-w-md rounded-sm border border-line bg-surface p-5 text-body shadow-lg"
+        className="w-full max-w-3xl rounded-[14px] border border-line bg-surface p-6 text-body shadow-lg md:p-8"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         data-testid="upgrade-modal"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h2 id={titleId} className="text-sm font-medium text-fg">
-              Upgrade to Pro
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0 max-w-xl">
+            <p className="text-[12px] font-medium uppercase text-accent">{copy.kicker}</p>
+            <h2 id={titleId} className="mt-2 text-[1.65rem] font-semibold tracking-tight text-fg">
+              {copy.headline}
             </h2>
-            <p data-testid="upgrade-prompt" className="mt-2 text-xs leading-relaxed text-body">
-              {reason}
+            <p data-testid="upgrade-prompt" className="mt-3 text-[14px] leading-relaxed text-body">
+              {copy.reason}
             </p>
           </div>
           <button
             type="button"
             data-testid="upgrade-close"
-            className="inline-flex size-11 shrink-0 items-center justify-center rounded-sm text-secondary hover:text-fg"
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] text-secondary hover:bg-hover hover:text-fg"
             aria-label="Close"
             onClick={onClose}
           >
@@ -115,64 +154,99 @@ export function UpgradeModal({
           </button>
         </div>
 
-        <div className="mt-5 overflow-hidden rounded-sm border border-line">
-          <div className="grid grid-cols-3 bg-subtle text-[11px] font-medium tracking-wide text-muted uppercase">
-            {TIERS.map((tier) => (
-              <div key={tier.name} className="border-r border-line px-3 py-2 last:border-r-0">
-                <p className="text-fg">{tier.name}</p>
-                <p className="mt-0.5 normal-case tracking-normal">{tier.price}</p>
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          {TIERS.map((tier) => {
+            const recommended = "recommended" in tier && tier.recommended;
+            return (
+              <div
+                key={tier.name}
+                className={cn(
+                  "flex min-h-0 flex-col rounded-[14px] border p-4",
+                  recommended ? "border-accent-ring bg-accent-soft" : "border-line bg-bg",
+                )}
+              >
+                {recommended ? (
+                  <p className="mb-3 text-[11px] font-medium uppercase tracking-wide text-accent">
+                    Recommended
+                  </p>
+                ) : (
+                  <p className="mb-3 text-[11px] font-medium uppercase tracking-wide text-muted">
+                    {tier.name}
+                  </p>
+                )}
+                <p className="text-[13px] font-medium text-fg">{tier.name}</p>
+                <p className="mt-1 text-[1.35rem] font-semibold tracking-tight text-fg">
+                  {tier.price}
+                  {tier.cadence ? (
+                    <span className="text-[13px] font-medium text-muted">{tier.cadence}</span>
+                  ) : null}
+                </p>
+                <ul className="mt-4 flex-1 space-y-2 text-[13px] text-body">
+                  {tier.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2">
+                      <Check className="mt-0.5 size-3.5 shrink-0 text-ok" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                {tier.name === "Pro" ? (
+                  done ? (
+                    <p className="mt-5 text-sm text-accent" data-testid="upgrade-waitlist-done" role="status">
+                      Thanks, you're on the list
+                    </p>
+                  ) : (
+                    <form className="mt-5 space-y-2" onSubmit={(event) => void submit(event)} noValidate>
+                      <label className="sr-only" htmlFor={emailId}>
+                        Email address
+                      </label>
+                      <input
+                        ref={emailRef}
+                        id={emailId}
+                        type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        data-testid="upgrade-email"
+                        placeholder="you@company.com"
+                        value={email}
+                        onChange={(event) => {
+                          setEmail(event.target.value);
+                          if (error) setError(null);
+                        }}
+                        className="ground-input h-10 rounded-[10px] px-3 text-[13px]"
+                      />
+                      <Button
+                        type="submit"
+                        size="sm"
+                        className="w-full"
+                        data-testid="upgrade-cta"
+                        disabled={!valid || sending}
+                      >
+                        {sending ? "Saving…" : "Get early access"}
+                      </Button>
+                      {error ? <p className="text-xs text-bad">{error}</p> : null}
+                    </form>
+                  )
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-5 w-full"
+                    disabled={tier.name === "Free"}
+                    onClick={() => emailRef.current?.focus()}
+                  >
+                    {tier.action}
+                  </Button>
+                )}
               </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-3 text-xs text-body">
-            {TIERS.map((tier) => (
-              <ul key={tier.name} className="list-none border-r border-line px-3 py-3 last:border-r-0">
-                {tier.points.map((point) => (
-                  <li key={point} className="mt-1.5 first:mt-0">
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {done ? (
-          <p className="mt-5 text-sm text-accent" data-testid="upgrade-waitlist-done" role="status">
-            Thanks, you're on the list
-          </p>
-        ) : (
-          <form className="mt-5 space-y-2" onSubmit={(event) => void submit(event)} noValidate>
-            <label className="sr-only" htmlFor={emailId}>
-              Email address
-            </label>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <input
-                id={emailId}
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                data-testid="upgrade-email"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                  if (error) setError(null);
-                }}
-                className="min-h-11 min-w-0 flex-1 rounded-sm border border-line bg-input px-3 text-xs text-fg"
-              />
-              <Button
-                type="submit"
-                className="bg-blue-600 text-white hover:bg-blue-500"
-                data-testid="upgrade-cta"
-                disabled={!valid || sending}
-              >
-                {sending ? "Saving…" : "Get early access"}
-              </Button>
-            </div>
-            {error ? <p className="text-xs text-bad">{error}</p> : null}
-          </form>
-        )}
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-2 text-[12px] text-muted">
+          <p>Your files stay on your machine on every plan.</p>
+          <p>Cancel anytime.</p>
+        </div>
       </div>
     </div>
   );

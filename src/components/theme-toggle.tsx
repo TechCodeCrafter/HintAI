@@ -15,7 +15,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     <button
       type="button"
       className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-line text-secondary transition-colors hover:border-accent hover:text-fg",
+        "inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-line text-secondary transition-colors hover:bg-hover hover:text-fg",
         className,
       )}
       aria-label={next === "light" ? "Switch to light mode" : "Switch to dark mode"}

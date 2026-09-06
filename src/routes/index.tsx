@@ -4,11 +4,11 @@ import { MeetHintLanding } from "@/components/meethint-landing";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MeetHint — your knowledge, right when you need it" },
+      { title: "Hint — live answers from your own material" },
       {
         name: "description",
         content:
-          "Meeting copilot that searches your material and cites the file before you speak. Join the private beta, or try it on a local folder.",
+          "Hint listens to a live conversation, searches your files, and surfaces a cited answer in seconds. Try it on a local folder, or join the private beta.",
       },
     ],
   }),

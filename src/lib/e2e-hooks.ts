@@ -28,6 +28,8 @@ declare global {
         search: (q?: string, opts?: { fast?: boolean }) => Promise<void>;
         autoAnswer: boolean;
         setSubscription: (tier: "free" | "pro" | "team" | "enterprise") => void;
+        setComposeMode?: (mode: "extract" | "synthesize" | "audit") => void;
+        setSelectedModelId?: (id: string) => void;
       };
     };
     __mockCraftCard?: (payload: MockCraftPayload) => Promise<Pick<Card, "say"> | null>;

@@ -45,7 +45,7 @@ function missingKeyReason(): string {
   return "Add API key";
 }
 
-function buildRequest(model: ModelOption, system: string, user: string, apiKey: string): {
+function buildRequest(model: ModelOption, system: string, user: string, apiKey: string, maxTokens = model.maxTokens): {
   url: string;
   headers: Record<string, string>;
   body: Record<string, unknown>;
@@ -60,7 +60,7 @@ function buildRequest(model: ModelOption, system: string, user: string, apiKey: 
       },
       body: {
         model: model.modelId,
-        max_tokens: model.maxTokens,
+        max_tokens: maxTokens,
         temperature: 0.3,
         system,
         messages: [{ role: "user", content: user }],
@@ -78,7 +78,7 @@ function buildRequest(model: ModelOption, system: string, user: string, apiKey: 
     body: {
       model: model.modelId,
       temperature: 0.3,
-      max_tokens: model.maxTokens,
+      max_tokens: maxTokens,
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
@@ -105,11 +105,12 @@ async function completeChat(
   model: ModelOption,
   keys?: ProviderKeys,
   timeoutMs = 8000,
+  maxTokens?: number,
 ) {
   const apiKey = resolveKey(model.provider, keys);
   console.info("[completeChat] provider:", model.provider, "apiKey present:", Boolean(apiKey));
   if (!apiKey) return { raw: null as string | null, reason: missingKeyReason() };
-  const request = buildRequest(model, system, user, apiKey);
+  const request = buildRequest(model, system, user, apiKey, maxTokens ?? model.maxTokens);
   try {
     const res = await fetch(request.url, {
       method: "POST",
@@ -138,8 +139,9 @@ type SpeakInput = {
   query?: string;
   prompt?: string;
   modelId?: string;
+  maxTokens?: number;
   keys?: ProviderKeys;
-  data?: { query?: string; prompt?: string; modelId?: string; keys?: ProviderKeys };
+  data?: { query?: string; prompt?: string; modelId?: string; maxTokens?: number; keys?: ProviderKeys };
 };
 
 function speakInput(input: SpeakInput) {
@@ -148,11 +150,12 @@ function speakInput(input: SpeakInput) {
     query: typeof inner.query === "string" ? inner.query : "",
     prompt: typeof inner.prompt === "string" ? inner.prompt : "",
     modelId: typeof inner.modelId === "string" ? inner.modelId : undefined,
+    maxTokens: typeof inner.maxTokens === "number" ? inner.maxTokens : undefined,
     keys: inner.keys,
   };
 }
 
-/** Raw completion for grounded synthesis. Search never calls this. */
+/** Raw completion for grounded Extract and Synthesize. */
 export const completeSynthesis = createServerFn({ method: "POST" })
   .validator((input: SpeakInput) => speakInput(input))
   .handler(async ({ data }): Promise<{ text: string | null; reason?: string; modelName?: string }> => {
@@ -163,6 +166,7 @@ export const completeSynthesis = createServerFn({ method: "POST" })
       model,
       data.keys,
       12000,
+      data.maxTokens,
     );
     if (raw == null) return { text: null, reason, modelName: model.name };
     const text = raw.replace(/\s+/g, " ").trim();

@@ -276,36 +276,38 @@ export function PdfPane({ forceMode }: { forceMode?: HighlightMode }) {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" data-pdf-pane="true">
-      <div className="ground-code-name flex shrink-0 items-center justify-between gap-2">
-        <span className="truncate">{view?.path || evidence?.path || sourcePath || "PDF"}</span>
-        <span className="shrink-0 text-faint" data-highlight-mode={mode}>
-          {stale ? "Unavailable" : modeLabel(mode)}
-        </span>
-      </div>
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-line px-3 py-1.5">
-        <button
-          type="button"
-          className="inline-flex h-9 items-center gap-1 rounded-sm px-2 text-xs text-muted enabled:hover:text-fg disabled:opacity-40"
-          aria-label="Previous page"
-          disabled={!view || page <= 1 || stale}
-          onClick={() => setPage((n) => Math.max(1, n - 1))}
-        >
-          <ChevronLeft className="size-3.5" />
-          Previous
-        </button>
-        <p className="text-xs tabular-nums text-muted" data-pdf-page={view?.page ?? page} aria-live="polite">
-          Page {view?.page ?? page} of {view?.pageCount || "—"}
-        </p>
-        <button
-          type="button"
-          className="inline-flex h-9 items-center gap-1 rounded-sm px-2 text-xs text-muted enabled:hover:text-fg disabled:opacity-40"
-          aria-label="Next page"
-          disabled={!view || stale || page >= (view.pageCount || 1)}
-          onClick={() => setPage((n) => Math.min(view?.pageCount ?? n, n + 1))}
-        >
-          Next
-          <ChevronRight className="size-3.5" />
-        </button>
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3">
+        <div className="min-w-0">
+          <p className="file-name truncate font-mono text-[13px]">{view?.path || evidence?.path || sourcePath || "PDF"}</p>
+          <p className="text-xs tabular-nums text-muted" data-pdf-page={view?.page ?? page} aria-live="polite">
+            Page {view?.page ?? page} of {view?.pageCount || "—"}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <span className="sr-only" data-highlight-mode={mode}>
+            {stale ? "Unavailable" : modeLabel(mode)}
+          </span>
+          <button
+            type="button"
+            className="inline-flex h-8 items-center gap-1 rounded-[10px] px-2 text-xs text-muted enabled:hover:bg-hover enabled:hover:text-fg disabled:opacity-40"
+            aria-label="Previous page"
+            disabled={!view || page <= 1 || stale}
+            onClick={() => setPage((n) => Math.max(1, n - 1))}
+          >
+            <ChevronLeft className="size-3.5" />
+            Previous
+          </button>
+          <button
+            type="button"
+            className="inline-flex h-8 items-center gap-1 rounded-[10px] px-2 text-xs text-muted enabled:hover:bg-hover enabled:hover:text-fg disabled:opacity-40"
+            aria-label="Next page"
+            disabled={!view || stale || page >= (view.pageCount || 1)}
+            onClick={() => setPage((n) => Math.min(view?.pageCount ?? n, n + 1))}
+          >
+            Next
+            <ChevronRight className="size-3.5" />
+          </button>
+        </div>
       </div>
       <div ref={shellRef} className="relative min-h-0 min-w-0 flex-1 overflow-auto">
         {loading ? <p className="px-3 py-2 text-xs text-muted">Loading page…</p> : null}

@@ -9,7 +9,7 @@ import { useMeetHint } from "@/lib/store";
 
 type Step = "identity" | "material" | "indexing";
 
-const COMING_SOON = ["DOCX", "PPTX", "XLSX"] as const;
+const COMING_SOON = ["PPTX"] as const;
 
 export function CreateContextFlow() {
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ export function CreateContextFlow() {
             <div className="space-y-2">
               <p className="mh-eyebrow">{name.trim() || "New context"}</p>
               <h1 className="mh-display text-4xl">Add material</h1>
-              <p className="text-sm text-muted">Folder, files, or PDFs. Office formats stay off until they parse.</p>
+              <p className="text-sm text-muted">Folder, files, PDFs, DOCX, XLSX, or CSV. PPTX is still off.</p>
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
               <button type="button" className="mh-panel flex min-h-24 flex-col items-start gap-2 p-4 text-left" onClick={() => folderRef.current?.click()}>
@@ -159,7 +159,7 @@ export function CreateContextFlow() {
               >
                 <Upload className="size-4 text-accent" />
                 <span className="text-sm font-medium">Upload files</span>
-                <span className="text-xs text-faint">Markdown, text, source</span>
+                <span className="text-xs text-faint">Markdown, text, source, DOCX, XLSX, CSV</span>
               </button>
               <button type="button" className="mh-panel flex min-h-24 flex-col items-start gap-2 p-4 text-left" onClick={() => pdfRef.current?.click()}>
                 <FileText className="size-4 text-accent" />
@@ -192,7 +192,7 @@ export function CreateContextFlow() {
               ref={filesRef}
               type="file"
               multiple
-              accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml"
+              accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
               className="sr-only"
               aria-hidden="true"
               tabIndex={-1}
