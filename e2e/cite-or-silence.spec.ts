@@ -5,7 +5,7 @@ test.describe("Cite or stay silent", () => {
   test("a covered question speaks a cited line", async ({ page }) => {
     await openCockpit(page);
     await typeQuestion(page, "Why does that retry three times?");
-    const card = await waitForCard(page, { badge: "From your docs" });
+    const card = await waitForCard(page, { badge: "From your files" });
     await expect(card.getByTestId("card-say")).toContainText("three");
     await expect(card.getByTestId("card-citation").filter({ hasText: "src/exporter/retry" })).toBeVisible();
   });
@@ -13,7 +13,7 @@ test.describe("Cite or stay silent", () => {
   test("weather is not cited from the files", async ({ page }) => {
     await openCockpit(page);
     await typeQuestion(page, "What is the weather today?");
-    const card = await waitForCard(page, { badge: "Generated" });
+    const card = await waitForCard(page, { badge: "Generated · not from your files" });
     await expect(card.getByTestId("card-say")).not.toBeEmpty();
     await expect(card.getByTestId("card-citation")).toHaveCount(0);
   });

@@ -201,3 +201,56 @@ export const completeSynthesis = createServerFn({ method: "POST" })
     const text = raw.replace(/\s+/g, " ").trim();
     return text ? { text: text.slice(0, 1800), modelName: model.name } : { text: null, reason: "empty", modelName: model.name };
   });
+
+type GeneralInput = {
+  query?: string;
+  prompt?: string;
+  modelId?: string;
+  maxTokens?: number;
+  keys?: ProviderKeys;
+  data?: {
+    query?: string;
+    prompt?: string;
+    modelId?: string;
+    maxTokens?: number;
+    keys?: ProviderKeys;
+  };
+};
+
+function generalInput(input: GeneralInput): {
+  query: string;
+  prompt: string;
+  modelId?: string;
+  maxTokens?: number;
+  keys?: ProviderKeys;
+} {
+  const inner = input && typeof input.query === "string" ? input : (input?.data ?? {});
+  return {
+    query: typeof inner.query === "string" ? inner.query : "",
+    prompt: typeof inner.prompt === "string" ? inner.prompt : "",
+    modelId: typeof inner.modelId === "string" ? inner.modelId : undefined,
+    maxTokens: typeof inner.maxTokens === "number" ? inner.maxTokens : undefined,
+    keys: inner.keys,
+  };
+}
+
+const GENERAL_SYSTEM =
+  "Answer concisely from general knowledge. 1-2 short spoken sentences. Plain language, no lists, no preamble.";
+
+/** Uncited spoken answer. Does not run the grounded evidence gate. */
+export const completeGeneral = createServerFn({ method: "POST" })
+  .validator((input: GeneralInput) => generalInput(input))
+  .handler(async ({ data }): Promise<{ text: string | null; reason?: string; modelName?: string }> => {
+    const model = getModelById(data.modelId) ?? getDefaultModel();
+    const { raw, reason } = await completeChat(
+      GENERAL_SYSTEM,
+      data.prompt || data.query,
+      model,
+      data.keys,
+      12000,
+      data.maxTokens,
+    );
+    if (raw == null) return { text: null, reason, modelName: model.name };
+    const text = raw.replace(/\s+/g, " ").trim();
+    return text ? { text: text.slice(0, 1800), modelName: model.name } : { text: null, reason: "empty", modelName: model.name };
+  });

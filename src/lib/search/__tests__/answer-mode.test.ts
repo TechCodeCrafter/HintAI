@@ -29,13 +29,13 @@ const evidenceCard: Card = {
 };
 
 test("the card badge names how the answer was produced", () => {
-  assert.equal(modeLabel(), "From your docs");
-  assert.equal(modeLabel("docs"), "From your docs");
+  assert.equal(modeLabel(), "From your files");
+  assert.equal(modeLabel("docs"), "From your files");
   assert.equal(modeLabel("synthesized"), "Synthesized");
-  assert.equal(modeLabel("generated"), "Generated");
-  assert.equal(receiptKicker("docs"), "From your docs");
+  assert.equal(modeLabel("generated"), "Generated · not from your files");
+  assert.equal(receiptKicker("docs"), "From your files");
   assert.equal(receiptKicker("synthesized"), "Synthesized");
-  assert.equal(receiptKicker("generated"), "Generated");
+  assert.equal(receiptKicker("generated"), "Generated · not from your files");
 });
 
 test("polish keeps a rewrite only when every word is still in the evidence", () => {

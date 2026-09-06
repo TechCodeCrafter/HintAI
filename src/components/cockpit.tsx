@@ -1412,8 +1412,9 @@ function CardPane({
     window.setTimeout(() => setCopied(false), 1400);
   }
 
+  const generated = card?.answerMode === "generated";
   const citations =
-    card && card.citations.length > 0 ? (
+    !generated && card && card.citations.length > 0 ? (
       <ul className="answer-receipt-cites">
         {card.citations.map((c) => {
           const opensFile = Boolean(citedPath(c));
@@ -1482,6 +1483,15 @@ function CardPane({
                     <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode)}</p>
                     {card?.say ? (
                       <AnswerSay text={card.say} className={sayClamped ? "line-clamp-2" : undefined} />
+                    ) : null}
+                    {generated ? (
+                      <p
+                        className="generated-note"
+                        data-testid="generated-note"
+                        title="General knowledge — verify before saying it."
+                      >
+                        General knowledge — verify before saying it.
+                      </p>
                     ) : null}
                     <div className="flex flex-wrap gap-2">
                       <Button

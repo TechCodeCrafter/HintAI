@@ -223,13 +223,29 @@ async function defaultAsk(prompt: string, modelId: string, maxTokens?: number, p
   return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys(), policy } });
 }
 
-type GenerateOpts = {
+async function defaultGeneralAsk(prompt: string, modelId: string, maxTokens?: number) {
+  const { completeGeneral } = await import("@/lib/ai/cardsmith");
+  const { readClientKeys } = await import("@/lib/ai/client-keys");
+  return completeGeneral({ data: { prompt, modelId, maxTokens, keys: readClientKeys() } });
+}
+
+export type GenerateOpts = {
   ask?: SynthesisAsk;
+  generalAsk?: SynthesisAsk;
   modelId?: string;
   pack?: RepoPack;
   maxTokens?: number;
   threadHistory?: string[];
 };
+
+/** Spoken general-knowledge prompt. No documents, no INSUFFICIENT, no citations. */
+export function buildGeneralPrompt(query: string): string {
+  return `Answer in 1-2 short spoken sentences, plain language, no lists, no preamble. This is spoken aloud.
+
+QUESTION: "${query}"
+
+ANSWER:`;
+}
 
 async function completePrompt(
   query: string,
@@ -353,6 +369,67 @@ export async function synthesizeAnswer(
 }
 
 export const generateAnswerWithGeneralKnowledge = synthesizeAnswer;
+
+/**
+ * General knowledge. No documents, no citation markers, no verifyClaim.
+ * Same 12s timeout as generateAnswer; null on timeout or empty text.
+ */
+export async function generateGeneralAnswer(
+  query: string,
+  t0: number,
+  opts?: GenerateOpts,
+): Promise<GeneratedAnswer | null> {
+  const model = getDefaultModel();
+  const chosen = getModelById(opts?.modelId) ?? model;
+  let remote: { text: string | null; reason?: string; modelName?: string };
+  try {
+    if (typeof window !== "undefined" && window.__mockCraftCard) {
+      const mocked = await window.__mockCraftCard({
+        query,
+        instruction: buildGeneralPrompt(query),
+        hits: [],
+        task: "answer",
+        modelId: chosen.id,
+      });
+      remote = { text: mocked?.say ?? null, modelName: chosen.name };
+    } else {
+      remote = await Promise.race([
+        opts?.generalAsk
+          ? opts.generalAsk({
+              query,
+              prompt: buildGeneralPrompt(query),
+              modelId: chosen.id,
+              maxTokens: opts.maxTokens,
+              policy: "freely",
+            })
+          : opts?.ask
+            ? opts.ask({
+                query,
+                prompt: buildGeneralPrompt(query),
+                modelId: chosen.id,
+                maxTokens: opts.maxTokens,
+                policy: "freely",
+              })
+            : defaultGeneralAsk(buildGeneralPrompt(query), chosen.id, opts?.maxTokens),
+        new Promise<never>((_, reject) => {
+          globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
+        }),
+      ]);
+    }
+  } catch {
+    return null;
+  }
+  const say = (remote.text ?? "").replace(/\s+/g, " ").trim();
+  if (!say || isInsufficient(say)) return null;
+  return {
+    say,
+    usedEvidence: false,
+    citations: [],
+    latencyMs: Math.round(performance.now() - t0),
+    modelName: remote.modelName ?? chosen.name,
+    answerMode: "generated",
+  };
+}
 
 /** No useful retrieval — answer from general knowledge. */
 export async function freelyAnswer(

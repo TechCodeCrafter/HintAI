@@ -15,6 +15,7 @@ import {
   extractBestSentence,
   freelyAnswer,
   generateAnswer,
+  generateGeneralAnswer,
   synthesizeAnswer,
   stripCitationMarkers,
 } from "../generate-answer.ts";
@@ -141,6 +142,23 @@ test("weak evidence may speak without a citation", async () => {
   assert.equal(generated.usedEvidence, false);
   assert.equal(generated.citations.length, 0);
   assert.match(generated.say, /full-stack/i);
+});
+
+test("generateGeneralAnswer returns a spoken line with no citations and skips verifyClaim", async () => {
+  const generated = await generateGeneralAnswer("What is the weather in Tokyo?", 0, {
+    ask: ask("Tokyo weather is set by Pacific high-pressure systems this week."),
+  });
+  assert.ok(generated);
+  assert.equal(generated.usedEvidence, false);
+  assert.deepEqual(generated.citations, []);
+  assert.equal(generated.answerMode, "generated");
+  assert.match(generated.say, /Tokyo/);
+  const start = source.indexOf("export async function generateGeneralAnswer");
+  const next = source.indexOf("\nexport async function", start + 10);
+  const body = source.slice(start, next === -1 ? undefined : next);
+  assert.doesNotMatch(body, /verifyClaim/);
+  assert.doesNotMatch(body, /evidenceForMarkers/);
+  assert.match(source, /Answer in 1-2 short spoken sentences/);
 });
 
 test("freely answers from general knowledge with no hits", async () => {

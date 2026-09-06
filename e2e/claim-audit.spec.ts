@@ -32,7 +32,7 @@ test("Listen admits claims without Search, and Search only updates the Card", as
   await expect(row).toContainText(/retry\.ts|exporter-retries/);
 
   await typeQuestion(page, "Why does that retry three times?");
-  const card = await waitForCard(page, { badge: "From your docs" });
+  const card = await waitForCard(page, { badge: "From your files" });
   await expect(card.getByTestId("card-say")).toContainText("three");
   await expect(monitor.getByTestId("claim-row")).toHaveCount(1);
   await expect(monitor.getByTestId("claim-row")).toContainText("capped at three");
