@@ -528,8 +528,8 @@ html[data-theme="dark"] .mode-tab[data-active="true"] {
 }
 
 .badge-generated {
-  background: rgb(59 130 246 / 0.14);
-  color: #3b82f6;
+  background: rgb(245 184 90 / 0.16);
+  color: var(--color-warn);
 }
 
 html[data-theme="light"] .badge-from-docs {
@@ -543,8 +543,15 @@ html[data-theme="light"] .badge-synthesized {
 }
 
 html[data-theme="light"] .badge-generated {
-  background: #e8f1ff;
-  color: #1d4ed8;
+  background: #fff4e0;
+  color: #9a6700;
+}
+
+.generated-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-muted);
 }
 
 .key-settings-backdrop {

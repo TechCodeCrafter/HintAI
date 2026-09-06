@@ -43,8 +43,7 @@ import {
   findHistoryItem,
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
-import { routeFromScore } from "@/lib/search/answer-route";
-import { extractAnswer, freelyAnswer, synthesizeAnswer } from "@/lib/search/generate-answer";
+import { routeSearchAnswer } from "@/lib/search/answer-route";
 import { officeReadError, packFromFiles, truncationNotice } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
@@ -1405,48 +1404,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
     };
 
-    if (get().subscription === "free") consumeExtractQuestion();
-    const topHit = hits[0];
-    const topScore = topHit?.score ?? 0;
-    const route = routeFromScore(topScore);
     const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
-    const modelId = get().selectedModelId;
-    const maxTokens = SYNTHESIZE_MAX_TOKENS;
-    let generated =
-      route === "extract" && topHit
-        ? await extractAnswer(query, topHit, t0, { pack: state.pack })
-        : route === "synthesize"
-          ? await synthesizeAnswer(query, hits, t0, { pack: state.pack, modelId, maxTokens, threadHistory })
-          : await freelyAnswer(query, t0, { modelId, maxTokens, threadHistory });
-    if (epoch !== searchEpoch) return;
-    if (!generated && route !== "freely") {
-      generated = await freelyAnswer(query, t0, { modelId, maxTokens, threadHistory });
-      if (epoch !== searchEpoch) return;
-    }
-    if (generated) {
-      finish(
-        {
-          say: generated.say,
-          citations: generated.citations,
-          query,
-          latencyMs: generated.latencyMs,
-          source: generated.modelName ?? (generated.answerMode === "docs" ? "local" : "synthesize"),
-          answerMode: generated.answerMode,
-          modelName: generated.modelName,
-        },
-        extractRemaining(),
-      );
-      return;
-    }
-
-    finish({
-      say: null,
-      reason: "Could not generate an answer.",
-      citations: [],
-      query,
-      latencyMs: Math.round(performance.now() - t0),
-      source: "local",
+    const routed = await routeSearchAnswer(query, hits, t0, {
+      pack: state.pack,
+      modelId: get().selectedModelId,
+      maxTokens: SYNTHESIZE_MAX_TOKENS,
+      threadHistory,
     });
+    if (epoch !== searchEpoch) return;
+    if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
+    finish(routed.card, extractRemaining());
   },
 }));
 

@@ -91,11 +91,16 @@ export function HomeProof() {
             <div className="space-y-3">
               <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode)}</p>
               {card?.say ? <AnswerSay text={card.say} /> : null}
+              {card?.answerMode === "generated" ? (
+                <p className="generated-note" title="General knowledge — verify before saying it.">
+                  General knowledge — verify before saying it.
+                </p>
+              ) : null}
               {card && card.latencyMs > 0 ? (
                 <p className="text-xs text-muted tabular-nums">Found in {(card.latencyMs / 1000).toFixed(2)}s</p>
               ) : null}
             </div>
-            {card && card.citations.length > 0 ? (
+            {card && card.answerMode !== "generated" && card.citations.length > 0 ? (
               <ul className="answer-receipt-cites" data-testid="home-proof-cite">
                 {card.citations.map((cite) => {
                   const range = citedLineRange(cite);

@@ -5,7 +5,7 @@ test("clicking a file citation paints and scrolls the full range", async ({ page
   await openCockpit(page);
   await typeQuestion(page, "Why does that retry three times?");
 
-  const card = await waitForCard(page, { badge: "From your docs" });
+  const card = await waitForCard(page, { badge: "From your files" });
   const cite = card.getByTestId("card-citation").filter({ hasText: "src/exporter/retry.ts:4-6" });
   await expect(cite).toBeVisible();
 
