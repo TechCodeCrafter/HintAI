@@ -19,8 +19,6 @@ import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import {
-  EXTRACT_MAX_TOKENS,
-  EXTRACT_MODEL_ID,
   SYNTHESIZE_MAX_TOKENS,
   getDefaultModel,
   readSelectedModelId,
@@ -38,11 +36,15 @@ import {
   writeSubscription,
   type SubscriptionTier,
 } from "@/lib/billing/subscription";
-import type { NormalizedDocument } from "@/lib/document/types";
-import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
-import { isDocumentHit } from "@/lib/repo/types";
-import { generateAnswer } from "@/lib/search/generate-answer";
-import { localCard } from "@/lib/search/local-card";
+import type { Card, DocumentCitation, HeardEvent, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
+import {
+  appendAnswerHistory,
+  cardFromHistory,
+  findHistoryItem,
+  type AnswerHistoryItem,
+} from "@/lib/search/answer-history";
+import { routeFromScore } from "@/lib/search/answer-route";
+import { extractAnswer, freelyAnswer, synthesizeAnswer } from "@/lib/search/generate-answer";
 import { officeReadError, packFromFiles, truncationNotice } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
@@ -158,6 +160,7 @@ type MeetHintState = {
   selectedModelId: string;
   extractRemaining: number;
   upgradeFeature: string | null;
+  auditOpen: boolean;
   sharingCall: boolean;
   searching: boolean;
   refining: boolean;
@@ -181,7 +184,7 @@ type MeetHintState = {
   openFile: string | null;
   openDocument: DocumentOpenTarget | null;
   openPdfSource: (sourceId: string) => void;
-  ledger: Array<{ query: string; say: string | null; at: number }>;
+  answerHistory: AnswerHistoryItem[];
   /** Structured context for the open thread. See thread.ts. */
   thread: ThreadContext | null;
   arm: () => void;
@@ -231,12 +234,15 @@ type MeetHintState = {
   meetingHistory: MeetingRecord[];
   selectedClaimId: string | null;
   claimReport: string | null;
+  openAudit: () => Promise<void>;
   startClaimAudit: () => Promise<void>;
   admitHeardClaim: (utterance: Utterance) => Promise<void>;
   endClaimAudit: () => Promise<void>;
   selectAuditClaim: (id: string | null) => void;
   closeClaimAudit: () => void;
   exportClaimReport: () => void;
+  restoreAnswer: (id: string) => void;
+  reviewMeeting: (id: string) => Promise<void>;
 };
 
 const playTimeouts: number[] = [];
@@ -270,7 +276,7 @@ function clearSessionOnSwitch(): Pick<
   MeetHintState,
   | "thread"
   | "card"
-  | "ledger"
+  | "answerHistory"
   | "heardQuestion"
   | "handledId"
   | "openFile"
@@ -282,7 +288,7 @@ function clearSessionOnSwitch(): Pick<
   return {
     thread: null,
     card: null,
-    ledger: [],
+    answerHistory: [],
     heardQuestion: null,
     handledId: null,
     openFile: null,
@@ -312,18 +318,6 @@ function firstCitedPath(card: Card): string | null {
   return null;
 }
 
-async function documentsForHits(hits: Hit[]): Promise<Map<string, NormalizedDocument>> {
-  const documents = new Map<string, NormalizedDocument>();
-  if (!hits.some(isDocumentHit)) return documents;
-  const repo = getContextRepository();
-  for (const hit of hits) {
-    if (!isDocumentHit(hit) || documents.has(hit.sourceId)) continue;
-    const document = await repo.getNormalizedDocument(hit.sourceId, hit.contentHash);
-    if (document) documents.set(hit.sourceId, document);
-  }
-  return documents;
-}
-
 function windowText(utterances: Utterance[], ms = 15000): string {
   const cutoff = Date.now() - ms;
   return utterances
@@ -344,12 +338,12 @@ const CONTEXT_LINES = 4;
  * What the question gate is allowed to know: the words in the loaded material,
  * and whether a cited Card is still fresh enough for a terse follow-up.
  */
-function gateFrom(state: Pick<MeetHintState, "vocab" | "ledger" | "thread">): Gate {
-  const recent = state.ledger[0];
+function gateFrom(state: Pick<MeetHintState, "vocab" | "answerHistory" | "thread">): Gate {
+  const recent = state.answerHistory[0];
   const alive = threadAlive(state.thread, THREAD_MS);
   return {
     vocab: state.vocab,
-    threadOpen: Boolean(recent?.say) && Date.now() - (recent?.at ?? 0) < THREAD_MS && alive,
+    threadOpen: Boolean(recent?.say) && Date.now() - (recent?.timestamp ?? 0) < THREAD_MS && alive,
     thread: alive ? state.thread : null,
   };
 }
@@ -411,6 +405,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   selectedModelId: getDefaultModel().id,
   extractRemaining: EXTRACT_DAILY_LIMIT,
   upgradeFeature: null,
+  auditOpen: false,
   sharingCall: false,
   searching: false,
   refining: false,
@@ -435,7 +430,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   card: null,
   openFile: "src/exporter/retry.ts",
   openDocument: null,
-  ledger: [],
+  answerHistory: [],
   thread: null,
   arm: () => {
     playTimeouts.splice(0).forEach((id) => window.clearTimeout(id));
@@ -1180,6 +1175,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
   },
   dismissPackNotice: () => set({ packNotice: null }),
+  openAudit: async () => {
+    if (get().subscription === "free") {
+      set({ upgradeFeature: "audit" });
+      return;
+    }
+    await get().startClaimAudit();
+    set({ auditOpen: true });
+  },
   startClaimAudit: async () => {
     const state = get();
     if (state.subscription === "free") return;
@@ -1235,7 +1238,12 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const meeting = get().currentMeeting;
     if (!meeting || meeting.endedAt != null) return;
     try {
-      const finished = await finishMeeting(meeting, get().utterances, get().subscription);
+      const finished = await finishMeeting(
+        meeting,
+        get().utterances,
+        get().subscription,
+        get().answerHistory,
+      );
       if (get().currentMeeting?.id !== meeting.id) return;
       set({
         currentMeeting: finished.meeting,
@@ -1244,21 +1252,76 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
     } catch {
       set({
-        currentMeeting: { ...meeting, endedAt: Date.now(), utterances: get().utterances },
+        currentMeeting: {
+          ...meeting,
+          endedAt: Date.now(),
+          utterances: get().utterances,
+          answerHistory: get().answerHistory,
+        },
       });
     }
   },
   selectAuditClaim: (id) => set({ selectedClaimId: id }),
   closeClaimAudit: () => {
     const meeting = get().currentMeeting;
-    if (meeting && meeting.endedAt == null) return;
-    set({ currentMeeting: null, selectedClaimId: null, claimReport: null });
+    if (meeting && meeting.endedAt == null) {
+      set({ auditOpen: false, selectedClaimId: null });
+      return;
+    }
+    set({ currentMeeting: null, selectedClaimId: null, claimReport: null, auditOpen: false });
   },
   exportClaimReport: () => {
     const meeting = get().currentMeeting;
     const report = get().claimReport;
     if (!meeting || !report) return;
     saveClaimReport(report, reportFilename(meeting));
+  },
+  restoreAnswer: (id) => {
+    const state = get();
+    const item = findHistoryItem(
+      id,
+      state.answerHistory,
+      state.currentMeeting?.answerHistory,
+      ...state.meetingHistory.map((meeting) => meeting.answerHistory),
+    );
+    if (!item) return;
+    const card = cardFromHistory(item);
+    set((s) => ({
+      ...applyCard(card, s.openDocument),
+      typedQuery: item.query,
+      heardQuestion: item.query,
+      openFile: firstCitedPath(card) ?? s.openFile,
+    }));
+  },
+  reviewMeeting: async (id) => {
+    const state = get();
+    let meeting =
+      state.currentMeeting?.id === id
+        ? state.currentMeeting
+        : (state.meetingHistory.find((row) => row.id === id) ?? null);
+    if (!meeting) {
+      try {
+        meeting = await getMeetingRepository().get(id);
+      } catch {
+        meeting = null;
+      }
+    }
+    if (!meeting) return;
+    const live = get().currentMeeting;
+    if (live && live.endedAt == null && live.id !== meeting.id) {
+      set({ auditOpen: true });
+      return;
+    }
+    const history = meeting.answerHistory ?? [];
+    const latest = history[0];
+    set((s) => ({
+      currentMeeting: meeting,
+      answerHistory: history.length ? history : s.answerHistory,
+      auditOpen: true,
+      selectedClaimId: null,
+      claimReport: null,
+      ...(latest ? applyCard(cardFromHistory(latest), s.openDocument) : {}),
+    }));
   },
   search: async (explicit, opts) => {
     const state = get();
@@ -1290,32 +1353,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
       return;
     }
-    const mode = state.composeMode;
-    if (mode === "synthesize" && state.subscription === "free") {
-      set({
-        upgradeFeature: "synthesize",
-        ...applyCard(
-          {
-            say: null,
-            reason: "Synthesize mode requires Pro. Upgrade to combine insights from multiple files with verified citations.",
-            citations: [],
-            query,
-            latencyMs: 0,
-            source: "local",
-          },
-          get().openDocument,
-        ),
-      });
-      return;
-    }
-    if (mode === "extract" && state.subscription === "free" && extractExhausted()) {
+    if (state.subscription === "free" && extractExhausted()) {
       set({
         extractRemaining: 0,
         upgradeFeature: "extract-limit",
         ...applyCard(
           {
             say: null,
-            reason: "You've used today's 20 Extract questions. Upgrade to Pro for unlimited answers.",
+            reason: "You've reached your daily limit. Upgrade to Pro for unlimited answers.",
             citations: [],
             query,
             latencyMs: 0,
@@ -1335,15 +1380,23 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     if (epoch !== searchEpoch) return;
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
-      set((s) => ({
-        searching: false,
-        refining: false,
-        extractRemaining: remaining,
-        ...applyCard(card, s.openDocument),
-        openFile: firstCitedPath(card) ?? s.openFile,
-        ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger].slice(0, 12),
-        thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
-      }));
+      set((s) => {
+        const answerHistory = appendAnswerHistory(s.answerHistory, card);
+        const currentMeeting =
+          s.currentMeeting && s.currentMeeting.endedAt == null
+            ? { ...s.currentMeeting, answerHistory }
+            : s.currentMeeting;
+        return {
+          searching: false,
+          refining: false,
+          extractRemaining: remaining,
+          ...applyCard(card, s.openDocument),
+          openFile: firstCitedPath(card) ?? s.openFile,
+          answerHistory,
+          currentMeeting,
+          thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
+        };
+      });
       persist({
         card,
         armed: get().armed,
@@ -1352,55 +1405,48 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
     };
 
-    const generate = mode === "extract" || mode === "synthesize";
-    if (generate) {
-      const extractFree = mode === "extract" && get().subscription === "free";
-      if (extractFree && hits.length > 0) consumeExtractQuestion();
-      const generated = await generateAnswer(query, hits, t0, {
-        pack: state.pack,
-        modelId: mode === "extract" ? EXTRACT_MODEL_ID : get().selectedModelId,
-        maxTokens: mode === "extract" ? EXTRACT_MAX_TOKENS : SYNTHESIZE_MAX_TOKENS,
-      });
+    if (get().subscription === "free") consumeExtractQuestion();
+    const topHit = hits[0];
+    const topScore = topHit?.score ?? 0;
+    const route = routeFromScore(topScore);
+    const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
+    const modelId = get().selectedModelId;
+    const maxTokens = SYNTHESIZE_MAX_TOKENS;
+    let generated =
+      route === "extract" && topHit
+        ? await extractAnswer(query, topHit, t0, { pack: state.pack })
+        : route === "synthesize"
+          ? await synthesizeAnswer(query, hits, t0, { pack: state.pack, modelId, maxTokens, threadHistory })
+          : await freelyAnswer(query, t0, { modelId, maxTokens, threadHistory });
+    if (epoch !== searchEpoch) return;
+    if (!generated && route !== "freely") {
+      generated = await freelyAnswer(query, t0, { modelId, maxTokens, threadHistory });
       if (epoch !== searchEpoch) return;
-      if (generated) {
-        finish(
-          {
-            say: generated.say,
-            citations: generated.citations,
-            query,
-            latencyMs: generated.latencyMs,
-            source: generated.modelName ?? (mode === "synthesize" ? "synthesize" : "local"),
-            answerMode: "docs",
-            modelName: generated.modelName,
-          },
-          extractRemaining(),
-        );
-        return;
-      }
-      if (mode === "synthesize") {
-        finish({
-          say: null,
-          citations: [],
+    }
+    if (generated) {
+      finish(
+        {
+          say: generated.say,
+          citations: generated.citations,
           query,
-          latencyMs: Math.round(performance.now() - t0),
-          source: "local",
-        });
-        return;
-      }
+          latencyMs: generated.latencyMs,
+          source: generated.modelName ?? (generated.answerMode === "docs" ? "local" : "synthesize"),
+          answerMode: generated.answerMode,
+          modelName: generated.modelName,
+        },
+        extractRemaining(),
+      );
+      return;
     }
 
-    const documents = await documentsForHits(hits);
-    const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
-      document: (sourceId) => documents.get(sourceId),
+    finish({
+      say: null,
+      reason: "Could not generate an answer.",
+      citations: [],
+      query,
+      latencyMs: Math.round(performance.now() - t0),
+      source: "local",
     });
-    if (epoch !== searchEpoch) return;
-    finish(
-      {
-        ...composed,
-        answerMode: composed.say ? "docs" : undefined,
-      },
-      extractRemaining(),
-    );
   },
 }));
 

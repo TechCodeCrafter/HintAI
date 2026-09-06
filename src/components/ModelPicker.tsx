@@ -2,20 +2,17 @@
 
 import { AVAILABLE_MODELS } from "@/lib/ai/models";
 import { isPaidTier, type SubscriptionTier } from "@/lib/billing/subscription";
-import type { ComposeMode } from "@/lib/store";
 
 export function ModelPicker({
-  mode,
   subscription,
   value,
   onChange,
 }: {
-  mode: ComposeMode;
   subscription: SubscriptionTier;
   value: string;
   onChange: (id: string) => void;
 }) {
-  if (mode !== "synthesize" || !isPaidTier(subscription)) return null;
+  if (!isPaidTier(subscription)) return null;
   return (
     <label className="flex min-w-0 items-center gap-2 text-[11px] text-muted">
       <span className="shrink-0">Model</span>

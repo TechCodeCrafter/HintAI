@@ -2,6 +2,10 @@ import { MeetHintDatabase } from "../context/storage/indexeddb.ts";
 import { DATABASE_NAME } from "../context/storage/schema.ts";
 import type { MeetingRecord } from "./types.ts";
 
+function withAnswerHistory(record: MeetingRecord): MeetingRecord {
+  return { ...record, answerHistory: record.answerHistory ?? [] };
+}
+
 export type MeetingRepository = {
   put(record: MeetingRecord): Promise<void>;
   get(id: string): Promise<MeetingRecord | null>;
@@ -21,14 +25,17 @@ export function createDexieMeetingRepository(dbName = DATABASE_NAME): MeetingRep
       await db.meetings.put(record);
     },
     async get(id) {
-      return (await db.meetings.get(id)) ?? null;
+      const row = await db.meetings.get(id);
+      return row ? withAnswerHistory(row) : null;
     },
     async list() {
-      return newestFirst(await db.meetings.toArray());
+      return newestFirst((await db.meetings.toArray()).map(withAnswerHistory));
     },
     async listPast(excludeId) {
       const rows = await db.meetings.toArray();
-      return newestFirst(rows.filter((row) => row.endedAt != null && row.id !== excludeId));
+      return newestFirst(
+        rows.filter((row) => row.endedAt != null && row.id !== excludeId).map(withAnswerHistory),
+      );
     },
     async delete(id) {
       await db.meetings.delete(id);
@@ -44,16 +51,16 @@ export function createMemoryMeetingRepository(): MeetingRepository {
     },
     async get(id) {
       const row = rows.get(id);
-      return row ? structuredClone(row) : null;
+      return row ? withAnswerHistory(structuredClone(row)) : null;
     },
     async list() {
-      return newestFirst([...rows.values()].map((row) => structuredClone(row)));
+      return newestFirst([...rows.values()].map((row) => withAnswerHistory(structuredClone(row))));
     },
     async listPast(excludeId) {
       return newestFirst(
         [...rows.values()]
           .filter((row) => row.endedAt != null && row.id !== excludeId)
-          .map((row) => structuredClone(row)),
+          .map((row) => withAnswerHistory(structuredClone(row))),
       );
     },
     async delete(id) {

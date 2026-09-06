@@ -2,6 +2,9 @@ import type { Page } from "@playwright/test";
 
 export async function installE2eMocks(page: Page) {
   await page.addInitScript(() => {
+    window.__mockCraftCard = async () => ({
+      say: "A concise general-knowledge answer for the meeting.",
+    });
     window.__mockEmbedder = async (text: string) => {
       const vec = new Array(384).fill(0);
       for (let i = 0; i < text.length; i += 1) {

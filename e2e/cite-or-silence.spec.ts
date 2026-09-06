@@ -5,28 +5,27 @@ test.describe("Cite or stay silent", () => {
   test("a covered question speaks a cited line", async ({ page }) => {
     await openCockpit(page);
     await typeQuestion(page, "Why does that retry three times?");
-    const card = await waitForCard(page, { badge: "From your files" });
+    const card = await waitForCard(page, { badge: "From your docs" });
     await expect(card.getByTestId("card-say")).toContainText("three");
     await expect(card.getByTestId("card-citation").filter({ hasText: "src/exporter/retry" })).toBeVisible();
   });
 
-  test("weather stays silent", async ({ page }) => {
+  test("weather is not cited from the files", async ({ page }) => {
     await openCockpit(page);
     await typeQuestion(page, "What is the weather today?");
-    const card = await waitForCard(page);
-    await expect(card.getByTestId("card-say")).toHaveCount(0);
-    await expect(card.getByTestId("card-reason")).toBeVisible();
+    const card = await waitForCard(page, { badge: "Generated" });
+    await expect(card.getByTestId("card-say")).not.toBeEmpty();
+    await expect(card.getByTestId("card-citation")).toHaveCount(0);
   });
 
-  test("a new unanswered question clears the previous say", async ({ page }) => {
+  test("an off-topic question does not keep the previous citation", async ({ page }) => {
     await openCockpit(page);
     await typeQuestion(page, "Why does that retry three times?");
     const card = await waitForCard(page, { allowNull: false });
     await expect(card.getByTestId("card-say")).toContainText("three");
 
     await typeQuestion(page, "What is the weather in Paris today?");
-    await expect(card.getByTestId("card-say")).toHaveCount(0);
-    await expect(card.getByTestId("card-reason")).toBeVisible();
+    await expect(card.getByTestId("card-citation").filter({ hasText: "src/exporter/retry" })).toHaveCount(0);
   });
 
   test("the cockpit does not offer a generate toggle or model picker", async ({ page }) => {

@@ -4,6 +4,7 @@ import { useLayoutEffect } from "react";
 import { AnswerSay } from "@/components/answer-say";
 import { Button } from "@/components/ui/button";
 import { HOME_PROOF_CHIPS } from "@/lib/repo/northstar";
+import { receiptKicker } from "@/lib/search/answer-mode";
 import { citationText, citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import { useMeetHint } from "@/lib/store";
 
@@ -88,7 +89,7 @@ export function HomeProof() {
               </div>
             ) : null}
             <div className="space-y-3">
-              <p className="receipt-kicker receipt-kicker-accent">From your material</p>
+              <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode)}</p>
               {card?.say ? <AnswerSay text={card.say} /> : null}
               {card && card.latencyMs > 0 ? (
                 <p className="text-xs text-muted tabular-nums">Found in {(card.latencyMs / 1000).toFixed(2)}s</p>

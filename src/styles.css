@@ -507,10 +507,44 @@ html[data-theme="dark"] .mode-tab[data-active="true"] {
 }
 
 .answer-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 8px;
   font-size: 11px;
-  letter-spacing: 0;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   text-transform: none;
-  color: var(--color-muted);
+}
+
+.badge-from-docs {
+  background: rgb(73 201 141 / 0.14);
+  color: var(--color-ok);
+}
+
+.badge-synthesized {
+  background: rgb(124 92 255 / 0.14);
+  color: var(--color-accent);
+}
+
+.badge-generated {
+  background: rgb(59 130 246 / 0.14);
+  color: #3b82f6;
+}
+
+html[data-theme="light"] .badge-from-docs {
+  background: #e8f6ee;
+  color: #217a4d;
+}
+
+html[data-theme="light"] .badge-synthesized {
+  background: #efeaff;
+  color: #5b3fd6;
+}
+
+html[data-theme="light"] .badge-generated {
+  background: #e8f1ff;
+  color: #1d4ed8;
 }
 
 .key-settings-backdrop {
@@ -1477,6 +1511,84 @@ html[data-theme="light"] .ground-chip {
 .claim-evidence {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.answer-history {
+  margin-top: 4px;
+}
+
+.history-toggle {
+  font-size: 12px;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.history-toggle:hover {
+  color: var(--color-fg);
+}
+
+.history-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-line);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--color-subtle);
+}
+
+.history-item:hover {
+  background: var(--color-hover);
+}
+
+.history-item-main {
+  min-width: 0;
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.history-query {
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.history-answer {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-fg);
+}
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.history-time {
+  font-size: 11px;
+  color: var(--color-faint);
+}
+
+.history-copy {
+  flex-shrink: 0;
+}
+
+.claim-answers-list,
+.claim-past .history-list {
+  margin: 0 0.75rem 0.75rem;
+  padding-top: 8px;
 }
 
 .claim-monitor-foot {

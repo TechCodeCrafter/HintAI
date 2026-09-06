@@ -21,6 +21,7 @@ export async function finishMeeting(
   meeting: MeetingRecord,
   utterances: MeetingRecord["utterances"],
   subscription: SubscriptionTier = "free",
+  answerHistory: MeetingRecord["answerHistory"] = meeting.answerHistory,
 ): Promise<{
   meeting: MeetingRecord;
   report: string;
@@ -30,7 +31,13 @@ export async function finishMeeting(
   const claims = canDetectContradictions(subscription)
     ? meeting.claims.map((claim) => detectContradictions(claim, history) ?? claim)
     : meeting.claims;
-  const ended = { ...meeting, endedAt: meeting.endedAt ?? Date.now(), utterances, claims };
+  const ended = {
+    ...meeting,
+    endedAt: meeting.endedAt ?? Date.now(),
+    utterances,
+    claims,
+    answerHistory: (answerHistory ?? meeting.answerHistory ?? []).slice(0, 50),
+  };
   const report = claimAuditReport(ended, history, subscription);
   await getMeetingRepository().put(ended);
   return { meeting: ended, report, history: await getMeetingRepository().list() };

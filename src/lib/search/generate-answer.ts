@@ -1,14 +1,18 @@
 import { getDefaultModel, getModelById } from "../ai/models.ts";
 import { isFileHit, type Citation, type Hit, type RepoPack } from "../repo/types.ts";
+import type { AnswerMode } from "./answer-mode.ts";
 import { provenanceLabel } from "./cite.ts";
 import { textEvidence, verifyClaim, type Evidence } from "./evidence.ts";
 
+export type AnswerPolicy = "extract" | "synthesize" | "freely";
+
 export type GeneratedAnswer = {
   say: string;
-  usedEvidence: true;
+  usedEvidence: boolean;
   citations: Citation[];
   latencyMs: number;
   modelName?: string;
+  answerMode: AnswerMode;
 };
 
 export type SynthesisAsk = (payload: {
@@ -16,6 +20,7 @@ export type SynthesisAsk = (payload: {
   prompt: string;
   modelId: string;
   maxTokens?: number;
+  policy?: AnswerPolicy;
 }) => Promise<{ text: string | null; reason?: string; modelName?: string }>;
 
 const INSUFFICIENT = "INSUFFICIENT";
@@ -41,6 +46,79 @@ DOCUMENTS:
 ${documents}
 
 QUESTION: "${query}"`;
+}
+
+function formatChunks(hits: Hit[]): string {
+  const chunks = hits.slice(0, CHUNK_CAP).map((hit, i) => {
+    const where = isFileHit(hit) ? `${hit.path}:${hit.startLine}` : `${hit.path} (page ${hit.page})`;
+    return `[${i + 1}] ${where}\n${hit.text.slice(0, CHUNK_CHARS)}`;
+  });
+  return chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
+}
+
+function historyBlock(history?: string[]): string {
+  if (!history?.length) return "";
+  return `\nRECENT QUESTIONS:\n${history
+    .slice(0, 4)
+    .map((item) => `- ${item}`)
+    .join("\n")}\n`;
+}
+
+/** Weak evidence: cite the files when they help, otherwise answer from knowledge. */
+export function buildWeakEvidencePrompt(query: string, hits: Hit[], history?: string[]): string {
+  return `The user is in a meeting. Below are relevant document chunks. Use them if they help answer the question. If they don't contain the answer, use your general knowledge.
+${historyBlock(history)}
+DOCUMENT CHUNKS:
+${formatChunks(hits.slice(0, 3))}
+
+QUESTION: "${query}"
+
+RULES:
+- If the documents contain the answer, cite the source with a marker like [1] or [2].
+- If the documents do NOT contain the answer, answer from general knowledge.
+- Be concise but detailed (2-4 sentences).
+- Sound like a senior engineer, not a textbook.
+
+ANSWER:`;
+}
+
+/** No useful retrieval — answer from knowledge. */
+export function buildFreelyPrompt(query: string, history?: string[]): string {
+  return `The user is in a meeting and asked a question that is not covered by their documents.
+${historyBlock(history)}
+QUESTION: "${query}"
+
+RULES:
+- Answer from general knowledge.
+- Be concise but detailed (2-4 sentences).
+- Sound like a senior engineer.
+- Do not invent facts about the user's specific documents.
+
+ANSWER:`;
+}
+
+/** Pick the sentence in a chunk that overlaps the question most. */
+export function extractBestSentence(text: string, query: string): string {
+  const terms = query
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((term) => term.length > 2);
+  const sentences = text
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((sentence) => sentence.replace(/\s+/g, " ").trim())
+    .filter((sentence) => sentence.length > 12);
+  if (sentences.length === 0) return text.replace(/\s+/g, " ").trim().slice(0, 240);
+  let best = sentences[0]!;
+  let bestScore = -1;
+  for (const sentence of sentences) {
+    const lower = sentence.toLowerCase();
+    const score = terms.reduce((sum, term) => sum + (lower.includes(term) ? 1 : 0), 0);
+    if (score > bestScore) {
+      bestScore = score;
+      best = sentence;
+    }
+  }
+  return best;
 }
 
 /** 1-based chunk indexes cited as [N], in first-seen order. */
@@ -139,10 +217,83 @@ function evidenceForMarkers(text: string, hits: Hit[], pack?: RepoPack): { evide
   return { evidence, citations };
 }
 
-async function defaultAsk(prompt: string, modelId: string, maxTokens?: number) {
+async function defaultAsk(prompt: string, modelId: string, maxTokens?: number, policy: AnswerPolicy = "extract") {
   const { completeSynthesis } = await import("@/lib/ai/cardsmith");
   const { readClientKeys } = await import("@/lib/ai/client-keys");
-  return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys() } });
+  return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys(), policy } });
+}
+
+type GenerateOpts = {
+  ask?: SynthesisAsk;
+  modelId?: string;
+  pack?: RepoPack;
+  maxTokens?: number;
+  threadHistory?: string[];
+};
+
+async function completePrompt(
+  query: string,
+  prompt: string,
+  policy: AnswerPolicy,
+  opts?: GenerateOpts,
+): Promise<{ text: string; modelName?: string } | null> {
+  const model = getModelById(opts?.modelId) ?? getDefaultModel();
+  let remote: { text: string | null; reason?: string; modelName?: string };
+  try {
+    if (typeof window !== "undefined" && window.__mockCraftCard) {
+      const mocked = await window.__mockCraftCard({
+        query,
+        instruction: prompt,
+        hits: [],
+        task: "answer",
+        modelId: model.id,
+      });
+      remote = { text: mocked?.say ?? null, modelName: model.name };
+    } else {
+      remote = await Promise.race([
+        opts?.ask
+          ? opts.ask({ query, prompt, modelId: model.id, maxTokens: opts.maxTokens, policy })
+          : defaultAsk(prompt, model.id, opts?.maxTokens, policy),
+        new Promise<never>((_, reject) => {
+          globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
+        }),
+      ]);
+    }
+  } catch {
+    return null;
+  }
+  const raw = remote.text?.replace(/\s+/g, " ").trim() ?? "";
+  if (!raw) return null;
+  return { text: raw, modelName: remote.modelName ?? model.name };
+}
+
+/** Strong retrieval — speak a sentence from the top hit. No LLM. */
+export async function extractAnswer(
+  query: string,
+  hit: Hit,
+  t0: number,
+  opts?: GenerateOpts,
+): Promise<GeneratedAnswer | null> {
+  const say = extractBestSentence(hit.text, query);
+  if (!say) return null;
+  const span = evidenceFromHit(hit, opts?.pack);
+  const citations = span
+    ? [citationFrom(hit, span)]
+    : [
+        {
+          kind: "file" as const,
+          path: hit.path,
+          line: isFileHit(hit) ? hit.startLine : 1,
+          label: hit.path,
+        },
+      ];
+  return {
+    say,
+    usedEvidence: true,
+    citations,
+    latencyMs: Math.round(performance.now() - t0),
+    answerMode: "docs",
+  };
 }
 
 /**
@@ -153,29 +304,14 @@ export async function generateAnswer(
   query: string,
   hits: Hit[],
   t0: number,
-  opts?: { ask?: SynthesisAsk; modelId?: string; pack?: RepoPack; maxTokens?: number },
+  opts?: GenerateOpts,
 ): Promise<GeneratedAnswer | null> {
   if (hits.length === 0) return null;
-  const model = getModelById(opts?.modelId) ?? getDefaultModel();
-  const prompt = buildSynthesisPrompt(query, hits);
-  let remote: { text: string | null; reason?: string; modelName?: string };
-  try {
-    remote = await Promise.race([
-      opts?.ask
-        ? opts.ask({ query, prompt, modelId: model.id, maxTokens: opts.maxTokens })
-        : defaultAsk(prompt, model.id, opts?.maxTokens),
-      new Promise<never>((_, reject) => {
-        globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
-      }),
-    ]);
-  } catch {
-    return null;
-  }
-  const raw = remote.text?.replace(/\s+/g, " ").trim() ?? "";
-  if (!raw || isInsufficient(raw)) return null;
-  const say = stripCitationMarkers(raw);
+  const remote = await completePrompt(query, buildSynthesisPrompt(query, hits), "extract", opts);
+  if (!remote || isInsufficient(remote.text)) return null;
+  const say = stripCitationMarkers(remote.text);
   if (!say) return null;
-  const { evidence, citations } = evidenceForMarkers(raw, hits, opts?.pack);
+  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
   if (evidence.length === 0) return null;
   const check = verifyClaim(say, evidence);
   if (!check.ok || check.checked === 0) return null;
@@ -184,6 +320,56 @@ export async function generateAnswer(
     usedEvidence: true,
     citations,
     latencyMs: Math.round(performance.now() - t0),
-    modelName: remote.modelName ?? model.name,
+    modelName: remote.modelName,
+    answerMode: "docs",
+  };
+}
+
+/** Weak retrieval: cite the files when they support the answer, otherwise speak from knowledge. */
+export async function synthesizeAnswer(
+  query: string,
+  hits: Hit[],
+  t0: number,
+  opts?: GenerateOpts,
+): Promise<GeneratedAnswer | null> {
+  const remote = await completePrompt(
+    query,
+    buildWeakEvidencePrompt(query, hits, opts?.threadHistory),
+    "synthesize",
+    opts,
+  );
+  if (!remote || isInsufficient(remote.text)) return null;
+  const say = stripCitationMarkers(remote.text);
+  if (!say) return null;
+  const { citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
+  return {
+    say,
+    usedEvidence: citations.length > 0,
+    citations,
+    latencyMs: Math.round(performance.now() - t0),
+    modelName: remote.modelName,
+    answerMode: "synthesized",
+  };
+}
+
+export const generateAnswerWithGeneralKnowledge = synthesizeAnswer;
+
+/** No useful retrieval — answer from general knowledge. */
+export async function freelyAnswer(
+  query: string,
+  t0: number,
+  opts?: GenerateOpts,
+): Promise<GeneratedAnswer | null> {
+  const remote = await completePrompt(query, buildFreelyPrompt(query, opts?.threadHistory), "freely", opts);
+  if (!remote || isInsufficient(remote.text)) return null;
+  const say = stripCitationMarkers(remote.text);
+  if (!say) return null;
+  return {
+    say,
+    usedEvidence: false,
+    citations: [],
+    latencyMs: Math.round(performance.now() - t0),
+    modelName: remote.modelName,
+    answerMode: "generated",
   };
 }

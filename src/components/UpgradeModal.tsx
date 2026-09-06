@@ -10,22 +10,15 @@ import { cn } from "@/lib/cn";
 import { useMeetHint } from "@/lib/store";
 
 const FEATURE_COPY: Record<string, { kicker: string; headline: string; reason: string }> = {
-  synthesize: {
-    kicker: "Synthesize requires Pro",
-    headline: "Combine insights across files",
-    reason:
-      "Synthesize mode requires Pro. Upgrade to combine insights from multiple files with verified citations.",
-  },
   audit: {
     kicker: "Claim Audit requires Pro",
     headline: "Track claims across the meeting",
     reason: "Claim Audit requires Pro. Upgrade to track and verify claims across meetings.",
   },
   "extract-limit": {
-    kicker: "Today's Extract limit",
+    kicker: "Today's question limit",
     headline: "Keep asking after today's 20",
-    reason:
-      "You've used today's 20 Extract questions. Upgrade to Pro for unlimited answers and model switching.",
+    reason: "You've reached your daily limit. Upgrade to Pro for unlimited answers.",
   },
 };
 
@@ -34,14 +27,14 @@ const TIERS = [
     name: "Free",
     price: "$0",
     cadence: "",
-    points: ["Extract mode", "20 questions/day", "GPT-4o Mini", "1 pack"],
+    points: ["Auto-routed answers", "20 questions/day", "GPT-4o Mini", "1 pack"],
     action: "Current plan",
   },
   {
     name: "Pro",
     price: "$12",
     cadence: "/mo",
-    points: ["Unlimited Extract", "Synthesize + Claim Audit", "Model switching", "Export"],
+    points: ["Unlimited answers", "Claim Audit", "Model switching", "Export"],
     action: "Get early access",
     recommended: true,
   },
@@ -67,7 +60,7 @@ export function UpgradeModal({
   const emailId = useId();
   const emailRef = useRef<HTMLInputElement>(null);
   const subscription = useMeetHint((s) => s.subscription);
-  const copy = (feature && FEATURE_COPY[feature]) || FEATURE_COPY.synthesize;
+  const copy = (feature && FEATURE_COPY[feature]) || FEATURE_COPY["extract-limit"];
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);

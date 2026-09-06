@@ -36,9 +36,10 @@ const BEATS: Beat[] = [
     asked: "Do we have a data processing agreement with them?",
     files: ["MSA.pdf", "addendum.pdf", "pricing.pdf", "notes.md"],
     fileCount: 47,
-    answer: null,
+    answer:
+      "A DPA sets who is controller vs processor, what the vendor may do with personal data, and what happens on a breach. Nothing in these files mentions one — you still typically need it before they process customer data, especially under GDPR.",
     source: null,
-    silence: "Nothing you brought mentions a data processing agreement.",
+    silence: null,
   },
 ];
 
@@ -88,8 +89,8 @@ const USE_CASES = [
 const STEPS = [
   { id: "01", title: "Listening", body: "Hint picks up the question that is actually being asked." },
   { id: "02", title: "Searching your files", body: "It searches the notes, docs, slides, or folder you loaded." },
-  { id: "03", title: "Finding the match", body: "Hint pulls the passage that answers the question." },
-  { id: "04", title: "Cited answer ready", body: "You get the answer with the file and line that support it." },
+  { id: "03", title: "Choosing the path", body: "Strong matches are cited. Weak or missing matches are answered from knowledge." },
+  { id: "04", title: "Answer ready", body: "You get the answer — cited when the files support it, generated when they don't." },
 ] as const;
 
 function useReducedMotion(): boolean {
@@ -225,7 +226,7 @@ function ProductFrame({
         </div>
 
         <div className={`space-y-4 p-4 ${large ? "sm:p-5 sm:py-6" : ""}`}>
-          {phase === "answered" && beat.answer && beat.source ? null : (
+          {phase === "answered" && beat.answer ? null : (
             <div className="space-y-2">
               <p className={`text-[13px] ${muted}`}>They asked</p>
               <p className={`text-[1.05rem] leading-snug ${ink} ${typing ? "hint-type" : ""}`}>
@@ -244,21 +245,23 @@ function ProductFrame({
             </p>
           ) : null}
 
-          {phase === "answered" ? (
+          {phase === "answered" && beat.answer ? (
             <div className="hint-fade space-y-4">
-              {beat.answer && beat.source ? (
-                <div className="answer-receipt">
-                  <div className="answer-receipt-body">
-                    <div className="min-w-0">
-                      <p className="receipt-kicker">They asked</p>
-                      <p className={`mt-2 text-[17px] font-semibold leading-snug ${ink}`}>
-                        {question ? `“${question}”` : null}
-                      </p>
-                    </div>
-                    <div className="space-y-3">
-                      <p className="receipt-kicker receipt-kicker-accent">From your material</p>
-                      <p className="answer-body">{highlightAnswer(beat.answer)}</p>
-                    </div>
+              <div className="answer-receipt">
+                <div className="answer-receipt-body">
+                  <div className="min-w-0">
+                    <p className="receipt-kicker">They asked</p>
+                    <p className={`mt-2 text-[17px] font-semibold leading-snug ${ink}`}>
+                      {question ? `“${question}”` : null}
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="receipt-kicker receipt-kicker-accent">
+                      {beat.source ? "From your docs" : "Generated"}
+                    </p>
+                    <p className="answer-body">{highlightAnswer(beat.answer)}</p>
+                  </div>
+                  {beat.source ? (
                     <div className="answer-receipt-cites">
                       <div className="cite-chip">
                         <Check className="size-3.5 shrink-0 text-[var(--hint-ok)]" aria-hidden="true" />
@@ -267,15 +270,11 @@ function ProductFrame({
                         <span className={`font-mono text-[12px] ${ink}`}>{beat.source.detail}</span>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <span className="answer-mode-badge badge-generated">Generated</span>
+                  )}
                 </div>
-              ) : (
-                <div className="space-y-1.5">
-                  <p className={`text-[13px] font-medium ${ink}`}>Not in your material</p>
-                  <p className={`text-[14px] ${muted}`}>{beat.silence}</p>
-                  <p className={`text-[13px] ${muted}`}>So there's no answer here to read.</p>
-                </div>
-              )}
+              </div>
             </div>
           ) : null}
         </div>
@@ -519,8 +518,8 @@ export function MeetHintLanding() {
               <span className="block">while they're still asking.</span>
             </h1>
             <p className="hint-lede max-w-md">
-              Hint listens to the conversation, searches the material you trust, and surfaces a cited
-              answer in seconds.
+              Ask anything. Hint retrieves from your documents, then answers — citing sources when
+              it can, generating when it needs to.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row">
               <a href="/home" className="hint-btn hint-btn-primary">
@@ -543,11 +542,11 @@ export function MeetHintLanding() {
           <div className="max-w-2xl space-y-3">
             <h2 className="hint-display text-3xl sm:text-4xl">How Hint works in real time</h2>
             <p className="text-[17px] text-[var(--hint-muted)]">
-              Someone asks. Hint hears it, searches your files, and shows the passage — or stays quiet.
+              Someone asks. Hint hears it, searches your files, and answers — citing when it can.
             </p>
           </div>
           <HowHintWorks />
-          <p className="hint-display text-center text-2xl sm:text-3xl">Cite it, or stay silent.</p>
+          <p className="hint-display text-center text-2xl sm:text-3xl">Cite it, or generate it.</p>
         </section>
 
         <section ref={demoRef} id="demo" className="bg-[var(--hint-demo)] text-white">
@@ -561,8 +560,8 @@ export function MeetHintLanding() {
                 <span className="block">Backed by your source.</span>
               </h2>
               <p className="text-[17px] leading-relaxed text-white/60">
-                Hint does not give you a guess. It finds the relevant passage, shows the source, and
-                keeps you grounded in your own material.
+                Hint retrieves first. It cites the passage when it's there, and answers from
+                knowledge when it isn't.
               </p>
             </div>
             <div className="mx-auto max-w-5xl">
@@ -585,7 +584,7 @@ export function MeetHintLanding() {
             <h2 className="hint-display text-3xl sm:text-4xl">Bring the material.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
               Load your notes, a lecture pack, the syllabus, a contract, or a folder of docs. Hint
-              keeps it local and cites exactly.
+              keeps it local, cites when the files support it, and generates when they don't.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -658,10 +657,10 @@ export function MeetHintLanding() {
 
         <section id="security" className="hint-wrap grid max-w-4xl gap-12 py-16 md:grid-cols-2">
           <div className="space-y-3">
-            <h2 className="hint-display text-3xl">Local. Cited. Quiet when it should be.</h2>
+            <h2 className="hint-display text-3xl">Local first. Cited when it can.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Hint reads the folder on your machine. It does not add cloud connectors, and it does not
-              invent a source. If the files do not support the answer, the card stays empty.
+              Hint reads the folder on your machine. It does not add cloud connectors. When the files
+              support the answer, it cites them. When they don't, it answers from knowledge and says so.
             </p>
           </div>
           <div id="docs" className="space-y-3">
@@ -690,7 +689,7 @@ export function MeetHintLanding() {
             <div className="mx-auto max-w-lg">
               <WaitlistForm id="hero-email" />
             </div>
-            <p className="text-center text-[15px] text-[var(--hint-muted)]">Cite it, or stay silent.</p>
+            <p className="text-center text-[15px] text-[var(--hint-muted)]">Cite it, or generate it.</p>
           </div>
         </section>
       </main>

@@ -1,4 +1,5 @@
 import type { Utterance } from "../repo/types.ts";
+import type { AnswerHistoryItem } from "../search/answer-history.ts";
 import type { Evidence } from "../search/evidence.ts";
 
 /** Green supported, yellow unverified, red contradicted (Team/Enterprise history). */
@@ -22,6 +23,7 @@ export type MeetingRecord = {
   endedAt: number | null;
   utterances: Utterance[];
   claims: Claim[];
+  answerHistory: AnswerHistoryItem[];
 };
 
 export function newMeetingRecord(name: string, startedAt = Date.now()): MeetingRecord {
@@ -32,6 +34,7 @@ export function newMeetingRecord(name: string, startedAt = Date.now()): MeetingR
     endedAt: null,
     utterances: [],
     claims: [],
+    answerHistory: [],
   };
 }
 
