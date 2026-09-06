@@ -12,7 +12,7 @@ test("free chrome stays complete and Room stays readable", async ({ page }) => {
     store.setSubscription("free");
     await store.startClaimAudit();
   });
-  await expect(page.locator(".cockpit-note")).not.toContainText("Claim Audit requires Pro");
+  await expect(page.getByText("Claim Audit requires Pro")).toHaveCount(0);
   await expect(page.getByText("YOU SAY")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Paste question" })).toBeVisible();
 

@@ -23,6 +23,6 @@ export function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", theme === "light" ? "#f4f5f7" : "#07090c");
+  if (meta) meta.setAttribute("content", theme === "light" ? "#f4f5f7" : "#0b0d12");
   localStorage.setItem(KEY, theme);
 }

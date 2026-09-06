@@ -7,15 +7,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-accent text-on-accent shadow-glow hover:opacity-90",
-        ghost: "border border-line bg-transparent text-secondary hover:border-accent hover:text-fg",
-        outline: "border border-line bg-transparent text-secondary hover:border-accent hover:text-fg",
-        quiet: "border border-line bg-transparent text-secondary hover:border-accent hover:text-fg",
+        primary: "bg-accent text-on-accent hover:bg-accent-hover",
+        ghost: "bg-transparent text-secondary hover:bg-hover hover:text-fg",
+        outline: "border border-line bg-transparent text-secondary hover:bg-hover hover:text-fg",
+        quiet: "bg-transparent text-secondary hover:bg-hover hover:text-fg",
       },
       size: {
-        sm: "h-11 px-3 text-xs rounded-sm",
-        md: "h-11 px-4 text-xs rounded-sm",
-        icon: "size-11 rounded-sm",
+        sm: "h-9 px-3 text-[13px] rounded-[10px]",
+        md: "h-10 px-4 text-[13px] rounded-[10px]",
+        icon: "size-9 rounded-[10px]",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

@@ -20,7 +20,7 @@ export function MeetHintMark({
   const gradient = useId();
 
   return (
-    <svg viewBox="0 0 64 64" role="img" aria-label="MeetHint" className={className} style={style}>
+    <svg viewBox="0 0 64 64" role="img" aria-label="Hint" className={className} style={style}>
       <defs>
         <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="0.35">
           <stop offset="0%" stopColor="var(--color-brand-blue)" />

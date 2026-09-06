@@ -129,7 +129,7 @@ export function lineAt(content: string, offset: number): number {
 export function sourceTypeOf(path: string): SourceType {
   if (/\.docx?$/i.test(path)) return "docx";
   if (/\.pptx?$/i.test(path)) return "pptx";
-  if (/\.xlsx?$/i.test(path)) return "xlsx";
+  if (/\.(xlsx?|csv)$/i.test(path)) return "xlsx";
   const inferred = inferSourceType(path);
   return inferred === "document" ? "pdf" : inferred;
 }

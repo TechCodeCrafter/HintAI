@@ -13,9 +13,9 @@ export function ContextShell({
     <div className="mh-page min-h-dvh text-fg">
       <div className="mx-auto w-full max-w-3xl px-5 sm:px-8">
         <header className="flex items-center justify-between gap-4 py-6">
-          <Link to="/home" className="flex items-center gap-2.5 text-fg">
-            <MeetHintMark className="size-7" />
-            <span className="brand-word text-sm">MEETHINT</span>
+          <Link to="/home" className="flex items-center gap-3 text-fg">
+            <MeetHintMark className="size-11" />
+            <span className="brand-word">Hint</span>
           </Link>
           <div className="flex items-center gap-2">
             {aside}

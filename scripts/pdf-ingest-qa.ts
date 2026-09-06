@@ -131,7 +131,7 @@ try {
 
   const landing = await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
   const html = landing ? await page.content() : "";
-  check("landing still says PDF Coming soon", /PDF[\s\S]*Coming soon/.test(html));
+  check("landing shows PDF without Coming soon", /PDF/.test(html) && !/PDF[\s\S]{0,80}Coming soon/.test(html));
   const productErrors = errors.filter(
     (line) => !/favicon|Download the React DevTools|hydration-mismatch|style=\{\{\}\}/i.test(line),
   );

@@ -15,6 +15,7 @@ export type SynthesisAsk = (payload: {
   query: string;
   prompt: string;
   modelId: string;
+  maxTokens?: number;
 }) => Promise<{ text: string | null; reason?: string; modelName?: string }>;
 
 const INSUFFICIENT = "INSUFFICIENT";
@@ -138,9 +139,10 @@ function evidenceForMarkers(text: string, hits: Hit[], pack?: RepoPack): { evide
   return { evidence, citations };
 }
 
-async function defaultAsk(prompt: string, modelId: string) {
+async function defaultAsk(prompt: string, modelId: string, maxTokens?: number) {
   const { completeSynthesis } = await import("@/lib/ai/cardsmith");
-  return completeSynthesis({ data: { prompt, modelId } });
+  const { readClientKeys } = await import("@/lib/ai/client-keys");
+  return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys() } });
 }
 
 /**
@@ -151,7 +153,7 @@ export async function generateAnswer(
   query: string,
   hits: Hit[],
   t0: number,
-  opts?: { ask?: SynthesisAsk; modelId?: string; pack?: RepoPack },
+  opts?: { ask?: SynthesisAsk; modelId?: string; pack?: RepoPack; maxTokens?: number },
 ): Promise<GeneratedAnswer | null> {
   if (hits.length === 0) return null;
   const model = getModelById(opts?.modelId) ?? getDefaultModel();
@@ -160,8 +162,8 @@ export async function generateAnswer(
   try {
     remote = await Promise.race([
       opts?.ask
-        ? opts.ask({ query, prompt, modelId: model.id })
-        : defaultAsk(prompt, model.id),
+        ? opts.ask({ query, prompt, modelId: model.id, maxTokens: opts.maxTokens })
+        : defaultAsk(prompt, model.id, opts?.maxTokens),
       new Promise<never>((_, reject) => {
         globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
       }),

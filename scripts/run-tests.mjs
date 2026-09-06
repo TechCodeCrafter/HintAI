@@ -50,6 +50,7 @@ const GROUPS = [
       "src/lib/search/__tests__/answer-mode.test.ts",
       "src/lib/search/__tests__/cite-or-silence.test.ts",
       "src/lib/search/__tests__/generate-answer.test.ts",
+      "src/lib/billing/__tests__/extract-quota.test.ts",
       "src/lib/billing/__tests__/subscription.test.ts",
       "src/lib/billing/__tests__/waitlist-local.test.ts",
       "src/lib/audit/__tests__/claim-gate.test.ts",
@@ -80,6 +81,7 @@ const GROUPS = [
       "src/lib/document/viewer/__tests__/viewer.test.ts",
       "src/lib/document/pdf/__tests__/add-files.test.ts",
       "src/lib/document/pdf/__tests__/store-ingest.test.ts",
+      "src/lib/document/parsers/__tests__/office-parsers.test.ts",
     ],
   },
 ];

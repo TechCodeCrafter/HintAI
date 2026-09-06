@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { AVAILABLE_MODELS, getDefaultModel, getModelById, readStoredModelId } from "../models.ts";
+import {
+  AVAILABLE_MODELS,
+  EXTRACT_MAX_TOKENS,
+  EXTRACT_MODEL_ID,
+  SYNTHESIZE_MAX_TOKENS,
+  getDefaultModel,
+  getModelById,
+  readStoredModelId,
+} from "../models.ts";
 
 test("default model is GPT-4o Mini", () => {
   assert.equal(getDefaultModel().id, "gpt-4o-mini");
@@ -15,6 +23,12 @@ test("every listed model has a provider and API name", () => {
     assert.ok(["openai", "anthropic", "xai"].includes(model.provider));
     assert.equal(model.maxTokens, 400);
   }
+});
+
+test("Extract is Mini at 250 tokens; Synthesize is 400", () => {
+  assert.equal(EXTRACT_MODEL_ID, "gpt-4o-mini");
+  assert.equal(EXTRACT_MAX_TOKENS, 250);
+  assert.equal(SYNTHESIZE_MAX_TOKENS, 400);
 });
 
 test("unknown stored ids fall back to the default", () => {

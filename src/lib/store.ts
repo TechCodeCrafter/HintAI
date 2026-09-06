@@ -19,6 +19,20 @@ import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
 import type { DocumentOpenTarget } from "@/lib/document/viewer/types";
 import { NORTHSTAR } from "@/lib/repo/northstar";
 import {
+  EXTRACT_MAX_TOKENS,
+  EXTRACT_MODEL_ID,
+  SYNTHESIZE_MAX_TOKENS,
+  getDefaultModel,
+  readSelectedModelId,
+  writeSelectedModelId,
+} from "@/lib/ai/models";
+import {
+  EXTRACT_DAILY_LIMIT,
+  consumeExtractQuestion,
+  extractExhausted,
+  extractRemaining,
+} from "@/lib/billing/extract-quota";
+import {
   canDetectContradictions,
   readSubscription,
   writeSubscription,
@@ -29,7 +43,7 @@ import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, U
 import { isDocumentHit } from "@/lib/repo/types";
 import { generateAnswer } from "@/lib/search/generate-answer";
 import { localCard } from "@/lib/search/local-card";
-import { packFromFiles, truncationNotice } from "@/lib/repo/folder";
+import { officeReadError, packFromFiles, truncationNotice } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
@@ -82,6 +96,26 @@ function packWarning(weak: boolean, files: number): string | null {
   return weak && files > 0 ? WEAK_PACK : null;
 }
 
+function noticesFromFolderLoad(args: {
+  failed: string[];
+  skipped: number;
+  truncated: boolean;
+  weak: boolean;
+  fileCount: number;
+}): { folderError: string | null; packNotice: string | null } {
+  const readError = args.failed.length > 0 ? officeReadError(args.failed) : null;
+  return {
+    folderError:
+      readError ??
+      (args.weak
+        ? WEAK_PACK
+        : args.skipped && !args.truncated
+          ? `Skipped ${args.skipped} files that are not source or text.`
+          : null),
+    packNotice: args.truncated ? truncationNotice(args.fileCount) : null,
+  };
+}
+
 type SessionWire = {
   card: Card | null;
   armed: boolean;
@@ -121,6 +155,9 @@ type MeetHintState = {
   autoAnswer: boolean;
   subscription: SubscriptionTier;
   composeMode: ComposeMode;
+  selectedModelId: string;
+  extractRemaining: number;
+  upgradeFeature: string | null;
   sharingCall: boolean;
   searching: boolean;
   refining: boolean;
@@ -153,6 +190,9 @@ type MeetHintState = {
   setAutoAnswer: (value: boolean) => void;
   setSubscription: (tier: SubscriptionTier) => void;
   setComposeMode: (mode: ComposeMode) => void;
+  setSelectedModelId: (id: string) => void;
+  requestUpgrade: (feature: string) => void;
+  clearUpgrade: () => void;
   setSharingCall: (value: boolean) => void;
   setTypedQuery: (q: string) => void;
   setHeardQuestion: (q: string | null) => void;
@@ -366,8 +406,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   playing: false,
   overlay: false,
   autoAnswer: true,
-  subscription: readSubscription(),
+  subscription: "free",
   composeMode: "extract",
+  selectedModelId: getDefaultModel().id,
+  extractRemaining: EXTRACT_DAILY_LIMIT,
+  upgradeFeature: null,
   sharingCall: false,
   searching: false,
   refining: false,
@@ -424,9 +467,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   setAutoAnswer: (value) => set({ autoAnswer: value }),
   setSubscription: (tier) => {
     writeSubscription(tier);
-    set({ subscription: tier, folderError: get().folderError?.includes("requires Pro") ? null : get().folderError });
+    set({
+      subscription: tier,
+      extractRemaining: extractRemaining(),
+      folderError: get().folderError?.includes("requires Pro") ? null : get().folderError,
+    });
   },
   setComposeMode: (mode) => set({ composeMode: mode }),
+  setSelectedModelId: (id) => set({ selectedModelId: writeSelectedModelId(id) }),
+  requestUpgrade: (feature) => set({ upgradeFeature: feature }),
+  clearUpgrade: () => set({ upgradeFeature: null }),
   setSharingCall: (value) => set({ sharingCall: value }),
   setTypedQuery: (q) => set({ typedQuery: q }),
   setHeardQuestion: (q) => set({ heardQuestion: q }),
@@ -563,13 +613,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     persistActiveContextId(contextId);
     try {
-      const { pack: raw, skipped, truncated } = await packFromFiles(list);
+      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list);
       if (raw.files.length === 0) {
         if (epoch !== hydrationEpoch) return;
         set({
           loadingFolder: false,
           contextStatus: "ready",
-          folderError: "No readable source files in that selection. Pick source, markdown, or text.",
+          folderError: failed.length
+            ? officeReadError(failed)
+            : "No readable source files in that selection. Pick source, markdown, text, or office files.",
           packNotice: null,
         });
         return;
@@ -597,8 +649,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextUpdating: false,
         ingestProgress: null,
         contextError: null,
-        folderError: hydrated.weak ? WEAK_PACK : skipped && !truncated ? `Skipped ${skipped} files that are not source or text.` : null,
-        packNotice: truncated ? truncationNotice(hydrated.pack.files.length) : null,
+        ...noticesFromFolderLoad({
+          failed,
+          skipped,
+          truncated,
+          weak: hydrated.weak,
+          fileCount: hydrated.pack.files.length,
+        }),
       });
     } catch {
       if (epoch !== hydrationEpoch) return;
@@ -920,13 +977,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       ...clearSessionOnSwitch(),
     });
     try {
-      const { pack: raw, skipped, truncated } = await packFromFiles(list);
+      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list);
       if (raw.files.length === 0) {
         if (epoch !== hydrationEpoch) return;
         set({
           loadingFolder: false,
           contextStatus: "ready",
-          folderError: "No readable source files in that folder. Pick src or a service folder, not CI or dist.",
+          folderError: failed.length
+            ? officeReadError(failed)
+            : "No readable source files in that folder. Pick src or a service folder, not CI or dist.",
           packNotice: null,
         });
         return;
@@ -958,8 +1017,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextUpdating: false,
         ingestProgress: null,
         contextError: null,
-        folderError: hydrated.weak ? WEAK_PACK : null,
-        packNotice: truncated ? truncationNotice(hydrated.pack.files.length) : null,
+        ...noticesFromFolderLoad({
+          failed,
+          skipped,
+          truncated,
+          weak: hydrated.weak,
+          fileCount: hydrated.pack.files.length,
+        }),
       });
       get().appendUtterance({
         at: Date.now(),
@@ -1229,10 +1293,29 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const mode = state.composeMode;
     if (mode === "synthesize" && state.subscription === "free") {
       set({
+        upgradeFeature: "synthesize",
         ...applyCard(
           {
             say: null,
             reason: "Synthesize mode requires Pro. Upgrade to combine insights from multiple files with verified citations.",
+            citations: [],
+            query,
+            latencyMs: 0,
+            source: "local",
+          },
+          get().openDocument,
+        ),
+      });
+      return;
+    }
+    if (mode === "extract" && state.subscription === "free" && extractExhausted()) {
+      set({
+        extractRemaining: 0,
+        upgradeFeature: "extract-limit",
+        ...applyCard(
+          {
+            say: null,
+            reason: "You've used today's 20 Extract questions. Upgrade to Pro for unlimited answers.",
             citations: [],
             query,
             latencyMs: 0,
@@ -1248,32 +1331,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const canonical = normalizeSpokenQuestion(query).canonical;
     const resolved = Boolean(opts?.resolved);
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
-    // retrieve → localCard → admit. If the files cannot admit a line, stay silent.
     const hits = await retrieveHits(canonical, state.chunks);
     if (epoch !== searchEpoch) return;
-    if (mode === "synthesize") {
-      const generated = await generateAnswer(query, hits, t0, { pack: state.pack });
-      if (epoch !== searchEpoch) return;
-      const card: Card = generated
-        ? {
-            say: generated.say,
-            citations: generated.citations,
-            query,
-            latencyMs: generated.latencyMs,
-            source: generated.modelName ?? "synthesize",
-            answerMode: "docs",
-            modelName: generated.modelName,
-          }
-        : {
-            say: null,
-            citations: [],
-            query,
-            latencyMs: Math.round(performance.now() - t0),
-            source: "local",
-          };
+
+    const finish = (card: Card, remaining = get().extractRemaining) => {
       set((s) => ({
         searching: false,
         refining: false,
+        extractRemaining: remaining,
         ...applyCard(card, s.openDocument),
         openFile: firstCitedPath(card) ?? s.openFile,
         ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger].slice(0, 12),
@@ -1285,34 +1350,68 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         listening: get().listening,
         searching: false,
       });
-      return;
+    };
+
+    const generate = mode === "extract" || mode === "synthesize";
+    if (generate) {
+      const extractFree = mode === "extract" && get().subscription === "free";
+      if (extractFree && hits.length > 0) consumeExtractQuestion();
+      const generated = await generateAnswer(query, hits, t0, {
+        pack: state.pack,
+        modelId: mode === "extract" ? EXTRACT_MODEL_ID : get().selectedModelId,
+        maxTokens: mode === "extract" ? EXTRACT_MAX_TOKENS : SYNTHESIZE_MAX_TOKENS,
+      });
+      if (epoch !== searchEpoch) return;
+      if (generated) {
+        finish(
+          {
+            say: generated.say,
+            citations: generated.citations,
+            query,
+            latencyMs: generated.latencyMs,
+            source: generated.modelName ?? (mode === "synthesize" ? "synthesize" : "local"),
+            answerMode: "docs",
+            modelName: generated.modelName,
+          },
+          extractRemaining(),
+        );
+        return;
+      }
+      if (mode === "synthesize") {
+        finish({
+          say: null,
+          citations: [],
+          query,
+          latencyMs: Math.round(performance.now() - t0),
+          source: "local",
+        });
+        return;
+      }
     }
+
     const documents = await documentsForHits(hits);
     const composed = localCard(query, hits, state.pack, Math.round(performance.now() - t0), state.openFile, {
       document: (sourceId) => documents.get(sourceId),
     });
     if (epoch !== searchEpoch) return;
-    const card: Card = {
-      ...composed,
-      answerMode: composed.say ? "docs" : undefined,
-    };
-
-    set((s) => ({
-      searching: false,
-      refining: false,
-      ...applyCard(card, s.openDocument),
-      openFile: firstCitedPath(card) ?? s.openFile,
-      ledger: [{ query, say: card.say, at: Date.now() }, ...s.ledger].slice(0, 12),
-      thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
-    }));
-    persist({
-      card,
-      armed: get().armed,
-      listening: get().listening,
-      searching: false,
-    });
+    finish(
+      {
+        ...composed,
+        answerMode: composed.say ? "docs" : undefined,
+      },
+      extractRemaining(),
+    );
   },
 }));
+
+/** Apply localStorage prefs after hydration so SSR and the first client paint match. */
+export function hydrateClientPrefs() {
+  useMeetHint.setState({
+    subscription: readSubscription(),
+    selectedModelId: readSelectedModelId(),
+    extractRemaining: extractRemaining(),
+  });
+}
 
 if (typeof window !== "undefined") {
   window.useMeetHint = useMeetHint as unknown as Window["useMeetHint"];

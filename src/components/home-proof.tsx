@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Check, Search } from "lucide-react";
 import { useLayoutEffect } from "react";
+import { AnswerSay } from "@/components/answer-say";
 import { Button } from "@/components/ui/button";
 import { HOME_PROOF_CHIPS } from "@/lib/repo/northstar";
-import { citationText } from "@/lib/search/cite";
+import { citationText, citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import { useMeetHint } from "@/lib/store";
 
 export function HomeProof() {
@@ -78,18 +79,45 @@ export function HomeProof() {
       </p>
 
       {speaking ? (
-        <article className="mh-panel space-y-4 p-5" data-testid="card">
-          <p data-testid="card-say" className="font-serif text-xl leading-snug text-fg md:text-2xl">
-            {card?.say}
-          </p>
-          {card && card.latencyMs > 0 ? (
-            <p className="text-xs text-muted tabular-nums">Found in {card.latencyMs} ms</p>
-          ) : null}
-          {card && card.citations.length > 0 ? (
-            <p data-testid="home-proof-cite" className="text-sm text-body">
-              {card.citations.map((cite) => citationText(cite)).join(" · ")}
-            </p>
-          ) : null}
+        <article className="answer-receipt" data-testid="card">
+          <div className="answer-receipt-body">
+            {card?.query ? (
+              <div className="min-w-0">
+                <p className="receipt-kicker">They asked</p>
+                <p className="mt-2 text-[17px] font-semibold leading-snug text-fg">“{card.query}”</p>
+              </div>
+            ) : null}
+            <div className="space-y-3">
+              <p className="receipt-kicker receipt-kicker-accent">From your material</p>
+              {card?.say ? <AnswerSay text={card.say} /> : null}
+              {card && card.latencyMs > 0 ? (
+                <p className="text-xs text-muted tabular-nums">Found in {(card.latencyMs / 1000).toFixed(2)}s</p>
+              ) : null}
+            </div>
+            {card && card.citations.length > 0 ? (
+              <ul className="answer-receipt-cites" data-testid="home-proof-cite">
+                {card.citations.map((cite) => {
+                  const range = citedLineRange(cite);
+                  const lines =
+                    range == null
+                      ? null
+                      : range.startLine === range.endLine
+                        ? `line ${range.startLine}`
+                        : `lines ${range.startLine}–${range.endLine}`;
+                  const path = isFileCitation(cite) || isDocumentCitation(cite) ? cite.path : citationText(cite);
+                  return (
+                    <li key={cite.evidenceId ?? citationText(cite)} className="cite-chip">
+                      <Check className="size-3.5 shrink-0 text-ok" aria-hidden="true" />
+                      <span className="cite-status">Verified</span>
+                      <span className="break-all font-mono text-[12px] text-fg">{path}</span>
+                      {lines ? <span className="font-mono text-[12px] text-fg">{lines}</span> : null}
+                      <span className="sr-only">{citationText(cite)}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+          </div>
         </article>
       ) : null}
     </section>

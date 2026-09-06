@@ -187,6 +187,7 @@ export function ContextDetail({ id }: { id: string }) {
           ref={filesRef}
           type="file"
           multiple
+          accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
           className="sr-only"
           aria-hidden="true"
           tabIndex={-1}

@@ -30,7 +30,7 @@ export function ModeSelector({
   return (
     <div className="mode-selector shrink-0" data-testid="mode-selector">
       <div
-        className="flex w-full overflow-hidden rounded-md border border-line bg-bg"
+        className="flex w-full gap-1 rounded-[10px] bg-subtle p-1"
         role="group"
         aria-label="Answer mode"
       >
@@ -45,11 +45,10 @@ export function ModeSelector({
               data-locked={locked ? "true" : undefined}
               aria-pressed={active}
               aria-label={locked ? `${LABELS[id]} (requires Pro)` : LABELS[id]}
+              data-active={active ? "true" : undefined}
               className={cn(
-                "inline-flex min-h-8 min-w-0 flex-1 items-center justify-center gap-1 border-r border-line px-1.5 text-[11px] leading-none last:border-r-0",
-                active && "bg-accent-soft text-fg",
-                !active && "bg-transparent text-body",
-                locked && "opacity-50",
+                "mode-tab inline-flex min-h-8 min-w-0 flex-1 items-center justify-center gap-1 rounded-md px-2 text-[12px] leading-none",
+                locked && "opacity-40",
               )}
               onClick={() => {
                 if (locked) {

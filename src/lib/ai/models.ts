@@ -51,6 +51,11 @@ export const AVAILABLE_MODELS: ModelOption[] = [
   },
 ];
 
+export const EXTRACT_MODEL_ID = "gpt-4o-mini";
+export const EXTRACT_MAX_TOKENS = 250;
+export const SYNTHESIZE_MAX_TOKENS = 400;
+export const MODEL_STORAGE_KEY = "meethint.modelId";
+
 export function getDefaultModel(): ModelOption {
   return AVAILABLE_MODELS.find((m) => m.default) ?? AVAILABLE_MODELS[0]!;
 }
@@ -62,4 +67,22 @@ export function getModelById(id: string | null | undefined): ModelOption | undef
 
 export function readStoredModelId(value: string | null | undefined): string {
   return getModelById(value)?.id ?? getDefaultModel().id;
+}
+
+export function readSelectedModelId(): string {
+  try {
+    return readStoredModelId(localStorage.getItem(MODEL_STORAGE_KEY));
+  } catch {
+    return getDefaultModel().id;
+  }
+}
+
+export function writeSelectedModelId(id: string): string {
+  const resolved = readStoredModelId(id);
+  try {
+    localStorage.setItem(MODEL_STORAGE_KEY, resolved);
+  } catch {
+    /* ignore quota */
+  }
+  return resolved;
 }
