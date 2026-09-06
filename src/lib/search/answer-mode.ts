@@ -1,6 +1,13 @@
-export type AnswerMode = "docs";
+export type AnswerMode = "docs" | "synthesized" | "generated";
 
-/** Every live card is extracted from a file you brought. */
-export function modeLabel(_mode?: AnswerMode): string {
-  return "From your files";
+export function modeLabel(mode?: AnswerMode): string {
+  if (mode === "synthesized") return "Synthesized";
+  if (mode === "generated") return "Generated";
+  return "From your docs";
+}
+
+export function receiptKicker(mode?: AnswerMode): string {
+  if (mode === "synthesized") return "Synthesized";
+  if (mode === "generated") return "Generated";
+  return "From your docs";
 }

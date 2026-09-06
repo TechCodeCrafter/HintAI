@@ -7,9 +7,15 @@ import { test } from "node:test";
 import { NORTHSTAR } from "../../repo/northstar.ts";
 import { isFileHit } from "../../repo/types.ts";
 import {
+  buildFreelyPrompt,
   buildSynthesisPrompt,
+  buildWeakEvidencePrompt,
   citationIndexes,
+  extractAnswer,
+  extractBestSentence,
+  freelyAnswer,
   generateAnswer,
+  synthesizeAnswer,
   stripCitationMarkers,
 } from "../generate-answer.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
@@ -22,9 +28,8 @@ function ask(text: string) {
   return async () => ({ text });
 }
 
-test("buildAnswerPrompt is gone and the prompt is grounded", () => {
+test("extract stays grounded; weak and freely may use general knowledge", () => {
   assert.doesNotMatch(source, /buildAnswerPrompt/);
-  assert.doesNotMatch(source, /answer from general knowledge/i);
   const prompt = buildSynthesisPrompt("Why does that retry three times?", retryHits);
   assert.match(
     prompt,
@@ -34,6 +39,11 @@ test("buildAnswerPrompt is gone and the prompt is grounded", () => {
   assert.match(prompt, /NEVER use general knowledge/);
   assert.match(prompt, /1-2 sentences/);
   assert.match(prompt, /\[1\]/);
+  const weak = buildWeakEvidencePrompt("full stack developer role", retryHits);
+  assert.match(weak, /Use them if they help answer the question/);
+  assert.match(weak, /use your general knowledge/);
+  const free = buildFreelyPrompt("What is a full stack developer?");
+  assert.match(free, /Answer from general knowledge/);
 });
 
 test("INSUFFICIENT is silence", async () => {
@@ -55,6 +65,7 @@ test("a cited line the files can admit is returned with real citations", async (
   });
   assert.ok(generated);
   assert.equal(generated.usedEvidence, true);
+  assert.equal(generated.answerMode, "docs");
   assert.match(generated.say, /capped at three/i);
   assert.doesNotMatch(generated.say, /\[\d+\]/);
   assert.ok(generated.citations.length >= 1);
@@ -107,4 +118,42 @@ test("empty hits stay silent without calling the model", async () => {
   });
   assert.equal(generated, null);
   assert.equal(called, false);
+});
+
+test("extractAnswer reads a sentence from the top hit", async () => {
+  const hit = retryHits[0];
+  assert.ok(hit);
+  const generated = await extractAnswer("Why does that retry three times?", hit, 0, { pack: NORTHSTAR });
+  assert.ok(generated);
+  assert.equal(generated.answerMode, "docs");
+  assert.equal(generated.usedEvidence, true);
+  assert.ok(generated.citations.length >= 1);
+  assert.match(extractBestSentence(hit.text, "retry three times"), /retry|three|attempt/i);
+});
+
+test("weak evidence may speak without a citation", async () => {
+  const generated = await synthesizeAnswer("Who is a full stack developer?", retryHits, 0, {
+    ask: ask("A full-stack developer works across the client and the server."),
+    pack: NORTHSTAR,
+  });
+  assert.ok(generated);
+  assert.equal(generated.answerMode, "synthesized");
+  assert.equal(generated.usedEvidence, false);
+  assert.equal(generated.citations.length, 0);
+  assert.match(generated.say, /full-stack/i);
+});
+
+test("freely answers from general knowledge with no hits", async () => {
+  let seen: string | undefined;
+  const generated = await freelyAnswer("What is a full stack developer?", 0, {
+    ask: async (payload) => {
+      seen = payload.policy;
+      return { text: "Someone who builds both the interface and the server." };
+    },
+  });
+  assert.equal(seen, "freely");
+  assert.ok(generated);
+  assert.equal(generated.answerMode, "generated");
+  assert.equal(generated.citations.length, 0);
+  assert.match(generated.say, /interface/i);
 });

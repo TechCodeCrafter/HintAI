@@ -19,28 +19,37 @@ import { buildChunks, retrieve } from "../retrieve.ts";
 const root = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
 const chunks = buildChunks(NORTHSTAR);
 
-test("search() extract generates with Mini and a daily cap; Synthesize stays Pro", () => {
+test("search() auto-routes by hit score and shares the free daily cap", () => {
   const store = readFileSync(join(root, "src/lib/store.ts"), "utf8");
   const synthesis = readFileSync(join(root, "src/lib/search/generate-answer.ts"), "utf8");
-  assert.doesNotMatch(synthesis, /answer from general knowledge/i);
+  const cockpit = readFileSync(join(root, "src/components/cockpit.tsx"), "utf8");
+  assert.match(synthesis, /extractAnswer/);
+  assert.match(synthesis, /synthesizeAnswer/);
+  assert.match(synthesis, /freelyAnswer/);
+  assert.match(synthesis, /extractBestSentence/);
   assert.doesNotMatch(synthesis, /buildAnswerPrompt/);
-  assert.match(synthesis, /buildSynthesisPrompt/);
   assert.doesNotMatch(store, /hitsGroundAnswer/);
   assert.doesNotMatch(store, /speakAnswer/);
   assert.doesNotMatch(store, /craftCard/);
   assert.match(store, /retrieveHits/);
-  assert.match(store, /generateAnswer\(/);
-  assert.match(store, /EXTRACT_MODEL_ID/);
-  assert.match(store, /EXTRACT_MAX_TOKENS/);
-  assert.match(store, /SYNTHESIZE_MAX_TOKENS/);
+  assert.match(store, /routeFromScore/);
+  assert.match(store, /extractAnswer/);
+  assert.match(store, /synthesizeAnswer/);
+  assert.match(store, /freelyAnswer/);
   assert.match(store, /consumeExtractQuestion/);
-  assert.match(store, /mode === "synthesize" && state.subscription === "free"/);
-  assert.match(store, /Synthesize mode requires Pro/);
+  assert.match(store, /You've reached your daily limit/);
+  assert.doesNotMatch(store, /Synthesize mode requires Pro/);
+  assert.match(cockpit, /audit-meeting/);
+  assert.match(cockpit, /AnswerHistory/);
+  assert.match(store, /answerHistory/);
+  assert.match(store, /restoreAnswer/);
+  assert.match(store, /reviewMeeting/);
+  assert.doesNotMatch(store, /\bledger:/);
+  assert.doesNotMatch(cockpit, /ModeSelector/);
   const modal = readFileSync(join(root, "src/components/UpgradeModal.tsx"), "utf8");
   assert.match(modal, /Claim Audit requires Pro/);
-  assert.match(modal, /20 Extract questions/);
+  assert.match(modal, /20 questions\/day/);
   const searchFn = store.slice(store.indexOf("search: async"));
-  assert.match(searchFn, /localCard\(/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 });
 

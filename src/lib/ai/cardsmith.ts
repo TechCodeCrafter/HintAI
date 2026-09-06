@@ -135,33 +135,62 @@ export const providerKeyStatus = createServerFn({ method: "GET" }).handler(async
   xai: Boolean(process.env.XAI_API_KEY),
 }));
 
+type SpeakPolicy = "extract" | "synthesize" | "freely";
+
 type SpeakInput = {
   query?: string;
   prompt?: string;
   modelId?: string;
   maxTokens?: number;
+  policy?: SpeakPolicy;
   keys?: ProviderKeys;
-  data?: { query?: string; prompt?: string; modelId?: string; maxTokens?: number; keys?: ProviderKeys };
+  data?: {
+    query?: string;
+    prompt?: string;
+    modelId?: string;
+    maxTokens?: number;
+    policy?: SpeakPolicy;
+    keys?: ProviderKeys;
+  };
 };
 
-function speakInput(input: SpeakInput) {
+function speakInput(input: SpeakInput): {
+  query: string;
+  prompt: string;
+  modelId?: string;
+  maxTokens?: number;
+  policy: SpeakPolicy;
+  keys?: ProviderKeys;
+} {
   const inner = input && typeof input.query === "string" ? input : (input?.data ?? {});
+  const policy = inner.policy;
   return {
     query: typeof inner.query === "string" ? inner.query : "",
     prompt: typeof inner.prompt === "string" ? inner.prompt : "",
     modelId: typeof inner.modelId === "string" ? inner.modelId : undefined,
     maxTokens: typeof inner.maxTokens === "number" ? inner.maxTokens : undefined,
+    policy: policy === "synthesize" || policy === "freely" ? policy : "extract",
     keys: inner.keys,
   };
 }
 
-/** Raw completion for grounded Extract and Synthesize. */
+function systemFor(policy: SpeakPolicy): string {
+  if (policy === "freely") {
+    return "Follow the user instructions exactly. Answer from general knowledge. Reply with only the spoken answer.";
+  }
+  if (policy === "synthesize") {
+    return "Follow the user instructions exactly. Use the documents when they help; otherwise answer from general knowledge. Reply with only the spoken answer.";
+  }
+  return "Follow the user instructions exactly. Use only the document chunks in the prompt. Never use general knowledge. Reply with only the spoken answer or INSUFFICIENT.";
+}
+
+/** Raw completion for Extract, Synthesize, and generated answers. */
 export const completeSynthesis = createServerFn({ method: "POST" })
   .validator((input: SpeakInput) => speakInput(input))
   .handler(async ({ data }): Promise<{ text: string | null; reason?: string; modelName?: string }> => {
     const model = getModelById(data.modelId) ?? getDefaultModel();
     const { raw, reason } = await completeChat(
-      "Follow the user instructions exactly. Use only the document chunks in the prompt. Never use general knowledge. Reply with only the spoken answer or INSUFFICIENT.",
+      systemFor(data.policy),
       data.prompt || data.query,
       model,
       data.keys,

@@ -8,13 +8,13 @@ test("Listen admits claims without Search, and Search only updates the Card", as
   await page.evaluate(async () => {
     const store = window.useMeetHint?.getState() as {
       setSubscription: (tier: "free" | "pro" | "team" | "enterprise") => void;
-      startClaimAudit: () => Promise<void>;
+      openAudit: () => Promise<void>;
       heard: (event: { id: string; role: "you"; text: string }) => void;
       admitHeardClaim: (u: { id: string; at: number; speaker: string; role: "you"; text: string }) => Promise<void>;
       utterances: Array<{ id: string; at: number; speaker: string; role: "you" | "them" | "system"; text: string }>;
     };
     store.setSubscription("pro");
-    await store.startClaimAudit();
+    await store.openAudit();
     store.heard({
       id: "claim-retry",
       role: "you",
@@ -32,7 +32,7 @@ test("Listen admits claims without Search, and Search only updates the Card", as
   await expect(row).toContainText(/retry\.ts|exporter-retries/);
 
   await typeQuestion(page, "Why does that retry three times?");
-  const card = await waitForCard(page, { badge: "From your files" });
+  const card = await waitForCard(page, { badge: "From your docs" });
   await expect(card.getByTestId("card-say")).toContainText("three");
   await expect(monitor.getByTestId("claim-row")).toHaveCount(1);
   await expect(monitor.getByTestId("claim-row")).toContainText("capped at three");
@@ -40,5 +40,9 @@ test("Listen admits claims without Search, and Search only updates the Card", as
 
   await page.reload();
   await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", { timeout: 20000 });
+  await page.evaluate(() => {
+    window.useMeetHint?.getState().setSubscription?.("pro");
+  });
+  await page.getByTestId("audit-meeting").click();
   await expect(page.getByTestId("claim-monitor").getByTestId("claim-row")).toContainText("capped at three");
 });

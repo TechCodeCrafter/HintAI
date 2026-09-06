@@ -91,6 +91,15 @@ export function claimAuditReport(
     }
   }
 
+  const answers = meeting.answerHistory ?? [];
+  if (answers.length > 0) {
+    sections.push(`## Answers`, ``);
+    for (const item of answers) {
+      sections.push(`- **${item.query}** — ${item.say ?? "_No answer_"}`);
+    }
+    sections.push(``);
+  }
+
   return sections.join("\n");
 }
 

@@ -52,7 +52,7 @@ await shoot("card-mobile", { width: 390, height: 844 }, async (page) => {
   await page.waitForTimeout(250);
 });
 await shoot("card-no-answer", { width: 1280, height: 820 }, async (page) => {
-  await page.getByText("Not in your material").waitFor({ timeout: 60000 });
+  await page.getByText("controller vs processor").waitFor({ timeout: 60000 });
 });
 
 // The form is the only thing on the page a visitor can do. Prove it confirms.

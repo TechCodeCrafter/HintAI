@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } 
 import {
   Check,
   ChevronDown,
+  ClipboardList,
   ClipboardPaste,
   Copy,
   ExternalLink,
@@ -21,9 +22,9 @@ import {
   Trash2,
 } from "lucide-react";
 import { AnswerSay } from "@/components/answer-say";
+import { AnswerHistory } from "@/components/answer-history";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
-import { ModeSelector } from "@/components/ModeSelector";
 import { ModelPicker } from "@/components/ModelPicker";
 import { UpgradeModal } from "@/components/UpgradeModal";
 import { MeetHintMark } from "@/components/meethint-mark";
@@ -36,6 +37,7 @@ import { PdfPane } from "@/components/pdf-pane";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
+import { receiptKicker } from "@/lib/search/answer-mode";
 import { citationText, citedLineRange, citedPath, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
@@ -75,14 +77,13 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const ingestProgress = useMeetHint((s) => s.ingestProgress);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
-  const composeMode = useMeetHint((s) => s.composeMode);
   const subscription = useMeetHint((s) => s.subscription);
   const selectedModelId = useMeetHint((s) => s.selectedModelId);
-  const setComposeMode = useMeetHint((s) => s.setComposeMode);
   const setSelectedModelId = useMeetHint((s) => s.setSelectedModelId);
-  const requestUpgrade = useMeetHint((s) => s.requestUpgrade);
   const clearUpgrade = useMeetHint((s) => s.clearUpgrade);
   const upgradeFeature = useMeetHint((s) => s.upgradeFeature);
+  const auditOpen = useMeetHint((s) => s.auditOpen);
+  const openAudit = useMeetHint((s) => s.openAudit);
   const folderRef = useRef<HTMLInputElement>(null);
   const filesRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
@@ -257,6 +258,20 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               />
               <span className="hidden lg:inline">Auto answer</span>
             </Button>
+            <Button
+              variant="quiet"
+              size="sm"
+              data-testid="audit-meeting"
+              aria-pressed={auditOpen}
+              aria-label="Audit this meeting"
+              title="Review claims after the meeting"
+              disabled={!searchReady}
+              className={auditOpen ? "border-transparent bg-accent-soft text-fg" : undefined}
+              onClick={() => void openAudit()}
+            >
+              <ClipboardList className="size-4" />
+              <span className="hidden lg:inline">Audit</span>
+            </Button>
           </div>
           <div className="cockpit-pack">
             <ContextSwitcher folderRef={folderRef} />
@@ -277,6 +292,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               playing={playing}
               onOverlay={() => setOverlay(!overlay)}
               onReview={playing ? stopMeeting : playMeeting}
+              onAudit={() => void openAudit()}
             />
           </div>
           <input
@@ -365,16 +381,16 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
       <main
         className="cockpit-workspace"
         data-mode={overlay ? "overlay" : "cockpit"}
-        data-audit={currentMeeting ? "on" : undefined}
+        data-audit={auditOpen ? "on" : undefined}
         data-files={mobilePane === "repo" ? "open" : undefined}
       >
       <div
         className="cockpit-grid"
         data-mode={overlay ? "overlay" : "cockpit"}
-        data-audit={currentMeeting ? "on" : undefined}
+        data-audit={auditOpen ? "on" : undefined}
         data-files={mobilePane === "repo" ? "open" : undefined}
       >
-        {currentMeeting ? (
+        {auditOpen && currentMeeting ? (
           <div className="cockpit-pane claim-monitor-pane max-md:hidden" data-pane="audit">
             <ClaimMonitor />
           </div>
@@ -395,21 +411,12 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
         >
           <TranscriptPane
             active={live && !card?.query}
-            modeSelector={
-              <div className="space-y-2">
-                <ModeSelector
-                  mode={composeMode}
-                  subscription={subscription}
-                  onChangeMode={setComposeMode}
-                  onUpgradePrompt={requestUpgrade}
-                />
-                <ModelPicker
-                  mode={composeMode}
-                  subscription={subscription}
-                  value={selectedModelId}
-                  onChange={setSelectedModelId}
-                />
-              </div>
+            extras={
+              <ModelPicker
+                subscription={subscription}
+                value={selectedModelId}
+                onChange={setSelectedModelId}
+              />
             }
           />
         </div>
@@ -730,6 +737,7 @@ function UtilityMenu({
   playing,
   onOverlay,
   onReview,
+  onAudit,
 }: {
   className?: string;
   overlay: boolean;
@@ -737,6 +745,7 @@ function UtilityMenu({
   playing: boolean;
   onOverlay: () => void;
   onReview: () => void;
+  onAudit: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -808,6 +817,18 @@ function UtilityMenu({
               {playing ? "Stop" : "Play review"}
             </button>
           ) : null}
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option"
+            onClick={() => {
+              setOpen(false);
+              onAudit();
+            }}
+          >
+            <ClipboardList className="size-3.5 shrink-0" />
+            Audit this meeting
+          </button>
           <div className="flex items-center justify-between gap-2 px-3 py-2">
             <span className="text-xs text-muted">Theme</span>
             <ThemeToggle className="size-11 rounded-sm" />
@@ -1158,7 +1179,7 @@ function TurnBubble({
   );
 }
 
-function TranscriptPane({ modeSelector }: { active: boolean; modeSelector: ReactNode }) {
+function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
   const utterances = useMeetHint((s) => s.utterances);
   const typedQuery = useMeetHint((s) => s.typedQuery);
   const setTypedQuery = useMeetHint((s) => s.setTypedQuery);
@@ -1306,7 +1327,7 @@ function TranscriptPane({ modeSelector }: { active: boolean; modeSelector: React
             </div>
           ) : null}
         </div>
-        {modeSelector}
+        {extras}
         <form
           className="flex min-w-0 flex-col gap-3"
           onSubmit={(e) => {
@@ -1438,7 +1459,7 @@ function CardPane({
       <div className="ground-head">
         <span className="ground-head-left">
           <span>Answer</span>
-          {speaking ? <AnswerModeBadge /> : null}
+          {speaking ? <AnswerModeBadge mode={card?.answerMode} /> : null}
           {searching ? <span className="search-spin" aria-label="Searching" /> : null}
         </span>
         <span className="ground-status tabular-nums">
@@ -1458,7 +1479,7 @@ function CardPane({
                 ) : null}
                 {speaking ? (
                   <div className="space-y-3">
-                    <p className="receipt-kicker receipt-kicker-accent">From your material</p>
+                    <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode)}</p>
                     {card?.say ? (
                       <AnswerSay text={card.say} className={sayClamped ? "line-clamp-2" : undefined} />
                     ) : null}
@@ -1508,6 +1529,7 @@ function CardPane({
               {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
             </p>
           )}
+          <AnswerHistory />
         </div>
         <div className="shrink-0 space-y-3 px-5 py-4">
           <p className="ground-hint">Try another question</p>

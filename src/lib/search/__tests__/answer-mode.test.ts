@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { modeLabel } from "../answer-mode.ts";
+import { modeLabel, receiptKicker } from "../answer-mode.ts";
 import { applyAssist, silentAssist } from "../assist.ts";
 import { applyPolish } from "../polish.ts";
 import type { Card, FileCitation } from "../../repo/types.ts";
@@ -28,9 +28,14 @@ const evidenceCard: Card = {
   ] as Card["evidence"],
 };
 
-test("the card badge is always from your files", () => {
-  assert.equal(modeLabel(), "From your files");
-  assert.equal(modeLabel("docs"), "From your files");
+test("the card badge names how the answer was produced", () => {
+  assert.equal(modeLabel(), "From your docs");
+  assert.equal(modeLabel("docs"), "From your docs");
+  assert.equal(modeLabel("synthesized"), "Synthesized");
+  assert.equal(modeLabel("generated"), "Generated");
+  assert.equal(receiptKicker("docs"), "From your docs");
+  assert.equal(receiptKicker("synthesized"), "Synthesized");
+  assert.equal(receiptKicker("generated"), "Generated");
 });
 
 test("polish keeps a rewrite only when every word is still in the evidence", () => {

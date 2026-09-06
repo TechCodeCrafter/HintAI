@@ -28,7 +28,9 @@ declare global {
         search: (q?: string, opts?: { fast?: boolean }) => Promise<void>;
         autoAnswer: boolean;
         setSubscription: (tier: "free" | "pro" | "team" | "enterprise") => void;
-        setComposeMode?: (mode: "extract" | "synthesize" | "audit") => void;
+        openAudit?: () => Promise<void>;
+        restoreAnswer?: (id: string) => void;
+        reviewMeeting?: (id: string) => Promise<void>;
         setSelectedModelId?: (id: string) => void;
       };
     };

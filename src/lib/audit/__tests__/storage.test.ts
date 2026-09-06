@@ -3,7 +3,8 @@ import { test } from "node:test";
 
 import "fake-indexeddb/auto";
 
-import { createDexieMeetingRepository, createMemoryMeetingRepository } from "../repository.ts";
+import { finishMeeting } from "../session.ts";
+import { createDexieMeetingRepository, createMemoryMeetingRepository, setMeetingRepository } from "../repository.ts";
 import { newClaim, newMeetingRecord } from "../types.ts";
 
 test("meetings persist in memory and IndexedDB", async () => {
@@ -30,4 +31,29 @@ test("meetings persist in memory and IndexedDB", async () => {
     const all = await repo.list();
     assert.equal(all[0]?.id, open.id, name);
   }
+});
+
+test("ending a meeting stores the answer history", async () => {
+  const repo = createMemoryMeetingRepository();
+  setMeetingRepository(repo);
+  const meeting = newMeetingRecord("review", 100);
+  meeting.claims = [newClaim({ meetingId: meeting.id, speaker: "Maya", text: "Retries are capped at three." })];
+  await repo.put(meeting);
+
+  const history = [
+    {
+      id: "a1",
+      query: "Why does that retry three times?",
+      say: "Retries stop at three.",
+      badge: "from-docs" as const,
+      citations: [],
+      timestamp: 120,
+    },
+  ];
+  const finished = await finishMeeting(meeting, [], "pro", history);
+  assert.equal(finished.meeting.answerHistory.length, 1);
+  assert.equal(finished.meeting.answerHistory[0]?.query, "Why does that retry three times?");
+  const stored = await repo.get(meeting.id);
+  assert.equal(stored?.answerHistory[0]?.say, "Retries stop at three.");
+  setMeetingRepository(null);
 });
