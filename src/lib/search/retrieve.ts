@@ -501,9 +501,15 @@ export async function retrieveHits(
   limit = 6,
   vectorStore: VectorStore | null = getVectorStore(),
   hybrid = USE_HYBRID_RETRIEVAL,
+  excludePatterns?: string[],
 ): Promise<Hit[]> {
+  const usable = excludePatterns?.length
+    ? chunks.filter((chunk) => !pathExcluded(chunk.path, excludePatterns))
+    : chunks;
   const hits =
-    hybrid && vectorStore ? await hybridRetrieve(query, chunks, vectorStore, limit) : retrieve(query, chunks, limit);
+    hybrid && vectorStore
+      ? await hybridRetrieve(query, usable, vectorStore, limit)
+      : retrieve(query, usable, limit);
   logRetrieval(hits);
   return hits;
 }
@@ -523,8 +529,10 @@ export async function hybridRetrieve(
     try {
       semanticHits = await semanticRetrieve(query, chunks, vectorStore, limit * 2);
     } catch {
-      // A failed embed must not hide lexical evidence.
+      llmDebug("[retrieve] semantic skipped: embed failed");
     }
+  } else {
+    llmDebug("[retrieve] semantic skipped: no embeddings");
   }
 
   if (semanticHits.length === 0 && structuralHits.length === 0) {

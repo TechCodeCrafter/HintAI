@@ -1,3 +1,5 @@
+import type { IndexedChunk } from "../repo/types.ts";
+import type { VectorStore } from "../search/vector-store.ts";
 import { normalizePath } from "./storage/schema.ts";
 
 // Exact path or a glob such as docs/*.md or **/API_DOCUMENTATION.md.
@@ -17,6 +19,23 @@ export function normalizeExcludePatterns(patterns: string[]): string[] {
     out.push(pattern);
   }
   return out;
+}
+
+/** Drop matching chunks and their vectors so retrieve cannot see them. */
+export async function dropExcludedEvidence(
+  chunks: IndexedChunk[],
+  patterns: string[] | undefined,
+  vectorStore: VectorStore | null,
+): Promise<{ chunks: IndexedChunk[]; droppedIds: string[] }> {
+  if (!patterns?.length) return { chunks, droppedIds: [] };
+  const kept: IndexedChunk[] = [];
+  const droppedIds: string[] = [];
+  for (const chunk of chunks) {
+    if (pathExcluded(chunk.path, patterns)) droppedIds.push(chunk.id);
+    else kept.push(chunk);
+  }
+  if (droppedIds.length > 0 && vectorStore) await vectorStore.delete(droppedIds);
+  return { chunks: kept, droppedIds };
 }
 
 export function toggleExcludePath(patterns: string[] | undefined, path: string): string[] {
