@@ -9,8 +9,14 @@ import type { Evidence } from "../../search/evidence.ts";
 import { NORTHSTAR } from "../../repo/northstar.ts";
 import { localCard } from "../../search/local-card.ts";
 import { bagEmbedding384, setEmbedderForTests } from "../../search/embedding.ts";
-import { buildChunks, retrieve, retrieveHits } from "../../search/retrieve.ts";
-import { createMemoryVectorStore } from "../../search/vector-store.ts";
+import {
+  buildChunks,
+  formatExclusionSummary,
+  retrieve,
+  retrieveHits,
+  retrieveHitsOptionsForPack,
+} from "../../search/retrieve.ts";
+import { createMemoryVectorStore, type VectorStore } from "../../search/vector-store.ts";
 import { dropExcludedEvidence } from "../exclusions.ts";
 import { chunksEquivalent, indexContext, lastIndexReport } from "../chunk-index.ts";
 import { persistPackAsContext, setContextRepository } from "../service.ts";
@@ -175,7 +181,25 @@ test("corrupt cache rebuilds that source and still becomes ready", async () => {
   assert.ok(runtime.chunks.every((chunk) => chunk.id !== "bad"));
 });
 
-test("excluding API_DOCUMENTATION.md drops it from retrieveHits and the vector store", async () => {
+function spyDelete(inner: VectorStore): { store: VectorStore; deleted: string[] } {
+  const deleted: string[] = [];
+  return {
+    deleted,
+    store: {
+      set: (entries) => inner.set(entries),
+      get: (ids) => inner.get(ids),
+      delete: async (ids) => {
+        deleted.push(...ids);
+        await inner.delete(ids);
+      },
+      has: (id) => inner.has(id),
+      isStale: (id, hash) => inner.isStale(id, hash),
+      entries: (ids) => inner.entries(ids),
+    },
+  };
+}
+
+test("excluding a file drops chunks, vectors, and retrieveHits without a reload", async () => {
   setEmbedderForTests(async (text) => bagEmbedding384(text));
   const repo = createMemoryRepository();
   const pack = {
@@ -196,31 +220,92 @@ test("excluding API_DOCUMENTATION.md drops it from retrieveHits and the vector s
     ],
   };
   const { context } = await persistPackAsContext(pack, repo);
-  const store = createMemoryVectorStore();
+  const { store, deleted } = spyDelete(createMemoryVectorStore());
   const indexed = await indexContext(repo, context.id, { embed: true, vectorStore: store });
   assert.ok(indexed.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"));
 
-  const before = await retrieveHits("authentication", indexed.chunks, 6, store, true);
+  const before = await retrieveHits("authentication", indexed.chunks, {
+    excludePatterns: undefined,
+    limit: 6,
+    vectorStore: store,
+    hybrid: true,
+  });
   assert.ok(before.some((hit) => hit.path === "docs/API_DOCUMENTATION.md"));
 
   const exclude = ["docs/API_DOCUMENTATION.md"];
+  const expectedIds = indexed.chunks
+    .filter((chunk) => chunk.path === "docs/API_DOCUMENTATION.md")
+    .map((chunk) => chunk.id)
+    .sort();
+  deleted.length = 0;
   const purged = await dropExcludedEvidence(indexed.chunks, exclude, store);
-  assert.equal(
-    purged.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"),
-    false,
-  );
-  assert.ok(purged.droppedIds.length > 0);
+  assert.equal(purged.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"), false);
+  assert.deepEqual([...purged.droppedIds].sort(), expectedIds);
+  assert.deepEqual([...deleted].sort(), expectedIds);
   assert.equal((await store.get(purged.droppedIds)).size, 0);
 
-  const hits = await retrieveHits("authentication", indexed.chunks, 6, store, true, exclude);
-  assert.equal(
-    hits.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length,
-    0,
-  );
+  const leftover = indexed.chunks;
+  assert.ok(leftover.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"));
+  const lexical = await retrieveHits("authentication", leftover, {
+    excludePatterns: exclude,
+    limit: 6,
+    vectorStore: store,
+    hybrid: false,
+  });
+  const semantic = await retrieveHits("authentication", leftover, {
+    excludePatterns: exclude,
+    limit: 6,
+    vectorStore: store,
+    hybrid: true,
+  });
+  assert.equal(lexical.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 0);
+  assert.equal(semantic.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 0);
   assert.ok(purged.chunks.some((chunk) => chunk.path === "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md"));
+  assert.equal(
+    formatExclusionSummary(leftover.length, expectedIds.length, lexical.length),
+    `${leftover.length} chunks | ${expectedIds.length} excluded | ${lexical.length} hits`,
+  );
 });
 
-test("excluded file yields zero chunks and drops cached rows", async () => {
+test("store search path filters leftover excluded chunks via pack.excludePatterns", async () => {
+  setEmbedderForTests(async (text) => bagEmbedding384(text));
+  const leftover = [
+    {
+      id: "docs-auth",
+      kind: "code" as const,
+      path: "docs/API_DOCUMENTATION.md",
+      startLine: 1,
+      endLine: 3,
+      startOffset: 0,
+      text: "## Authentication\nCurrently no authentication. Future versions will implement API Key/JWT/OAuth 2.0.\n",
+    },
+    {
+      id: "deploy-auth",
+      kind: "code" as const,
+      path: "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md",
+      startLine: 1,
+      endLine: 2,
+      startOffset: 0,
+      text: "Identity is the X-User-Email header. Entra issues a Bearer token before the handler runs.\n",
+    },
+  ];
+  const pack = { excludePatterns: ["docs/API_DOCUMENTATION.md"] };
+  const store = createMemoryVectorStore();
+  await store.set([
+    { chunkId: "docs-auth", embedding: bagEmbedding384(leftover[0].text), contentHash: "d" },
+    { chunkId: "deploy-auth", embedding: bagEmbedding384(leftover[1].text), contentHash: "e" },
+  ]);
+  const options = retrieveHitsOptionsForPack(pack, { limit: 6, vectorStore: store });
+  const leftoverAuth = leftover.filter((chunk) => chunk.path === "docs/API_DOCUMENTATION.md");
+  assert.ok(leftoverAuth.length > 0);
+  const authHits = await retrieveHits("authentication", leftover, options);
+  assert.equal(authHits.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 0);
+  const remainingHits = await retrieveHits("X-User-Email", leftover, options);
+  assert.ok(remainingHits.some((hit) => hit.path === "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md"));
+  assert.equal(remainingHits.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 0);
+});
+
+test("excluded file yields zero chunks and re-include rebuilds them", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
   const first = await indexContext(repo, context.id);
@@ -232,6 +317,11 @@ test("excluded file yields zero chunks and drops cached rows", async () => {
   assert.equal(second.chunks.some((chunk) => chunk.path === "src/a.ts"), false);
   assert.ok(second.chunks.some((chunk) => chunk.path === "src/shared.ts"));
   assert.equal(await repo.readIndexedChunks(context.id, source.id), null);
+
+  await repo.patchContext(context.id, { excludePatterns: undefined });
+  const restored = await indexContext(repo, context.id);
+  assert.ok(restored.chunks.some((chunk) => chunk.path === "src/a.ts"));
+  assert.ok((await repo.readIndexedChunks(context.id, source.id))?.length);
 });
 
 test("late A must not replace B's runtime", async () => {

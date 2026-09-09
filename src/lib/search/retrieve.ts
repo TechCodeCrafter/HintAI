@@ -491,6 +491,26 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   return out.sort((a, b) => b.score - a.score);
 }
 
+export type RetrieveHitsOptions = {
+  /** Required at every call site so an active pack's skip list cannot be forgotten. */
+  excludePatterns: string[] | undefined;
+  limit?: number;
+  vectorStore?: VectorStore | null;
+  hybrid?: boolean;
+};
+
+/** Options `search()` and every other live path must pass. */
+export function retrieveHitsOptionsForPack(
+  pack: Pick<RepoPack, "excludePatterns">,
+  extras: Omit<RetrieveHitsOptions, "excludePatterns"> = {},
+): RetrieveHitsOptions {
+  return { ...extras, excludePatterns: pack.excludePatterns };
+}
+
+export function formatExclusionSummary(chunkCount: number, excludedCount: number, hitCount: number): string {
+  return `${chunkCount} chunks | ${excludedCount} excluded | ${hitCount} hits`;
+}
+
 /**
  * Live retrieve entry. Hybrid is on by default when a VectorStore is
  * installed. A failed or empty semantic channel degrades to lexical.
@@ -498,19 +518,21 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
 export async function retrieveHits(
   query: string,
   chunks: IndexedChunk[],
-  limit = 6,
-  vectorStore: VectorStore | null = getVectorStore(),
-  hybrid = USE_HYBRID_RETRIEVAL,
-  excludePatterns?: string[],
+  options: RetrieveHitsOptions,
 ): Promise<Hit[]> {
+  const excludePatterns = options.excludePatterns;
+  const limit = options.limit ?? 6;
+  const vectorStore = options.vectorStore === undefined ? getVectorStore() : options.vectorStore;
+  const hybrid = options.hybrid ?? USE_HYBRID_RETRIEVAL;
   const usable = excludePatterns?.length
     ? chunks.filter((chunk) => !pathExcluded(chunk.path, excludePatterns))
     : chunks;
+  const excludedCount = chunks.length - usable.length;
   const hits =
     hybrid && vectorStore
       ? await hybridRetrieve(query, usable, vectorStore, limit)
       : retrieve(query, usable, limit);
-  logRetrieval(hits);
+  logRetrieval(hits, chunks.length, excludedCount);
   return hits;
 }
 
@@ -614,7 +636,8 @@ function finishTraces(query: string, hits: Hit[]): Hit[] {
   return scored;
 }
 
-function logRetrieval(hits: Hit[]): void {
+function logRetrieval(hits: Hit[], chunkCount: number, excludedCount: number): void {
+  llmDebug("[retrieve]", formatExclusionSummary(chunkCount, excludedCount, hits.length));
   for (const hit of hits) {
     llmDebug("[retrieve]", hit.path, primaryChannel(hit), hit.score, evidenceTypeOf(hit));
   }
