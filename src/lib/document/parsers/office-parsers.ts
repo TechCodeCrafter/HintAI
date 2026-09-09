@@ -7,11 +7,19 @@ export function isOfficeExt(ext: string): boolean {
   return OFFICE_EXT.has(ext.toLowerCase());
 }
 
-export function officeReadError(names: string[]): string {
-  if (names.length === 1) {
-    return `Could not read ${names[0]}. It may be corrupted or password-protected.`;
+/** Word/Excel owner-lock temps (`~$Guide.docx`). Never parse; never toast. */
+export function isOfficeLockName(name: string): boolean {
+  const base = name.split(/[/\\]/).pop() ?? name;
+  return /^~\$/.test(base);
+}
+
+export function officeReadError(names: string[]): string | null {
+  const real = names.filter((name) => !isOfficeLockName(name));
+  if (real.length === 0) return null;
+  if (real.length === 1) {
+    return `Could not read ${real[0]}. It may be corrupted or password-protected.`;
   }
-  return `Could not read ${names.join(", ")}. They may be corrupted or password-protected.`;
+  return `Could not read ${real.join(", ")}. They may be corrupted or password-protected.`;
 }
 
 /** Parse DOCX to plain text. */

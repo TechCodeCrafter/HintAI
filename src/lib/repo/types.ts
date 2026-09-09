@@ -25,6 +25,8 @@ export type RepoPack = {
   description: string;
   files: RepoFile[];
   commits: RepoCommit[];
+  /** Globs and paths dropped at chunk time. Files stay visible in the pack UI. */
+  excludePatterns?: string[];
 };
 
 export type FileChunk = {
@@ -61,6 +63,7 @@ export type RetrievalScores = {
   score: number;
   lexicalScore?: number;
   semanticScore?: number;
+  structuralScore?: number;
   signals?: string[];
 };
 

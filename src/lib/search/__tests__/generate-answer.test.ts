@@ -13,6 +13,7 @@ import {
   extractBestSentence,
   generateAnswer,
   generateGeneralAnswer,
+  hitsForPrompt,
   synthesizeAnswer,
   stripCitationMarkers,
 } from "../generate-answer.ts";
@@ -44,6 +45,29 @@ test("extract stays grounded; weak and freely may use general knowledge", () => 
   assert.match(weak, /use your general knowledge/);
   assert.doesNotMatch(source, /console\.info\("\[ask\]/);
   assert.match(source, /llmDebug\("\[ask\]/);
+});
+
+test("prompt composition keeps at most two chunks per source file", () => {
+  const seed = retryHits[0];
+  assert.ok(seed);
+  const piled = Array.from({ length: 5 }, (_, i) => ({
+    ...seed,
+    id: `docs-${i}`,
+    startLine: i + 1,
+    path: "docs/API_DOCUMENTATION.md",
+    text: `Boilerplate authentication section ${i + 1}.`,
+  }));
+  const extra = { ...seed, id: "impl", path: "api/main.py", text: "Identity is the X-User-Email header." };
+  const hits = [...piled, extra];
+  const kept = hitsForPrompt(hits);
+  assert.equal(kept.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 2);
+  assert.ok(kept.some((hit) => hit.path === "api/main.py"));
+  const grounded = buildSynthesisPrompt("How does authentication work?", hits);
+  const weak = buildWeakEvidencePrompt("How does authentication work?", hits);
+  const docsChunks = grounded.match(/docs\/API_DOCUMENTATION\.md/g) ?? [];
+  assert.ok(docsChunks.length <= 2, grounded);
+  assert.match(grounded, /api\/main\.py/);
+  assert.ok(((weak.match(/docs\/API_DOCUMENTATION\.md/g) ?? []).length) <= 2);
 });
 
 test("weak and grounded prompts share the same five-chunk cap", () => {

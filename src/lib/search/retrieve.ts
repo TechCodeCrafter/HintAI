@@ -1,9 +1,18 @@
 import type { Chunk, Hit, IndexedChunk, RepoFile, RepoPack } from "@/lib/repo/types";
+import { pathExcluded } from "../context/exclusions.ts";
 import { USE_HYBRID_RETRIEVAL, USE_STRUCTURED_CHUNKER } from "../context/index-versions.ts";
+import { llmDebug } from "../debug.ts";
 import { createRegexParser } from "../repo/parsers/regex-parser.ts";
 import { buildStructuredChunks } from "../repo/structured-chunks.ts";
 import { combineScores, RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
-import { closeRetrieval, noteRetrieval, type RetrievalTrace } from "./retrieval-trace.ts";
+import {
+  closeRetrieval,
+  evidenceTypeOf,
+  formatRetrievalSummary,
+  noteRetrieval,
+  primaryChannel,
+  type RetrievalTrace,
+} from "./retrieval-trace.ts";
 import { semanticRetrieve } from "./semantic-retrieve.ts";
 import type { VectorStore } from "./vector-store.ts";
 import { getVectorStore } from "./vector-access.ts";
@@ -167,6 +176,7 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
   const chunks: Chunk[] = [];
   for (const file of pack.files) {
     if (!isEvidencePath(file.path)) continue;
+    if (pathExcluded(file.path, pack.excludePatterns)) continue;
     if (useStructured) {
       try {
         const structured = buildStructuredChunks(file, REGEX_PARSER);
@@ -181,6 +191,8 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
     chunks.push(...buildWindowChunks(file));
   }
   for (const commit of pack.commits) {
+    const commitPath = commit.files[0] ?? "git";
+    if (pathExcluded(commitPath, pack.excludePatterns)) continue;
     chunks.push({
       id: `commit:${commit.sha}`,
       kind: "why",
@@ -480,8 +492,8 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
 }
 
 /**
- * Live retrieve entry. Flag off (default) is the existing synchronous IDF
- * path. Flag on uses hybridRetrieve when a VectorStore is installed.
+ * Live retrieve entry. Hybrid is on by default when a VectorStore is
+ * installed. A failed or empty semantic channel degrades to lexical.
  */
 export async function retrieveHits(
   query: string,
@@ -490,8 +502,10 @@ export async function retrieveHits(
   vectorStore: VectorStore | null = getVectorStore(),
   hybrid = USE_HYBRID_RETRIEVAL,
 ): Promise<Hit[]> {
-  if (hybrid && vectorStore) return hybridRetrieve(query, chunks, vectorStore, limit);
-  return retrieve(query, chunks, limit);
+  const hits =
+    hybrid && vectorStore ? await hybridRetrieve(query, chunks, vectorStore, limit) : retrieve(query, chunks, limit);
+  logRetrieval(hits);
+  return hits;
 }
 
 export async function hybridRetrieve(
@@ -501,45 +515,64 @@ export async function hybridRetrieve(
   limit = 6,
 ): Promise<Hit[]> {
   const cached = await vectorStore.get(chunks.map((chunk) => chunk.id));
-  if (cached.size === 0) {
-    const lexical = retrieve(query, chunks, limit);
-    finishTraces(query, lexical.map((hit) => ({ ...hit, lexicalScore: hit.score, semanticScore: 0 })));
-    return lexical;
+  const lexicalHits = retrieve(query, chunks, limit * 2);
+  const { retrieveStructural } = await import("./hybrid.ts");
+  const structuralHits = retrieveStructural(query, chunks, limit * 2);
+  let semanticHits: Hit[] = [];
+  if (cached.size > 0) {
+    try {
+      semanticHits = await semanticRetrieve(query, chunks, vectorStore, limit * 2);
+    } catch {
+      // A failed embed must not hide lexical evidence.
+    }
   }
 
-  const lexicalHits = retrieve(query, chunks, limit * 2);
-  let semanticHits: Hit[] = [];
-  try {
-    semanticHits = await semanticRetrieve(query, chunks, vectorStore, limit * 2);
-  } catch {
-    // A failed embed must not hide lexical evidence.
-  }
-  if (semanticHits.length === 0) {
-    const lexical = retrieve(query, chunks, limit);
-    finishTraces(query, lexical.map((hit) => ({ ...hit, lexicalScore: hit.score, semanticScore: 0 })));
-    return lexical;
+  if (semanticHits.length === 0 && structuralHits.length === 0) {
+    const lexical = lexicalHits.slice(0, limit);
+    return finishTraces(
+      query,
+      lexical.map((hit) => ({ ...hit, lexicalScore: hit.score, semanticScore: 0, structuralScore: 0 })),
+    ).slice(0, limit);
   }
 
   const byId = new Map<string, Hit>();
   for (const hit of lexicalHits) {
-    byId.set(hit.id, { ...hit, lexicalScore: hit.score, semanticScore: 0 });
+    byId.set(hit.id, { ...hit, lexicalScore: hit.score, semanticScore: 0, structuralScore: 0 });
   }
   for (const hit of semanticHits) {
     const existing = byId.get(hit.id);
     if (existing) {
       existing.semanticScore = hit.score;
-      existing.score = combineScores(existing.lexicalScore ?? 0, existing.semanticScore ?? 0);
     } else {
       byId.set(hit.id, {
         ...hit,
         lexicalScore: 0,
         semanticScore: hit.score,
-        score: hit.score,
+        structuralScore: 0,
+      });
+    }
+  }
+  for (const hit of structuralHits) {
+    const existing = byId.get(hit.id);
+    if (existing) {
+      existing.structuralScore = hit.score;
+    } else {
+      byId.set(hit.id, {
+        ...hit,
+        lexicalScore: 0,
+        semanticScore: 0,
+        structuralScore: hit.score,
       });
     }
   }
 
-  const combined = finishTraces(query, [...byId.values()]);
+  const combined = finishTraces(
+    query,
+    [...byId.values()].map((hit) => ({
+      ...hit,
+      score: combineScores(hit.lexicalScore ?? 0, hit.semanticScore ?? 0, hit.structuralScore ?? 0),
+    })),
+  );
   combined.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
   return combined.slice(0, limit);
 }
@@ -547,14 +580,21 @@ export async function hybridRetrieve(
 function finishTraces(query: string, hits: Hit[]): Hit[] {
   const traces: RetrievalTrace[] = [];
   const scored = hits.map((hit) => {
-    const lexicalScore = hit.lexicalScore ?? (hit.semanticScore ? 0 : hit.score);
+    const lexicalScore = hit.lexicalScore ?? 0;
     const semanticScore = hit.semanticScore ?? 0;
-    const signals = signalsFor(query, hit, lexicalScore, semanticScore);
-    const next = { ...hit, lexicalScore, semanticScore, signals };
-    const trace = {
+    const structuralScore = hit.structuralScore ?? 0;
+    const signals = signalsFor(query, hit, lexicalScore, semanticScore, structuralScore);
+    const next = { ...hit, lexicalScore, semanticScore, structuralScore, signals };
+    const channel = primaryChannel(next);
+    const evidenceType = evidenceTypeOf(next);
+    const trace: RetrievalTrace = {
       chunkId: hit.id,
+      path: hit.path,
+      channel,
+      evidenceType,
       lexicalScore,
       semanticScore,
+      structuralScore,
       combinedScore: next.score,
       signals,
     };
@@ -566,10 +606,24 @@ function finishTraces(query: string, hits: Hit[]): Hit[] {
   return scored;
 }
 
-function signalsFor(query: string, hit: Hit, lexicalScore: number, semanticScore: number): string[] {
+function logRetrieval(hits: Hit[]): void {
+  for (const hit of hits) {
+    llmDebug("[retrieve]", hit.path, primaryChannel(hit), hit.score, evidenceTypeOf(hit));
+  }
+  llmDebug("[retrieve]", formatRetrievalSummary(hits));
+}
+
+function signalsFor(
+  query: string,
+  hit: Hit,
+  lexicalScore: number,
+  semanticScore: number,
+  structuralScore = 0,
+): string[] {
   const signals: string[] = [];
   if (lexicalScore > 0) signals.push("lexical");
   if (semanticScore > 0) signals.push("semantic");
+  if (structuralScore > 0) signals.push("structural");
   const q = query.toLowerCase();
   const named = namedPaths(query);
   const path = hit.path.toLowerCase();

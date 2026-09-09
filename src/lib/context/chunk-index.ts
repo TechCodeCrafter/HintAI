@@ -2,6 +2,7 @@ import { buildDocumentChunks, isUsableDocumentChunk } from "../document/chunk.ts
 import { deriveDocumentStructure } from "../document/structure.ts";
 import { PDF_LIMITS } from "../document/pdf/limits.ts";
 import { READINESS_NOTES } from "../document/pdf/notes.ts";
+import { pathExcluded } from "./exclusions.ts";
 import { preferredOpenFile, prunePack } from "../repo/folder.ts";
 import type { Chunk, IndexedChunk, RepoFile, RepoPack } from "../repo/types.ts";
 import { isDocumentChunk } from "../repo/types.ts";
@@ -286,14 +287,22 @@ export async function indexContext(
   const use = options.skipPrune ? pack : pruned.files.length > 0 ? pruned : pack;
   timings.hydrateMs = nowMs() - hydrateStart;
 
+  const exclude = use.excludePatterns;
+  const excludedIds = sources.filter((source) => pathExcluded(source.path, exclude)).map((source) => source.id);
+  if (excludedIds.length > 0) {
+    await repo.deleteIndexed(contextId, excludedIds);
+    stats.deletedSourceCount += excludedIds.length;
+  }
+
   const byPath = new Map(sources.map((source) => [source.path, source]));
   const active = use.files
     .map((file) => {
       const source = byPath.get(file.path);
       return source && isTextSource(source) ? { file, source } : null;
     })
-    .filter((row): row is { file: RepoFile; source: TextStoredSource } => row !== null);
-  const pdfs = sources.filter(isPdfSource);
+    .filter((row): row is { file: RepoFile; source: TextStoredSource } => row !== null)
+    .filter(({ file }) => !pathExcluded(file.path, exclude));
+  const pdfs = sources.filter((source) => isPdfSource(source) && !pathExcluded(source.path, exclude));
 
   const compareStart = nowMs();
   const ledgers = await repo.listIndexed(contextId);

@@ -18,6 +18,10 @@ export type ContextRepository = {
   listContexts(): Promise<ContextRecord[]>;
   getContext(id: string): Promise<ContextRecord | null>;
   createContext(input: CreateContextInput): Promise<ContextRecord>;
+  patchContext(
+    id: string,
+    patch: Partial<Pick<ContextRecord, "name" | "description" | "excludePatterns">>,
+  ): Promise<ContextRecord>;
   replaceSources(contextId: string, drafts: SourceDraft[]): Promise<StoredSource[]>;
   upsertSources(contextId: string, drafts: UpsertDraft[]): Promise<StoredSource[]>;
   listSources(contextId: string): Promise<StoredSource[]>;

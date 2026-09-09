@@ -230,6 +230,23 @@ test("why-seven-lambdas prefers worker folders over a numbered step list", () =>
   assert.notEqual(ranked[0], "services/matcher.py");
 });
 
+test("excluded files yield zero chunks", () => {
+  const pack: RepoPack = {
+    ...PACK,
+    excludePatterns: ["docs/API_DOCUMENTATION.md", "notes/*.md"],
+    files: [
+      ...PACK.files,
+      file("docs/API_DOCUMENTATION.md", "## Authentication\nCurrently no authentication.\n"),
+      file("notes/lecture.md", "Lamport clocks order events.\n"),
+      file("api/main.py", "Identity is the X-User-Email header.\n"),
+    ],
+  };
+  const chunks = buildChunks(pack);
+  assert.equal(chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"), false);
+  assert.equal(chunks.some((chunk) => chunk.path === "notes/lecture.md"), false);
+  assert.ok(chunks.some((chunk) => chunk.path === "api/main.py"));
+});
+
 test("numeral aliasing is one-way today — a spoken digit is lost", () => {
   // Word to digit works.
   assert.ok(tokenize("retry three times").includes("3"));

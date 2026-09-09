@@ -9,11 +9,10 @@ export const CHUNKER_VERSION = 1;
  */
 export const USE_STRUCTURED_CHUNKER = false;
 /**
- * Hybrid lexical + semantic retrieve is implemented but off. The live path
- * stays the existing synchronous IDF retrieve(). Do not flip until eval
- * shows equal-or-better safety (wrong-intent 0, unsupported 0).
+ * Hybrid lexical + semantic + structural retrieve. Embeddings are computed
+ * lazily at index time. A failed embed degrades to lexical retrieve.
  */
-export const USE_HYBRID_RETRIEVAL = false;
+export const USE_HYBRID_RETRIEVAL = true;
 /** Bump when the embedding model or pooling contract changes. */
 export const EMBEDDING_VERSION = 1;
 export const RETRIEVAL_INDEX_VERSION = 1;

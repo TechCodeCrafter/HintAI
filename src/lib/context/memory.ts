@@ -51,6 +51,14 @@ export function createMemoryRepository(): MemoryRepository {
       return record;
     },
 
+    async patchContext(id, patch) {
+      const existing = contexts.get(id);
+      if (!existing) throw new ContextNotFoundError(id);
+      const next = { ...existing, ...patch, updatedAt: Date.now() };
+      contexts.set(id, next);
+      return next;
+    },
+
     async replaceSources(contextId, drafts: SourceDraft[]) {
       const existing = contexts.get(contextId);
       if (!existing) throw new ContextNotFoundError(contextId);

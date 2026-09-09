@@ -14,6 +14,8 @@ export type ContextRecord = {
   sourceCount: number;
   status: "indexing" | "ready" | "error";
   schemaVersion: number;
+  /** Paths and globs omitted from chunks. Sources stay stored. */
+  excludePatterns?: string[];
 };
 
 export type TextStoredSource = {

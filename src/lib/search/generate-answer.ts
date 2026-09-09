@@ -33,10 +33,25 @@ const INSUFFICIENT = "INSUFFICIENT";
 const MARKER = /\[(\d+)\]/g;
 const CHUNK_CAP = 5;
 const CHUNK_CHARS = 1000;
+const CHUNKS_PER_FILE = 2;
+
+/** Keep retrieval order but stop a single file from filling the prompt. */
+export function hitsForPrompt(hits: Hit[], cap = CHUNK_CAP, perFile = CHUNKS_PER_FILE): Hit[] {
+  const used = new Map<string, number>();
+  const out: Hit[] = [];
+  for (const hit of hits) {
+    const taken = used.get(hit.path) ?? 0;
+    if (taken >= perFile) continue;
+    used.set(hit.path, taken + 1);
+    out.push(hit);
+    if (out.length >= cap) break;
+  }
+  return out;
+}
 
 /** Grounded synthesis prompt. The model may use only the numbered chunks. */
 export function buildSynthesisPrompt(query: string, hits: Hit[]): string {
-  const chunks = hits.slice(0, CHUNK_CAP).map((hit, i) => {
+  const chunks = hitsForPrompt(hits).map((hit, i) => {
     const where = isFileHit(hit) ? `${hit.path}:${hit.startLine}` : `${hit.path} (page ${hit.page})`;
     return `[${i + 1}] ${where}\n${hit.text.slice(0, CHUNK_CHARS)}`;
   });
@@ -55,7 +70,7 @@ QUESTION: "${query}"`;
 }
 
 function formatChunks(hits: Hit[]): string {
-  const chunks = hits.slice(0, CHUNK_CAP).map((hit, i) => {
+  const chunks = hitsForPrompt(hits).map((hit, i) => {
     const where = isFileHit(hit) ? `${hit.path}:${hit.startLine}` : `${hit.path} (page ${hit.page})`;
     return `[${i + 1}] ${where}\n${hit.text.slice(0, CHUNK_CHARS)}`;
   });

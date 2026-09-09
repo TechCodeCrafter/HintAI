@@ -1,4 +1,9 @@
-import { isOfficeExt, officeReadError, parseOfficeBuffer } from "../document/parsers/office-parsers.ts";
+import {
+  isOfficeExt,
+  isOfficeLockName,
+  officeReadError,
+  parseOfficeBuffer,
+} from "../document/parsers/office-parsers.ts";
 import type { RepoFile, RepoPack } from "./types";
 
 const SKIP_DIR =
@@ -6,6 +11,12 @@ const SKIP_DIR =
 
 const SKIP_NAME =
   /(^|\/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|Cargo\.lock|composer\.lock|\.DS_Store)(\/|$)/i;
+
+/** Word `~$…` owner locks and LibreOffice `~lock.` stubs. */
+function isOfficeLockPath(path: string): boolean {
+  const base = path.split("/").pop() ?? path;
+  return isOfficeLockName(base) || /^\.~lock\./i.test(base);
+}
 
 const SKIP_EXT =
   /\.(lock|min\.js|map|png|jpe?g|gif|webp|ico|woff2?|ttf|eot|mp4|mp3|wav|zip|gz|tgz|wasm|pdf|bin|exe|dmg|svg|avif)$/i;
@@ -213,7 +224,7 @@ export function folderNameFromList(list: FileList | File[]): string {
 
 export function pathSkipReason(path: string): string | null {
   if (!path || SKIP_DIR.test(path)) return SKIP_LABEL.vendor;
-  if (SKIP_NAME.test(path)) return SKIP_LABEL.lockfiles;
+  if (isOfficeLockPath(path) || SKIP_NAME.test(path)) return SKIP_LABEL.lockfiles;
   if (SKIP_EXT.test(path)) return SKIP_LABEL.binaries;
   if (!ALLOW_EXT.has(extOf(path))) return SKIP_LABEL.types;
   return null;
@@ -362,6 +373,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
       truncated = true;
       continue;
     }
+    if (isOfficeLockName(item.path)) continue;
     const ext = extOf(item.path);
     let content = "";
     try {
