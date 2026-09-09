@@ -77,6 +77,7 @@ export function settleWithin(start, timeoutMs) {
  * @property {boolean} hasBearer Whether a preview bearer token is stored.
  * @property {() => unknown} requestSignOut Ask the server to end the session; must reject on a failed response.
  * @property {() => void} clearToken Drop the stored bearer token.
+ * @property {() => unknown} [wipeLocal] Drop repos, indexes, answers, and keys on this origin.
  * @property {() => void} redirect Leave the page.
  * @property {number} [timeoutMs]
  */
@@ -96,6 +97,7 @@ export async function runSignOut({
   hasBearer,
   requestSignOut,
   clearToken,
+  wipeLocal,
   redirect,
   timeoutMs,
 }) {
@@ -105,6 +107,7 @@ export async function runSignOut({
     if (hasBearer) {
       await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
     }
+    if (wipeLocal) await Promise.resolve(wipeLocal());
     clearToken();
     redirect();
     return;
@@ -118,6 +121,7 @@ export async function runSignOut({
         : "Sign-out failed — you are still signed in. Please try again.",
     );
   }
+  if (wipeLocal) await Promise.resolve(wipeLocal());
   clearToken();
   redirect();
 }
@@ -128,6 +132,7 @@ export async function runSignOut({
  * @property {boolean} hasBearer Whether a preview bearer token is stored.
  * @property {() => unknown} requestSignOut Ask the server to end any prior session.
  * @property {() => void} clearToken Drop the stored bearer token.
+ * @property {() => unknown} [wipeLocal] Drop the outgoing account's local copies.
  * @property {number} [timeoutMs]
  */
 
@@ -150,11 +155,13 @@ export async function runPreSignInSignOut({
   hasBearer,
   requestSignOut,
   clearToken,
+  wipeLocal,
   timeoutMs,
 }) {
   // In the preview a missing bearer means there is nothing to clear.
   if (hasBearer || !livePreview) {
     await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
   }
+  if (wipeLocal) await Promise.resolve(wipeLocal());
   clearToken();
 }

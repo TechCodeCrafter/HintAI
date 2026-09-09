@@ -2,6 +2,11 @@ import type { Page } from "@playwright/test";
 
 export async function installE2eMocks(page: Page) {
   await page.addInitScript(() => {
+    window.__MEETHINT_E2E__ = true;
+    Object.defineProperty(window, "showDirectoryPicker", {
+      configurable: true,
+      value: undefined,
+    });
     window.__mockCraftCard = async () => ({
       say: "A concise general-knowledge answer for the meeting.",
     });

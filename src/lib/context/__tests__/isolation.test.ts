@@ -93,6 +93,8 @@ function collectTs(dir: string): string[] {
 }
 
 test("search, store, and cockpit never import Dexie", () => {
+  // Context A vs B is not account isolation. User-account boundaries
+  // are covered in src/lib/auth/__tests__/account-boundary.test.ts.
   const files = [
     ...collectTs(join(srcRoot, "lib/search")),
     join(srcRoot, "lib/store.ts"),

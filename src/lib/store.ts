@@ -1,4 +1,7 @@
 import { create } from "zustand";
+import "@/lib/e2e-hooks";
+import { bindAccountId, LOCAL_DEV_ACCOUNT_ID, readAccountStorage, writeAccountStorage } from "@/lib/auth/account-boundary";
+import { authEnabled } from "@/lib/auth/client";
 import type { ContextRecord, ContextRuntimeStatus, StoredSource } from "@/lib/context/types";
 import { isPdfSource } from "@/lib/context/types";
 import { indexContext } from "@/lib/context/chunk-index";
@@ -44,7 +47,7 @@ import {
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
-import { officeReadError, packFromFiles, truncationNotice } from "@/lib/repo/folder";
+import { officeReadError, packFromFiles, truncationNotice, type FolderLoadOptions } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
@@ -58,7 +61,12 @@ import {
 } from "@/lib/search/question";
 import { buildChunks, packVocabulary, retrieveHits } from "@/lib/search/retrieve";
 import { shapeOf } from "@/lib/search/intent";
-import { contentWords, normalizeSpokenQuestion } from "@/lib/search/spoken";
+import {
+  contentWords,
+  expandRetrievalQuery,
+  normalizeSpokenQuestion,
+  previousRetrievalQuestion,
+} from "@/lib/search/spoken";
 import { subjectTerms } from "@/lib/search/subject";
 import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread";
 import {
@@ -78,12 +86,12 @@ export const SESSION_KEY = "meethint.session";
 const SESSION_KEY_LEGACY = "ground.session";
 
 function readSessionRaw(): string | null {
+  const next = readAccountStorage(SESSION_KEY);
+  if (next != null) return next;
   try {
-    const next = localStorage.getItem(SESSION_KEY);
-    if (next != null) return next;
     const legacy = localStorage.getItem(SESSION_KEY_LEGACY);
     if (legacy == null) return null;
-    localStorage.setItem(SESSION_KEY, legacy);
+    writeAccountStorage(SESSION_KEY, legacy);
     localStorage.removeItem(SESSION_KEY_LEGACY);
     return legacy;
   } catch {
@@ -125,12 +133,16 @@ type SessionWire = {
 };
 
 function persist(partial: SessionWire) {
+  writeAccountStorage(SESSION_KEY, JSON.stringify(partial));
   try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(partial));
     localStorage.removeItem(SESSION_KEY_LEGACY);
   } catch {
     /* ignore quota */
   }
+}
+
+if (typeof window !== "undefined" && !authEnabled) {
+  bindAccountId(LOCAL_DEV_ACCOUNT_ID);
 }
 
 export type ComposeMode = "extract" | "synthesize" | "audit";
@@ -209,7 +221,7 @@ type MeetHintState = {
   boot: (preferredId?: string) => Promise<void>;
   activateContext: (id: string) => Promise<void>;
   createNamedContext: (input: CreateContextInput) => Promise<string>;
-  attachFolderToContext: (contextId: string, list: FileList | File[]) => Promise<void>;
+  attachFolderToContext: (contextId: string, list: FileList | File[], options?: FolderLoadOptions) => Promise<void>;
   deleteStoredContext: (id: string) => Promise<void>;
   refreshContexts: () => Promise<void>;
   hydratePack: (pack: RepoPack) => void;
@@ -225,7 +237,7 @@ type MeetHintState = {
   heard: (event: HeardEvent) => void;
   clearThem: () => void;
   lastWindow: (ms?: number) => string;
-  loadFolder: (list: FileList | File[]) => Promise<void>;
+  loadFolder: (list: FileList | File[], options?: FolderLoadOptions) => Promise<void>;
   addPdfFiles: (list: FileList | File[]) => Promise<void>;
   resetPack: () => void;
   dismissPackNotice: () => void;
@@ -242,6 +254,7 @@ type MeetHintState = {
   exportClaimReport: () => void;
   restoreAnswer: (id: string) => void;
   reviewMeeting: (id: string) => Promise<void>;
+  resetForAccountChange: () => void;
 };
 
 const playTimeouts: number[] = [];
@@ -549,8 +562,28 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         return;
       }
       const remembered = preferredId ?? readActiveContextId();
+      const preferred = preferredId ? contexts.find((item) => item.id === preferredId) : null;
+      if (preferredId && !preferred) {
+        persistActiveContextId(null);
+        set({
+          activeContextId: null,
+          contextStatus: "ready",
+          contextError: "That workspace is not in this account.",
+          contexts,
+          pack: NORTHSTAR,
+          chunks: NORTHSTAR_CHUNKS,
+          vocab: packVocabulary(NORTHSTAR_CHUNKS),
+          sources: [],
+          ...clearSessionOnSwitch(),
+        });
+        persist({ card: null, armed: false, listening: false, searching: false });
+        const history = await loadMeetings().catch(() => []);
+        if (epoch !== hydrationEpoch) return;
+        set({ meetingHistory: history, currentMeeting: latestOpenMeeting(history) });
+        return;
+      }
       const target =
-        (preferredId ? contexts.find((item) => item.id === preferredId) : null) ??
+        preferred ??
         contexts.find((item) => item.id === remembered) ??
         (migration.kind === "migrated" ? migration.context : null) ??
         contexts[0] ??
@@ -592,7 +625,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     return context.id;
   },
-  attachFolderToContext: async (contextId, list) => {
+  attachFolderToContext: async (contextId, list, options) => {
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
@@ -607,7 +640,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     persistActiveContextId(contextId);
     try {
-      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list);
+      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list, options);
       if (raw.files.length === 0) {
         if (epoch !== hydrationEpoch) return;
         set({
@@ -697,10 +730,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     try {
       await withContextWrite(id, async () => {
         const repo = getContextRepository();
+        const record = await repo.getContext(id);
+        if (!record) throw new Error("Context not in this account");
         const sources = await repo.listSources(id);
         if (epoch !== hydrationEpoch) return;
         if (sources.length === 0) {
-          const record = await repo.getContext(id);
           if (epoch !== hydrationEpoch) return;
           persistActiveContextId(id);
           const contexts = await listStoredContexts();
@@ -711,8 +745,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             sources,
             pack: {
               id,
-              name: record?.name ?? "Context",
-              description: record?.description ?? "No sources yet",
+              name: record.name,
+              description: record.description ?? "No sources yet",
               files: [],
               commits: [],
             },
@@ -958,7 +992,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       utterances: s.utterances.filter((u) => u.role !== "them"),
     })),
   lastWindow: (ms = 15000) => windowText(get().utterances, ms),
-  loadFolder: async (list) => {
+  loadFolder: async (list, options) => {
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
@@ -971,7 +1005,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       ...clearSessionOnSwitch(),
     });
     try {
-      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list);
+      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list, options);
       if (raw.files.length === 0) {
         if (epoch !== hydrationEpoch) return;
         set({
@@ -1152,6 +1186,50 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextError: hadSnapshot ? null : "Could not add those PDFs.",
       });
     }
+  },
+  resetForAccountChange: () => {
+    playTimeouts.splice(0).forEach((id) => window.clearTimeout(id));
+    searchEpoch += 1;
+    const epoch = nextHydrationEpoch();
+    persist({ card: null, armed: false, listening: false, searching: false });
+    set({
+      pack: NORTHSTAR,
+      chunks: NORTHSTAR_CHUNKS,
+      vocab: packVocabulary(NORTHSTAR_CHUNKS),
+      contexts: [],
+      activeContextId: null,
+      contextStatus: "ready",
+      contextError: null,
+      hydrationEpoch: epoch,
+      sources: [],
+      contextUpdating: false,
+      armed: false,
+      listening: false,
+      playing: false,
+      searching: false,
+      refining: false,
+      loadingFolder: false,
+      hearLevel: 0,
+      asrStatus: "off",
+      asrNote: "",
+      listenError: null,
+      listenBlocked: null,
+      folderError: null,
+      packNotice: null,
+      currentMeeting: null,
+      meetingHistory: [],
+      selectedClaimId: null,
+      claimReport: null,
+      auditOpen: false,
+      utterances: [],
+      typedQuery: "",
+      sharingCall: false,
+      extractRemaining: EXTRACT_DAILY_LIMIT,
+      subscription: "free",
+      selectedModelId: getDefaultModel().id,
+      ...clearSessionOnSwitch(),
+      openFile: "src/exporter/retry.ts",
+    });
   },
   resetPack: () => {
     const epoch = nextHydrationEpoch();
@@ -1374,8 +1452,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const t0 = performance.now();
     const canonical = normalizeSpokenQuestion(query).canonical;
     const resolved = Boolean(opts?.resolved);
+    const previousQuestion = previousRetrievalQuestion(state.answerHistory.map((item) => item.query));
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
-    const hits = await retrieveHits(canonical, state.chunks);
+    const hits = await retrieveHits(expandRetrievalQuery(canonical, previousQuestion), state.chunks);
     if (epoch !== searchEpoch) return;
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
@@ -1428,6 +1507,10 @@ export function hydrateClientPrefs() {
 
 if (typeof window !== "undefined") {
   window.useMeetHint = useMeetHint as unknown as Window["useMeetHint"];
+  window.__meethintSwitchAccount = async (accountId) => {
+    const { switchAccount } = await import("@/lib/auth/account-session");
+    await switchAccount(accountId);
+  };
 }
 
 export function readRelaySession(): SessionWire | null {

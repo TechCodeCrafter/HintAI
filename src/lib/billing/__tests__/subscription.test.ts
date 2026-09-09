@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "../../auth/account-boundary.ts";
 import { canDetectContradictions, readSubscription, SUBSCRIPTION_KEY, writeSubscription } from "../subscription.ts";
 
 const memory = new Map<string, string>();
@@ -13,6 +14,7 @@ test("subscription defaults to free and persists under meethint.subscription", (
     },
   };
   Object.defineProperty(globalThis, "localStorage", { configurable: true, value: store });
+  bindAccountId(LOCAL_DEV_ACCOUNT_ID);
 
   assert.equal(readSubscription(), "free");
   writeSubscription("pro");

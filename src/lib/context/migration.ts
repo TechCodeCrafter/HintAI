@@ -1,3 +1,4 @@
+import { LOCAL_DEV_ACCOUNT_ID, currentAccountId, readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
 import { NORTHSTAR } from "../repo/northstar.ts";
 import type { RepoPack } from "../repo/types.ts";
 import type { ContextRepository } from "./repository.ts";
@@ -27,11 +28,12 @@ export function isNorthstarPack(pack: RepoPack): boolean {
 
 export function readActiveContextId(): string | null {
   try {
-    const next = localStorage.getItem(ACTIVE_CONTEXT_KEY);
+    const next = readAccountStorage(ACTIVE_CONTEXT_KEY);
     if (next != null) return next;
+    if (currentAccountId() !== LOCAL_DEV_ACCOUNT_ID && currentAccountId() !== null) return null;
     const legacy = localStorage.getItem(ACTIVE_CONTEXT_KEY_LEGACY);
     if (legacy == null) return null;
-    localStorage.setItem(ACTIVE_CONTEXT_KEY, legacy);
+    writeAccountStorage(ACTIVE_CONTEXT_KEY, legacy);
     localStorage.removeItem(ACTIVE_CONTEXT_KEY_LEGACY);
     return legacy;
   } catch {
@@ -40,9 +42,8 @@ export function readActiveContextId(): string | null {
 }
 
 export function persistActiveContextId(id: string | null): void {
+  writeAccountStorage(ACTIVE_CONTEXT_KEY, id);
   try {
-    if (id) localStorage.setItem(ACTIVE_CONTEXT_KEY, id);
-    else localStorage.removeItem(ACTIVE_CONTEXT_KEY);
     localStorage.removeItem(ACTIVE_CONTEXT_KEY_LEGACY);
   } catch {
     /* ignore quota */

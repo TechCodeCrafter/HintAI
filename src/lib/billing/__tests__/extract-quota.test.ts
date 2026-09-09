@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "../../auth/account-boundary.ts";
 import {
   EXTRACT_DAILY_LIMIT,
   EXTRACT_QUOTA_KEY,
@@ -27,6 +28,7 @@ function installStorage() {
       },
     },
   });
+  bindAccountId(LOCAL_DEV_ACCOUNT_ID);
 }
 
 test("a fresh day has the full Extract allowance", () => {

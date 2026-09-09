@@ -89,9 +89,12 @@ export function HomeProof() {
               </div>
             ) : null}
             <div className="space-y-3">
-              <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode)}</p>
+              <p className="receipt-kicker receipt-kicker-accent">
+                {receiptKicker(card?.answerMode, card?.usedEvidence ?? (card?.citations.length ?? 0) > 0)}
+              </p>
               {card?.say ? <AnswerSay text={card.say} /> : null}
-              {card?.answerMode === "generated" ? (
+              {card?.answerMode === "generated" ||
+              (card?.answerMode === "synthesized" && !(card.usedEvidence ?? card.citations.length > 0)) ? (
                 <p className="generated-note" title="General knowledge — verify before saying it.">
                   General knowledge — verify before saying it.
                 </p>

@@ -1,3 +1,4 @@
+import { contextDatabaseName, currentAccountId, onAccountUnbind } from "../auth/account-boundary.ts";
 import { MeetHintDatabase } from "../context/storage/indexeddb.ts";
 import { DATABASE_NAME } from "../context/storage/schema.ts";
 import type { MeetingRecord } from "./types.ts";
@@ -71,8 +72,16 @@ export function createMemoryMeetingRepository(): MeetingRepository {
 
 let repository: MeetingRepository | null = null;
 
+onAccountUnbind(() => {
+  repository = null;
+});
+
 export function getMeetingRepository(): MeetingRepository {
-  repository ??= createDexieMeetingRepository();
+  if (repository) return repository;
+  const accountId = currentAccountId();
+  repository = accountId
+    ? createDexieMeetingRepository(contextDatabaseName(accountId))
+    : createMemoryMeetingRepository();
   return repository;
 }
 

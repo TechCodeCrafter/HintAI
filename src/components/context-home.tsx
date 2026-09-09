@@ -5,9 +5,11 @@ import { HomeProof } from "@/components/home-proof";
 import { ContextShell } from "@/components/context-shell";
 import { contextHasSources, formatContextCounts } from "@/lib/context/kinds";
 import { migrateLegacyPack, readSavedPack } from "@/lib/context/migration";
+import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { listContextSummaries, type ContextSummary } from "@/lib/context/service";
 
 export function ContextHome() {
+  const { ready: vaultReady, accountId } = useAccountVaultReady();
   const [summaries, setSummaries] = useState<ContextSummary[] | null>(null);
   const [legacy, setLegacy] = useState(false);
   const [migrating, setMigrating] = useState(false);
@@ -24,8 +26,9 @@ export function ContextHome() {
   }
 
   useEffect(() => {
+    if (!vaultReady) return;
     void reload();
-  }, []);
+  }, [vaultReady, accountId]);
 
   async function convertLegacy() {
     setMigrating(true);

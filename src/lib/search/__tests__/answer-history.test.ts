@@ -43,8 +43,14 @@ test("history items keep the query, badge, citations, and timestamp", () => {
 test("badge mapping covers the three answer paths", () => {
   assert.equal(badgeFromAnswerMode("docs"), "from-docs");
   assert.equal(badgeFromAnswerMode("synthesized"), "synthesized");
+  assert.equal(badgeFromAnswerMode("synthesized", false), "generated");
   assert.equal(badgeFromAnswerMode("generated"), "generated");
   assert.equal(badgeFromAnswerMode(undefined), null);
+});
+
+test("a synthesized card with no citations stores a generated badge", () => {
+  const item = historyItemFromCard(card({ answerMode: "synthesized", citations: [], usedEvidence: false }));
+  assert.equal(item.badge, "generated");
 });
 
 test("append keeps the newest first and caps at 50", () => {

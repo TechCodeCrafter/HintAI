@@ -57,6 +57,35 @@ const MAX_FILE_BYTES = 150_000;
 const OFFICE_MAX_FILE_BYTES = 4_000_000;
 const MAX_TOTAL_BYTES = 8_000_000;
 
+export type FolderLoadOptions = {
+  includeTests?: boolean;
+  selectedCount?: number;
+};
+
+export type FolderCandidate = {
+  file: File;
+  path: string;
+  score: number;
+};
+
+export type FolderScan = {
+  selected: number;
+  folderName: string;
+  candidates: FolderCandidate[];
+  skipLabels: string[];
+};
+
+export type FolderPreview = {
+  folderName: string;
+  selected: number;
+  keep: number;
+  skipped: number;
+  truncated: boolean;
+  includeTests: boolean;
+  skipLabels: string[];
+  keepSample: string[];
+};
+
 export type FolderLoad = {
   pack: RepoPack;
   skipped: number;
@@ -64,7 +93,27 @@ export type FolderLoad = {
   failed: string[];
 };
 
+export type FsEntry =
+  | { kind: "file"; name: string; getFile: () => Promise<File> }
+  | { kind: "directory"; name: string; values: () => AsyncIterable<FsEntry> };
+
+export type DirectoryLike = {
+  name: string;
+  values: () => AsyncIterable<FsEntry>;
+};
+
 export { officeReadError };
+
+export const SKIP_LABEL = {
+  vendor: "vendor and build folders",
+  lockfiles: "lockfiles",
+  binaries: "binaries and media",
+  types: "unsupported types",
+  size: "files over the size limit",
+  json: "large JSON",
+  tests: "tests",
+  cap: "over the 500-file cap",
+} as const;
 
 export function truncationNotice(fileCount: number): string {
   return `Loaded ${fileCount} files. Some files were skipped due to size limits. For best results, load a service folder (src/) rather than the full repo root.`;
@@ -89,6 +138,11 @@ function langOf(path: string): string {
   return ext || "txt";
 }
 
+export function isTestPath(path: string): boolean {
+  const p = path.toLowerCase();
+  return /\.(spec|test|e2e)\./.test(p) || /(^|\/)(__tests__|testdata|fixtures|mocks|stories|e2e)(\/|$)/.test(p);
+}
+
 function looksText(bytes: string): boolean {
   let weird = 0;
   const n = Math.min(bytes.length, 800);
@@ -111,7 +165,7 @@ function scorePath(path: string): number {
   if (/\.(js|jsx|rb|cs)$/.test(p)) score += 3;
   if (/(adr|architecture|rfc|design-doc)/.test(p)) score += 7;
   if (/(^|\/)docs\//.test(p) && /\.md$/.test(p)) score += 4;
-  if (/\.(spec|test|e2e)\./.test(p) || /(^|\/)(__tests__|testdata|fixtures|mocks|stories|e2e)(\/|$)/.test(p)) {
+  if (isTestPath(p)) {
     score -= 10;
   }
   if (/(^|\/)(migrations|fixtures|snapshots|__snapshots__)(\/|$)/.test(p)) score -= 6;
@@ -146,37 +200,154 @@ export function prunePack(pack: RepoPack): { pack: RepoPack; weak: boolean; drop
   return { pack: next, dropped, weak: code < 3 && office === 0 };
 }
 
-export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad> {
+export function repoRelativePath(file: File): string {
+  const rel = relativePath(file);
+  return rel.includes("/") ? rel.split("/").slice(1).join("/") : rel;
+}
+
+export function folderNameFromList(list: FileList | File[]): string {
   const files = Array.from(list);
   const first = files[0] ? relativePath(files[0]) : "repo";
-  const root = first.includes("/") ? first.split("/")[0] : "local-repo";
+  return first.includes("/") ? first.split("/")[0] : "local-repo";
+}
 
-  const candidates: Array<{ file: File; path: string; score: number }> = [];
-  let skipped = 0;
+export function pathSkipReason(path: string): string | null {
+  if (!path || SKIP_DIR.test(path)) return SKIP_LABEL.vendor;
+  if (SKIP_NAME.test(path)) return SKIP_LABEL.lockfiles;
+  if (SKIP_EXT.test(path)) return SKIP_LABEL.binaries;
+  if (!ALLOW_EXT.has(extOf(path))) return SKIP_LABEL.types;
+  return null;
+}
+
+export function sizeSkipReason(path: string, size: number): string | null {
+  const ext = extOf(path);
+  if (size > (isOfficeExt(ext) ? OFFICE_MAX_FILE_BYTES : MAX_FILE_BYTES)) return SKIP_LABEL.size;
+  if (ext === "json" && size > 12_000 && !/(^|\/)(package\.json|tsconfig.*\.json)$/i.test(path)) return SKIP_LABEL.json;
+  return null;
+}
+
+export function scanFileList(list: FileList | File[]): FolderScan {
+  const files = Array.from(list);
+  const skipLabels = new Set<string>();
+  const candidates: FolderCandidate[] = [];
   for (const file of files) {
-    const rel = relativePath(file);
-    const path = rel.includes("/") ? rel.split("/").slice(1).join("/") : rel;
-    if (!path || SKIP_DIR.test(path) || SKIP_NAME.test(path) || SKIP_EXT.test(path)) {
-      skipped += 1;
-      continue;
-    }
-    const ext = extOf(path);
-    if (!ALLOW_EXT.has(ext)) {
-      skipped += 1;
-      continue;
-    }
-    if (file.size > (isOfficeExt(ext) ? OFFICE_MAX_FILE_BYTES : MAX_FILE_BYTES)) {
-      skipped += 1;
-      continue;
-    }
-    if (ext === "json" && file.size > 12_000 && !/(^|\/)(package\.json|tsconfig.*\.json)$/i.test(path)) {
-      skipped += 1;
+    const path = repoRelativePath(file);
+    const reason = pathSkipReason(path) ?? sizeSkipReason(path, file.size);
+    if (reason) {
+      skipLabels.add(reason);
       continue;
     }
     candidates.push({ file, path, score: scorePath(path) });
   }
+  return {
+    selected: files.length,
+    folderName: folderNameFromList(files),
+    candidates,
+    skipLabels: [...skipLabels],
+  };
+}
 
-  candidates.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
+export function previewScan(scan: FolderScan, options?: FolderLoadOptions): FolderPreview {
+  const includeTests = options?.includeTests ?? true;
+  const ranked = [...scan.candidates]
+    .filter((item) => includeTests || !isTestPath(item.path))
+    .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
+  const skipLabels = new Set(scan.skipLabels);
+  if (!includeTests && scan.candidates.some((item) => isTestPath(item.path))) {
+    skipLabels.add(SKIP_LABEL.tests);
+  }
+  let total = 0;
+  let truncated = false;
+  const keep: FolderCandidate[] = [];
+  for (const item of ranked) {
+    if (keep.length >= MAX_FILES || total + item.file.size > MAX_TOTAL_BYTES) {
+      truncated = true;
+      skipLabels.add(SKIP_LABEL.cap);
+      continue;
+    }
+    total += item.file.size;
+    keep.push(item);
+  }
+  return {
+    folderName: scan.folderName,
+    selected: scan.selected,
+    keep: keep.length,
+    skipped: Math.max(0, scan.selected - keep.length),
+    truncated,
+    includeTests,
+    skipLabels: [...skipLabels],
+    keepSample: keep.slice(0, 3).map((item) => item.path),
+  };
+}
+
+export function previewFolder(list: FileList | File[], options?: FolderLoadOptions): FolderPreview {
+  return previewScan(scanFileList(list), options);
+}
+
+function fileWithRelativePath(file: File, relative: string): File {
+  try {
+    Object.defineProperty(file, "webkitRelativePath", { value: relative, configurable: true });
+    return file;
+  } catch {
+    const copy = new File([file], file.name, { type: file.type, lastModified: file.lastModified });
+    Object.defineProperty(copy, "webkitRelativePath", { value: relative, configurable: true });
+    return copy;
+  }
+}
+
+async function countDirectoryFiles(dir: DirectoryLike): Promise<number> {
+  let total = 0;
+  for await (const entry of dir.values()) {
+    if (entry.kind === "directory") total += await countDirectoryFiles(entry);
+    else total += 1;
+  }
+  return total;
+}
+
+export async function scanDirectoryHandle(handle: DirectoryLike): Promise<FolderScan> {
+  const folderName = handle.name || "local-repo";
+  const skipLabels = new Set<string>();
+  const candidates: FolderCandidate[] = [];
+  let selected = 0;
+
+  async function walk(dir: DirectoryLike, prefix: string): Promise<void> {
+    for await (const entry of dir.values()) {
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.kind === "directory") {
+        if (SKIP_DIR.test(rel)) {
+          skipLabels.add(SKIP_LABEL.vendor);
+          selected += await countDirectoryFiles(entry);
+          continue;
+        }
+        await walk(entry, rel);
+        continue;
+      }
+      selected += 1;
+      const pathReason = pathSkipReason(rel);
+      if (pathReason) {
+        skipLabels.add(pathReason);
+        continue;
+      }
+      const file = fileWithRelativePath(await entry.getFile(), `${folderName}/${rel}`);
+      const sizeReason = sizeSkipReason(rel, file.size);
+      if (sizeReason) {
+        skipLabels.add(sizeReason);
+        continue;
+      }
+      candidates.push({ file, path: rel, score: scorePath(rel) });
+    }
+  }
+
+  await walk(handle, "");
+  return { selected, folderName, candidates, skipLabels: [...skipLabels] };
+}
+
+export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions): Promise<FolderLoad> {
+  const includeTests = options?.includeTests ?? true;
+  const selected = options?.selectedCount ?? scan.selected;
+  const candidates = [...scan.candidates]
+    .filter((item) => includeTests || !isTestPath(item.path))
+    .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
 
   const packFiles: RepoFile[] = [];
   const failed: string[] = [];
@@ -185,12 +356,10 @@ export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad
   for (const item of candidates) {
     if (packFiles.length >= MAX_FILES) {
       truncated = true;
-      skipped += 1;
       continue;
     }
     if (total + item.file.size > MAX_TOTAL_BYTES) {
       truncated = true;
-      skipped += 1;
       continue;
     }
     const ext = extOf(item.path);
@@ -200,35 +369,32 @@ export async function packFromFiles(list: FileList | File[]): Promise<FolderLoad
         content = await parseOfficeBuffer(ext, await item.file.arrayBuffer());
       } else {
         content = await item.file.text();
-        if (!looksText(content)) {
-          skipped += 1;
-          continue;
-        }
+        if (!looksText(content)) continue;
       }
     } catch (error) {
       console.warn(`Could not read ${item.path}`, error);
       failed.push(item.path.split("/").pop() ?? item.path);
-      skipped += 1;
       continue;
     }
-    if (!content.trim()) {
-      skipped += 1;
-      continue;
-    }
+    if (!content.trim()) continue;
     total += item.file.size;
     packFiles.push({ path: item.path, language: langOf(item.path), content });
   }
 
   return {
     pack: {
-      id: `folder-${root}`,
-      name: root,
+      id: `folder-${scan.folderName}`,
+      name: scan.folderName,
       description: `Local folder · ${packFiles.length} files`,
       files: packFiles,
       commits: [],
     },
-    skipped,
+    skipped: Math.max(0, selected - packFiles.length),
     truncated,
     failed,
   };
+}
+
+export async function packFromFiles(list: FileList | File[], options?: FolderLoadOptions): Promise<FolderLoad> {
+  return packFromScan(scanFileList(list), options);
 }

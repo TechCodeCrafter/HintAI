@@ -1,3 +1,4 @@
+import { readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
 import type { ModelProvider, ProviderKeys } from "./models.ts";
 
 export type { ProviderKeys };
@@ -7,7 +8,7 @@ const KEYS_STORAGE = "meethint.providerKeys";
 export function readClientKeys(): ProviderKeys {
   if (typeof localStorage === "undefined") return {};
   try {
-    const raw = localStorage.getItem(KEYS_STORAGE);
+    const raw = readAccountStorage(KEYS_STORAGE);
     if (!raw) return {};
     const parsed = JSON.parse(raw) as ProviderKeys;
     return {
@@ -27,11 +28,7 @@ export function writeClientKeys(keys: ProviderKeys) {
     const value = keys[provider]?.trim();
     if (value) next[provider] = value;
   }
-  try {
-    localStorage.setItem(KEYS_STORAGE, JSON.stringify(next));
-  } catch {
-    /* ignore quota */
-  }
+  writeAccountStorage(KEYS_STORAGE, JSON.stringify(next));
 }
 
 export function clientHasKey(provider: ModelProvider, keys = readClientKeys()): boolean {

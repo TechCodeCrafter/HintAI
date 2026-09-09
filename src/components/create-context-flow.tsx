@@ -2,9 +2,12 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { FileText, FolderOpen, Upload } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
+import { FolderPickerFields } from "@/components/review-pack-dialog";
+import { useFolderPicker } from "@/components/use-folder-picker";
 import { CONTEXT_KINDS } from "@/lib/context/kinds";
 import type { ContextKind } from "@/lib/context/types";
 import { cn } from "@/lib/cn";
+import type { FolderLoadOptions } from "@/lib/repo/folder";
 import { useMeetHint } from "@/lib/store";
 
 type Step = "identity" | "material" | "indexing";
@@ -13,7 +16,7 @@ const COMING_SOON = ["PPTX"] as const;
 
 export function CreateContextFlow() {
   const navigate = useNavigate();
-  const folderRef = useRef<HTMLInputElement>(null);
+  const folderPicker = useFolderPicker();
   const filesRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +38,12 @@ export function CreateContextFlow() {
   const chunks = useMeetHint((s) => s.chunks);
   const activeContextId = useMeetHint((s) => s.activeContextId);
 
-  const busy = creating || loadingFolder || contextStatus === "hydrating" || contextStatus === "booting";
+  const busy =
+    creating ||
+    loadingFolder ||
+    folderPicker.reading ||
+    contextStatus === "hydrating" ||
+    contextStatus === "booting";
   const symbolCount = useMemo(() => chunks.filter((chunk) => "symbol" in chunk && chunk.symbol).length, [chunks]);
   const sourceCount = sources.length;
   const workingId = contextId ?? activeContextId;
@@ -65,10 +73,10 @@ export function CreateContextFlow() {
     }
   }
 
-  async function addFolder(list: FileList | File[]) {
+  async function addFolder(list: FileList | File[], options?: FolderLoadOptions) {
     if (!workingId) return;
     setStep("indexing");
-    await attachFolderToContext(workingId, list);
+    await attachFolderToContext(workingId, list, options);
   }
 
   async function addPdfs(list: FileList | File[]) {
@@ -147,9 +155,15 @@ export function CreateContextFlow() {
               <p className="text-sm text-muted">Folder, files, PDFs, DOCX, XLSX, or CSV. PPTX is still off.</p>
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
-              <button type="button" className="mh-panel flex min-h-24 flex-col items-start gap-2 p-4 text-left" onClick={() => folderRef.current?.click()}>
+              <button
+                type="button"
+                data-testid="upload-folder-button"
+                className="mh-panel flex min-h-24 flex-col items-start gap-2 p-4 text-left"
+                disabled={folderPicker.reading}
+                onClick={() => void folderPicker.offerFolder()}
+              >
                 <FolderOpen className="size-4 text-accent" />
-                <span className="text-sm font-medium">Upload folder</span>
+                <span className="text-sm font-medium">{folderPicker.reading ? "Reading folder…" : "Upload folder"}</span>
               </button>
               <button
                 type="button"
@@ -174,20 +188,6 @@ export function CreateContextFlow() {
                 </span>
               ))}
             </div>
-            <input
-              ref={folderRef}
-              type="file"
-              multiple
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              onChange={(event) => {
-                const files = event.target.files;
-                if (files && files.length > 0) void addFolder(files);
-                event.target.value = "";
-              }}
-              {...{ webkitdirectory: "", directory: "" }}
-            />
             <input
               ref={filesRef}
               type="file"
@@ -256,6 +256,12 @@ export function CreateContextFlow() {
           </section>
         ) : null}
 
+        <FolderPickerFields
+          picker={folderPicker}
+          onIndex={(files, options) => {
+            void addFolder(files, options);
+          }}
+        />
         <p className="text-xs text-faint">
           <Link to="/home" className="hover:text-fg">
             Back to contexts

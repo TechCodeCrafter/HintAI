@@ -118,6 +118,7 @@ export async function signIn(
     hasBearer: Boolean(getBearerToken()),
     requestSignOut: () => authClient.signOut(),
     clearToken: () => setBearerToken(null),
+    wipeLocal: () => import("./account-session").then((mod) => mod.leaveAccount()),
   });
 
   if (inLivePreview()) {
@@ -229,6 +230,7 @@ export async function signOut(redirectTo = "/"): Promise<void> {
       if (error) throw new Error(error.message ?? "Sign-out failed");
     },
     clearToken: () => setBearerToken(null),
+    wipeLocal: () => import("./account-session").then((mod) => mod.leaveAccount()),
     redirect: () => {
       window.location.href = redirectTo;
     },

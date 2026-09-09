@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { unwrapFnInput } from "@/lib/ai/fn-input";
 import { getDefaultModel, getModelById, type ModelOption, type ModelProvider, type ProviderKeys } from "@/lib/ai/models";
 import type { Hit } from "@/lib/repo/types";
 
@@ -108,7 +109,9 @@ async function completeChat(
   maxTokens?: number,
 ) {
   const apiKey = resolveKey(model.provider, keys);
+  console.info("[completeChat] user message length:", user.length, "head:", user.slice(0, 60));
   console.info("[completeChat] provider:", model.provider, "apiKey present:", Boolean(apiKey));
+  if (!user.trim()) return { raw: null as string | null, reason: "empty prompt" };
   if (!apiKey) return { raw: null as string | null, reason: missingKeyReason() };
   const request = buildRequest(model, system, user, apiKey, maxTokens ?? model.maxTokens);
   try {
@@ -162,7 +165,8 @@ function speakInput(input: SpeakInput): {
   policy: SpeakPolicy;
   keys?: ProviderKeys;
 } {
-  const inner = input && typeof input.query === "string" ? input : (input?.data ?? {});
+  console.info("[validator] keys:", Object.keys(input ?? {}), input?.data ? Object.keys(input.data) : "no data");
+  const inner = unwrapFnInput(input);
   const policy = inner.policy;
   return {
     query: typeof inner.query === "string" ? inner.query : "",
@@ -224,7 +228,8 @@ function generalInput(input: GeneralInput): {
   maxTokens?: number;
   keys?: ProviderKeys;
 } {
-  const inner = input && typeof input.query === "string" ? input : (input?.data ?? {});
+  console.info("[validator] keys:", Object.keys(input ?? {}), input?.data ? Object.keys(input.data) : "no data");
+  const inner = unwrapFnInput(input);
   return {
     query: typeof inner.query === "string" ? inner.query : "",
     prompt: typeof inner.prompt === "string" ? inner.prompt : "",

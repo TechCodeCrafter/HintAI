@@ -243,3 +243,30 @@ export function normalizeSpokenQuestion(raw: string): Normalized {
     repairs: repaired.repairs,
   };
 }
+
+const FOLLOW_UP_CONTENT_CAP = 4;
+const FOLLOW_UP_WORD_CAP = 7;
+const FOLLOW_UP_PHRASE =
+  /^(?:and |or |so )?(?:(?:can you |could you )?(?:tell me more|say more|go on|explain(?: that| more)?|continue)|why(?:\s+\S+){0,2}|how does that(?: work)?|how so|what about that)\s*$/i;
+
+/** Vague meeting follow-ups have too few content words to retrieve on their own. */
+export function isShortFollowUp(query: string): boolean {
+  const trimmed = query.trim();
+  if (FOLLOW_UP_PHRASE.test(trimmed.replace(/[?.!]+$/g, "").trim())) return true;
+  const rawWords = trimmed.split(/\s+/).filter(Boolean);
+  return contentWords(trimmed).length < FOLLOW_UP_CONTENT_CAP && rawWords.length < FOLLOW_UP_WORD_CAP;
+}
+
+/** Newest-first history: last topic question, not a chain of "tell me more". */
+export function previousRetrievalQuestion(history: string[]): string | undefined {
+  const cleaned = history.map((item) => item.trim()).filter(Boolean);
+  return cleaned.find((item) => !isShortFollowUp(item)) ?? cleaned[0];
+}
+
+/** Keep the spoken query for the prompt; expand retrieval with the last question. */
+export function expandRetrievalQuery(query: string, previousQuestion?: string | null): string {
+  const previous = previousQuestion?.trim();
+  const current = query.trim();
+  if (!previous || !current || previous === current || !isShortFollowUp(current)) return current;
+  return `${previous} ${current}`;
+}

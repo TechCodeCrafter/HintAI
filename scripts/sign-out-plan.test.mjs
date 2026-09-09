@@ -37,6 +37,7 @@ function harness(overrides = {}) {
       return Promise.resolve();
     },
     clearToken: () => order.push("clear"),
+    wipeLocal: () => order.push("wipe"),
     redirect: () => order.push("redirect"),
     timeoutMs: TEST_TIMEOUT_MS,
     ...overrides,
@@ -62,13 +63,13 @@ test("preview: a successful sign-out clears the token, then redirects", async ()
   const h = preview();
   await h.run();
   assert.equal(h.requests, 1);
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });
 
 test("preview: a rejected sign-out still clears the token and redirects", async () => {
   const h = preview({ requestSignOut: rejects });
   await h.run();
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });
 
 test("preview: a sign-out that throws synchronously still clears and redirects", async () => {
@@ -78,7 +79,7 @@ test("preview: a sign-out that throws synchronously still clears and redirects",
     },
   });
   await h.run();
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });
 
 test("preview: a sign-out that never settles clears and redirects once the wait expires", async (t) => {
@@ -92,14 +93,14 @@ test("preview: a sign-out that never settles clears and redirects once the wait 
 
   t.mock.timers.tick(1);
   await done;
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });
 
 test("preview: no bearer means nothing to invalidate, so no request is made", async () => {
   const h = preview({ hasBearer: false });
   await h.run();
   assert.equal(h.requests, 0);
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });
 
 test("preview: a stored bearer is still invalidated server-side", async () => {
@@ -115,7 +116,7 @@ test("preview: a stored bearer is still invalidated server-side", async () => {
 test("deployed: a confirmed sign-out clears the token, then redirects", async () => {
   const h = deployed();
   await h.run();
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });
 
 test("deployed: a sign-out that never settles throws and does NOT redirect", async () => {
@@ -244,5 +245,5 @@ test("the defaults are bounded, and deployed waits longer than preview", async (
   const done = h.run();
   t.mock.timers.tick(PREVIEW_SIGN_OUT_TIMEOUT_MS);
   await done;
-  assert.deepEqual(h.order, ["clear", "redirect"]);
+  assert.deepEqual(h.order, ["wipe", "clear", "redirect"]);
 });

@@ -2,15 +2,18 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { FileText, FolderOpen, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
+import { FolderPickerFields } from "@/components/review-pack-dialog";
+import { useFolderPicker } from "@/components/use-folder-picker";
 import { persistActiveContextId } from "@/lib/context/migration";
 import { contextKindLabel } from "@/lib/context/kinds";
 import { getContextRepository } from "@/lib/context/service";
 import type { ContextRecord, StoredSource } from "@/lib/context/types";
+import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { useMeetHint } from "@/lib/store";
 
 export function ContextDetail({ id }: { id: string }) {
   const navigate = useNavigate();
-  const folderRef = useRef<HTMLInputElement>(null);
+  const folderPicker = useFolderPicker();
   const filesRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
   const [record, setRecord] = useState<ContextRecord | null>(null);
@@ -18,6 +21,7 @@ export function ContextDetail({ id }: { id: string }) {
   const [missing, setMissing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const { ready: vaultReady } = useAccountVaultReady();
   const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
   const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
   const deleteStoredContext = useMeetHint((s) => s.deleteStoredContext);
@@ -34,8 +38,9 @@ export function ContextDetail({ id }: { id: string }) {
   }
 
   useEffect(() => {
+    if (!vaultReady) return;
     void load();
-  }, [id]);
+  }, [id, vaultReady]);
 
   function bindActive() {
     persistActiveContextId(id);
@@ -45,7 +50,7 @@ export function ContextDetail({ id }: { id: string }) {
   if (missing) {
     return (
       <ContextShell>
-        <main className="space-y-4 py-10">
+        <main className="space-y-4 py-10" data-testid="context-missing">
           <h1 className="mh-display text-3xl">That context is gone.</h1>
           <Link to="/home" className="text-accent hover:underline">
             Back to contexts
@@ -101,10 +106,11 @@ export function ContextDetail({ id }: { id: string }) {
               <button
                 type="button"
                 className="inline-flex h-11 items-center gap-2 rounded-sm border border-line px-3 text-xs text-secondary hover:border-accent hover:text-fg"
-                onClick={() => folderRef.current?.click()}
+                disabled={folderPicker.reading}
+                onClick={() => void folderPicker.offerFolder()}
               >
                 <FolderOpen className="size-3.5" />
-                Add folder
+                {folderPicker.reading ? "Reading…" : "Add folder"}
               </button>
               <button
                 type="button"
@@ -169,19 +175,11 @@ export function ContextDetail({ id }: { id: string }) {
           )}
         </div>
 
-        <input
-          ref={folderRef}
-          type="file"
-          multiple
-          className="sr-only"
-          aria-hidden="true"
-          tabIndex={-1}
-          onChange={(event) => {
-            const files = event.target.files;
-            if (files && files.length > 0) void attachFolderToContext(id, files).then(() => load());
-            event.target.value = "";
+        <FolderPickerFields
+          picker={folderPicker}
+          onIndex={(files, options) => {
+            void attachFolderToContext(id, files, options).then(() => load());
           }}
-          {...{ webkitdirectory: "", directory: "" }}
         />
         <input
           ref={filesRef}

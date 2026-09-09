@@ -15,6 +15,11 @@ export type GeneratedAnswer = {
   answerMode: AnswerMode;
 };
 
+export type AnswerResult =
+  | { ok: true; answer: GeneratedAnswer }
+  | { ok: false; reason: "insufficient" }
+  | { ok: false; reason: "error"; message: string };
+
 export type SynthesisAsk = (payload: {
   query: string;
   prompt: string;
@@ -82,21 +87,6 @@ RULES:
 ANSWER:`;
 }
 
-/** No useful retrieval — answer from knowledge. */
-export function buildFreelyPrompt(query: string, history?: string[]): string {
-  return `The user is in a meeting and asked a question that is not covered by their documents.
-${historyBlock(history)}
-QUESTION: "${query}"
-
-RULES:
-- Answer from general knowledge.
-- Be concise but detailed (2-4 sentences).
-- Sound like a senior engineer.
-- Do not invent facts about the user's specific documents.
-
-ANSWER:`;
-}
-
 /** Pick the sentence in a chunk that overlaps the question most. */
 export function extractBestSentence(text: string, query: string): string {
   const terms = query
@@ -135,7 +125,7 @@ export function citationIndexes(text: string): number[] {
 }
 
 export function stripCitationMarkers(text: string): string {
-  return text.replace(MARKER, "").replace(/\s+/g, " ").trim();
+  return text.replace(MARKER, "").replace(/\s+([.!?])/g, "$1").replace(/\s+/g, " ").trim();
 }
 
 function isInsufficient(text: string): boolean {
@@ -218,12 +208,14 @@ function evidenceForMarkers(text: string, hits: Hit[], pack?: RepoPack): { evide
 }
 
 async function defaultAsk(prompt: string, modelId: string, maxTokens?: number, policy: AnswerPolicy = "extract") {
+  console.info("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
   const { completeSynthesis } = await import("@/lib/ai/cardsmith");
   const { readClientKeys } = await import("@/lib/ai/client-keys");
   return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys(), policy } });
 }
 
 async function defaultGeneralAsk(prompt: string, modelId: string, maxTokens?: number) {
+  console.info("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
   const { completeGeneral } = await import("@/lib/ai/cardsmith");
   const { readClientKeys } = await import("@/lib/ai/client-keys");
   return completeGeneral({ data: { prompt, modelId, maxTokens, keys: readClientKeys() } });
@@ -247,15 +239,45 @@ QUESTION: "${query}"
 ANSWER:`;
 }
 
+type CompletionResult =
+  | { ok: true; text: string; modelName?: string }
+  | { ok: false; reason: "error"; message: string };
+
+function errorMessage(err: unknown, fallback: string): string {
+  if (err instanceof Error && err.message.trim()) return err.message.trim();
+  if (typeof err === "string" && err.trim()) return err.trim();
+  return fallback;
+}
+
+async function runCompletion(
+  run: () => Promise<{ text: string | null; reason?: string; modelName?: string }>,
+  fallbackName: string,
+): Promise<CompletionResult> {
+  try {
+    const remote = await Promise.race([
+      run(),
+      new Promise<never>((_, reject) => {
+        globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
+      }),
+    ]);
+    const raw = remote.text?.replace(/\s+/g, " ").trim() ?? "";
+    if (!raw) {
+      return { ok: false, reason: "error", message: (remote.reason ?? "empty").trim() || "empty" };
+    }
+    return { ok: true, text: raw, modelName: remote.modelName ?? fallbackName };
+  } catch (err) {
+    return { ok: false, reason: "error", message: errorMessage(err, "timeout") };
+  }
+}
+
 async function completePrompt(
   query: string,
   prompt: string,
   policy: AnswerPolicy,
   opts?: GenerateOpts,
-): Promise<{ text: string; modelName?: string } | null> {
+): Promise<CompletionResult> {
   const model = getModelById(opts?.modelId) ?? getDefaultModel();
-  let remote: { text: string | null; reason?: string; modelName?: string };
-  try {
+  return runCompletion(async () => {
     if (typeof window !== "undefined" && window.__mockCraftCard) {
       const mocked = await window.__mockCraftCard({
         query,
@@ -264,23 +286,12 @@ async function completePrompt(
         task: "answer",
         modelId: model.id,
       });
-      remote = { text: mocked?.say ?? null, modelName: model.name };
-    } else {
-      remote = await Promise.race([
-        opts?.ask
-          ? opts.ask({ query, prompt, modelId: model.id, maxTokens: opts.maxTokens, policy })
-          : defaultAsk(prompt, model.id, opts?.maxTokens, policy),
-        new Promise<never>((_, reject) => {
-          globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
-        }),
-      ]);
+      return { text: mocked?.say ?? null, modelName: model.name };
     }
-  } catch {
-    return null;
-  }
-  const raw = remote.text?.replace(/\s+/g, " ").trim() ?? "";
-  if (!raw) return null;
-  return { text: raw, modelName: remote.modelName ?? model.name };
+    return opts?.ask
+      ? opts.ask({ query, prompt, modelId: model.id, maxTokens: opts.maxTokens, policy })
+      : defaultAsk(prompt, model.id, opts?.maxTokens, policy);
+  }, model.name);
 }
 
 /** Strong retrieval — speak a sentence from the top hit. No LLM. */
@@ -321,23 +332,27 @@ export async function generateAnswer(
   hits: Hit[],
   t0: number,
   opts?: GenerateOpts,
-): Promise<GeneratedAnswer | null> {
-  if (hits.length === 0) return null;
+): Promise<AnswerResult> {
+  if (hits.length === 0) return { ok: false, reason: "insufficient" };
   const remote = await completePrompt(query, buildSynthesisPrompt(query, hits), "extract", opts);
-  if (!remote || isInsufficient(remote.text)) return null;
+  if (!remote.ok) return remote;
+  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
   const say = stripCitationMarkers(remote.text);
-  if (!say) return null;
+  if (!say) return { ok: false, reason: "insufficient" };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
-  if (evidence.length === 0) return null;
+  if (evidence.length === 0) return { ok: false, reason: "insufficient" };
   const check = verifyClaim(say, evidence);
-  if (!check.ok || check.checked === 0) return null;
+  if (!check.ok || check.checked === 0) return { ok: false, reason: "insufficient" };
   return {
-    say,
-    usedEvidence: true,
-    citations,
-    latencyMs: Math.round(performance.now() - t0),
-    modelName: remote.modelName,
-    answerMode: "docs",
+    ok: true,
+    answer: {
+      say,
+      usedEvidence: true,
+      citations,
+      latencyMs: Math.round(performance.now() - t0),
+      modelName: remote.modelName,
+      answerMode: "docs",
+    },
   };
 }
 
@@ -347,42 +362,42 @@ export async function synthesizeAnswer(
   hits: Hit[],
   t0: number,
   opts?: GenerateOpts,
-): Promise<GeneratedAnswer | null> {
+): Promise<AnswerResult> {
   const remote = await completePrompt(
     query,
     buildWeakEvidencePrompt(query, hits, opts?.threadHistory),
     "synthesize",
     opts,
   );
-  if (!remote || isInsufficient(remote.text)) return null;
+  if (!remote.ok) return remote;
+  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
   const say = stripCitationMarkers(remote.text);
-  if (!say) return null;
+  if (!say) return { ok: false, reason: "insufficient" };
   const { citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
   return {
-    say,
-    usedEvidence: citations.length > 0,
-    citations,
-    latencyMs: Math.round(performance.now() - t0),
-    modelName: remote.modelName,
-    answerMode: "synthesized",
+    ok: true,
+    answer: {
+      say,
+      usedEvidence: citations.length > 0,
+      citations,
+      latencyMs: Math.round(performance.now() - t0),
+      modelName: remote.modelName,
+      answerMode: "synthesized",
+    },
   };
 }
 
-export const generateAnswerWithGeneralKnowledge = synthesizeAnswer;
-
 /**
  * General knowledge. No documents, no citation markers, no verifyClaim.
- * Same 12s timeout as generateAnswer; null on timeout or empty text.
+ * Same 12s timeout as generateAnswer. Errors carry the real message.
  */
 export async function generateGeneralAnswer(
   query: string,
   t0: number,
   opts?: GenerateOpts,
-): Promise<GeneratedAnswer | null> {
-  const model = getDefaultModel();
-  const chosen = getModelById(opts?.modelId) ?? model;
-  let remote: { text: string | null; reason?: string; modelName?: string };
-  try {
+): Promise<AnswerResult> {
+  const chosen = getModelById(opts?.modelId) ?? getDefaultModel();
+  const remote = await runCompletion(async () => {
     if (typeof window !== "undefined" && window.__mockCraftCard) {
       const mocked = await window.__mockCraftCard({
         query,
@@ -391,62 +406,39 @@ export async function generateGeneralAnswer(
         task: "answer",
         modelId: chosen.id,
       });
-      remote = { text: mocked?.say ?? null, modelName: chosen.name };
-    } else {
-      remote = await Promise.race([
-        opts?.generalAsk
-          ? opts.generalAsk({
-              query,
-              prompt: buildGeneralPrompt(query),
-              modelId: chosen.id,
-              maxTokens: opts.maxTokens,
-              policy: "freely",
-            })
-          : opts?.ask
-            ? opts.ask({
-                query,
-                prompt: buildGeneralPrompt(query),
-                modelId: chosen.id,
-                maxTokens: opts.maxTokens,
-                policy: "freely",
-              })
-            : defaultGeneralAsk(buildGeneralPrompt(query), chosen.id, opts?.maxTokens),
-        new Promise<never>((_, reject) => {
-          globalThis.setTimeout(() => reject(new Error("timeout")), 12000);
-        }),
-      ]);
+      return { text: mocked?.say ?? null, modelName: chosen.name };
     }
-  } catch {
-    return null;
-  }
-  const say = (remote.text ?? "").replace(/\s+/g, " ").trim();
-  if (!say || isInsufficient(say)) return null;
+    if (opts?.generalAsk) {
+      return opts.generalAsk({
+        query,
+        prompt: buildGeneralPrompt(query),
+        modelId: chosen.id,
+        maxTokens: opts.maxTokens,
+        policy: "freely",
+      });
+    }
+    if (opts?.ask) {
+      return opts.ask({
+        query,
+        prompt: buildGeneralPrompt(query),
+        modelId: chosen.id,
+        maxTokens: opts.maxTokens,
+        policy: "freely",
+      });
+    }
+    return defaultGeneralAsk(buildGeneralPrompt(query), chosen.id, opts?.maxTokens);
+  }, chosen.name);
+  if (!remote.ok) return remote;
+  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
   return {
-    say,
-    usedEvidence: false,
-    citations: [],
-    latencyMs: Math.round(performance.now() - t0),
-    modelName: remote.modelName ?? chosen.name,
-    answerMode: "generated",
-  };
-}
-
-/** No useful retrieval — answer from general knowledge. */
-export async function freelyAnswer(
-  query: string,
-  t0: number,
-  opts?: GenerateOpts,
-): Promise<GeneratedAnswer | null> {
-  const remote = await completePrompt(query, buildFreelyPrompt(query, opts?.threadHistory), "freely", opts);
-  if (!remote || isInsufficient(remote.text)) return null;
-  const say = stripCitationMarkers(remote.text);
-  if (!say) return null;
-  return {
-    say,
-    usedEvidence: false,
-    citations: [],
-    latencyMs: Math.round(performance.now() - t0),
-    modelName: remote.modelName,
-    answerMode: "generated",
+    ok: true,
+    answer: {
+      say: remote.text,
+      usedEvidence: false,
+      citations: [],
+      latencyMs: Math.round(performance.now() - t0),
+      modelName: remote.modelName ?? chosen.name,
+      answerMode: "generated",
+    },
   };
 }

@@ -1557,10 +1557,19 @@ html[data-theme="light"] .ground-chip {
   background: var(--color-hover);
 }
 
-.history-item-main {
+.history-item-body {
   min-width: 0;
   flex: 1 1 auto;
+}
+
+.history-item-main {
+  min-width: 0;
+  width: 100%;
   text-align: left;
+}
+
+.history-cites {
+  margin-top: 8px;
 }
 
 .history-query {

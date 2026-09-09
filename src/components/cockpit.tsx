@@ -27,6 +27,8 @@ import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
 import { ModelPicker } from "@/components/ModelPicker";
 import { UpgradeModal } from "@/components/UpgradeModal";
+import { FolderPickerFields } from "@/components/review-pack-dialog";
+import { useFolderPicker } from "@/components/use-folder-picker";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
@@ -38,10 +40,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
 import { receiptKicker } from "@/lib/search/answer-mode";
-import { citationText, citedLineRange, citedPath, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
+import { VerifiedCitations } from "@/components/verified-citations";
+import { citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
+import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { useMeetHint } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
@@ -84,7 +88,8 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const upgradeFeature = useMeetHint((s) => s.upgradeFeature);
   const auditOpen = useMeetHint((s) => s.auditOpen);
   const openAudit = useMeetHint((s) => s.openAudit);
-  const folderRef = useRef<HTMLInputElement>(null);
+  const { ready: vaultReady } = useAccountVaultReady();
+  const folderPicker = useFolderPicker();
   const filesRef = useRef<HTMLInputElement>(null);
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
@@ -118,12 +123,13 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("overlay") === "1") setOverlay(true);
+    if (!vaultReady) return;
     void useMeetHint.getState().boot(contextId).then(() => {
       if (params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
     });
-  }, [contextId, setOverlay]);
+  }, [contextId, setOverlay, vaultReady]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -274,8 +280,8 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
             </Button>
           </div>
           <div className="cockpit-pack">
-            <ContextSwitcher folderRef={folderRef} />
-            <AddMaterial folderRef={folderRef} filesRef={filesRef} pdfRef={pdfRef} />
+            <ContextSwitcher onOpenFolder={() => void folderPicker.offerFolder()} />
+            <AddMaterial onOpenFolder={() => void folderPicker.offerFolder()} filesRef={filesRef} pdfRef={pdfRef} />
             <div className="cockpit-utils">
               <UtilityLinks
                 overlay={overlay}
@@ -295,21 +301,11 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               onAudit={() => void openAudit()}
             />
           </div>
-          <input
-            ref={folderRef}
-            type="file"
-            multiple
-            className="sr-only"
-            aria-hidden="true"
-            tabIndex={-1}
-            data-folder-input="true"
-            suppressHydrationWarning
-            onChange={(e) => {
-              const files = e.target.files;
-              if (files && files.length > 0) void loadFolder(files);
-              e.target.value = "";
+          <FolderPickerFields
+            picker={folderPicker}
+            onIndex={(files, options) => {
+              void loadFolder(files, options);
             }}
-            {...{ webkitdirectory: "", directory: "" }}
           />
           <input
             ref={filesRef}
@@ -444,11 +440,11 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
 }
 
 function AddMaterial({
-  folderRef,
+  onOpenFolder,
   filesRef,
   pdfRef,
 }: {
-  folderRef: RefObject<HTMLInputElement | null>;
+  onOpenFolder: () => void;
   filesRef: RefObject<HTMLInputElement | null>;
   pdfRef: RefObject<HTMLInputElement | null>;
 }) {
@@ -494,7 +490,7 @@ function AddMaterial({
             className="context-option"
             onClick={() => {
               setOpen(false);
-              folderRef.current?.click();
+              onOpenFolder();
             }}
           >
             <FolderOpen className="size-3.5 shrink-0" />
@@ -532,7 +528,7 @@ function AddMaterial({
   );
 }
 
-function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement | null> }) {
+function ContextSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
   const pack = useMeetHint((s) => s.pack);
   const contexts = useMeetHint((s) => s.contexts);
   const activeContextId = useMeetHint((s) => s.activeContextId);
@@ -668,7 +664,7 @@ function ContextSwitcher({ folderRef }: { folderRef: RefObject<HTMLInputElement 
             className="context-option"
             onClick={() => {
               setOpen(false);
-              folderRef.current?.click();
+              onOpenFolder();
             }}
           >
             <Plus className="size-3.5 shrink-0" />
@@ -1412,47 +1408,11 @@ function CardPane({
     window.setTimeout(() => setCopied(false), 1400);
   }
 
-  const generated = card?.answerMode === "generated";
+  const usedEvidence = card?.usedEvidence ?? (card?.citations.length ?? 0) > 0;
+  const generated = card?.answerMode === "generated" || (card?.answerMode === "synthesized" && !usedEvidence);
   const citations =
     !generated && card && card.citations.length > 0 ? (
-      <ul className="answer-receipt-cites">
-        {card.citations.map((c) => {
-          const opensFile = Boolean(citedPath(c));
-          const opensPdf = isDocumentCitation(c) && !overlay;
-          const opens = opensFile || opensPdf;
-          const range = citedLineRange(c);
-          const lines =
-            range == null
-              ? null
-              : range.startLine === range.endLine
-                ? `line ${range.startLine}`
-                : `lines ${range.startLine}–${range.endLine}`;
-          const path = isFileCitation(c) || isDocumentCitation(c) ? c.path : citationText(c);
-          const extra =
-            isDocumentCitation(c) && !lines
-              ? `Page ${c.page}`
-              : c.kind === "commit"
-                ? null
-                : lines;
-          return (
-            <li key={c.evidenceId ?? citationText(c)} className="min-w-0 cite-fade" data-testid="card-citation">
-              <button
-                type="button"
-                onClick={opens ? () => onOpenCited(c) : undefined}
-                disabled={!opens}
-                className="cite-chip"
-              >
-                <Check className="size-3.5 shrink-0 text-ok" aria-hidden="true" />
-                <span className="cite-status">Verified</span>
-                <span className="break-all font-mono text-[12px] text-fg">{path}</span>
-                {extra ? <span className="font-mono text-[12px] text-fg">{extra}</span> : null}
-                {c.label ? <span className="text-[12px] text-muted">{c.label}</span> : null}
-                <span className="sr-only">{citationText(c)}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <VerifiedCitations citations={card.citations} overlay={overlay} onOpenCited={onOpenCited} />
     ) : null;
 
   return (
@@ -1460,7 +1420,7 @@ function CardPane({
       <div className="ground-head">
         <span className="ground-head-left">
           <span>Answer</span>
-          {speaking ? <AnswerModeBadge mode={card?.answerMode} /> : null}
+          {speaking ? <AnswerModeBadge mode={card?.answerMode} usedEvidence={usedEvidence} /> : null}
           {searching ? <span className="search-spin" aria-label="Searching" /> : null}
         </span>
         <span className="ground-status tabular-nums">
@@ -1480,7 +1440,7 @@ function CardPane({
                 ) : null}
                 {speaking ? (
                   <div className="space-y-3">
-                    <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode)}</p>
+                    <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode, usedEvidence)}</p>
                     {card?.say ? (
                       <AnswerSay text={card.say} className={sayClamped ? "line-clamp-2" : undefined} />
                     ) : null}
@@ -1539,7 +1499,7 @@ function CardPane({
               {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
             </p>
           )}
-          <AnswerHistory />
+          <AnswerHistory onOpenCited={onOpenCited} overlay={overlay} />
         </div>
         <div className="shrink-0 space-y-3 px-5 py-4">
           <p className="ground-hint">Try another question</p>
