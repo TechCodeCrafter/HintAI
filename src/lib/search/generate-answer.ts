@@ -295,35 +295,6 @@ async function completePrompt(
   }, model.name);
 }
 
-/** Offline extract from the top hit. The router uses generateAnswer; this stays a tested utility. */
-export async function extractAnswer(
-  query: string,
-  hit: Hit,
-  t0: number,
-  opts?: GenerateOpts,
-): Promise<GeneratedAnswer | null> {
-  const say = extractBestSentence(hit.text, query);
-  if (!say) return null;
-  const span = evidenceFromHit(hit, opts?.pack);
-  const citations = span
-    ? [citationFrom(hit, span)]
-    : [
-        {
-          kind: "file" as const,
-          path: hit.path,
-          line: isFileHit(hit) ? hit.startLine : 1,
-          label: hit.path,
-        },
-      ];
-  return {
-    say,
-    usedEvidence: true,
-    citations,
-    latencyMs: Math.round(performance.now() - t0),
-    answerMode: "docs",
-  };
-}
-
 /**
  * Combine cited chunks into a short spoken line. Does not invent.
  * Unverified synthesis is silence.

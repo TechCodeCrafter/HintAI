@@ -11,8 +11,8 @@ export function ContextShell({
 }) {
   return (
     <div className="mh-page min-h-dvh text-fg">
-      <div className="mx-auto w-full max-w-3xl px-5 sm:px-8">
-        <header className="flex items-center justify-between gap-4 py-6">
+      <header className="cockpit-glass-bar">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
           <Link to="/home" className="flex items-center gap-3 text-fg">
             <MeetHintMark className="size-11" />
             <span className="brand-word">Hint</span>
@@ -21,9 +21,9 @@ export function ContextShell({
             {aside}
             <ThemeToggle />
           </div>
-        </header>
-        {children}
-      </div>
+        </div>
+      </header>
+      <div className="mx-auto w-full max-w-3xl px-5 sm:px-8">{children}</div>
     </div>
   );
 }

@@ -1,0 +1,35 @@
+---
+description: Hint frontend theme — kill Inter/purple slop, keep reserved glass and instrument type
+globs: src/**/*.{tsx,css}
+alwaysApply: false
+---
+
+# Hint frontend theme
+
+Always design Hint as an **instrument**, not a generic AI SaaS page.
+
+## Aesthetic
+- Cool desk landing (`#f4f5f7` / `#ffffff` / ink `#15181d`) — same light tokens as `/home` and `/app`
+- Charcoal product chrome (`#0b0d12`), steel/ember wash only
+- Accent indigo is a chip/CTA, never a nebula or hero gradient
+- IBM Plex Sans + IBM Plex Mono. Never Inter, Never Geist, never Space Grotesk
+- Radii 8–12px. No 16–24px pill cards
+- Glass is reserved for chrome (nav, cockpit bar, panel frames). Content stays opaque
+- Lucide/SVG icons only. No emoji-as-icon
+
+## UX
+- Clickable controls are at least 44×44
+- `cursor-pointer` on enabled buttons
+- Visible `:focus-visible` rings
+- Respect `prefers-reduced-motion` and `prefers-reduced-transparency`
+- Badge meaning cannot rely on color alone
+
+## UI/UX Pro Max
+For new screens, run:
+
+`python3 .cursor/skills/ui-ux-pro-max/scripts/search.py "<product> <keywords>" --design-system -p Hint`
+
+## Do not
+- Reintroduce mode tabs or `freelyAnswer`
+- Put glass on answer body copy
+- Hardcode purple scan washes (`rgba(99, 91, 255, …)`)
