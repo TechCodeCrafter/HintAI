@@ -431,6 +431,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
             onOpenCited={openCited}
             overlay={overlay}
             active={Boolean(card?.query)}
+            onKeys={() => setKeysOpen(true)}
           />
         </div>
       </div>
@@ -1399,15 +1400,21 @@ function cardMeta(card: { latencyMs: number } | null) {
   return `Found in ${(card.latencyMs / 1000).toFixed(2)}s`;
 }
 
+function needsApiKey(reason?: string | null) {
+  return Boolean(reason && /api key/i.test(reason));
+}
+
 function CardPane({
   compact,
   onOpenCited,
   overlay,
+  onKeys,
 }: {
   compact: boolean;
   onOpenCited: (cite: Citation) => void;
   overlay: boolean;
   active: boolean;
+  onKeys: () => void;
 }) {
   const card = useMeetHint((s) => s.card);
   const pack = useMeetHint((s) => s.pack);
@@ -1512,6 +1519,12 @@ function CardPane({
                     <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
                       {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
                     </p>
+                    {needsApiKey(card?.reason) ? (
+                      <Button variant="primary" size="sm" onClick={onKeys}>
+                        <KeyRound className="size-4" />
+                        Add API key
+                      </Button>
+                    ) : null}
                     {citations}
                   </>
                 )}
