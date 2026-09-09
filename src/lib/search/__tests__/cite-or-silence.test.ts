@@ -43,6 +43,8 @@ test("search() auto-routes grounded then general and burns quota only after succ
   assert.match(store, /restoreAnswer/);
   assert.doesNotMatch(store, /\bledger:/);
   assert.doesNotMatch(cockpit, /ModeSelector/);
+  assert.doesNotMatch(store, /composeMode|ComposeMode|setComposeMode/);
+  assert.doesNotMatch(store, /ModeSelector/);
   const modal = readFileSync(join(root, "src/components/UpgradeModal.tsx"), "utf8");
   assert.match(modal, /Claim Audit requires Pro/);
   assert.match(modal, /20 questions\/day/);

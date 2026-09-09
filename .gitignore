@@ -11,6 +11,9 @@ blob-report
 .env
 .env.local
 .env*.local
+.eval/*
+!.eval/README.md
+public/demo/*.mp4
 screenshots
 attachments
 artifacts

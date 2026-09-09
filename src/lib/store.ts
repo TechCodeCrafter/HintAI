@@ -145,7 +145,6 @@ if (typeof window !== "undefined" && !authEnabled) {
   bindAccountId(LOCAL_DEV_ACCOUNT_ID);
 }
 
-export type ComposeMode = "extract" | "synthesize" | "audit";
 export type { SubscriptionTier };
 
 type MeetHintState = {
@@ -167,7 +166,6 @@ type MeetHintState = {
   overlay: boolean;
   autoAnswer: boolean;
   subscription: SubscriptionTier;
-  composeMode: ComposeMode;
   selectedModelId: string;
   extractRemaining: number;
   upgradeFeature: string | null;
@@ -203,7 +201,6 @@ type MeetHintState = {
   setOverlay: (value: boolean) => void;
   setAutoAnswer: (value: boolean) => void;
   setSubscription: (tier: SubscriptionTier) => void;
-  setComposeMode: (mode: ComposeMode) => void;
   setSelectedModelId: (id: string) => void;
   requestUpgrade: (feature: string) => void;
   clearUpgrade: () => void;
@@ -413,7 +410,6 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   overlay: false,
   autoAnswer: true,
   subscription: "free",
-  composeMode: "extract",
   selectedModelId: getDefaultModel().id,
   extractRemaining: EXTRACT_DAILY_LIMIT,
   upgradeFeature: null,
@@ -480,7 +476,6 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       folderError: get().folderError?.includes("requires Pro") ? null : get().folderError,
     });
   },
-  setComposeMode: (mode) => set({ composeMode: mode }),
   setSelectedModelId: (id) => set({ selectedModelId: writeSelectedModelId(id) }),
   requestUpgrade: (feature) => set({ upgradeFeature: feature }),
   clearUpgrade: () => set({ upgradeFeature: null }),

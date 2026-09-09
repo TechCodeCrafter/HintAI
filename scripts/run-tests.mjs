@@ -63,6 +63,8 @@ const GROUPS = [
       "src/lib/ai/__tests__/models.test.ts",
       "src/lib/ai/__tests__/client-keys.test.ts",
       "src/lib/ai/__tests__/fn-input.test.ts",
+      "src/lib/__tests__/debug.test.ts",
+      "src/lib/__tests__/demo-media.test.ts",
       "src/lib/document/__tests__/evidence.test.ts",
       "src/lib/context/__tests__/repository.test.ts",
       "src/lib/context/__tests__/summaries.test.ts",

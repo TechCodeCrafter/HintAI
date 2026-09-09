@@ -42,6 +42,20 @@ test("extract stays grounded; weak and freely may use general knowledge", () => 
   const weak = buildWeakEvidencePrompt("full stack developer role", retryHits);
   assert.match(weak, /Use them if they help answer the question/);
   assert.match(weak, /use your general knowledge/);
+  assert.doesNotMatch(source, /console\.info\("\[ask\]/);
+  assert.match(source, /llmDebug\("\[ask\]/);
+});
+
+test("weak and grounded prompts share the same five-chunk cap", () => {
+  const seed = retryHits[0];
+  assert.ok(seed);
+  const hits = Array.from({ length: 8 }, (_, i) => ({ ...seed, path: `f${i}.ts` }));
+  const grounded = buildSynthesisPrompt("Why does that retry three times?", hits);
+  const weak = buildWeakEvidencePrompt("full stack developer role", hits);
+  assert.match(grounded, /\[5\]/);
+  assert.doesNotMatch(grounded, /\[6\]/);
+  assert.match(weak, /\[5\]/);
+  assert.doesNotMatch(weak, /\[6\]/);
 });
 
 test("INSUFFICIENT is silence", async () => {

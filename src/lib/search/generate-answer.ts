@@ -1,3 +1,4 @@
+import { llmDebug } from "../debug.ts";
 import { getDefaultModel, getModelById } from "../ai/models.ts";
 import { isFileHit, type Citation, type Hit, type RepoPack } from "../repo/types.ts";
 import type { AnswerMode } from "./answer-mode.ts";
@@ -74,7 +75,7 @@ export function buildWeakEvidencePrompt(query: string, hits: Hit[], history?: st
   return `The user is in a meeting. Below are relevant document chunks. Use them if they help answer the question. If they don't contain the answer, use your general knowledge.
 ${historyBlock(history)}
 DOCUMENT CHUNKS:
-${formatChunks(hits.slice(0, 3))}
+${formatChunks(hits)}
 
 QUESTION: "${query}"
 
@@ -208,14 +209,14 @@ function evidenceForMarkers(text: string, hits: Hit[], pack?: RepoPack): { evide
 }
 
 async function defaultAsk(prompt: string, modelId: string, maxTokens?: number, policy: AnswerPolicy = "extract") {
-  console.info("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
+  llmDebug("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
   const { completeSynthesis } = await import("@/lib/ai/cardsmith");
   const { readClientKeys } = await import("@/lib/ai/client-keys");
   return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys(), policy } });
 }
 
 async function defaultGeneralAsk(prompt: string, modelId: string, maxTokens?: number) {
-  console.info("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
+  llmDebug("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
   const { completeGeneral } = await import("@/lib/ai/cardsmith");
   const { readClientKeys } = await import("@/lib/ai/client-keys");
   return completeGeneral({ data: { prompt, modelId, maxTokens, keys: readClientKeys() } });
@@ -294,7 +295,7 @@ async function completePrompt(
   }, model.name);
 }
 
-/** Strong retrieval — speak a sentence from the top hit. No LLM. */
+/** Offline extract from the top hit. The router uses generateAnswer; this stays a tested utility. */
 export async function extractAnswer(
   query: string,
   hit: Hit,

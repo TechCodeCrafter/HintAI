@@ -2,6 +2,7 @@ import { ArrowRight, Check, Loader2, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { highlightAnswer } from "@/components/answer-say";
 import { MeetHintMark } from "@/components/meethint-mark";
+import { demoMediaUrl } from "@/lib/demo-media";
 import { joinWaitlist } from "@/lib/waitlist";
 
 type Phase = "listening" | "asking" | "detected" | "searching" | "answered";
@@ -322,7 +323,7 @@ function DemoVideo() {
       <video
         ref={video}
         className="block aspect-video w-full"
-        src="/demo/meethint-demo-cutaway.mp4"
+        src={demoMediaUrl("meethint-demo-cutaway.mp4")}
         poster="/demo/meethint-demo-cutaway-poster.jpg"
         preload="metadata"
         autoPlay

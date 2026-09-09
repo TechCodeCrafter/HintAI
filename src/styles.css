@@ -488,19 +488,6 @@ html[data-theme="light"] .cite-chip:hover:enabled {
   animation: search-spin 700ms linear infinite;
 }
 
-.mode-tab {
-  color: var(--color-muted);
-}
-
-.mode-tab[data-active="true"] {
-  background: var(--color-accent-soft);
-  color: var(--color-fg);
-}
-
-html[data-theme="dark"] .mode-tab[data-active="true"] {
-  color: #dcd7ff;
-}
-
 .quota-line {
   font-size: 12px;
   color: var(--color-muted);
@@ -968,11 +955,6 @@ html[data-theme="light"] .ground-chip {
 .cockpit-card-col [data-testid="card"] {
   flex: 1 1 auto;
   height: auto;
-}
-
-.mode-selector {
-  flex-shrink: 0;
-  margin-bottom: 0.75rem;
 }
 
 .cockpit-pane[data-pane="room"],
