@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { shapeOf } from "./intent.ts";
-import { normalizeSpokenQuestion } from "./spoken.ts";
+import { expandRetrievalQuery, isShortFollowUp, normalizeSpokenQuestion, previousRetrievalQuestion } from "./spoken.ts";
 
 const canonical = (raw: string) => normalizeSpokenQuestion(raw).canonical;
 const removed = (raw: string) => normalizeSpokenQuestion(raw).removed;
@@ -104,6 +104,22 @@ test("normalization does not change a question's shape", () => {
 test("a question that is only filler is left intact rather than emptied", () => {
   assert.equal(canonical("So?"), "So?");
   assert.equal(canonical("Okay"), "Okay");
+});
+
+test("short follow-ups expand retrieval with the last topic question", () => {
+  assert.equal(isShortFollowUp("Can you tell me more?"), true);
+  assert.equal(isShortFollowUp("how does that work?"), true);
+  assert.equal(isShortFollowUp("What is the architecture of this application?"), false);
+  assert.equal(isShortFollowUp("How does the chat AI page work?"), false);
+  assert.equal(
+    expandRetrievalQuery("Can you tell me more?", "How does the chat AI page work?"),
+    "How does the chat AI page work? Can you tell me more?",
+  );
+  assert.equal(
+    expandRetrievalQuery("What is the architecture of this application?", "How does the chat AI page work?"),
+    "What is the architecture of this application?",
+  );
+  assert.equal(previousRetrievalQuestion(["tell me more", "How does the chat AI page work?"]), "How does the chat AI page work?");
 });
 
 test("identifiers and filenames pass through untouched", () => {

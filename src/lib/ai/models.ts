@@ -1,3 +1,5 @@
+import { readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
+
 export type ModelProvider = "openai" | "anthropic" | "xai";
 
 export type ProviderKeys = Partial<Record<ModelProvider, string>>;
@@ -71,7 +73,7 @@ export function readStoredModelId(value: string | null | undefined): string {
 
 export function readSelectedModelId(): string {
   try {
-    return readStoredModelId(localStorage.getItem(MODEL_STORAGE_KEY));
+    return readStoredModelId(readAccountStorage(MODEL_STORAGE_KEY));
   } catch {
     return getDefaultModel().id;
   }
@@ -80,7 +82,7 @@ export function readSelectedModelId(): string {
 export function writeSelectedModelId(id: string): string {
   const resolved = readStoredModelId(id);
   try {
-    localStorage.setItem(MODEL_STORAGE_KEY, resolved);
+    writeAccountStorage(MODEL_STORAGE_KEY, resolved);
   } catch {
     /* ignore quota */
   }

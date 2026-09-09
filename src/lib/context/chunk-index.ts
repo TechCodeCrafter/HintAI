@@ -468,8 +468,11 @@ async function indexPdfSource(
 
 async function defaultVectorStore(): Promise<VectorStore | null> {
   try {
+    const { currentAccountId, vectorDatabaseName } = await import("../auth/account-boundary.ts");
+    const accountId = currentAccountId();
+    if (!accountId) return null;
     const { createIndexedDbVectorStore } = await import("./storage/vector-store-indexeddb.ts");
-    return createIndexedDbVectorStore();
+    return createIndexedDbVectorStore(vectorDatabaseName(accountId));
   } catch {
     return null;
   }

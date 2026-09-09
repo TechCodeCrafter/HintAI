@@ -1,5 +1,7 @@
+import { contextDatabaseName, currentAccountId, onAccountUnbind } from "../auth/account-boundary.ts";
 import type { RepoPack } from "../repo/types.ts";
 import { draftsFromPack, fingerprintPack, fingerprintsMatch, hydrateContext, packFromSources } from "./hydrate.ts";
+import { createMemoryRepository } from "./memory.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { createIndexedDbRepository } from "./storage/indexeddb.ts";
 import type { ContextKind, ContextRecord } from "./types.ts";
@@ -7,8 +9,16 @@ import { isPdfSource, isTextSource } from "./types.ts";
 
 let repository: ContextRepository | null = null;
 
+onAccountUnbind(() => {
+  repository = null;
+});
+
 export function getContextRepository(): ContextRepository {
-  repository ??= createIndexedDbRepository();
+  if (repository) return repository;
+  const accountId = currentAccountId();
+  repository = accountId
+    ? createIndexedDbRepository(contextDatabaseName(accountId))
+    : createMemoryRepository();
   return repository;
 }
 

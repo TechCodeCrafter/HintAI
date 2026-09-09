@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 
+import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "../../auth/account-boundary.ts";
 import { NORTHSTAR } from "../../repo/northstar.ts";
 import type { RepoPack } from "../../repo/types.ts";
 import { createMemoryRepository } from "../memory.ts";
@@ -56,6 +57,7 @@ function installStorage(initial: Record<string, string> = {}) {
   const storage = memoryStorage();
   for (const [key, value] of Object.entries(initial)) storage.setItem(key, value);
   Object.defineProperty(globalThis, "localStorage", { value: storage, configurable: true });
+  bindAccountId(LOCAL_DEV_ACCOUNT_ID);
   return storage;
 }
 

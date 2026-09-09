@@ -32,10 +32,14 @@ declare global {
         restoreAnswer?: (id: string) => void;
         reviewMeeting?: (id: string) => Promise<void>;
         setSelectedModelId?: (id: string) => void;
+        activeContextId?: string | null;
+        resetForAccountChange?: () => void;
       };
     };
     __mockCraftCard?: (payload: MockCraftPayload) => Promise<Pick<Card, "say"> | null>;
     __mockEmbedder?: (text: string) => Promise<number[]>;
+    __meethintSwitchAccount?: (accountId: string | null) => Promise<void>;
+    __MEETHINT_E2E__?: boolean;
   }
 }
 

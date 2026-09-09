@@ -142,6 +142,8 @@ export type Card = {
   source: "grok" | "local" | "polished" | "assisted" | "synthesize" | string;
   /** How the spoken line was produced. */
   answerMode?: "docs" | "synthesized" | "generated";
+  /** False when a synthesized line did not cite the pack. */
+  usedEvidence?: boolean;
   modelName?: string;
 };
 

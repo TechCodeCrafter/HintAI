@@ -14,7 +14,8 @@ export type AnswerHistoryItem = {
   timestamp: number;
 };
 
-export function badgeFromAnswerMode(mode?: AnswerMode): AnswerHistoryBadge | null {
+export function badgeFromAnswerMode(mode?: AnswerMode, usedEvidence?: boolean): AnswerHistoryBadge | null {
+  if (mode === "synthesized" && usedEvidence === false) return "generated";
   if (mode === "synthesized") return "synthesized";
   if (mode === "generated") return "generated";
   if (mode === "docs") return "from-docs";
@@ -33,7 +34,9 @@ export function historyItemFromCard(card: Card, at = Date.now()): AnswerHistoryI
     id: `${at}-${Math.random().toString(36).slice(2, 7)}`,
     query: card.query,
     say: card.say,
-    badge: badgeFromAnswerMode(card.answerMode) ?? (card.say ? "from-docs" : null),
+    badge:
+      badgeFromAnswerMode(card.answerMode, card.usedEvidence ?? card.citations.length > 0) ??
+      (card.say ? "from-docs" : null),
     citations: card.citations ?? [],
     timestamp: at,
   };

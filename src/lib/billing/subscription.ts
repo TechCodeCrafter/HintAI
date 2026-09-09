@@ -1,3 +1,5 @@
+import { readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
+
 export type SubscriptionTier = "free" | "pro" | "team" | "enterprise";
 
 export const SUBSCRIPTION_KEY = "meethint.subscription";
@@ -15,7 +17,7 @@ export function canDetectContradictions(tier: SubscriptionTier): boolean {
 
 export function readSubscription(): SubscriptionTier {
   try {
-    const raw = localStorage.getItem(SUBSCRIPTION_KEY);
+    const raw = readAccountStorage(SUBSCRIPTION_KEY);
     if (raw && TIERS.has(raw as SubscriptionTier)) return raw as SubscriptionTier;
   } catch {
     /* private mode / SSR */
@@ -25,7 +27,7 @@ export function readSubscription(): SubscriptionTier {
 
 export function writeSubscription(tier: SubscriptionTier): void {
   try {
-    localStorage.setItem(SUBSCRIPTION_KEY, tier);
+    writeAccountStorage(SUBSCRIPTION_KEY, tier);
   } catch {
     /* ignore quota */
   }

@@ -1,3 +1,5 @@
+import { readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
+
 /** Free Extract is grounded RAG with a daily question cap. Pro is unlimited. */
 
 export const EXTRACT_DAILY_LIMIT = 20;
@@ -23,7 +25,7 @@ export function readExtractQuota(now = new Date()): ExtractQuota {
   const today = localDayKey(now);
   if (typeof localStorage === "undefined") return emptyQuota(now);
   try {
-    const raw = localStorage.getItem(EXTRACT_QUOTA_KEY);
+    const raw = readAccountStorage(EXTRACT_QUOTA_KEY);
     if (!raw) return emptyQuota(now);
     const parsed = JSON.parse(raw) as ExtractQuota;
     if (parsed.day !== today || !Number.isFinite(parsed.used)) return emptyQuota(now);
@@ -47,7 +49,7 @@ export function consumeExtractQuestion(now = new Date()): ExtractQuota {
   const current = readExtractQuota(now);
   const next = { day: today, used: current.used + 1 };
   try {
-    localStorage.setItem(EXTRACT_QUOTA_KEY, JSON.stringify(next));
+    writeAccountStorage(EXTRACT_QUOTA_KEY, JSON.stringify(next));
   } catch {
     /* ignore quota */
   }

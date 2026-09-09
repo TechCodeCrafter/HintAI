@@ -29,6 +29,7 @@ test("search() auto-routes grounded then general and burns quota only after succ
   const generalFn = synthesis.slice(synthesis.indexOf("export async function generateGeneralAnswer"));
   assert.doesNotMatch(generalFn.slice(0, 1800), /verifyClaim/);
   assert.match(store, /retrieveHits/);
+  assert.match(store, /expandRetrievalQuery/);
   assert.match(store, /routeSearchAnswer/);
   assert.match(store, /consumeExtractQuestion/);
   assert.match(store, /You've reached your daily limit/);

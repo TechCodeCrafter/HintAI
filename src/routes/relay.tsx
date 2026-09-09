@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { Card } from "@/lib/repo/types";
 import { citationText } from "@/lib/search/cite";
+import { ACCOUNT_EPOCH_KEY } from "@/lib/auth/account-boundary";
 import { readRelaySession, SESSION_KEY } from "@/lib/store";
 
 export const Route = createFileRoute("/relay")({ component: RelayPage });
@@ -18,7 +19,7 @@ function RelayPage() {
     };
     pull();
     const onStorage = (e: StorageEvent) => {
-      if (e.key === SESSION_KEY || e.key === "ground.session") pull();
+      if (e.key === SESSION_KEY || e.key === "ground.session" || e.key === ACCOUNT_EPOCH_KEY) pull();
     };
     window.addEventListener("storage", onStorage);
     const id = window.setInterval(pull, 800);
