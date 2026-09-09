@@ -7,7 +7,7 @@ import {
   ClipboardList,
   ClipboardPaste,
   Copy,
-  Eye,
+  Ban,
   EyeOff,
   ExternalLink,
   FileCode2,
@@ -1065,17 +1065,20 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                   <FileCode2 className="size-3.5 shrink-0 text-muted" />
                   <span className="min-w-0 flex-1">
                     <span className="file-name block truncate text-[13px]">{parts.name}</span>
-                    {parts.dir ? <span className="file-path block truncate">{parts.dir}</span> : null}
+                    <span className="file-path block truncate">
+                      {excluded ? "Excluded from search" : parts.dir}
+                    </span>
                   </span>
                 </button>
                 <button
                   type="button"
                   className="file-exclude"
+                  aria-pressed={excluded}
                   aria-label={excluded ? `Include ${f.path} in search` : `Exclude ${f.path} from search`}
                   title={excluded ? "Include in search" : "Exclude from search"}
                   onClick={() => void togglePackExclusion(f.path)}
                 >
-                  {excluded ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+                  {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
                 </button>
               </li>
               );
@@ -1101,29 +1104,26 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                     <FileText className="size-3.5 shrink-0 text-muted" />
                     <span className="min-w-0 flex-1">
                       <span className="file-name block truncate text-[13px]">{parts.name}</span>
-                      {status.short !== "Ready" || source.lastFailedNote ? (
-                        <span className="file-path block truncate" data-source-label>
-                          {source.lastFailedNote && source.readiness === "ready" ? "Update failed" : status.short}
-                        </span>
-                      ) : parts.dir ? (
-                        <span className="file-path block truncate font-mono" data-source-label>
-                          {parts.dir}
-                        </span>
-                      ) : (
-                        <span className="file-path block truncate" data-source-label>
-                          Ready
-                        </span>
-                      )}
+                      <span className="file-path block truncate" data-source-label>
+                        {excluded
+                          ? "Excluded from search"
+                          : source.lastFailedNote && source.readiness === "ready"
+                            ? "Update failed"
+                            : status.short !== "Ready"
+                              ? status.short
+                              : parts.dir || "Ready"}
+                      </span>
                     </span>
                   </button>
                   <button
                     type="button"
                     className="file-exclude"
+                    aria-pressed={excluded}
                     aria-label={excluded ? `Include ${source.path} in search` : `Exclude ${source.path} from search`}
                     title={excluded ? "Include in search" : "Exclude from search"}
                     onClick={() => void togglePackExclusion(source.path)}
                   >
-                    {excluded ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+                    {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
                   </button>
                 </li>
               );
@@ -1146,7 +1146,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
               id="pack-exclude-glob"
               value={excludeGlob}
               onChange={(e) => setExcludeGlob(e.target.value)}
-              placeholder="Exclude glob, e.g. docs/*.md"
+              placeholder="Exclude one file, e.g. docs/API_DOCUMENTATION.md"
               className="ground-input h-10 w-full rounded-[10px] px-3 text-[13px] placeholder:text-muted"
             />
           </form>

@@ -15,7 +15,8 @@ import {
   readActiveContextId,
   readSavedPack,
 } from "@/lib/context/migration";
-import { normalizeExcludePatterns, toggleExcludePath } from "@/lib/context/exclusions";
+import { dropExcludedEvidence, normalizeExcludePatterns, pathExcluded, toggleExcludePath } from "@/lib/context/exclusions";
+import { getVectorStore } from "@/lib/search/vector-access";
 import { getContextRepository, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
 import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
@@ -1233,23 +1234,31 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   setPackExclusions: async (patterns) => {
     const next = normalizeExcludePatterns(patterns);
     const state = get();
+    const previous = state.pack.excludePatterns ?? [];
+    const restored = previous.some((pattern) => !next.includes(pattern));
+    const purged = await dropExcludedEvidence(state.chunks, next, getVectorStore());
+    set({
+      pack: { ...state.pack, excludePatterns: next.length ? next : undefined },
+      chunks: purged.chunks,
+      vocab: packVocabulary(purged.chunks),
+    });
     const id = state.activeContextId;
-    if (!id) {
-      const pack = { ...state.pack, excludePatterns: next.length ? next : undefined };
-      const runtime = runtimeFromPack(pack);
-      set({
-        pack: { ...runtime.pack, excludePatterns: pack.excludePatterns },
-        chunks: runtime.chunks,
-        vocab: runtime.vocab,
-      });
-      return;
-    }
+    if (!id) return;
     const epoch = nextHydrationEpoch();
-    set({ contextUpdating: true });
     try {
       await withContextWrite(id, async () => {
         const repo = getContextRepository();
         await repo.patchContext(id, { excludePatterns: next.length ? next : undefined });
+        const excludedIds = state.sources
+          .filter((source) => pathExcluded(source.path, next))
+          .map((source) => source.id);
+        if (excludedIds.length > 0) await repo.deleteIndexed(id, excludedIds);
+        if (!restored) {
+          const contexts = await listStoredContexts();
+          if (epoch !== hydrationEpoch) return;
+          set({ contexts });
+          return;
+        }
         const runtime = await indexContext(repo, id, {
           isCancelled: () => epoch !== hydrationEpoch,
         });
@@ -1261,12 +1270,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           pack: runtime.pack,
           chunks: runtime.chunks,
           vocab: runtime.vocab,
-          contextUpdating: false,
         });
       });
     } catch {
       if (epoch !== hydrationEpoch) return;
-      set({ contextUpdating: false, folderError: "Could not update pack exclusions." });
+      set({ folderError: "Could not update pack exclusions." });
     }
   },
   togglePackExclusion: async (path) => {
@@ -1495,7 +1503,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const resolved = Boolean(opts?.resolved);
     const previousQuestion = previousRetrievalQuestion(state.answerHistory.map((item) => item.query));
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
-    const hits = await retrieveHits(expandRetrievalQuery(canonical, previousQuestion), state.chunks);
+    const hits = await retrieveHits(
+      expandRetrievalQuery(canonical, previousQuestion),
+      state.chunks,
+      6,
+      getVectorStore(),
+      undefined,
+      state.pack.excludePatterns,
+    );
     if (epoch !== searchEpoch) return;
 
     const finish = (card: Card, remaining = get().extractRemaining) => {

@@ -8,7 +8,10 @@ import type { Chunk, Citation, RepoPack } from "../../repo/types.ts";
 import type { Evidence } from "../../search/evidence.ts";
 import { NORTHSTAR } from "../../repo/northstar.ts";
 import { localCard } from "../../search/local-card.ts";
-import { buildChunks, retrieve } from "../../search/retrieve.ts";
+import { bagEmbedding384, setEmbedderForTests } from "../../search/embedding.ts";
+import { buildChunks, retrieve, retrieveHits } from "../../search/retrieve.ts";
+import { createMemoryVectorStore } from "../../search/vector-store.ts";
+import { dropExcludedEvidence } from "../exclusions.ts";
 import { chunksEquivalent, indexContext, lastIndexReport } from "../chunk-index.ts";
 import { persistPackAsContext, setContextRepository } from "../service.ts";
 import { createMemoryRepository } from "../memory.ts";
@@ -61,6 +64,7 @@ const PACK_B = pack("beta-ctx", [
 
 afterEach(() => {
   setContextRepository(null);
+  setEmbedderForTests(null);
 });
 
 test("same source + same hash + same versions reuses chunks", async () => {
@@ -169,6 +173,51 @@ test("corrupt cache rebuilds that source and still becomes ready", async () => {
   assert.equal(runtime.report.rebuiltSourceCount, 1);
   assert.equal(runtime.report.reusedSourceCount, 1);
   assert.ok(runtime.chunks.every((chunk) => chunk.id !== "bad"));
+});
+
+test("excluding API_DOCUMENTATION.md drops it from retrieveHits and the vector store", async () => {
+  setEmbedderForTests(async (text) => bagEmbedding384(text));
+  const repo = createMemoryRepository();
+  const pack = {
+    id: "rdb",
+    name: "rdb-labsai-backend",
+    description: "backend",
+    commits: [],
+    files: [
+      file(
+        "docs/API_DOCUMENTATION.md",
+        "## Authentication\nCurrently no authentication. Future versions will implement API Key/JWT/OAuth 2.0.\n",
+      ),
+      file(
+        "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md",
+        "Identity is the X-User-Email header. Entra issues a Bearer token before the handler runs.\n",
+      ),
+      file("api/main.py", "app.add_middleware(UserEmailHeader)\n"),
+    ],
+  };
+  const { context } = await persistPackAsContext(pack, repo);
+  const store = createMemoryVectorStore();
+  const indexed = await indexContext(repo, context.id, { embed: true, vectorStore: store });
+  assert.ok(indexed.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"));
+
+  const before = await retrieveHits("authentication", indexed.chunks, 6, store, true);
+  assert.ok(before.some((hit) => hit.path === "docs/API_DOCUMENTATION.md"));
+
+  const exclude = ["docs/API_DOCUMENTATION.md"];
+  const purged = await dropExcludedEvidence(indexed.chunks, exclude, store);
+  assert.equal(
+    purged.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"),
+    false,
+  );
+  assert.ok(purged.droppedIds.length > 0);
+  assert.equal((await store.get(purged.droppedIds)).size, 0);
+
+  const hits = await retrieveHits("authentication", indexed.chunks, 6, store, true, exclude);
+  assert.equal(
+    hits.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length,
+    0,
+  );
+  assert.ok(purged.chunks.some((chunk) => chunk.path === "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md"));
 });
 
 test("excluded file yields zero chunks and drops cached rows", async () => {
