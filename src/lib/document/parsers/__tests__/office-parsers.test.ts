@@ -177,6 +177,14 @@ test("officeReadError names the file", () => {
   );
 });
 
+test("officeReadError ignores Word lock files", () => {
+  assert.equal(officeReadError(["~$ovare_Labs_AI_User_Guide.docx"]), null);
+  assert.equal(
+    officeReadError(["~$ovare_Labs_AI_User_Guide.docx", "syllabus.docx"]),
+    "Could not read syllabus.docx. It may be corrupted or password-protected.",
+  );
+});
+
 test("packFromFiles indexes xlsx and csv", async () => {
   const loaded = await packFromFiles([
     new File([xlsxBuffer()], "roster.xlsx"),
@@ -196,6 +204,15 @@ test("packFromFiles indexes a docx", async () => {
   assert.equal(loaded.failed.length, 0);
   assert.equal(loaded.pack.files.length, 1);
   assert.match(loaded.pack.files[0]?.content ?? "", /Midterm is week 7/);
+});
+
+test("packFromFiles silently skips Word lock files", async () => {
+  const loaded = await packFromFiles([
+    new File(["export const RETRIES = 3\n"], "src/retry.ts", { type: "text/plain" }),
+    new File([new Uint8Array([1, 2, 3, 4])], "~$ovare_Labs_AI_User_Guide.docx"),
+  ]);
+  assert.ok(loaded.pack.files.some((file) => file.path.endsWith("retry.ts")));
+  assert.deepEqual(loaded.failed, []);
 });
 
 test("corrupted office files are skipped and named", async () => {

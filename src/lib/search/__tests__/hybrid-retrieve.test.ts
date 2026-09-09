@@ -5,9 +5,9 @@ import { USE_HYBRID_RETRIEVAL } from "../../context/index-versions.ts";
 import type { Chunk } from "../../repo/types.ts";
 import { bagEmbedding384, setEmbedderForTests } from "../embedding.ts";
 import { retrieveStructural } from "../hybrid.ts";
-import { hybridRetrieve, retrieve } from "../retrieve.ts";
+import { hybridRetrieve, retrieve, retrieveHits } from "../retrieve.ts";
 import { combineScores, RETRIEVAL_WEIGHTS } from "../retrieval-weights.ts";
-import { retrievalTraces, traceRetrieval } from "../retrieval-trace.ts";
+import { formatRetrievalSummary, retrievalTraces, traceRetrieval } from "../retrieval-trace.ts";
 import { semanticRetrieve } from "../semantic-retrieve.ts";
 import { createMemoryVectorStore } from "../vector-store.ts";
 
@@ -29,8 +29,8 @@ function chunk(id: string, path: string, text: string, extra: Partial<Chunk> = {
   };
 }
 
-test("USE_HYBRID_RETRIEVAL stays off", () => {
-  assert.equal(USE_HYBRID_RETRIEVAL, false);
+test("USE_HYBRID_RETRIEVAL is on by default", () => {
+  assert.equal(USE_HYBRID_RETRIEVAL, true);
 });
 
 test("lexical-only query returns the same hits as retrieve()", async () => {
@@ -97,6 +97,80 @@ test("hybrid traces carry lexical and semantic scores", async () => {
   const traces = retrievalTraces();
   assert.ok(traces.length > 0);
   assert.ok(traces.some((t) => t.chunkId === "u" && t.signals.includes("lexical")));
+});
+
+test("semantic channel surfaces Entra trust that never says authentication", async () => {
+  setEmbedderForTests(async (text) => {
+    const lower = text.toLowerCase();
+    const vec = new Array(384).fill(0);
+    if (
+      lower.includes("authentication") ||
+      lower.includes("entra") ||
+      lower.includes("bearer") ||
+      lower.includes("x-user-email") ||
+      lower.includes("msal")
+    ) {
+      vec[0] = 1;
+      return vec;
+    }
+    return bagEmbedding384(text);
+  });
+  const boilerplate = chunk(
+    "docs",
+    "docs/API_DOCUMENTATION.md",
+    "## Authentication\nCurrently no authentication. Future versions will implement API Key/JWT/OAuth 2.0.",
+  );
+  const impl = chunk(
+    "impl",
+    "api/main.py",
+    "Identity is the X-User-Email header. Entra issues a Bearer token; MSAL validates it before the handler runs.",
+  );
+  const other = chunk("other", "src/format.ts", "Column order locked for finance imports.");
+  const chunks = [boilerplate, impl, other];
+  const store = createMemoryVectorStore();
+  const { embedText } = await import("../embedding.ts");
+  await store.set([
+    { chunkId: "docs", embedding: await embedText(boilerplate.text), contentHash: "d" },
+    { chunkId: "impl", embedding: await embedText(impl.text), contentHash: "i" },
+    { chunkId: "other", embedding: await embedText(other.text), contentHash: "o" },
+  ]);
+
+  const semantic = await semanticRetrieve("How does authentication work in this backend?", chunks, store, 4);
+  assert.ok(semantic.some((hit) => hit.id === "impl"), `semantic: ${semantic.map((hit) => hit.id)}`);
+
+  const hybrid = await hybridRetrieve("How does authentication work in this backend?", chunks, store, 4);
+  assert.ok(hybrid.some((hit) => hit.id === "impl"));
+  const implHit = hybrid.find((hit) => hit.id === "impl");
+  assert.ok((implHit?.semanticScore ?? 0) > 0);
+});
+
+test("embedding failure degrades to lexical retrieve", async () => {
+  setEmbedderForTests(async () => {
+    throw new Error("no key");
+  });
+  const retry = chunk("retry", "src/retry.ts", "Attempts are capped at three because the gateway stalls.");
+  const other = chunk("other", "src/format.ts", "Column order locked for finance imports.");
+  const store = createMemoryVectorStore();
+  await store.set([
+    { chunkId: "retry", embedding: bagEmbedding384(retry.text), contentHash: "r" },
+    { chunkId: "other", embedding: bagEmbedding384(other.text), contentHash: "o" },
+  ]);
+  const query = "Why does that retry three times?";
+  const hits = await hybridRetrieve(query, [retry, other], store, 4);
+  assert.ok(hits.some((hit) => hit.id === "retry"));
+  assert.ok(hits.every((hit) => hit.id === "retry" || hit.id === "other"));
+});
+
+test("retrieval summary names channels and the top hit", async () => {
+  setEmbedderForTests(async (text) => bagEmbedding384(text));
+  const upload = chunk("u", "src/upload.ts", "Generate a presigned S3 URL for the upload.");
+  const store = createMemoryVectorStore();
+  await store.set([{ chunkId: "u", embedding: bagEmbedding384(upload.text), contentHash: "u" }]);
+  const hits = await retrieveHits("Where does document upload happen?", [upload], 2, store, true);
+  const summary = formatRetrievalSummary(hits);
+  assert.match(summary, /\d+ hits \|/);
+  assert.match(summary, /semantic|lexical/);
+  assert.match(summary, /top: src\/upload\.ts \(code,/);
 });
 
 test("structural retrieve matches a named file and a symbol", () => {

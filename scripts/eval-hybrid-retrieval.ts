@@ -227,7 +227,9 @@ console.log(
       shouldFlip,
       reason: shouldFlip
         ? "Hybrid matches the flip bar on every suite."
-        : "Keep USE_HYBRID_RETRIEVAL = false. Hybrid is not equal-or-better on the flip bar yet (or this run used the bag fallback, not MiniLM).",
+        : USE_HYBRID_RETRIEVAL
+          ? "Hybrid is already on. This run is a regression check, not a flip gate."
+          : "Keep USE_HYBRID_RETRIEVAL = false. Hybrid is not equal-or-better on the flip bar yet (or this run used the bag fallback, not MiniLM).",
       suites: rows,
     },
     null,

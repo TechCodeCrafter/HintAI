@@ -104,6 +104,17 @@ test("the same path can exist in two contexts without colliding", async () => {
   }
 });
 
+test("patchContext persists excludePatterns", async () => {
+  for (const { name, repo } of repos()) {
+    const context = await repo.createContext({ name: "backend" });
+    const patched = await repo.patchContext(context.id, {
+      excludePatterns: ["docs/API_DOCUMENTATION.md", "docs/*.md"],
+    });
+    assert.deepEqual(patched.excludePatterns, ["docs/API_DOCUMENTATION.md", "docs/*.md"], name);
+    assert.deepEqual((await repo.getContext(context.id))?.excludePatterns, patched.excludePatterns, name);
+  }
+});
+
 test("source ids are UUIDs and uniqueness is (contextId, path)", async () => {
   for (const { name, repo } of repos()) {
     const context = await repo.createContext({ name: "dupes" });

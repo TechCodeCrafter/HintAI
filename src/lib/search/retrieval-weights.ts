@@ -8,6 +8,8 @@
 export const RETRIEVAL_WEIGHTS = {
   lexical: 1.0,
   semantic: 0.8,
+  /** Structural / path / symbol channel in hybridRetrieve. */
+  structural: 0.6,
   /** Existing named-path addend in retrieve() (`flow.ts` in the question). */
   pathMatch: 12,
   /** Existing filename / stem multiplier on the IDF term weight. */
@@ -24,6 +26,10 @@ export const RETRIEVAL_WEIGHTS = {
   semanticScale: 10,
 };
 
-export function combineScores(lexical: number, semantic: number): number {
-  return lexical * RETRIEVAL_WEIGHTS.lexical + semantic * RETRIEVAL_WEIGHTS.semantic;
+export function combineScores(lexical: number, semantic: number, structural = 0): number {
+  return (
+    lexical * RETRIEVAL_WEIGHTS.lexical +
+    semantic * RETRIEVAL_WEIGHTS.semantic +
+    structural * RETRIEVAL_WEIGHTS.structural
+  );
 }

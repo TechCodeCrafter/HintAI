@@ -36,6 +36,35 @@ test("previewFolder counts keep vs skip without reading contents", () => {
   assert.deepEqual(preview.keepSample, ["src/retry.ts"]);
 });
 
+test("previewFolder skips Word lock files", () => {
+  const preview = previewFolder(
+    [
+      fileAt("docs/Novare_Labs_AI_User_Guide.docx", "PK"),
+      fileAt("docs/~$ovare_Labs_AI_User_Guide.docx", "lock"),
+      fileAt("src/client.py", "class APIClient:\n    pass\n"),
+    ],
+    { includeTests: true },
+  );
+  assert.equal(preview.keep, 2);
+  assert.deepEqual(preview.keepSample, ["src/client.py", "docs/Novare_Labs_AI_User_Guide.docx"]);
+  assert.ok(preview.skipLabels.includes(SKIP_LABEL.lockfiles));
+});
+
+test("packFromFiles does not treat Word lock files as read failures", async () => {
+  const loaded = await packFromFiles(
+    [
+      fileAt("docs/~$ovare_Labs_AI_User_Guide.docx", "lock"),
+      fileAt("src/client.py", "class APIClient:\n    pass\n"),
+    ],
+    { includeTests: true },
+  );
+  assert.deepEqual(
+    loaded.pack.files.map((file) => file.path),
+    ["src/client.py"],
+  );
+  assert.deepEqual(loaded.failed, []);
+});
+
 test("includeTests keeps spec files in the preview", () => {
   const preview = previewFolder(
     [fileAt("src/retry.ts", "export const n = 3"), fileAt("src/retry.test.ts", "test('x', () => {})")],

@@ -166,6 +166,14 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
       return record;
     },
 
+    async patchContext(id, patch) {
+      const existing = await db.contexts.get(id);
+      if (!existing) throw new ContextNotFoundError(id);
+      const next = { ...existing, ...patch, updatedAt: Date.now() };
+      await db.contexts.put(next);
+      return next;
+    },
+
     async replaceSources(contextId, drafts) {
       const now = Date.now();
       const existingSources = await loadSources(contextId);

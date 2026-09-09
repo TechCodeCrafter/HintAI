@@ -1,6 +1,7 @@
 import type { Hit, IndexedChunk } from "@/lib/repo/types";
 import { isDocumentChunk } from "../repo/types.ts";
 import { retrieve } from "./retrieve.ts";
+import { evidenceTypeOf, primaryChannel } from "./retrieval-trace.ts";
 
 export type RetrievalTraceRow = {
   rank: number;
@@ -10,6 +11,8 @@ export type RetrievalTraceRow = {
   page?: number;
   startLine?: number;
   score: number;
+  channel?: "semantic" | "lexical" | "structural";
+  evidenceType?: "code" | "doc" | "commit";
 };
 
 /** Diagnostic only. Same retrieve() order and scores. */
@@ -26,5 +29,7 @@ export function rowOf(hit: Hit, rank: number): RetrievalTraceRow {
     page: isDocumentChunk(hit) ? hit.page : undefined,
     startLine: hit.kind === "code" || hit.kind === "why" ? hit.startLine : undefined,
     score: hit.score,
+    channel: primaryChannel(hit),
+    evidenceType: evidenceTypeOf(hit),
   };
 }

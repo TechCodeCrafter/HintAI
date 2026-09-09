@@ -7,6 +7,8 @@ import {
   ClipboardList,
   ClipboardPaste,
   Copy,
+  Eye,
+  EyeOff,
   ExternalLink,
   FileCode2,
   FileText,
@@ -39,6 +41,7 @@ import { stopHear, toggleHear } from "@/lib/listen/call-share";
 import { isFramed, useLiveListen } from "@/lib/listen/speech";
 import { PdfPane } from "@/components/pdf-pane";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { pathExcluded } from "@/lib/context/exclusions";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
 import { receiptKicker } from "@/lib/search/answer-mode";
@@ -947,8 +950,12 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocument = useMeetHint((s) => s.openDocument);
   const openPdfSource = useMeetHint((s) => s.openPdfSource);
+  const togglePackExclusion = useMeetHint((s) => s.togglePackExclusion);
+  const setPackExclusions = useMeetHint((s) => s.setPackExclusions);
   const card = useMeetHint((s) => s.card);
   const [filter, setFilter] = useState("");
+  const [excludeGlob, setExcludeGlob] = useState("");
+  const excludePatterns = pack.excludePatterns ?? [];
   const pdfs = sources.filter(isPdfSource);
   const file = pack.files.find((f) => f.path === openFile) ?? (openDocument ? undefined : pack.files[0]);
   // Only a file citation has a line to highlight in this pane. A commit
@@ -1043,21 +1050,32 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
             ) : null}
             {visible.map((f) => {
               const parts = splitPath(f.path);
+              const excluded = pathExcluded(f.path, excludePatterns);
               return (
-              <li key={f.path} className="min-w-0">
+              <li key={f.path} className="file-item min-w-0">
                 <button
                   type="button"
                   data-source-kind="file"
                   data-source-path={f.path}
+                  data-excluded={excluded ? "true" : undefined}
                   data-active={!openDocument && file && f.path === file.path ? "true" : undefined}
                   onClick={() => setOpenFile(f.path)}
-                  className="file-row flex w-full min-w-0 items-center gap-2 px-2.5 text-left"
+                  className="file-row flex min-w-0 flex-1 items-center gap-2 px-2.5 text-left"
                 >
                   <FileCode2 className="size-3.5 shrink-0 text-muted" />
                   <span className="min-w-0 flex-1">
                     <span className="file-name block truncate text-[13px]">{parts.name}</span>
                     {parts.dir ? <span className="file-path block truncate">{parts.dir}</span> : null}
                   </span>
+                </button>
+                <button
+                  type="button"
+                  className="file-exclude"
+                  aria-label={excluded ? `Include ${f.path} in search` : `Exclude ${f.path} from search`}
+                  title={excluded ? "Include in search" : "Exclude from search"}
+                  onClick={() => void togglePackExclusion(f.path)}
+                >
+                  {excluded ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
                 </button>
               </li>
               );
@@ -1066,17 +1084,19 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
               const status = pdfSourceStatus(source);
               const active = openDocument?.sourceId === source.id;
               const parts = splitPath(source.path);
+              const excluded = pathExcluded(source.path, excludePatterns);
               return (
-                <li key={source.id} className="min-w-0">
+                <li key={source.id} className="file-item min-w-0">
                   <button
                     type="button"
                     data-source-kind="pdf"
                     data-source-path={source.path}
                     data-source-status={source.readiness}
+                    data-excluded={excluded ? "true" : undefined}
                     data-active={active ? "true" : undefined}
                     title={status.detail}
                     onClick={() => openPdfSource(source.id)}
-                    className="file-row flex w-full min-w-0 items-center gap-2 px-2.5 text-left"
+                    className="file-row flex min-w-0 flex-1 items-center gap-2 px-2.5 text-left"
                   >
                     <FileText className="size-3.5 shrink-0 text-muted" />
                     <span className="min-w-0 flex-1">
@@ -1096,10 +1116,56 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                       )}
                     </span>
                   </button>
+                  <button
+                    type="button"
+                    className="file-exclude"
+                    aria-label={excluded ? `Include ${source.path} in search` : `Exclude ${source.path} from search`}
+                    title={excluded ? "Include in search" : "Exclude from search"}
+                    onClick={() => void togglePackExclusion(source.path)}
+                  >
+                    {excluded ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+                  </button>
                 </li>
               );
             })}
           </ul>
+          <form
+            className="mt-2 shrink-0"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const pattern = excludeGlob.trim();
+              if (!pattern) return;
+              void setPackExclusions([...excludePatterns, pattern]);
+              setExcludeGlob("");
+            }}
+          >
+            <label className="sr-only" htmlFor="pack-exclude-glob">
+              Exclude a file or glob from search
+            </label>
+            <input
+              id="pack-exclude-glob"
+              value={excludeGlob}
+              onChange={(e) => setExcludeGlob(e.target.value)}
+              placeholder="Exclude glob, e.g. docs/*.md"
+              className="ground-input h-10 w-full rounded-[10px] px-3 text-[13px] placeholder:text-muted"
+            />
+          </form>
+          {excludePatterns.length > 0 ? (
+            <ul className="mt-2 flex shrink-0 flex-wrap gap-1">
+              {excludePatterns.map((pattern) => (
+                <li key={pattern}>
+                  <button
+                    type="button"
+                    className="exclude-chip"
+                    aria-label={`Remove exclusion ${pattern}`}
+                    onClick={() => void setPackExclusions(excludePatterns.filter((item) => item !== pattern))}
+                  >
+                    {pattern}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
         <div className="ground-code flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" data-testid="file-viewer">
           {openDocument ? (

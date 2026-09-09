@@ -29,6 +29,7 @@ export function packFromSources(context: ContextRecord, sources: StoredSource[])
     description: context.description ?? `Local folder · ${files.length} files`,
     files,
     commits: [],
+    excludePatterns: context.excludePatterns,
   };
 }
 

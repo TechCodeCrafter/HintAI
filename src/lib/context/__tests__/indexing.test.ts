@@ -171,6 +171,20 @@ test("corrupt cache rebuilds that source and still becomes ready", async () => {
   assert.ok(runtime.chunks.every((chunk) => chunk.id !== "bad"));
 });
 
+test("excluded file yields zero chunks and drops cached rows", async () => {
+  const repo = createMemoryRepository();
+  const { context } = await persistPackAsContext(PACK_A, repo);
+  const first = await indexContext(repo, context.id);
+  assert.ok(first.chunks.some((chunk) => chunk.path === "src/a.ts"));
+  const source = (await repo.listSources(context.id)).find((row) => row.path === "src/a.ts");
+  assert.ok(source);
+  await repo.patchContext(context.id, { excludePatterns: ["src/a.ts"] });
+  const second = await indexContext(repo, context.id);
+  assert.equal(second.chunks.some((chunk) => chunk.path === "src/a.ts"), false);
+  assert.ok(second.chunks.some((chunk) => chunk.path === "src/shared.ts"));
+  assert.equal(await repo.readIndexedChunks(context.id, source.id), null);
+});
+
 test("late A must not replace B's runtime", async () => {
   const repo = createMemoryRepository();
   const a = await persistPackAsContext(PACK_A, repo);
