@@ -114,7 +114,7 @@ export function UpgradeModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-bg/70 p-5 backdrop-blur-[2px]"
+      className="cockpit-modal fixed inset-0 z-[60] flex items-center justify-center bg-bg/80 p-5"
       role="presentation"
       onClick={onClose}
     >
