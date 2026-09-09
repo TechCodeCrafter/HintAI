@@ -979,6 +979,9 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const visible = pack.files.filter((f) => !filter || f.path.toLowerCase().includes(filter.toLowerCase()));
   const visiblePdfs = pdfs.filter((source) => !filter || source.path.toLowerCase().includes(filter.toLowerCase()));
   const sourceCount = pack.files.length + pdfs.length;
+  const excludedCount =
+    pack.files.filter((item) => pathExcluded(item.path, excludePatterns)).length +
+    pdfs.filter((source) => pathExcluded(source.path, excludePatterns)).length;
   const lines = useMemo(
     () => (file ? file.content.replace(/\n$/, "").split("\n") : []),
     [file],
@@ -1025,6 +1028,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
         </span>
         <span className="ground-status tabular-nums">
           {sourceCount} {sourceCount === 1 ? "file" : "files"}
+          {excludedCount > 0 ? ` · ${excludedCount} excluded` : ""}
         </span>
       </div>
       {weak ? (

@@ -61,7 +61,7 @@ import {
   liveQuestionFromTranscript,
   looksLikeQuestion,
 } from "@/lib/search/question";
-import { buildChunks, packVocabulary, retrieveHits } from "@/lib/search/retrieve";
+import { buildChunks, packVocabulary, retrieveHits, retrieveHitsOptionsForPack } from "@/lib/search/retrieve";
 import { shapeOf } from "@/lib/search/intent";
 import {
   contentWords,
@@ -1236,9 +1236,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const state = get();
     const previous = state.pack.excludePatterns ?? [];
     const restored = previous.some((pattern) => !next.includes(pattern));
+    const nextPack = { ...state.pack, excludePatterns: next.length ? next : undefined };
+    // One save: drop matching chunks, delete their vectors, persist the pack.
     const purged = await dropExcludedEvidence(state.chunks, next, getVectorStore());
     set({
-      pack: { ...state.pack, excludePatterns: next.length ? next : undefined },
+      pack: nextPack,
       chunks: purged.chunks,
       vocab: packVocabulary(purged.chunks),
     });
@@ -1248,7 +1250,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     try {
       await withContextWrite(id, async () => {
         const repo = getContextRepository();
-        await repo.patchContext(id, { excludePatterns: next.length ? next : undefined });
+        await repo.patchContext(id, { excludePatterns: nextPack.excludePatterns });
         const excludedIds = state.sources
           .filter((source) => pathExcluded(source.path, next))
           .map((source) => source.id);
@@ -1506,10 +1508,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const hits = await retrieveHits(
       expandRetrievalQuery(canonical, previousQuestion),
       state.chunks,
-      6,
-      getVectorStore(),
-      undefined,
-      state.pack.excludePatterns,
+      retrieveHitsOptionsForPack(state.pack, { limit: 6, vectorStore: getVectorStore() }),
     );
     if (epoch !== searchEpoch) return;
 

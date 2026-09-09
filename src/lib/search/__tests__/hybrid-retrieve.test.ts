@@ -5,7 +5,7 @@ import { USE_HYBRID_RETRIEVAL } from "../../context/index-versions.ts";
 import type { Chunk } from "../../repo/types.ts";
 import { bagEmbedding384, setEmbedderForTests } from "../embedding.ts";
 import { retrieveStructural } from "../hybrid.ts";
-import { hybridRetrieve, retrieve, retrieveHits } from "../retrieve.ts";
+import { formatExclusionSummary, hybridRetrieve, retrieve, retrieveHits } from "../retrieve.ts";
 import { combineScores, RETRIEVAL_WEIGHTS } from "../retrieval-weights.ts";
 import { formatRetrievalSummary, retrievalTraces, traceRetrieval } from "../retrieval-trace.ts";
 import { semanticRetrieve } from "../semantic-retrieve.ts";
@@ -166,11 +166,17 @@ test("retrieval summary names channels and the top hit", async () => {
   const upload = chunk("u", "src/upload.ts", "Generate a presigned S3 URL for the upload.");
   const store = createMemoryVectorStore();
   await store.set([{ chunkId: "u", embedding: bagEmbedding384(upload.text), contentHash: "u" }]);
-  const hits = await retrieveHits("Where does document upload happen?", [upload], 2, store, true);
+  const hits = await retrieveHits("Where does document upload happen?", [upload], {
+    excludePatterns: undefined,
+    limit: 2,
+    vectorStore: store,
+    hybrid: true,
+  });
   const summary = formatRetrievalSummary(hits);
   assert.match(summary, /\d+ hits \|/);
   assert.match(summary, /semantic|lexical/);
   assert.match(summary, /top: src\/upload\.ts \(code,/);
+  assert.equal(formatExclusionSummary(1, 0, hits.length), "1 chunks | 0 excluded | 1 hits");
 });
 
 test("structural retrieve matches a named file and a symbol", () => {
