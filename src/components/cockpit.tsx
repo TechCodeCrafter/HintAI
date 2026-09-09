@@ -12,6 +12,7 @@ import {
   FileText,
   FolderGit2,
   FolderOpen,
+  KeyRound,
   Mic,
   MoreHorizontal,
   Plus,
@@ -21,6 +22,7 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
+import { ApiKeySettings } from "@/components/api-key-settings";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerHistory } from "@/components/answer-history";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
@@ -94,6 +96,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
   const [citeReveal, setCiteReveal] = useState(0);
+  const [keysOpen, setKeysOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
   const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
@@ -205,7 +208,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
       data-context-status={contextStatus}
       data-context-updating={contextUpdating ? "true" : undefined}
     >
-      <header className="shrink-0 border-b border-hairline bg-bg px-5 md:px-8">
+      <header className="cockpit-glass-bar shrink-0 px-5 md:px-8">
         <div className="cockpit-header">
           <div className="cockpit-brand">
             <MeetHintMark className="cockpit-mark" />
@@ -289,6 +292,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
                 playing={playing}
                 onOverlay={() => setOverlay(!overlay)}
                 onReview={playing ? stopMeeting : playMeeting}
+                onKeys={() => setKeysOpen(true)}
               />
             </div>
             <UtilityMenu
@@ -299,6 +303,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               onOverlay={() => setOverlay(!overlay)}
               onReview={playing ? stopMeeting : playMeeting}
               onAudit={() => void openAudit()}
+              onKeys={() => setKeysOpen(true)}
             />
           </div>
           <FolderPickerFields
@@ -430,6 +435,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
         </div>
       </div>
       </main>
+      {keysOpen ? <ApiKeySettings onClose={() => setKeysOpen(false)} /> : null}
       <UpgradeModal
         open={upgradeFeature !== null}
         feature={upgradeFeature}
@@ -682,15 +688,26 @@ function UtilityLinks({
   playing,
   onOverlay,
   onReview,
+  onKeys,
 }: {
   overlay: boolean;
   demo: boolean;
   playing: boolean;
   onOverlay: () => void;
   onReview: () => void;
+  onKeys: () => void;
 }) {
   return (
     <>
+      <button
+        type="button"
+        className="cockpit-icon"
+        aria-label="API keys"
+        title="API keys"
+        onClick={onKeys}
+      >
+        <KeyRound className="size-4" />
+      </button>
       <a
         href="/app?overlay=1"
         target="_blank"
@@ -734,6 +751,7 @@ function UtilityMenu({
   onOverlay,
   onReview,
   onAudit,
+  onKeys,
 }: {
   className?: string;
   overlay: boolean;
@@ -742,6 +760,7 @@ function UtilityMenu({
   onOverlay: () => void;
   onReview: () => void;
   onAudit: () => void;
+  onKeys: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -824,6 +843,18 @@ function UtilityMenu({
           >
             <ClipboardList className="size-3.5 shrink-0" />
             Audit this meeting
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option"
+            onClick={() => {
+              setOpen(false);
+              onKeys();
+            }}
+          >
+            <KeyRound className="size-3.5 shrink-0" />
+            API keys
           </button>
           <div className="flex items-center justify-between gap-2 px-3 py-2">
             <span className="text-xs text-muted">Theme</span>

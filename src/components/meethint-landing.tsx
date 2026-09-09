@@ -252,7 +252,7 @@ function ProductFrame({
                 <div className="answer-receipt-body">
                   <div className="min-w-0">
                     <p className="receipt-kicker">They asked</p>
-                    <p className={`mt-2 text-[17px] font-semibold leading-snug ${ink}`}>
+                    <p className="mt-2 text-[17px] font-semibold leading-snug text-[var(--hint-text)]">
                       {question ? `“${question}”` : null}
                     </p>
                   </div>
@@ -267,8 +267,8 @@ function ProductFrame({
                       <div className="cite-chip">
                         <Check className="size-3.5 shrink-0 text-[var(--hint-ok)]" aria-hidden="true" />
                         <span className="cite-status">Verified</span>
-                        <span className={`break-all font-mono text-[12px] ${ink}`}>{beat.source.file}</span>
-                        <span className={`font-mono text-[12px] ${ink}`}>{beat.source.detail}</span>
+                        <span className="break-all font-mono text-[12px] text-[var(--hint-text)]">{beat.source.file}</span>
+                        <span className="font-mono text-[12px] text-[var(--hint-muted)]">{beat.source.detail}</span>
                       </div>
                     </div>
                   ) : (
@@ -482,7 +482,7 @@ export function MeetHintLanding() {
 
   return (
     <div className="hint-landing min-h-dvh" data-testid="landing">
-      <header className="sticky top-0 z-20 border-b border-[var(--hint-border)] bg-[var(--hint-bg)]">
+      <header className="hint-nav sticky top-0 z-20">
         <div className="hint-wrap flex items-center justify-between gap-6 py-3">
           <a href="/" className="flex items-center gap-2.5">
             <MeetHintMark className="size-8" />
@@ -503,7 +503,7 @@ export function MeetHintLanding() {
                 Docs
               </a>
             </nav>
-            <a href="/home" className="hint-btn hint-btn-primary min-h-10 rounded-[8px] px-4 text-[14px]">
+            <a href="/home" className="hint-btn hint-btn-primary">
               Try Hint
             </a>
           </div>

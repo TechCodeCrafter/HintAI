@@ -10,7 +10,6 @@ import {
   buildSynthesisPrompt,
   buildWeakEvidencePrompt,
   citationIndexes,
-  extractAnswer,
   extractBestSentence,
   generateAnswer,
   generateGeneralAnswer,
@@ -30,6 +29,7 @@ function ask(text: string) {
 test("extract stays grounded; weak and freely may use general knowledge", () => {
   assert.doesNotMatch(source, /buildAnswerPrompt/);
   assert.doesNotMatch(source, /export async function freelyAnswer/);
+  assert.doesNotMatch(source, /export async function extractAnswer/);
   const prompt = buildSynthesisPrompt("Why does that retry three times?", retryHits);
   assert.match(
     prompt,
@@ -134,14 +134,9 @@ test("empty hits stay silent without calling the model", async () => {
   assert.equal(called, false);
 });
 
-test("extractAnswer reads a sentence from the top hit", async () => {
+test("extractBestSentence picks the overlapping line from a hit", () => {
   const hit = retryHits[0];
   assert.ok(hit);
-  const generated = await extractAnswer("Why does that retry three times?", hit, 0, { pack: NORTHSTAR });
-  assert.ok(generated);
-  assert.equal(generated.answerMode, "docs");
-  assert.equal(generated.usedEvidence, true);
-  assert.ok(generated.citations.length >= 1);
   assert.match(extractBestSentence(hit.text, "retry three times"), /retry|three|attempt/i);
 });
 

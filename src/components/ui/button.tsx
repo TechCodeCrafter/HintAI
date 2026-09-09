@@ -13,9 +13,9 @@ const buttonVariants = cva(
         quiet: "bg-transparent text-secondary hover:bg-hover hover:text-fg",
       },
       size: {
-        sm: "h-9 px-3 text-[13px] rounded-[10px]",
-        md: "h-10 px-4 text-[13px] rounded-[10px]",
-        icon: "size-9 rounded-[10px]",
+        sm: "min-h-11 h-11 px-3.5 text-[13px] rounded-[8px]",
+        md: "min-h-11 h-11 px-4 text-[14px] rounded-[8px]",
+        icon: "size-11 rounded-[8px]",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

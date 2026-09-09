@@ -47,6 +47,13 @@ function missingKeyReason(): string {
   return "Add API key";
 }
 
+function providerHttpReason(provider: ModelProvider, status: number): string {
+  const name = provider === "openai" ? "OpenAI" : provider === "anthropic" ? "Anthropic" : "xAI";
+  if (status === 401 || status === 403) return `${name} rejected the API key`;
+  if (status === 429) return `${name} rate limit — try again in a moment`;
+  return `${name} ${status}`;
+}
+
 function buildRequest(model: ModelOption, system: string, user: string, apiKey: string, maxTokens = model.maxTokens): {
   url: string;
   headers: Record<string, string>;
@@ -124,7 +131,7 @@ async function completeChat(
     });
     if (!res.ok) {
       llmDebug("[completeChat] status:", model.provider, res.status);
-      return { raw: null, reason: `${model.provider} ${res.status}` };
+      return { raw: null, reason: providerHttpReason(model.provider, res.status) };
     }
     const raw = readCompletion(model.provider, await res.json());
     return { raw, reason: undefined };
