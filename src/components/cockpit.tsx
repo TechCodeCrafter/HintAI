@@ -44,7 +44,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { pathExcluded } from "@/lib/context/exclusions";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
-import { receiptKicker } from "@/lib/search/answer-mode";
+import { cardUsedEvidence, isGeneratedAnswer, receiptKicker } from "@/lib/search/answer-mode";
 import { VerifiedCitations } from "@/components/verified-citations";
 import { citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import type { Citation } from "@/lib/repo/types";
@@ -1516,8 +1516,8 @@ function CardPane({
     window.setTimeout(() => setCopied(false), 1400);
   }
 
-  const usedEvidence = card?.usedEvidence ?? (card?.citations.length ?? 0) > 0;
-  const generated = card?.answerMode === "generated" || (card?.answerMode === "synthesized" && !usedEvidence);
+  const usedEvidence = card ? cardUsedEvidence(card) : false;
+  const generated = isGeneratedAnswer(card?.answerMode, usedEvidence);
   const citations =
     !generated && card && card.citations.length > 0 ? (
       <VerifiedCitations citations={card.citations} overlay={overlay} onOpenCited={onOpenCited} />

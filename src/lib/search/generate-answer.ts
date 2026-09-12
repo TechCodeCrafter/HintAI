@@ -203,6 +203,7 @@ function citationFrom(hit: Hit, evidence: Evidence): Citation {
     kind: "file",
     path: hit.path,
     line: isFileHit(hit) ? hit.startLine : 1,
+    endLine: isFileHit(hit) && hit.endLine > hit.startLine ? hit.endLine : undefined,
     label: hit.path,
   };
 }
