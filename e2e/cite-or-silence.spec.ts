@@ -10,11 +10,12 @@ test.describe("Cite or stay silent", () => {
     await expect(card.getByTestId("card-citation").filter({ hasText: "src/exporter/retry" })).toBeVisible();
   });
 
-  test("weather is not cited from the files", async ({ page }) => {
+  test("weather stays silent instead of speaking general knowledge", async ({ page }) => {
     await openCockpit(page);
     await typeQuestion(page, "What is the weather today?");
-    const card = await waitForCard(page, { badge: "Generated · not from your files" });
-    await expect(card.getByTestId("card-say")).not.toBeEmpty();
+    const card = await waitForCard(page);
+    await expect(card.getByTestId("card-say")).toHaveCount(0);
+    await expect(card.getByTestId("card-reason")).not.toBeEmpty();
     await expect(card.getByTestId("card-citation")).toHaveCount(0);
   });
 

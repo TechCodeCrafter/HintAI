@@ -474,6 +474,7 @@ function citationOfHit(hit: Hit): Citation {
     kind: "file",
     path: hit.path,
     line: hit.startLine,
+    endLine: hit.endLine > hit.startLine ? hit.endLine : undefined,
     sha: hit.sha,
     pr: hit.pr,
     label: provenanceLabel(hit),

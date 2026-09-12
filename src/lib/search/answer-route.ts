@@ -1,7 +1,6 @@
 import type { Card, Hit, RepoPack } from "../repo/types.ts";
 import {
   generateAnswer,
-  generateGeneralAnswer,
   synthesizeAnswer,
   type AnswerResult,
   type GenerateOpts,
@@ -49,35 +48,16 @@ function successCard(query: string, answer: GeneratedAnswer, fallbackSource: str
   };
 }
 
-/**
- * Grounded first. If that fails and retrieval found something, synthesize
- * from the chunks. Only then general knowledge. localCard is the offline last resort.
- */
-export async function routeSearchAnswer(
+function localCardRoute(
   query: string,
   hits: Hit[],
   t0: number,
-  opts?: GenerateOpts & { pack?: RepoPack },
-): Promise<RoutedSearchAnswer> {
-  let firstError: string | undefined;
-
-  const grounded = await generateAnswer(query, hits, t0, opts);
-  if (grounded.ok) return successCard(query, grounded.answer, "local");
-  firstError = noteError(firstError, grounded);
-  if (isTransportError(grounded)) return failedCard(query, hits.length, t0, firstError);
-
-  if (hits.length > 0) {
-    const synthesized = await synthesizeAnswer(query, hits, t0, opts);
-    if (synthesized.ok) return successCard(query, synthesized.answer, "synthesize");
-    firstError = noteError(firstError, synthesized);
-    if (isTransportError(synthesized)) return failedCard(query, hits.length, t0, firstError);
-  }
-
-  const general = await generateGeneralAnswer(query, t0, opts);
-  if (general.ok) return successCard(query, general.answer, "generated");
-  firstError = noteError(firstError, general);
-
-  return silentRouted(query, hits, t0, firstError, opts?.pack);
+  pack?: RepoPack,
+): RoutedSearchAnswer | null {
+  if (!pack) return null;
+  const local = localCard(query, hits, pack, Math.round(performance.now() - t0));
+  if (!local.say) return null;
+  return { consumeQuota: false, card: { ...local, answerMode: "docs", usedEvidence: true } };
 }
 
 function failedCard(
@@ -99,18 +79,38 @@ function failedCard(
   };
 }
 
-function silentRouted(
+/**
+ * Grounded first. Cited synthesis second. localCard third — never general knowledge.
+ * Uncited weak synthesis is not returned; it would block the offline cited path.
+ */
+export async function routeSearchAnswer(
   query: string,
   hits: Hit[],
   t0: number,
-  firstError: string | undefined,
-  pack?: RepoPack,
-): RoutedSearchAnswer {
-  if (pack) {
-    const local = localCard(query, hits, pack, Math.round(performance.now() - t0));
-    if (local.say) {
-      return { consumeQuota: false, card: { ...local, answerMode: "docs" } };
+  opts?: GenerateOpts & { pack?: RepoPack },
+): Promise<RoutedSearchAnswer> {
+  let firstError: string | undefined;
+
+  const grounded = await generateAnswer(query, hits, t0, opts);
+  if (grounded.ok) return successCard(query, grounded.answer, "local");
+  firstError = noteError(firstError, grounded);
+  if (isTransportError(grounded)) return failedCard(query, hits.length, t0, firstError);
+
+  if (hits.length > 0) {
+    const synthesized = await synthesizeAnswer(query, hits, t0, opts);
+    if (
+      synthesized.ok &&
+      synthesized.answer.usedEvidence &&
+      synthesized.answer.citations.length > 0
+    ) {
+      return successCard(query, synthesized.answer, "synthesize");
     }
+    firstError = noteError(firstError, synthesized);
+    if (isTransportError(synthesized)) return failedCard(query, hits.length, t0, firstError);
   }
+
+  const local = localCardRoute(query, hits, t0, opts?.pack);
+  if (local) return local;
+
   return failedCard(query, hits.length, t0, firstError);
 }

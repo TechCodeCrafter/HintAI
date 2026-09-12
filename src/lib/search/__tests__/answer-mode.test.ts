@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { modeLabel, receiptKicker } from "../answer-mode.ts";
+import { cardUsedEvidence, isGeneratedAnswer, modeLabel, receiptKicker } from "../answer-mode.ts";
 import { applyAssist, silentAssist } from "../assist.ts";
 import { applyPolish } from "../polish.ts";
 import type { Card, FileCitation } from "../../repo/types.ts";
@@ -39,6 +39,12 @@ test("the card badge names how the answer was produced", () => {
   assert.equal(receiptKicker("synthesized"), "Synthesized");
   assert.equal(receiptKicker("synthesized", false), "Generated · not from your files");
   assert.equal(receiptKicker("generated"), "Generated · not from your files");
+  assert.equal(isGeneratedAnswer("generated"), true);
+  assert.equal(isGeneratedAnswer("synthesized", false), true);
+  assert.equal(isGeneratedAnswer("synthesized", true), false);
+  assert.equal(cardUsedEvidence({ citations: [] }), false);
+  assert.equal(cardUsedEvidence({ usedEvidence: false, citations: [{ kind: "file", path: "a.ts", line: 1, label: "" }] }), false);
+  assert.equal(cardUsedEvidence({ citations: [{ kind: "file", path: "a.ts", line: 1, label: "" }] }), true);
 });
 
 test("polish keeps a rewrite only when every word is still in the evidence", () => {
