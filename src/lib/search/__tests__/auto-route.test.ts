@@ -30,8 +30,20 @@ const uploadPack: RepoPack = {
   commits: [],
 };
 
+/** Q14-style uncited synthesis from the upload-cluster demo battery. */
+const UNCITED_UPLOAD_SYNTHESIS =
+  "The upload is handled through the API endpoint where the frontend client interacts with the API Gateway. Specifically, the API checks the shared file registry by hash to determine if the content is a duplicate before processing the upload.";
+
 function ask(text: string | null) {
   return async () => ({ text });
+}
+
+function uncitedSynthesisAsk(text: string = UNCITED_UPLOAD_SYNTHESIS) {
+  return async (payload: { policy?: string }) => {
+    if (payload.policy === "extract") return { text: "INSUFFICIENT" };
+    if (payload.policy === "synthesize") return { text };
+    return { text: "INSUFFICIENT" };
+  };
 }
 
 test("hits plus grounded success become a cited docs card", async () => {
@@ -42,12 +54,42 @@ test("hits plus grounded success become a cited docs card", async () => {
     ask: ask(
       `Attempts are capped at three because a fourth attempt duplicates the settlement file. [${body + 1}]`,
     ),
-    generalAsk: ask("This general answer must not be used."),
   });
   assert.equal(routed.consumeQuota, true);
   assert.equal(routed.card.answerMode, "docs");
   assert.ok(routed.card.say);
   assert.ok(routed.card.citations.length >= 1);
+});
+
+test("uncited synthesis ok is never spoken — localCard or silence only", async () => {
+  const uploadChunks = buildChunks(uploadPack);
+  const uploadHits = retrieve("Where are we actually doing the upload?", uploadChunks, 6);
+  assert.ok(uploadHits.length > 0);
+
+  const uploadRouted = await routeSearchAnswer(
+    "Where are we actually doing the upload?",
+    uploadHits,
+    0,
+    { pack: uploadPack, ask: uncitedSynthesisAsk() },
+  );
+  assert.notEqual(uploadRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
+  assert.equal(uploadRouted.consumeQuota, false);
+  if (uploadRouted.card.say) {
+    assert.equal(uploadRouted.card.answerMode, "docs");
+    assert.ok(uploadRouted.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
+  }
+
+  const devHits = retrieve("Who is a full stack developer?", chunks);
+  const silentRouted = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
+    pack: NORTHSTAR,
+    ask: uncitedSynthesisAsk(),
+  });
+  assert.notEqual(silentRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
+  assert.equal(silentRouted.card.say, null);
+  assert.equal(
+    silentRouted.card.reason,
+    devHits.length === 0 ? "No matching material" : "Your material doesn't cover this",
+  );
 });
 
 test("uncited synthesis falls through to localCard when the pack can cite", async () => {
@@ -56,16 +98,7 @@ test("uncited synthesis falls through to localCard when the pack can cite", asyn
   assert.ok(uploadHits.length > 0);
   const routed = await routeSearchAnswer("How does document upload work?", uploadHits, 0, {
     pack: uploadPack,
-    ask: async (payload) => {
-      if (payload.policy === "extract") return { text: "INSUFFICIENT" };
-      if (payload.policy === "synthesize") {
-        return { text: "Document upload typically involves presigned URLs for S3." };
-      }
-      return { text: "INSUFFICIENT" };
-    },
-    generalAsk: async () => {
-      throw new Error("generateGeneralAnswer must not run when localCard can cite");
-    },
+    ask: uncitedSynthesisAsk("Document upload typically involves presigned URLs for S3."),
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.answerMode, "docs");
@@ -77,15 +110,7 @@ test("off-topic questions with irrelevant hits stay silent instead of speaking g
   const devHits = retrieve("Who is a full stack developer?", chunks);
   const routed = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
     pack: NORTHSTAR,
-    ask: async (payload) => {
-      if (payload.policy === "synthesize") {
-        return { text: "A full-stack developer works across the client and the server." };
-      }
-      return { text: "INSUFFICIENT" };
-    },
-    generalAsk: async () => {
-      throw new Error("generateGeneralAnswer must not run");
-    },
+    ask: uncitedSynthesisAsk("A full-stack developer works across the client and the server."),
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
@@ -99,7 +124,6 @@ test("off-topic questions with no hits stay silent", async () => {
   const routed = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
     pack: NORTHSTAR,
     ask: ask("INSUFFICIENT"),
-    generalAsk: ask("Tokyo weather is set by a nearby high-pressure system."),
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
@@ -110,7 +134,6 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
   const none = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
     pack: NORTHSTAR,
     ask: ask("INSUFFICIENT"),
-    generalAsk: ask("INSUFFICIENT"),
   });
   assert.equal(none.consumeQuota, false);
   assert.equal(none.card.say, null);
@@ -120,7 +143,6 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
   const uncovered = await routeSearchAnswer("Do we store card numbers in the export?", cardHits, 0, {
     pack: NORTHSTAR,
     ask: ask("INSUFFICIENT"),
-    generalAsk: ask("INSUFFICIENT"),
   });
   assert.equal(uncovered.consumeQuota, false);
   if (uncovered.card.say) {
@@ -134,7 +156,6 @@ test("an API error is not disguised as missing material", async () => {
   const broken = await routeSearchAnswer("What is the weather in Tokyo?", retryHits, 0, {
     pack: NORTHSTAR,
     ask: async () => ({ text: null, reason: "Add API key" }),
-    generalAsk: async () => ({ text: null, reason: "Add API key" }),
   });
   assert.equal(broken.consumeQuota, false);
   assert.equal(broken.card.say, null);
@@ -151,9 +172,6 @@ test("a timeout does not spend two more model calls", async () => {
       asks += 1;
       return { text: null, reason: "timeout" };
     },
-    generalAsk: async () => {
-      throw new Error("generalAsk must not run after a timeout");
-    },
   });
   assert.equal(asks, 1);
   assert.equal(routed.consumeQuota, false);
@@ -169,7 +187,6 @@ test("the first error across tiers is the one the silent card shows", async () =
       if (payload.policy === "extract") return { text: null, reason: "timeout" };
       return { text: "INSUFFICIENT" };
     },
-    generalAsk: async () => ({ text: null, reason: "Add API key" }),
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
@@ -180,7 +197,6 @@ test("failed LLM answers do not consume quota", async () => {
   const failed = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
     pack: NORTHSTAR,
     ask: ask(null),
-    generalAsk: ask(null),
   });
   assert.equal(failed.consumeQuota, false);
   assert.equal(failed.card.reason, "No matching material");
@@ -188,7 +204,6 @@ test("failed LLM answers do not consume quota", async () => {
   const silent = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
     pack: NORTHSTAR,
     ask: ask(null),
-    generalAsk: ask("Bring a jacket. Tokyo looks cool today."),
   });
   assert.equal(silent.consumeQuota, false);
   assert.equal(silent.card.say, null);

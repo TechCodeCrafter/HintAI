@@ -19,15 +19,18 @@ import { buildChunks, retrieve } from "../retrieve.ts";
 const root = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
 const chunks = buildChunks(NORTHSTAR);
 
-test("search() auto-routes grounded then general and burns quota only after success", () => {
+test("search() auto-routes grounded then localCard and burns quota only after success", () => {
   const store = readFileSync(join(root, "src/lib/store.ts"), "utf8");
   const synthesis = readFileSync(join(root, "src/lib/search/generate-answer.ts"), "utf8");
+  const route = readFileSync(join(root, "src/lib/search/answer-route.ts"), "utf8");
+  const cardsmith = readFileSync(join(root, "src/lib/ai/cardsmith.ts"), "utf8");
   const cockpit = readFileSync(join(root, "src/components/cockpit.tsx"), "utf8");
-  assert.match(synthesis, /generateGeneralAnswer/);
-  assert.match(synthesis, /buildGeneralPrompt/);
+  assert.doesNotMatch(synthesis, /generateGeneralAnswer/);
+  assert.doesNotMatch(synthesis, /buildGeneralPrompt/);
   assert.doesNotMatch(synthesis, /buildAnswerPrompt/);
-  const generalFn = synthesis.slice(synthesis.indexOf("export async function generateGeneralAnswer"));
-  assert.doesNotMatch(generalFn.slice(0, 1800), /verifyClaim/);
+  assert.doesNotMatch(route, /generateGeneralAnswer/);
+  assert.doesNotMatch(cardsmith, /completeGeneral/);
+  assert.match(route, /localCard third — never general knowledge/);
   assert.match(store, /retrieveHits/);
   assert.match(store, /retrieveHitsOptionsForPack/);
   assert.equal((store.match(/retrieveHits\s*\(/g) ?? []).length, 1);
