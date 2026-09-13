@@ -3,6 +3,7 @@ import {
   generateAnswer,
   synthesizeAnswer,
   type AnswerResult,
+  type AnswerTiming,
   type GenerateOpts,
   type GeneratedAnswer,
 } from "./generate-answer.ts";
@@ -16,9 +17,26 @@ export function silentCardReason(hitCount: number, errorMessage?: string): strin
   return hitCount === 0 ? "No matching material" : "Your material doesn't cover this";
 }
 
+export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
+
+export type SearchLatency = {
+  retrieveMs: number;
+  llmMs: number;
+  verifyMs: number;
+  totalMs: number;
+};
+
 export type RoutedSearchAnswer = {
   card: Card;
   consumeQuota: boolean;
+  tier: AnswerTier;
+  latency: SearchLatency;
+};
+
+export type RouteSearchOpts = GenerateOpts & {
+  pack?: RepoPack;
+  /** Time spent in retrieveHits before routing. */
+  retrieveMs?: number;
 };
 
 function noteError(first: string | undefined, result: AnswerResult): string | undefined {
@@ -32,9 +50,30 @@ function isTransportError(result: AnswerResult): boolean {
   return /timeout|api key|empty prompt|\b401\b|\b403\b|\b429\b/i.test(result.message);
 }
 
-function successCard(query: string, answer: GeneratedAnswer, fallbackSource: string): RoutedSearchAnswer {
+function latencyOf(
+  t0: number,
+  retrieveMs: number,
+  timing: AnswerTiming = { llmMs: 0, verifyMs: 0 },
+): SearchLatency {
+  return {
+    retrieveMs,
+    llmMs: timing.llmMs,
+    verifyMs: timing.verifyMs,
+    totalMs: Math.round(performance.now() - t0),
+  };
+}
+
+function successCard(
+  query: string,
+  answer: GeneratedAnswer,
+  fallbackSource: string,
+  tier: AnswerTier,
+  latency: SearchLatency,
+): RoutedSearchAnswer {
   return {
     consumeQuota: true,
+    tier,
+    latency,
     card: {
       say: answer.say,
       citations: answer.citations,
@@ -52,22 +91,31 @@ function localCardRoute(
   query: string,
   hits: Hit[],
   t0: number,
+  retrieveMs: number,
   pack?: RepoPack,
 ): RoutedSearchAnswer | null {
   if (!pack) return null;
   const local = localCard(query, hits, pack, Math.round(performance.now() - t0));
   if (!local.say) return null;
-  return { consumeQuota: false, card: { ...local, answerMode: "docs", usedEvidence: true } };
+  return {
+    consumeQuota: false,
+    tier: "localCard",
+    latency: latencyOf(t0, retrieveMs),
+    card: { ...local, answerMode: "docs", usedEvidence: true },
+  };
 }
 
 function failedCard(
   query: string,
   hitCount: number,
   t0: number,
+  retrieveMs: number,
   firstError: string | undefined,
 ): RoutedSearchAnswer {
   return {
     consumeQuota: false,
+    tier: "silent",
+    latency: latencyOf(t0, retrieveMs),
     card: {
       say: null,
       reason: silentCardReason(hitCount, firstError),
@@ -87,14 +135,17 @@ export async function routeSearchAnswer(
   query: string,
   hits: Hit[],
   t0: number,
-  opts?: GenerateOpts & { pack?: RepoPack },
+  opts?: RouteSearchOpts,
 ): Promise<RoutedSearchAnswer> {
+  const retrieveMs = opts?.retrieveMs ?? 0;
   let firstError: string | undefined;
 
   const grounded = await generateAnswer(query, hits, t0, opts);
-  if (grounded.ok) return successCard(query, grounded.answer, "local");
+  if (grounded.ok) {
+    return successCard(query, grounded.answer, "local", "grounded", latencyOf(t0, retrieveMs, grounded.timing));
+  }
   firstError = noteError(firstError, grounded);
-  if (isTransportError(grounded)) return failedCard(query, hits.length, t0, firstError);
+  if (isTransportError(grounded)) return failedCard(query, hits.length, t0, retrieveMs, firstError);
 
   if (hits.length > 0) {
     const synthesized = await synthesizeAnswer(query, hits, t0, opts);
@@ -103,14 +154,20 @@ export async function routeSearchAnswer(
       synthesized.answer.usedEvidence &&
       synthesized.answer.citations.length > 0
     ) {
-      return successCard(query, synthesized.answer, "synthesize");
+      return successCard(
+        query,
+        synthesized.answer,
+        "synthesize",
+        "synthesis",
+        latencyOf(t0, retrieveMs, synthesized.timing),
+      );
     }
     firstError = noteError(firstError, synthesized);
-    if (isTransportError(synthesized)) return failedCard(query, hits.length, t0, firstError);
+    if (isTransportError(synthesized)) return failedCard(query, hits.length, t0, retrieveMs, firstError);
   }
 
-  const local = localCardRoute(query, hits, t0, opts?.pack);
+  const local = localCardRoute(query, hits, t0, retrieveMs, opts?.pack);
   if (local) return local;
 
-  return failedCard(query, hits.length, t0, firstError);
+  return failedCard(query, hits.length, t0, retrieveMs, firstError);
 }

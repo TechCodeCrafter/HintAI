@@ -16,10 +16,15 @@ export type GeneratedAnswer = {
   answerMode: AnswerMode;
 };
 
+export type AnswerTiming = {
+  llmMs: number;
+  verifyMs: number;
+};
+
 export type AnswerResult =
-  | { ok: true; answer: GeneratedAnswer }
-  | { ok: false; reason: "insufficient" }
-  | { ok: false; reason: "error"; message: string };
+  | { ok: true; answer: GeneratedAnswer; timing: AnswerTiming }
+  | { ok: false; reason: "insufficient"; timing?: AnswerTiming }
+  | { ok: false; reason: "error"; message: string; timing?: AnswerTiming };
 
 export type SynthesisAsk = (payload: {
   query: string;
@@ -302,15 +307,21 @@ export async function generateAnswer(
   opts?: GenerateOpts,
 ): Promise<AnswerResult> {
   if (hits.length === 0) return { ok: false, reason: "insufficient" };
+  const llmStart = performance.now();
   const remote = await completePrompt(query, buildSynthesisPrompt(query, hits), "extract", opts);
-  if (!remote.ok) return remote;
-  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
+  const llmMs = Math.round(performance.now() - llmStart);
+  if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
+  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = stripCitationMarkers(remote.text);
-  if (!say) return { ok: false, reason: "insufficient" };
+  if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
-  if (evidence.length === 0) return { ok: false, reason: "insufficient" };
+  if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
+  const verifyStart = performance.now();
   const check = verifyClaim(say, evidence);
-  if (!check.ok || check.checked === 0) return { ok: false, reason: "insufficient" };
+  const verifyMs = Math.round(performance.now() - verifyStart);
+  if (!check.ok || check.checked === 0) {
+    return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
+  }
   return {
     ok: true,
     answer: {
@@ -321,6 +332,7 @@ export async function generateAnswer(
       modelName: remote.modelName,
       answerMode: "docs",
     },
+    timing: { llmMs, verifyMs },
   };
 }
 
@@ -331,20 +343,26 @@ export async function synthesizeAnswer(
   t0: number,
   opts?: GenerateOpts,
 ): Promise<AnswerResult> {
+  const llmStart = performance.now();
   const remote = await completePrompt(
     query,
     buildWeakEvidencePrompt(query, hits, opts?.threadHistory),
     "synthesize",
     opts,
   );
-  if (!remote.ok) return remote;
-  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
+  const llmMs = Math.round(performance.now() - llmStart);
+  if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
+  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = stripCitationMarkers(remote.text);
-  if (!say) return { ok: false, reason: "insufficient" };
+  if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
-  if (evidence.length === 0) return { ok: false, reason: "insufficient" };
+  if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
+  const verifyStart = performance.now();
   const check = verifyClaim(say, evidence);
-  if (!check.ok || check.checked === 0) return { ok: false, reason: "insufficient" };
+  const verifyMs = Math.round(performance.now() - verifyStart);
+  if (!check.ok || check.checked === 0) {
+    return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
+  }
   return {
     ok: true,
     answer: {
@@ -355,5 +373,6 @@ export async function synthesizeAnswer(
       modelName: remote.modelName,
       answerMode: "synthesized",
     },
+    timing: { llmMs, verifyMs },
   };
 }

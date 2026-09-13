@@ -48,12 +48,13 @@ import {
   findHistoryItem,
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
+import { recordAnswerFlight, transcriptLanes } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
 import { officeReadError, packFromFiles, truncationNotice, type FolderLoadOptions } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
-import { type GateRecord, recordGate } from "@/lib/search/gate-log";
+import { type GateRecord, gateRecords, recordGate } from "@/lib/search/gate-log";
 import {
   cleanCaption,
   extractQuestion,
@@ -61,7 +62,13 @@ import {
   liveQuestionFromTranscript,
   looksLikeQuestion,
 } from "@/lib/search/question";
-import { buildChunks, packVocabulary, retrieveHits, retrieveHitsOptionsForPack } from "@/lib/search/retrieve";
+import {
+  buildChunks,
+  formatFlightRetrievalSummary,
+  packVocabulary,
+  retrieveHits,
+  retrieveHitsOptionsForPack,
+} from "@/lib/search/retrieve";
 import { shapeOf } from "@/lib/search/intent";
 import {
   contentWords,
@@ -1510,6 +1517,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       state.chunks,
       retrieveHitsOptionsForPack(state.pack, { limit: 6, vectorStore: getVectorStore() }),
     );
+    const retrieveMs = Math.round(performance.now() - t0);
     if (epoch !== searchEpoch) return;
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
@@ -1544,10 +1552,27 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       modelId: get().selectedModelId,
       maxTokens: SYNTHESIZE_MAX_TOKENS,
       threadHistory,
+      retrieveMs,
     });
     if (epoch !== searchEpoch) return;
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
-    finish(routed.card, extractRemaining());
+    const remaining = extractRemaining();
+    const gate = gateRecords().at(-1);
+    recordAnswerFlight({
+      query,
+      transcript: transcriptLanes(get().utterances),
+      gate: gate
+        ? { verdict: gate.verdict, question: gate.question, triggered: gate.triggered }
+        : null,
+      retrieval: formatFlightRetrievalSummary(state.chunks, hits, state.pack.excludePatterns),
+      tier: routed.tier,
+      latency: routed.latency,
+      say: routed.card.say,
+      reason: routed.card.reason ?? null,
+      citations: routed.card.citations,
+      quotaRemaining: remaining,
+    });
+    finish(routed.card, remaining);
   },
 }));
 
