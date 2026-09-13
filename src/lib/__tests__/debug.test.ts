@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { isLlmDebug, llmDebug } from "../debug.ts";
+import { isFlightRecorder, isLlmDebug, llmDebug } from "../debug.ts";
 
 test("LLM debug is off unless an explicit flag is set", () => {
   assert.equal(isLlmDebug(), false);
@@ -16,4 +16,8 @@ test("LLM debug is off unless an explicit flag is set", () => {
     console.info = original;
   }
   assert.deepEqual(logs, []);
+});
+
+test("flight recorder is off unless an explicit flag is set", () => {
+  assert.equal(isFlightRecorder(), false);
 });

@@ -8,6 +8,11 @@ export function isLlmDebug(): boolean {
   return flag("VITE_DEBUG_LLM") || flag("DEBUG_LLM");
 }
 
+/** Phase 0 meeting flight recorder. Off unless VITE_DEBUG_FLIGHT or DEBUG_FLIGHT is "true". */
+export function isFlightRecorder(): boolean {
+  return flag("VITE_DEBUG_FLIGHT") || flag("DEBUG_FLIGHT") || flag("VITE_E2E");
+}
+
 function flag(name: string): boolean {
   try {
     const value = (import.meta as { env?: Record<string, unknown> }).env?.[name];

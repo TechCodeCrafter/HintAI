@@ -40,6 +40,8 @@ declare global {
     __mockEmbedder?: (text: string) => Promise<number[]>;
     __meethintSwitchAccount?: (accountId: string | null) => Promise<void>;
     __MEETHINT_E2E__?: boolean;
+    /** Test-only PCM injection into the live listen pipeline (VITE_E2E builds). */
+    __injectUtterance?: (pcm: Float32Array, lane?: "mic" | "computer") => void;
   }
 }
 

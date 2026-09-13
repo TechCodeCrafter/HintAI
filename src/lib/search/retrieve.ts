@@ -511,6 +511,21 @@ export function formatExclusionSummary(chunkCount: number, excludedCount: number
   return `${chunkCount} chunks | ${excludedCount} excluded | ${hitCount} hits`;
 }
 
+/** Flight-recorder line: exclusion counts plus channel mix when hits exist. */
+export function formatFlightRetrievalSummary(
+  chunks: IndexedChunk[],
+  hits: Hit[],
+  excludePatterns?: string[],
+): string {
+  const excludedCount = excludePatterns?.length
+    ? chunks.length - chunks.filter((chunk) => !pathExcluded(chunk.path, excludePatterns)).length
+    : 0;
+  const base = formatExclusionSummary(chunks.length, excludedCount, hits.length);
+  if (hits.length === 0) return base;
+  const mix = formatRetrievalSummary(hits).replace(/^\d+ hits \| /, "");
+  return `${base} | ${mix}`;
+}
+
 /**
  * Live retrieve entry. Hybrid is on by default when a VectorStore is
  * installed. A failed or empty semantic channel degrades to lexical.

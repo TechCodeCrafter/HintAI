@@ -90,7 +90,8 @@ test("INSUFFICIENT is silence", async () => {
     ask: ask("INSUFFICIENT"),
     pack: NORTHSTAR,
   });
-  assert.deepEqual(generated, { ok: false, reason: "insufficient" });
+  assert.equal(generated.ok, false);
+  if (!generated.ok) assert.equal(generated.reason, "insufficient");
 });
 
 test("a cited line the files can admit is returned with real citations", async () => {
@@ -120,13 +121,15 @@ test("unverified synthesis is silence", async () => {
     ask: ask("SSO ships by Q2 and the capital of France is Paris. [1]"),
     pack: NORTHSTAR,
   });
-  assert.deepEqual(invented, { ok: false, reason: "insufficient" });
+  assert.equal(invented.ok, false);
+  if (!invented.ok) assert.equal(invented.reason, "insufficient");
 
   const unmarked = await generateAnswer("Why does that retry three times?", retryHits, 0, {
     ask: ask("Attempts are capped at three because a fourth attempt duplicates the settlement file."),
     pack: NORTHSTAR,
   });
-  assert.deepEqual(unmarked, { ok: false, reason: "insufficient" });
+  assert.equal(unmarked.ok, false);
+  if (!unmarked.ok) assert.equal(unmarked.reason, "insufficient");
 });
 
 test("citation markers map to hit indexes", () => {
@@ -157,7 +160,8 @@ test("empty hits stay silent without calling the model", async () => {
       return { text: "anything [1]" };
     },
   });
-  assert.deepEqual(generated, { ok: false, reason: "insufficient" });
+  assert.equal(generated.ok, false);
+  if (!generated.ok) assert.equal(generated.reason, "insufficient");
   assert.equal(called, false);
 });
 
@@ -172,7 +176,8 @@ test("uncited synthesis is insufficient", async () => {
     ask: ask("A full-stack developer works across the client and the server."),
     pack: NORTHSTAR,
   });
-  assert.deepEqual(generated, { ok: false, reason: "insufficient" });
+  assert.equal(generated.ok, false);
+  if (!generated.ok) assert.equal(generated.reason, "insufficient");
 });
 
 test("fetch errors and empty replies are errors, not insufficient", async () => {
@@ -180,13 +185,21 @@ test("fetch errors and empty replies are errors, not insufficient", async () => 
     ask: ask(""),
     pack: NORTHSTAR,
   });
-  assert.deepEqual(empty, { ok: false, reason: "error", message: "empty" });
+  assert.equal(empty.ok, false);
+  if (!empty.ok) {
+    assert.equal(empty.reason, "error");
+    assert.equal(empty.message, "empty");
+  }
 
   const keyed = await generateAnswer("Why does that retry three times?", retryHits, 0, {
     ask: async () => ({ text: null, reason: "Add API key" }),
     pack: NORTHSTAR,
   });
-  assert.deepEqual(keyed, { ok: false, reason: "error", message: "Add API key" });
+  assert.equal(keyed.ok, false);
+  if (!keyed.ok) {
+    assert.equal(keyed.reason, "error");
+    assert.equal(keyed.message, "Add API key");
+  }
 
   const failed = await generateAnswer("Why does that retry three times?", retryHits, 0, {
     ask: async () => {
@@ -194,6 +207,10 @@ test("fetch errors and empty replies are errors, not insufficient", async () => 
     },
     pack: NORTHSTAR,
   });
-  assert.deepEqual(failed, { ok: false, reason: "error", message: "fetch failed" });
+  assert.equal(failed.ok, false);
+  if (!failed.ok) {
+    assert.equal(failed.reason, "error");
+    assert.equal(failed.message, "fetch failed");
+  }
 });
 

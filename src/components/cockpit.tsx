@@ -7,6 +7,7 @@ import {
   ClipboardList,
   ClipboardPaste,
   Copy,
+  Download,
   Ban,
   EyeOff,
   ExternalLink,
@@ -51,6 +52,8 @@ import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
+import { isFlightRecorder } from "@/lib/debug";
+import { downloadFlightLog } from "@/lib/instrumentation/flight-recorder";
 import { useMeetHint } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
@@ -285,6 +288,20 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
               <ClipboardList className="size-4" />
               <span className="hidden lg:inline">Audit</span>
             </Button>
+            {isFlightRecorder() ? (
+              <Button
+                variant="quiet"
+                size="sm"
+                data-testid="export-flight-log"
+                aria-label="Export session flight log"
+                title="Download local answer telemetry (debug)"
+                disabled={!searchReady}
+                onClick={() => downloadFlightLog()}
+              >
+                <Download className="size-4" />
+                <span className="hidden lg:inline">Export log</span>
+              </Button>
+            ) : null}
           </div>
           <div className="cockpit-pack">
             <ContextSwitcher onOpenFolder={() => void folderPicker.offerFolder()} />

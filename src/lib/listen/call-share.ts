@@ -18,6 +18,7 @@ import {
   ringMs,
 } from "@/lib/listen/ring";
 import { createSileroTap, type SileroTap } from "@/lib/listen/silero";
+import { judgeUtteranceAdmission, meanSileroProb } from "@/lib/listen/utterance-admission";
 import { gateFor, observeFrame } from "@/lib/listen/vad";
 import { mark, markClip, probeOn } from "@/lib/listen/onset-probe";
 import { encodeWavFromStreamChunk, pcm16kFromFrames, wavBytesMono } from "@/lib/listen/wav";
@@ -96,6 +97,9 @@ type Lane = {
   carry: Float32Array[];
   carryMs: number;
   carryAt: number;
+  /** Sum of Silero isSpeech scores across active frames in this utterance. */
+  sileroProbSum: number;
+  sileroProbCount: number;
 };
 
 let held: MediaStream[] = [];
@@ -114,6 +118,7 @@ let pumping = false;
 let pumpSeq = 0;
 let speechLiveAt = 0;
 let draftFrom: LaneName | null = null;
+const laneFrameHandlers = new Map<LaneName, (frame: Float32Array, playbackTime: number) => void>();
 /**
  * Identity for committed clips. Minted at the commit boundary and carried all the
  * way to the transcript, so two clips that transcribe to the same words are still
@@ -127,6 +132,16 @@ export function markSpeechLive() {
 
 function speechHeardRecently(ms = 1200): boolean {
   return speechLiveAt > 0 && Date.now() - speechLiveAt < ms;
+}
+
+/** Remove the lane's live "…" / preview line when an utterance never reaches ASR. */
+function clearLaneDraft(laneName: LaneName) {
+  const state = useMeetHint.getState();
+  const role = roleForLane(laneName);
+  if (state.draftRole === role || draftFrom === laneName) {
+    state.setLiveDraft("");
+    draftFrom = null;
+  }
 }
 
 function stopGraph() {
@@ -177,6 +192,7 @@ function release() {
     });
   });
   held = [];
+  laneFrameHandlers.clear();
   stopGraph();
 }
 
@@ -290,6 +306,8 @@ function openLane(lane: Lane, now: number) {
   lane.rollLead = lane.pending.length;
   lane.carry = [];
   lane.carryMs = 0;
+  lane.sileroProbSum = 0;
+  lane.sileroProbCount = 0;
   // Merged speech counts toward the minimum, so the pair is judged as one line.
   lane.startedAt = now - mergedMs;
   lane.silenceAt = now;
@@ -456,7 +474,22 @@ function closeLane(lane: Lane, forced = false) {
     } else {
       lane.carry = [];
       lane.carryMs = 0;
-      mark("utterance-dropped", name, { spokeMs, voicedMs: Math.round(voiced), noSpeech: true });
+      const energy = clipRms(frames);
+      mark("utterance-dropped", name, {
+        spokeMs,
+        voicedMs: Math.round(voiced),
+        noSpeech: true,
+        reason: "energy-vad",
+      });
+      clearLaneDraft(name);
+      void import("@/lib/instrumentation/flight-recorder").then(({ noteDroppedUtterance }) => {
+        noteDroppedUtterance({
+          reason: "energy-vad",
+          sileroProb: meanSileroProb(lane.sileroProbSum, lane.sileroProbCount),
+          durationMs: Math.round(bufferedMs),
+          energy,
+        });
+      });
     }
   }
 
@@ -471,12 +504,36 @@ function closeLane(lane: Lane, forced = false) {
   latestJob = null;
   pumpSeq += 1;
   if (!enough) {
-    if (draftFrom === name) {
-      useMeetHint.getState().setLiveDraft("");
-      draftFrom = null;
-    }
+    clearLaneDraft(name);
     return;
   }
+
+  const energy = clipRms(frames);
+  const admission = judgeUtteranceAdmission({
+    meanSileroProb: meanSileroProb(lane.sileroProbSum, lane.sileroProbCount),
+    durationMs: bufferedMs,
+    energyRms: energy,
+    gate,
+  });
+  if (!admission.admit) {
+    mark("utterance-dropped", name, {
+      reason: admission.reason,
+      sileroProb: admission.sileroProb,
+      durationMs: Math.round(admission.durationMs),
+      energy: Number(admission.energy.toFixed(5)),
+    });
+    void import("@/lib/instrumentation/flight-recorder").then(({ noteDroppedUtterance }) => {
+      noteDroppedUtterance({
+        reason: admission.reason,
+        sileroProb: admission.sileroProb,
+        durationMs: Math.round(admission.durationMs),
+        energy: admission.energy,
+      });
+    });
+    clearLaneDraft(name);
+    return;
+  }
+
   // The clip's identity is fixed here, at the commit, not after transcription —
   // decoding is async and two clips can be in flight at once.
   commitSeq += 1;
@@ -505,14 +562,11 @@ async function transcribeSegment(
   }
 }
 
-function attachLane(node: AudioWorkletNode, lane: Lane) {
+function createLaneFrameHandler(lane: Lane): (frame: Float32Array, playbackTime: number) => void {
   let sawFirstFrame = false;
-  node.port.onmessage = (event: MessageEvent<{ type?: string; samples?: Float32Array; time?: number }>) => {
+  return (frame, playbackTime) => {
     if (!running) return;
-    const frame = event.data?.samples;
-    if (!frame?.length) return;
-    const playbackTime = event.data.time ?? 0;
-    // First thing in the callback, before any work of ours could distort it.
+    if (!frame.length) return;
     tickFrame(lane.name, playbackTime, frame.length);
     const copy = frame;
     if (!sawFirstFrame) {
@@ -528,8 +582,6 @@ function attachLane(node: AudioWorkletNode, lane: Lane) {
     }
     sileroByLane.get(lane.name)?.push(copy, sampleRate);
     if (lane.skip()) return;
-    // Energy still trains the floor (and is the fallback). Silero, once it has
-    // scored a frame, owns the voiced decision.
     const { gate: startGate, voiced: energyVoiced, floorBefore } = observeFrame(lane, level);
     const voiced = sileroByLane.get(lane.name)?.voiced() ?? energyVoiced;
     if (probeOn()) {
@@ -548,8 +600,6 @@ function attachLane(node: AudioWorkletNode, lane: Lane) {
       voiced,
       mode: lane.mode,
     });
-    // Audio is retained first and unconditionally, so the pre-roll is already
-    // there whenever speech turns out to have started.
     pushRoll(lane, copy);
 
     if (lane.mode === "idle") {
@@ -565,6 +615,11 @@ function attachLane(node: AudioWorkletNode, lane: Lane) {
     }
 
     lane.pending.push(copy);
+    const sileroProb = sileroByLane.get(lane.name)?.latest();
+    if (sileroProb != null) {
+      lane.sileroProbSum += sileroProb;
+      lane.sileroProbCount += 1;
+    }
     if (voiced) lane.silenceAt = now;
     if (now - lane.startedAt >= MAX_UTTER_MS) {
       closeLane(lane, true);
@@ -575,6 +630,28 @@ function attachLane(node: AudioWorkletNode, lane: Lane) {
       return;
     }
     requestPreview(lane);
+  };
+}
+
+/** E2E-only: feed synthetic PCM through the live VAD/ASR path (Plan B when fake mic is flaky). */
+export function injectLanePcm(laneName: LaneName, pcm: Float32Array, frameSize = 480): void {
+  const process = laneFrameHandlers.get(laneName);
+  if (!process) throw new Error(`Lane ${laneName} is not listening`);
+  let playbackTime = 0;
+  for (let i = 0; i < pcm.length; i += frameSize) {
+    const end = Math.min(i + frameSize, pcm.length);
+    process(pcm.subarray(i, end), playbackTime);
+    playbackTime += (end - i) / sampleRate;
+  }
+}
+
+function attachLane(node: AudioWorkletNode, lane: Lane) {
+  const process = createLaneFrameHandler(lane);
+  laneFrameHandlers.set(lane.name, process);
+  node.port.onmessage = (event: MessageEvent<{ type?: string; samples?: Float32Array; time?: number }>) => {
+    const frame = event.data?.samples;
+    if (!frame?.length) return;
+    process(frame, event.data.time ?? 0);
   };
 }
 
@@ -701,6 +778,8 @@ async function startGraph(mic: MediaStream | null, computer: MediaStream | null)
     carry: [],
     carryMs: 0,
     carryAt: 0,
+    sileroProbSum: 0,
+    sileroProbCount: 0,
   });
 
   if (computer) {
@@ -791,6 +870,23 @@ export function stopHear() {
 export function stopCallShare() {
   stopHear();
 }
+
+function e2eInjectEnabled(): boolean {
+  try {
+    return (import.meta as { env?: Record<string, string> }).env?.VITE_E2E === "true";
+  } catch {
+    return false;
+  }
+}
+
+function installE2eInjectHook() {
+  if (typeof window === "undefined" || !e2eInjectEnabled()) return;
+  window.__injectUtterance = (pcm: Float32Array, lane: LaneName = "mic") => {
+    injectLanePcm(lane, pcm);
+  };
+}
+
+installE2eInjectHook();
 
 export function toggleHear() {
   const state = useMeetHint.getState();
