@@ -1,6 +1,9 @@
 /** Single user-facing product name — use everywhere customers see the app. */
 export const MEETHINT_NAME = "MeetHint";
 
+/** Short wordmark in landing chrome and CTAs (domain remains meethint.ai). */
+export const MEETHINT_MARK = "Hint";
+
 export const MEETHINT_DOMAIN = "meethint.ai";
 
 /** Page title suffix for marketing routes. */

@@ -1,7 +1,8 @@
-import { ArrowRight, Check, Loader2, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Check, Loader2, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { highlightAnswer } from "@/components/answer-say";
 import { MeetHintMark } from "@/components/meethint-mark";
+import { MEETHINT_MARK } from "@/lib/brand";
 import { demoMediaUrl } from "@/lib/demo-media";
 import { joinWaitlist } from "@/lib/waitlist";
 import "@/styles/hint-landing-a11y.css";
@@ -19,19 +20,19 @@ type Beat = {
 
 const BEATS: Beat[] = [
   {
+    asked: "Does the contract allow automatic renewal?",
+    files: ["MSA.pdf", "addendum.pdf", "pricing.pdf", "notes.md"],
+    fileCount: 47,
+    answer: "Yes. The agreement renews for successive 12-month periods unless either party provides 60 days' written notice.",
+    source: { file: "MSA.pdf", detail: "§8.2 · p.17" },
+    silence: null,
+  },
+  {
     asked: "What does the lab report actually have to include?",
     files: ["lab-requirements.pdf", "notes.md", "syllabus.pdf", "lecture-04.pdf"],
     fileCount: 38,
     answer: "Methods, results, and a one-page discussion.",
     source: { file: "lab-requirements.pdf", detail: "Page 12" },
-    silence: null,
-  },
-  {
-    asked: "Does the contract allow automatic renewal?",
-    files: ["MSA.pdf", "addendum.pdf", "pricing.pdf", "notes.md"],
-    fileCount: 47,
-    answer: "Yes. The agreement renews for successive 12-month periods unless either party provides 60 days' written notice.",
-    source: { file: "MSA.pdf", detail: "§8.2 · Page 17" },
     silence: null,
   },
   {
@@ -51,13 +52,17 @@ type MaterialChip = {
 
 /** File formats Hint can cite today — badges must match what load paths actually support. */
 const MATERIAL: MaterialChip[] = [
-  { label: "Code" },
-  { label: "Markdown" },
+  { label: "Notes" },
+  { label: "Lectures" },
+  { label: "Syllabi" },
   { label: "Folders" },
+  { label: "PDF", note: "limits" },
   { label: "DOCX" },
   { label: "XLSX" },
   { label: "CSV" },
-  { label: "PDF", note: "limits" },
+  { label: "Markdown" },
+  { label: "Code" },
+  { label: "Repositories" },
   { label: "PPTX", note: "soon" },
 ];
 
@@ -70,7 +75,7 @@ const USE_CASES = [
   {
     title: "Incident review",
     asked: "Why did authentication fail?",
-    found: "incident-882.md + runbook",
+    found: "incident-582.md + runbook",
   },
   {
     title: "Client & contract",
@@ -92,8 +97,8 @@ const USE_CASES = [
 const STEPS = [
   { id: "01", title: "Listening", body: "Hint picks up the question that is actually being asked." },
   { id: "02", title: "Searching your files", body: "It searches the notes, docs, slides, or folder you loaded." },
-  { id: "03", title: "Cite or silence", body: "When the files support the answer, Hint cites them. When they can't, it stays silent and says why." },
-  { id: "04", title: "Answer ready", body: "You get a cited line from your material — or an honest reason when nothing qualifies." },
+  { id: "03", title: "Finding the match", body: "Hint pulls the passage that answers the question." },
+  { id: "04", title: "Cited answer ready", body: "You get the answer with the file and line that support it." },
 ] as const;
 
 function useReducedMotion(): boolean {
@@ -186,10 +191,12 @@ function ProductFrame({
   const dark = tone === "dark";
   const found = phase === "answered" && Boolean(beat.source);
   const silent = phase === "answered" && Boolean(beat.silence);
+  const ready = phase === "answered" && (beat.answer || beat.silence);
   const muted = dark ? "text-white/45" : "text-[var(--hint-muted)]";
   const ink = dark ? "text-white" : "text-[var(--hint-text)]";
   const edge = dark ? "border-white/10" : "border-[var(--hint-border)]";
   const soft = dark ? "bg-white/[0.04]" : "bg-[var(--hint-bg)]";
+  const label = `text-[11px] font-medium tracking-[0.08em] uppercase ${muted}`;
 
   return (
     <div className={`hint-frame ${dark ? "hint-frame-dark" : "hint-frame-light"}`}>
@@ -200,14 +207,18 @@ function ProductFrame({
               phase === "answered" && (beat.answer || beat.silence) ? "bg-[var(--hint-ok)]" : "bg-[var(--hint-accent)]"
             } ${phase === "listening" || phase === "asking" || phase === "searching" ? "hint-pulse" : ""}`}
           />
-          <span className={`text-[13px] font-medium ${ink}`}>{statusLabel(phase, beat.fileCount)}</span>
+          <span
+            className={`text-[13px] font-medium ${ready ? "text-[var(--hint-ok)]" : ink}`}
+          >
+            {statusLabel(phase, beat.fileCount)}
+          </span>
         </div>
         <span className={`hidden text-[12px] sm:block ${muted}`}>{beat.fileCount} files</span>
       </div>
 
       <div className={`grid sm:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] ${large ? "min-h-[24rem]" : "min-h-[21rem]"}`}>
         <div className={`border-b p-4 sm:border-r sm:border-b-0 ${edge} ${large ? "sm:p-5" : ""}`}>
-          <p className={`mb-3 text-[13px] ${muted}`}>Files</p>
+          <p className={`mb-3 ${label}`}>Files</p>
           <ul className="space-y-1.5">
             {beat.files.map((file) => {
               const active = found && beat.source?.file === file;
@@ -232,7 +243,7 @@ function ProductFrame({
         <div className={`space-y-4 p-4 ${large ? "sm:p-5 sm:py-6" : ""}`}>
           {phase === "answered" && beat.answer ? null : (
             <div className="space-y-2">
-              <p className={`text-[13px] ${muted}`}>They asked</p>
+              <p className={label}>They asked</p>
               <p className={`text-[1.05rem] leading-snug ${ink} ${typing ? "hint-type" : ""}`}>
                 {question ? `“${question}”` : <span className={muted}>Waiting for a question.</span>}
               </p>
@@ -251,30 +262,21 @@ function ProductFrame({
 
           {phase === "answered" && beat.answer ? (
             <div className="hint-fade space-y-4">
-              <div className="answer-receipt">
-                <div className="answer-receipt-body">
-                  <div className="min-w-0">
-                    <p className="receipt-kicker">They asked</p>
-                    <p className="mt-2 text-[17px] font-semibold leading-snug text-[var(--hint-text)]">
-                      {question ? `“${question}”` : null}
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <p className="receipt-kicker receipt-kicker-accent">From your docs</p>
-                    <p className="answer-body">{highlightAnswer(beat.answer)}</p>
-                  </div>
-                  {beat.source ? (
-                    <div className="answer-receipt-cites">
-                      <div className="cite-chip">
-                        <Check className="size-3.5 shrink-0 text-[var(--hint-ok)]" aria-hidden="true" />
-                        <span className="cite-status">Verified</span>
-                        <span className="break-all font-mono text-[12px] text-[var(--hint-text)]">{beat.source.file}</span>
-                        <span className="font-mono text-[12px] text-[var(--hint-muted)]">{beat.source.detail}</span>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
+              <div className="space-y-2">
+                <p className={label}>They asked</p>
+                <p className={`text-[1.05rem] font-semibold leading-snug ${ink}`}>
+                  {question ? `“${question}”` : null}
+                </p>
               </div>
+              <p className={`text-[15px] leading-relaxed ${ink}`}>{highlightAnswer(beat.answer)}</p>
+              {beat.source ? (
+                <div className="cite-chip">
+                  <Check className="size-3.5 shrink-0 text-[var(--hint-ok)]" aria-hidden="true" />
+                  <span className="cite-status">Verified</span>
+                  <span className="break-all font-mono text-[12px] text-[var(--hint-text)]">{beat.source.file}</span>
+                  <span className="font-mono text-[12px] text-[var(--hint-muted)]">{beat.source.detail}</span>
+                </div>
+              ) : null}
             </div>
           ) : null}
 
@@ -315,57 +317,54 @@ function HeroInterface() {
 function DemoVideo() {
   const reduced = useReducedMotion();
   const video = useRef<HTMLVideoElement>(null);
-  const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     if (reduced) video.current?.pause();
   }, [reduced]);
 
-  function toggleSound() {
+  function playDemo() {
     const element = video.current;
     if (!element) return;
-    const next = !element.muted;
-    element.muted = next;
-    setMuted(next);
-    if (!next) {
-      element.currentTime = 0;
-      void element.play();
-    }
+    element.muted = false;
+    element.currentTime = 0;
+    void element.play();
+    setPlaying(true);
   }
 
   return (
-    <div className="hint-frame hint-frame-dark relative overflow-hidden">
-      <video
-        ref={video}
-        className="block aspect-video w-full"
-        src={demoMediaUrl("meethint-demo-cutaway.mp4")}
-        poster="/demo/meethint-demo-cutaway-poster.jpg"
-        preload="metadata"
-        autoPlay
-        muted
-        loop
-        playsInline
-        controls
-      />
-      <button
-        type="button"
-        onClick={toggleSound}
-        className="hint-chip absolute top-3 right-3 border-white/15 bg-black/50 text-white hover:border-white/30"
-        aria-pressed={!muted}
-      >
-        {muted ? (
+    <section className="hint-wrap space-y-8 py-20">
+      <div className="mx-auto max-w-2xl space-y-2 text-center">
+        <h2 className="hint-display text-3xl sm:text-4xl">Watch it keep up.</h2>
+        <p className="text-[17px] text-[var(--hint-muted)]">
+          45 seconds, one real question, one cited answer.
+        </p>
+      </div>
+      <div className="hint-frame hint-frame-dark relative mx-auto max-w-4xl overflow-hidden">
+        <video
+          ref={video}
+          className="block aspect-video w-full bg-[#0c1018]"
+          src={demoMediaUrl("meethint-demo-cutaway.mp4")}
+          poster="/demo/meethint-demo-cutaway-poster.jpg"
+          preload="metadata"
+          playsInline
+          controls={playing}
+          onPlay={() => setPlaying(true)}
+          onEnded={() => setPlaying(false)}
+        />
+        {!playing ? (
           <>
-            <VolumeX aria-hidden className="size-3.5" />
-            Sound off
+            <button type="button" className="hint-demo-play" onClick={playDemo}>
+              <Play aria-hidden className="size-4 fill-[var(--hint-accent)] text-[var(--hint-accent)]" />
+              Play demo
+            </button>
+            <span className="hint-demo-duration" aria-hidden>
+              0:45 · sound on
+            </span>
           </>
-        ) : (
-          <>
-            <Volume2 aria-hidden className="size-3.5" />
-            Sound on
-          </>
-        )}
-      </button>
-    </div>
+        ) : null}
+      </div>
+    </section>
   );
 }
 
@@ -405,8 +404,8 @@ function WaitlistForm({ id }: { id: string }) {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-2" noValidate>
-      <div className="flex flex-col gap-2 sm:flex-row">
+    <form onSubmit={submit} className="space-y-3 text-center" noValidate>
+      <div className="hint-waitlist-row">
         <label className="sr-only" htmlFor={id}>
           Email address
         </label>
@@ -416,7 +415,7 @@ function WaitlistForm({ id }: { id: string }) {
           inputMode="email"
           autoComplete="email"
           data-testid={`${id}-input`}
-          className="min-h-12 min-w-0 flex-1 rounded-[10px] border border-[var(--hint-border)] bg-white px-3.5 text-[var(--hint-text)] outline-none placeholder:text-[var(--hint-muted)] focus:border-[var(--hint-accent)]"
+          className="hint-waitlist-input min-w-0 flex-1 rounded-[10px] border border-[var(--hint-border)] bg-white px-3.5 text-[var(--hint-text)] outline-none placeholder:text-[var(--hint-muted)] focus:border-[var(--hint-accent)]"
           placeholder="Enter your email"
           value={email}
           onChange={(event) => {
@@ -427,10 +426,10 @@ function WaitlistForm({ id }: { id: string }) {
         <button
           type="submit"
           data-testid={`${id}-submit`}
-          className="hint-btn hint-btn-primary"
+          className="hint-btn hint-btn-primary hint-waitlist-submit shrink-0"
           disabled={!valid || state === "sending"}
         >
-          {state === "sending" ? <Loader2 aria-hidden className="size-4 animate-spin" /> : null}
+          {state === "sending" ? <Loader2 aria-hidden className="size-4 shrink-0 animate-spin" /> : null}
           Join the private beta
         </button>
       </div>
@@ -486,7 +485,7 @@ function HowHintWorks() {
   );
 }
 
-const CONTRACT_BEAT: Beat = BEATS[1];
+const CONTRACT_BEAT: Beat = BEATS[0];
 
 export function MeetHintLanding() {
   const demoRef = useRef<HTMLElement>(null);
@@ -501,7 +500,7 @@ export function MeetHintLanding() {
         <div className="hint-wrap flex items-center justify-between gap-6 py-3">
           <a href="/" className="flex items-center gap-2.5">
             <MeetHintMark className="size-8" />
-            <span className="text-[1.15rem] font-semibold tracking-tight leading-none">Hint</span>
+            <span className="text-[1.15rem] font-semibold tracking-tight leading-none">{MEETHINT_MARK}</span>
           </a>
           <div className="flex items-center gap-8">
             <nav className="hidden items-center gap-7 text-[15px] text-[var(--hint-muted)] md:flex">
@@ -518,8 +517,8 @@ export function MeetHintLanding() {
                 Docs
               </a>
             </nav>
-            <a href="/home" className="hint-btn hint-btn-primary">
-              Try Hint
+            <a href="/home" className="hint-btn hint-btn-primary !text-white">
+              Try {MEETHINT_MARK}
             </a>
           </div>
         </div>
@@ -534,15 +533,16 @@ export function MeetHintLanding() {
               <span className="block">while they're still asking.</span>
             </h1>
             <p className="hint-lede max-w-md">
-              Ask anything. Hint retrieves from your documents and answers only when it can cite
-              them — otherwise it stays silent and says why.
+              Hint listens to the conversation, searches the material you trust, and surfaces a cited
+              answer in seconds.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row">
-              <a href="/home" className="hint-btn hint-btn-primary">
-                Try Hint
-                <ArrowRight aria-hidden className="ml-1.5 size-4" />
+              <a href="/home" className="hint-btn hint-btn-primary !text-white [&_svg]:text-white">
+                Try {MEETHINT_MARK}
+                <ArrowRight aria-hidden className="size-4 shrink-0" />
               </a>
               <button type="button" className="hint-btn hint-btn-secondary" onClick={watchDemo}>
+                <Play aria-hidden className="size-4 shrink-0 fill-[var(--hint-text)] text-[var(--hint-text)]" />
                 Watch 45 sec demo
               </button>
             </div>
@@ -558,7 +558,7 @@ export function MeetHintLanding() {
           <div className="max-w-2xl space-y-3">
             <h2 className="hint-display text-3xl sm:text-4xl">How Hint works in real time</h2>
             <p className="text-[17px] text-[var(--hint-muted)]">
-              Someone asks. Hint hears it, searches your files, and cites what it can — or stays silent.
+              Someone asks. Hint hears it, searches your files, and shows the passage — or stays quiet.
             </p>
           </div>
           <HowHintWorks />
@@ -576,31 +576,27 @@ export function MeetHintLanding() {
                 <span className="block">Backed by your source.</span>
               </h2>
               <p className="text-[17px] leading-relaxed text-white/60">
-                Hint retrieves first. When the passage is there, you get the line and the citation.
-                When it isn't, the card stays empty.
+                Hint does not give you a guess. It finds the relevant passage, shows the source, and
+                keeps you grounded in your own material.
               </p>
             </div>
             <div className="mx-auto max-w-5xl">
               <ProductFrame tone="dark" phase="answered" question={CONTRACT_BEAT.asked} beat={CONTRACT_BEAT} large />
             </div>
             <p className="text-center text-[14px] text-white/45">
-              Illustrated with PDFs and contracts — the same cite-or-silence path once you load yours.
+              Same conversation. Same question. Real citations, right when you need them.
             </p>
-            <div className="mx-auto max-w-4xl space-y-3">
-              <DemoVideo />
-              <p className="text-[13px] text-white/35">
-                It starts muted — the sound is worth turning on.
-              </p>
-            </div>
           </div>
         </section>
+
+        <DemoVideo />
 
         <section className="hint-wrap space-y-8 py-20">
           <div className="max-w-2xl space-y-4">
             <h2 className="hint-display text-3xl sm:text-4xl">Bring the material.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Load a folder or files — code, markdown, DOCX, XLSX, CSV. Add PDFs separately (page and
-              size limits apply). Hint cites what it can read — otherwise it stays silent.
+              Load your notes, a lecture pack, the syllabus, a contract, or a folder of docs. Hint
+              keeps it local and cites exactly.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -615,8 +611,8 @@ export function MeetHintLanding() {
             ))}
           </div>
           <p className="max-w-2xl text-[14px] leading-relaxed text-[var(--hint-muted)]">
-            Git-history answers (who touched a file, why in a PR) ship on the built-in demo pack only.
-            Folders you load in the browser are files — no commit metadata yet.
+            Add PDFs separately (page and size limits apply). Git-history answers ship on the
+            built-in demo pack only.
           </p>
         </section>
 
@@ -678,19 +674,17 @@ export function MeetHintLanding() {
           </div>
         </section>
 
-        <section id="security" className="hint-wrap grid max-w-4xl gap-12 py-16 md:grid-cols-2">
-          <div className="space-y-3">
-            <h2 className="hint-display text-3xl">Local first. Cite or silence.</h2>
+        <section id="security" className="hint-wrap py-16">
+          <div className="mx-auto max-w-2xl space-y-4 text-center">
+            <h2 className="hint-display text-3xl sm:text-4xl">Local. Cited. Quiet when it should be.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Hint reads the folder on your machine. It does not add cloud connectors. When the files
-              support the answer, it cites them. When they don't, the card stays empty — no invented
-              answers.
+              Hint reads the folder on your machine. It does not add cloud connectors, and it does not
+              invent a source. If the files do not support the answer, the card stays empty.
             </p>
-          </div>
-          <div id="docs" className="space-y-3">
-            <h2 className="hint-display text-3xl">Docs</h2>
-            <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Open Hint, load a folder or a file, and ask. The citation is the documentation.
+            <p>
+              <a id="docs" href="/home" className="text-[15px] font-medium text-[var(--hint-accent)] hover:underline">
+                Read the docs.
+              </a>
             </p>
           </div>
         </section>
@@ -704,12 +698,6 @@ export function MeetHintLanding() {
                 before the room moves on.
               </p>
             </div>
-            <div className="flex justify-center">
-              <a href="/home" className="hint-btn hint-btn-primary">
-                Try Hint
-                <ArrowRight aria-hidden className="ml-1.5 size-4" />
-              </a>
-            </div>
             <div className="mx-auto max-w-lg">
               <WaitlistForm id="hero-email" />
             </div>
@@ -721,7 +709,7 @@ export function MeetHintLanding() {
       <footer className="border-t border-[var(--hint-border)]">
         <div className="hint-wrap flex flex-col gap-6 py-8 text-[13px] text-[var(--hint-muted)] sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-0.5">
-            <p className="text-lg font-semibold text-[var(--hint-text)]">Hint</p>
+            <p className="text-lg font-semibold text-[var(--hint-text)]">{MEETHINT_MARK}</p>
             <p>meethint.ai</p>
           </div>
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
