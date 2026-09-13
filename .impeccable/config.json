@@ -1,0 +1,25 @@
+{
+  "hook": {
+    "enabled": true
+  },
+  "detector": {
+    "ignoreRules": ["ai-color-palette"],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "IBM Plex Sans",
+        "reason": "MeetHint brand: IBM Plex Sans is the committed UI face (DESIGN.md, src/styles.css)."
+      },
+      {
+        "rule": "overused-font",
+        "value": "IBM Plex Mono",
+        "reason": "MeetHint brand: IBM Plex Mono is the committed code face (DESIGN.md, src/styles.css)."
+      }
+    ]
+  },
+  "_ignoreNotes": {
+    "ai-color-palette": "Intentional violet accent (#7c6cf2) on dark charcoal cockpit — brand identity, not AI slop. See DESIGN.md Colors.",
+    "overused-font/IBM Plex Sans": "Product typeface loaded in __root.tsx; do not swap for Inter/system defaults.",
+    "overused-font/IBM Plex Mono": "Monospace companion for paths and code citations."
+  }
+}

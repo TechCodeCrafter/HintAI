@@ -19,12 +19,14 @@
     "db:migrate": "node scripts/migrate.mjs",
     "build:dev": "node scripts/with-app-env.mjs vite build --mode development",
     "preview": "node scripts/with-app-env.mjs vite preview",
+    "preview:e2e": "node scripts/with-app-env.mjs vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "preview:restart": "node scripts/preview.mjs restart",
     "preview:stop": "node scripts/preview.mjs stop",
     "typecheck": "tsc --noEmit",
     "check:auth": "node scripts/check-auth-invariant.mjs",
     "test": "node scripts/run-tests.mjs",
     "test:e2e": "playwright test",
+    "design:detect": "node scripts/design-detect.mjs",
     "test:e2e:ui": "playwright test --ui",
     "qa": "node scripts/ground-qa.mjs",
     "score": "node scripts/make-score.mjs",
@@ -99,6 +101,7 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.20.0",
     "@playwright/test": "^1.62.1",
     "@remotion/cli": "^4.0.518",
