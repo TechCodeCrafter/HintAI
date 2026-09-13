@@ -48,6 +48,8 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.match(cockpit, /audit-meeting/);
   assert.match(cockpit, /AnswerHistory/);
   assert.match(cockpit, /generated-note/);
+  assert.match(cockpit, /searches remaining/);
+  assert.doesNotMatch(cockpit, /questions remaining/);
   assert.match(store, /answerHistory/);
   assert.match(store, /restoreAnswer/);
   assert.doesNotMatch(store, /\bledger:/);
@@ -56,7 +58,16 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.doesNotMatch(store, /ModeSelector/);
   const modal = readFileSync(join(root, "src/components/UpgradeModal.tsx"), "utf8");
   assert.match(modal, /Claim Audit requires Pro/);
-  assert.match(modal, /20 questions\/day/);
+  assert.match(modal, /20 searches\/day/);
+  assert.match(modal, /Unlimited cited answers/);
+  assert.match(modal, /Cite-or-silence Search/);
+  assert.doesNotMatch(modal, /upgrade-synthesize/);
+  assert.doesNotMatch(modal, /general knowledge/i);
+  const landing = readFileSync(join(root, "src/components/meethint-landing.tsx"), "utf8");
+  assert.doesNotMatch(landing, /general knowledge/i);
+  assert.doesNotMatch(landing, /Nothing is generated/i);
+  assert.doesNotMatch(landing, /generate when/i);
+  assert.match(landing, /Cite it, or stay silent/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 });
 

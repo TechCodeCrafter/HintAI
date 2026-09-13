@@ -69,8 +69,8 @@ export function ApiKeySettings({ onClose }: { onClose: () => void }) {
               API keys
             </h2>
             <p className="mt-2 text-xs leading-relaxed text-muted">
-              Keys stay in this browser. They are sent only with a generate request so the selected
-              model can answer. Do not save keys on a shared computer.
+              Keys stay in this browser. They are sent only with a Search request so the selected
+              model can cite from your chunks. Do not save keys on a shared computer.
             </p>
           </div>
           <button

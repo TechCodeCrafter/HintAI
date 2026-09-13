@@ -89,7 +89,7 @@ const USE_CASES = [
 const STEPS = [
   { id: "01", title: "Listening", body: "Hint picks up the question that is actually being asked." },
   { id: "02", title: "Searching your files", body: "It searches the notes, docs, slides, or folder you loaded." },
-  { id: "03", title: "Choosing the path", body: "Strong matches are cited. When the files can't answer, Hint stays silent and says why." },
+  { id: "03", title: "Cite or silence", body: "When the files support the answer, Hint cites them. When they can't, it stays silent and says why." },
   { id: "04", title: "Answer ready", body: "You get a cited line from your material — or an honest reason when nothing qualifies." },
 ] as const;
 
@@ -531,8 +531,8 @@ export function MeetHintLanding() {
               <span className="block">while they're still asking.</span>
             </h1>
             <p className="hint-lede max-w-md">
-              Ask anything. Hint retrieves from your documents, then answers — citing sources when
-              it can, generating when it needs to.
+              Ask anything. Hint retrieves from your documents and answers only when it can cite
+              them — otherwise it stays silent and says why.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row">
               <a href="/home" className="hint-btn hint-btn-primary">
@@ -555,7 +555,7 @@ export function MeetHintLanding() {
           <div className="max-w-2xl space-y-3">
             <h2 className="hint-display text-3xl sm:text-4xl">How Hint works in real time</h2>
             <p className="text-[17px] text-[var(--hint-muted)]">
-              Someone asks. Hint hears it, searches your files, and answers — citing when it can.
+              Someone asks. Hint hears it, searches your files, and cites what it can — or stays silent.
             </p>
           </div>
           <HowHintWorks />
@@ -573,8 +573,8 @@ export function MeetHintLanding() {
                 <span className="block">Backed by your source.</span>
               </h2>
               <p className="text-[17px] leading-relaxed text-white/60">
-                Hint retrieves first. It cites the passage when it's there, and answers from
-                knowledge when it isn't.
+                Hint retrieves first. When the passage is there, you get the line and the citation.
+                When it isn't, the card stays empty.
               </p>
             </div>
             <div className="mx-auto max-w-5xl">
@@ -597,7 +597,7 @@ export function MeetHintLanding() {
             <h2 className="hint-display text-3xl sm:text-4xl">Bring the material.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
               Load your notes, a lecture pack, the syllabus, a contract, or a folder of docs. Hint
-              keeps it local, cites when the files support it, and generates when they don't.
+              keeps it local and cites when the files support the answer — otherwise it stays silent.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -670,10 +670,11 @@ export function MeetHintLanding() {
 
         <section id="security" className="hint-wrap grid max-w-4xl gap-12 py-16 md:grid-cols-2">
           <div className="space-y-3">
-            <h2 className="hint-display text-3xl">Local first. Cited when it can.</h2>
+            <h2 className="hint-display text-3xl">Local first. Cite or silence.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
               Hint reads the folder on your machine. It does not add cloud connectors. When the files
-              support the answer, it cites them. When they don't, it answers from knowledge and says so.
+              support the answer, it cites them. When they don't, the card stays empty — no invented
+              answers.
             </p>
           </div>
           <div id="docs" className="space-y-3">

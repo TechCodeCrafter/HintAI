@@ -31,14 +31,14 @@ const evidenceCard: Card = {
 test("the card badge names how the answer was produced", () => {
   assert.equal(modeLabel(), "From your files");
   assert.equal(modeLabel("docs"), "From your files");
-  assert.equal(modeLabel("synthesized"), "Synthesized");
-  assert.equal(modeLabel("synthesized", true), "Synthesized");
-  assert.equal(modeLabel("synthesized", false), "Generated · not from your files");
-  assert.equal(modeLabel("generated"), "Generated · not from your files");
+  assert.equal(modeLabel("synthesized"), "From your files");
+  assert.equal(modeLabel("synthesized", true), "From your files");
+  assert.equal(modeLabel("synthesized", false), "Not from your files");
+  assert.equal(modeLabel("generated"), "Not from your files");
   assert.equal(receiptKicker("docs"), "From your files");
-  assert.equal(receiptKicker("synthesized"), "Synthesized");
-  assert.equal(receiptKicker("synthesized", false), "Generated · not from your files");
-  assert.equal(receiptKicker("generated"), "Generated · not from your files");
+  assert.equal(receiptKicker("synthesized"), "From your files");
+  assert.equal(receiptKicker("synthesized", false), "Not from your files");
+  assert.equal(receiptKicker("generated"), "Not from your files");
   assert.equal(isGeneratedAnswer("generated"), true);
   assert.equal(isGeneratedAnswer("synthesized", false), true);
   assert.equal(isGeneratedAnswer("synthesized", true), false);
