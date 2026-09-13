@@ -1049,6 +1049,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
           <ul
             ref={listRef}
             className="file-list min-h-0 min-w-0 flex-1 space-y-1 overflow-auto"
+            tabIndex={0}
           >
             {visible.length === 0 && visiblePdfs.length === 0 ? (
               <li className="px-2 py-3 text-xs text-muted">No files match that filter.</li>
@@ -1178,7 +1179,11 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
           ) : file ? (
             <>
               <div className="ground-code-name shrink-0 truncate text-xs">{file.path}</div>
-              <pre ref={preRef} className="min-h-0 min-w-0 flex-1 overflow-auto px-3 py-2 text-xs leading-6 text-fg">
+              <pre
+                ref={preRef}
+                className="min-h-0 min-w-0 flex-1 overflow-auto px-3 py-2 text-xs leading-6 text-fg"
+                tabIndex={0}
+              >
                 {painted.map((node, i) => {
                   const n = i + 1;
                   const active = citeLine != null && n >= citeLine && n <= (citeEnd ?? citeLine);
@@ -1392,7 +1397,7 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
           </div>
         ) : null}
         <div className="flex min-h-0 min-w-0 flex-col">
-          <div className="max-h-[min(16rem,36vh)] min-h-0 overflow-auto">
+          <div className="max-h-[min(16rem,36vh)] min-h-0 overflow-auto" tabIndex={0}>
             {turns.length > 0 ? (
               turns.map((turn) => (
                 <TurnBubble

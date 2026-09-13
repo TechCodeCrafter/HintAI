@@ -1,0 +1,13 @@
+/* Landing a11y: body-muted text must meet AA on #f4f5f7 canvas. */
+.hint-landing {
+  --hint-muted: #3d4652;
+}
+
+/* Landing primary buttons: nav link inherit rule must not override white label on accent. */
+.hint-landing a.hint-btn-primary {
+  color: #ffffff;
+}
+
+.hint-landing a.hint-btn-primary:hover {
+  color: #ffffff;
+}

@@ -72,6 +72,10 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.match(landing, /demo pack only/);
   assert.match(landing, /Add PDFs separately/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
+
+  const brand = readFileSync(join(root, "src/lib/brand.ts"), "utf8");
+  assert.match(brand, /MEETHINT_CONTRACT/);
+  assert.match(brand, /No general-knowledge fallback/);
 });
 
 test("a truncated pack tells the user to load a service folder", () => {

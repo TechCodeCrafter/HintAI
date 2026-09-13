@@ -4,6 +4,7 @@ import { highlightAnswer } from "@/components/answer-say";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { demoMediaUrl } from "@/lib/demo-media";
 import { joinWaitlist } from "@/lib/waitlist";
+import "@/styles/hint-landing-a11y.css";
 
 type Phase = "listening" | "asking" | "detected" | "searching" | "answered";
 
