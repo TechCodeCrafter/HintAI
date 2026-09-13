@@ -12,7 +12,6 @@ import {
   citationIndexes,
   extractBestSentence,
   generateAnswer,
-  generateGeneralAnswer,
   hitsForPrompt,
   synthesizeAnswer,
   stripCitationMarkers,
@@ -27,10 +26,12 @@ function ask(text: string) {
   return async () => ({ text });
 }
 
-test("extract stays grounded; weak and freely may use general knowledge", () => {
+test("extract stays grounded; weak synthesis may fall back in prompt only", () => {
   assert.doesNotMatch(source, /buildAnswerPrompt/);
   assert.doesNotMatch(source, /export async function freelyAnswer/);
   assert.doesNotMatch(source, /export async function extractAnswer/);
+  assert.doesNotMatch(source, /generateGeneralAnswer/);
+  assert.doesNotMatch(source, /buildGeneralPrompt/);
   const prompt = buildSynthesisPrompt("Why does that retry three times?", retryHits);
   assert.match(
     prompt,
@@ -196,27 +197,5 @@ test("fetch errors and empty replies are errors, not insufficient", async () => 
     pack: NORTHSTAR,
   });
   assert.deepEqual(failed, { ok: false, reason: "error", message: "fetch failed" });
-
-  const general = await generateGeneralAnswer("What is the weather in Tokyo?", 0, {
-    ask: async () => ({ text: null, reason: "timeout" }),
-  });
-  assert.deepEqual(general, { ok: false, reason: "error", message: "timeout" });
-});
-
-test("generateGeneralAnswer returns a spoken line with no citations and skips verifyClaim", async () => {
-  const generated = await generateGeneralAnswer("What is the weather in Tokyo?", 0, {
-    ask: ask("Tokyo weather is set by Pacific high-pressure systems this week."),
-  });
-  assert.ok(generated.ok);
-  assert.equal(generated.answer.usedEvidence, false);
-  assert.deepEqual(generated.answer.citations, []);
-  assert.equal(generated.answer.answerMode, "generated");
-  assert.match(generated.answer.say, /Tokyo/);
-  const start = source.indexOf("export async function generateGeneralAnswer");
-  const next = source.indexOf("\nexport async function", start + 10);
-  const body = source.slice(start, next === -1 ? undefined : next);
-  assert.doesNotMatch(body, /verifyClaim/);
-  assert.doesNotMatch(body, /evidenceForMarkers/);
-  assert.match(source, /Answer in 1-2 short spoken sentences/);
 });
 

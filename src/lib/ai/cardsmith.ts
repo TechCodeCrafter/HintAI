@@ -146,7 +146,7 @@ export const providerKeyStatus = createServerFn({ method: "GET" }).handler(async
   xai: Boolean(process.env.XAI_API_KEY),
 }));
 
-type SpeakPolicy = "extract" | "synthesize" | "freely";
+type SpeakPolicy = "extract" | "synthesize";
 
 type SpeakInput = {
   query?: string;
@@ -181,22 +181,19 @@ function speakInput(input: SpeakInput): {
     prompt: typeof inner.prompt === "string" ? inner.prompt : "",
     modelId: typeof inner.modelId === "string" ? inner.modelId : undefined,
     maxTokens: typeof inner.maxTokens === "number" ? inner.maxTokens : undefined,
-    policy: policy === "synthesize" || policy === "freely" ? policy : "extract",
+    policy: policy === "synthesize" ? policy : "extract",
     keys: inner.keys,
   };
 }
 
 function systemFor(policy: SpeakPolicy): string {
-  if (policy === "freely") {
-    return "Follow the user instructions exactly. Answer from general knowledge. Reply with only the spoken answer.";
-  }
   if (policy === "synthesize") {
     return "Follow the user instructions exactly. Use the documents when they help; otherwise answer from general knowledge. Reply with only the spoken answer.";
   }
   return "Follow the user instructions exactly. Use only the document chunks in the prompt. Never use general knowledge. Reply with only the spoken answer or INSUFFICIENT.";
 }
 
-/** Raw completion for Extract, Synthesize, and generated answers. */
+/** Raw completion for grounded extract and weak synthesize prompts. */
 export const completeSynthesis = createServerFn({ method: "POST" })
   .validator((input: SpeakInput) => speakInput(input))
   .handler(async ({ data }): Promise<{ text: string | null; reason?: string; modelName?: string }> => {
@@ -214,56 +211,3 @@ export const completeSynthesis = createServerFn({ method: "POST" })
     return text ? { text: text.slice(0, 1800), modelName: model.name } : { text: null, reason: "empty", modelName: model.name };
   });
 
-type GeneralInput = {
-  query?: string;
-  prompt?: string;
-  modelId?: string;
-  maxTokens?: number;
-  keys?: ProviderKeys;
-  data?: {
-    query?: string;
-    prompt?: string;
-    modelId?: string;
-    maxTokens?: number;
-    keys?: ProviderKeys;
-  };
-};
-
-function generalInput(input: GeneralInput): {
-  query: string;
-  prompt: string;
-  modelId?: string;
-  maxTokens?: number;
-  keys?: ProviderKeys;
-} {
-  llmDebug("[validator] keys:", Object.keys(input ?? {}), input?.data ? Object.keys(input.data) : "no data");
-  const inner = unwrapFnInput(input);
-  return {
-    query: typeof inner.query === "string" ? inner.query : "",
-    prompt: typeof inner.prompt === "string" ? inner.prompt : "",
-    modelId: typeof inner.modelId === "string" ? inner.modelId : undefined,
-    maxTokens: typeof inner.maxTokens === "number" ? inner.maxTokens : undefined,
-    keys: inner.keys,
-  };
-}
-
-const GENERAL_SYSTEM =
-  "Answer concisely from general knowledge. 1-2 short spoken sentences. Plain language, no lists, no preamble.";
-
-/** Uncited spoken answer. Does not run the grounded evidence gate. */
-export const completeGeneral = createServerFn({ method: "POST" })
-  .validator((input: GeneralInput) => generalInput(input))
-  .handler(async ({ data }): Promise<{ text: string | null; reason?: string; modelName?: string }> => {
-    const model = getModelById(data.modelId) ?? getDefaultModel();
-    const { raw, reason } = await completeChat(
-      GENERAL_SYSTEM,
-      data.prompt || data.query,
-      model,
-      data.keys,
-      12000,
-      data.maxTokens,
-    );
-    if (raw == null) return { text: null, reason, modelName: model.name };
-    const text = raw.replace(/\s+/g, " ").trim();
-    return text ? { text: text.slice(0, 1800), modelName: model.name } : { text: null, reason: "empty", modelName: model.name };
-  });

@@ -5,7 +5,7 @@ import type { AnswerMode } from "./answer-mode.ts";
 import { provenanceLabel } from "./cite.ts";
 import { textEvidence, verifyClaim, type Evidence } from "./evidence.ts";
 
-export type AnswerPolicy = "extract" | "synthesize" | "freely";
+export type AnswerPolicy = "extract" | "synthesize";
 
 export type GeneratedAnswer = {
   say: string;
@@ -231,30 +231,13 @@ async function defaultAsk(prompt: string, modelId: string, maxTokens?: number, p
   return completeSynthesis({ data: { prompt, modelId, maxTokens, keys: readClientKeys(), policy } });
 }
 
-async function defaultGeneralAsk(prompt: string, modelId: string, maxTokens?: number) {
-  llmDebug("[ask] prompt length:", prompt.length, "head:", prompt.slice(0, 60));
-  const { completeGeneral } = await import("@/lib/ai/cardsmith");
-  const { readClientKeys } = await import("@/lib/ai/client-keys");
-  return completeGeneral({ data: { prompt, modelId, maxTokens, keys: readClientKeys() } });
-}
-
 export type GenerateOpts = {
   ask?: SynthesisAsk;
-  generalAsk?: SynthesisAsk;
   modelId?: string;
   pack?: RepoPack;
   maxTokens?: number;
   threadHistory?: string[];
 };
-
-/** Spoken general-knowledge prompt. No documents, no INSUFFICIENT, no citations. */
-export function buildGeneralPrompt(query: string): string {
-  return `Answer in 1-2 short spoken sentences, plain language, no lists, no preamble. This is spoken aloud.
-
-QUESTION: "${query}"
-
-ANSWER:`;
-}
 
 type CompletionResult =
   | { ok: true; text: string; modelName?: string }
@@ -371,62 +354,6 @@ export async function synthesizeAnswer(
       latencyMs: Math.round(performance.now() - t0),
       modelName: remote.modelName,
       answerMode: "synthesized",
-    },
-  };
-}
-
-/**
- * General knowledge. No documents, no citation markers, no verifyClaim.
- * Same 12s timeout as generateAnswer. Errors carry the real message.
- */
-export async function generateGeneralAnswer(
-  query: string,
-  t0: number,
-  opts?: GenerateOpts,
-): Promise<AnswerResult> {
-  const chosen = getModelById(opts?.modelId) ?? getDefaultModel();
-  const remote = await runCompletion(async () => {
-    if (typeof window !== "undefined" && window.__mockCraftCard) {
-      const mocked = await window.__mockCraftCard({
-        query,
-        instruction: buildGeneralPrompt(query),
-        hits: [],
-        task: "answer",
-        modelId: chosen.id,
-      });
-      return { text: mocked?.say ?? null, modelName: chosen.name };
-    }
-    if (opts?.generalAsk) {
-      return opts.generalAsk({
-        query,
-        prompt: buildGeneralPrompt(query),
-        modelId: chosen.id,
-        maxTokens: opts.maxTokens,
-        policy: "freely",
-      });
-    }
-    if (opts?.ask) {
-      return opts.ask({
-        query,
-        prompt: buildGeneralPrompt(query),
-        modelId: chosen.id,
-        maxTokens: opts.maxTokens,
-        policy: "freely",
-      });
-    }
-    return defaultGeneralAsk(buildGeneralPrompt(query), chosen.id, opts?.maxTokens);
-  }, chosen.name);
-  if (!remote.ok) return remote;
-  if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
-  return {
-    ok: true,
-    answer: {
-      say: remote.text,
-      usedEvidence: false,
-      citations: [],
-      latencyMs: Math.round(performance.now() - t0),
-      modelName: remote.modelName ?? chosen.name,
-      answerMode: "generated",
     },
   };
 }
