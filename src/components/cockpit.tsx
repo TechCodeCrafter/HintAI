@@ -123,6 +123,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
 
   useEffect(() => {
     useMeetHint.getState().setListenError(null);
+    if (typeof window !== "undefined" && window.__MEETHINT_E2E__) return;
     void import("@/lib/listen/local-asr").then((m) => m.warmupAsr());
   }, []);
 

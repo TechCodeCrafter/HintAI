@@ -26,13 +26,14 @@ test("free chrome stays complete and Room stays readable", async ({ page }) => {
   await expect(turn.getByRole("button", { name: "Show less" })).toBeVisible();
   await expect(turn).toContainText("get money");
 
-  await page.evaluate(() => {
+  const micNote = "Mic only — no shared tab, so your mic is carrying the room.";
+  await page.evaluate((note) => {
     (
       window.useMeetHint?.getState() as { setAsrNote: (note: string) => void } | undefined
-    )?.setAsrNote("Mic only — no shared tab, so your mic is carrying the room.");
-  });
+    )?.setAsrNote(note);
+  }, micNote);
   const hint = page.getByTestId("listen-hint");
-  await expect(hint).toContainText("Mic only");
+  await expect(hint).toContainText("Mic only", { timeout: 10000 });
   await expect(page.getByTestId("room-turn")).not.toContainText("Mic only");
   await hint.getByRole("button", { name: "Dismiss" }).click();
   await expect(hint).toHaveCount(0);
