@@ -51,6 +51,7 @@ const GROUPS = [
       "src/lib/search/__tests__/auto-route.test.ts",
       "src/lib/search/__tests__/answer-history.test.ts",
       "src/lib/search/__tests__/cite-or-silence.test.ts",
+      "src/lib/search/__tests__/retrieval-contract.test.ts",
       "src/lib/search/__tests__/generate-answer.test.ts",
       "src/lib/billing/__tests__/extract-quota.test.ts",
       "src/lib/billing/__tests__/subscription.test.ts",

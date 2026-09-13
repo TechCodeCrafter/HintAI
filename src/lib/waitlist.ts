@@ -32,7 +32,8 @@ export const joinWaitlist = createServerFn({ method: "POST" })
     // Local preview has no DATABASE_URL either; accept the address so the demo
     // form still completes instead of looking broken.
     if (!process.env.DATABASE_URL?.trim()) {
-      if (process.env.NODE_ENV === "production") {
+      const e2ePreview = process.env.MEETHINT_E2E === "1";
+      if (process.env.NODE_ENV === "production" && !e2ePreview) {
         console.error("[waitlist] DATABASE_URL is not set — refusing to confirm a signup");
         return { ok: false, reason: "We could not save that just now." };
       }

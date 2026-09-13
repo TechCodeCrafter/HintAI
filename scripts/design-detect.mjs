@@ -28,14 +28,20 @@ const SURFACES = [
 
 const impeccableBin = join(root, ".cursor/skills/impeccable/scripts/impeccable");
 const impeccableCmd = join(root, ".cursor/skills/impeccable/scripts/impeccable.cmd");
-const launcher = process.platform === "win32" ? impeccableCmd : impeccableBin;
+const localLauncher = process.platform === "win32" ? impeccableCmd : impeccableBin;
 const lastRunPath = join(root, ".impeccable/last-run.json");
 
-if (!existsSync(launcher)) {
-  console.error(
-    "Impeccable is not installed. Run: npx impeccable install --providers=cursor --scope=project -y",
-  );
-  process.exit(1);
+function runImpeccableDetect(url) {
+  if (existsSync(localLauncher)) {
+    return spawnSync(localLauncher, ["detect", "--json", url], {
+      cwd: root,
+      encoding: "utf8",
+    });
+  }
+  return spawnSync("npx", ["--yes", "impeccable", "detect", "--json", url], {
+    cwd: root,
+    encoding: "utf8",
+  });
 }
 
 function sleepMs(ms) {
@@ -114,10 +120,7 @@ let exitCode = 0;
 for (const surface of SURFACES) {
   const url = `${baseURL}${surface.path}`;
   console.log(`\n${"=".repeat(72)}\nDesign detect: ${surface.name} (${url})\n${"=".repeat(72)}`);
-  const run = spawnSync(launcher, ["detect", "--json", url], {
-    cwd: root,
-    encoding: "utf8",
-  });
+  const run = runImpeccableDetect(url);
   if (run.stderr) process.stderr.write(run.stderr);
 
   const payload = parseDetectJson(run.stdout);
