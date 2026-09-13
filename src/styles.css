@@ -1908,7 +1908,8 @@ html[data-theme="light"] .ground-chip {
   font-size: 0.8125rem;
 }
 
-.hint-chip-soon {
+.hint-chip-soon,
+.hint-chip-limits {
   color: var(--hint-muted);
   border-style: dashed;
 }

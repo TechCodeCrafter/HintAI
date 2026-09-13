@@ -372,17 +372,20 @@ on: *"The material says what this does, not who owns it."*
 
 `RepoPack` is `{ id, name, description, files[], commits[] }`.
 
-Files arrive through a folder picker (`webkitdirectory`) and are read in the
-browser with the File API. **Nothing is uploaded.** User folders are persisted in
-IndexedDB (Dexie) as a Context plus source rows. File chunks are cached per
-source behind a ledger of content hash + chunker version + index version.
-Unchanged sources reuse stored chunks; changed or new sources call the same
-`buildChunks()` on that file alone. Vocabulary is always rebuilt from the
-assembled active set. The search engine still never sees Dexie.
+Files arrive through a folder picker (`webkitdirectory`) or multi-file upload and
+are read in the browser with the File API. **Nothing is uploaded.** PDFs use a
+separate Add PDFs flow (`addPdfFiles`) with page-indexed document chunks — they
+are skipped by the folder scanner. User material is persisted in IndexedDB
+(Dexie) as a Context plus source rows. File chunks are cached per source behind
+a ledger of content hash + chunker version + index version. Unchanged sources
+reuse stored chunks; changed or new sources call the same `buildChunks()` on
+that file alone. Vocabulary is always rebuilt from the assembled active set.
+The search engine still never sees Dexie.
 
-Loading is filtered hard: 35 source and document extensions, at most 160 files,
-80 KB per file, 2 MB total, with build output, lockfiles, vendored directories and
-binaries dropped. `prunePack` then scores paths and warns when fewer than three
+Folder loading accepts source, markdown, text, DOCX, XLSX, and CSV (office
+files parsed to plain text via `office-parsers.ts`). PPTX is not supported.
+Caps and skips are enforced in `folder.ts` (build output, lockfiles, vendored
+paths, binaries). `prunePack` scores paths and warns when fewer than three
 code files survive.
 
 The built-in demo pack is `northstar-payments` in `repo/northstar.ts` — nine files
@@ -544,9 +547,13 @@ Stated plainly, because the product's whole claim is about not overstating.
    reference resolution (2), lexical recall (1) and the replay guard (1). None of
    them require embeddings to fix.
 
-7. **PDF, DOCX, PPTX and Sheets are marked Coming soon on the landing page.**
-   The folder loader still accepts source and text formats only. Document
-   ingestion is a later phase; those formats are not faked.
+7. **Corpus honesty on the landing page.** Folder upload cites code, markdown,
+   text, DOCX, XLSX, and CSV (office files become plain text). PDFs use a
+   separate Add PDFs path with page-indexed citations and hard limits (size,
+   pages, no scanned). PPTX is not supported. Marketing badges must match these
+   paths — PDF carries a *limits* badge, PPTX *soon*. Commit/ADR evidence exists
+   only on the built-in `northstar-payments` demo; browser-loaded folders have
+   `commits: []`.
 
 8. **The document-frequency subject rule needs a corpus to be discriminating.** A
    very small pack gives every term a similar document frequency, which weakens

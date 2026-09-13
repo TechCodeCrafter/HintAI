@@ -152,7 +152,10 @@ export function CreateContextFlow() {
             <div className="space-y-2">
               <p className="mh-eyebrow">{name.trim() || "New context"}</p>
               <h1 className="mh-display text-4xl">Add material</h1>
-              <p className="text-sm text-muted">Folder, files, PDFs, DOCX, XLSX, or CSV. PPTX is still off.</p>
+              <p className="text-sm text-muted">
+                Folder or files: code, markdown, DOCX, XLSX, CSV. PDFs via Add PDFs below (limits apply).
+                PPTX coming soon.
+              </p>
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
               <button

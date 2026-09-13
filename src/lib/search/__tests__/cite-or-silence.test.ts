@@ -68,6 +68,9 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.doesNotMatch(landing, /Nothing is generated/i);
   assert.doesNotMatch(landing, /generate when/i);
   assert.match(landing, /Cite it, or stay silent/);
+  assert.match(landing, /note: "limits"/);
+  assert.match(landing, /demo pack only/);
+  assert.match(landing, /Add PDFs separately/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 });
 
