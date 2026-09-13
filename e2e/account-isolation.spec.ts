@@ -1,5 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-import { installE2eMocks, typeQuestion, waitForCard, waitForIndexing } from "./fixtures/helpers";
+import {
+  fillCreateContextIdentity,
+  installE2eMocks,
+  typeQuestion,
+  waitForCard,
+  waitForIndexing,
+} from "./fixtures/helpers";
 
 test.setTimeout(90_000);
 
@@ -10,13 +16,7 @@ async function loadPrivateRepo(page: Page) {
   await installE2eMocks(page);
   await page.goto("/create");
   await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
-  await page.getByRole("button", { name: "Work project" }).click();
-  const name = page.getByTestId("context-name");
-  await name.fill(CONTEXT_NAME);
-  await expect(name).toHaveValue(CONTEXT_NAME);
-  const submit = page.getByTestId("create-context-submit");
-  await expect(submit).toBeEnabled();
-  await submit.click();
+  await fillCreateContextIdentity(page, CONTEXT_NAME);
 
   const [fileChooser] = await Promise.all([
     page.waitForEvent("filechooser"),

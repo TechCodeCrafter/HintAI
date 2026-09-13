@@ -39,3 +39,26 @@ export async function waitForCard(
 export async function waitForIndexing(page: Page) {
   await page.getByTestId("indexing-complete").waitFor({ timeout: 60000 });
 }
+
+/** Pick a context kind and name, then continue to Add material. Retries until React has hydrated. */
+export async function fillCreateContextIdentity(
+  page: Page,
+  name: string,
+  kind = "work",
+) {
+  const kindButton = page.getByTestId(`context-type-${kind}`);
+  await expect(kindButton).toBeVisible();
+  await expect(async () => {
+    await kindButton.click();
+    await expect(kindButton).toHaveClass(/border-accent/);
+  }).toPass({ timeout: 15000 });
+
+  const nameInput = page.getByTestId("context-name");
+  await nameInput.fill(name);
+  await expect(nameInput).toHaveValue(name);
+
+  const submit = page.getByTestId("create-context-submit");
+  await expect(submit).toBeEnabled();
+  await submit.click();
+  await page.getByRole("heading", { name: "Add material" }).waitFor();
+}

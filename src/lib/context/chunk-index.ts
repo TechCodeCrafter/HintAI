@@ -302,7 +302,10 @@ export async function indexContext(
     })
     .filter((row): row is { file: RepoFile; source: TextStoredSource } => row !== null)
     .filter(({ file }) => !pathExcluded(file.path, exclude));
-  const pdfs = sources.filter((source) => isPdfSource(source) && !pathExcluded(source.path, exclude));
+  const pdfs = sources.filter(
+    (source): source is PdfStoredSource =>
+      isPdfSource(source) && !pathExcluded(source.path, exclude),
+  );
 
   const compareStart = nowMs();
   const ledgers = await repo.listIndexed(contextId);

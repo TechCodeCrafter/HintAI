@@ -11,8 +11,7 @@ test("landing shows the demo and accepts a waitlist signup", async ({ page }) =>
   await expect(page.getByText("Nothing is generated")).toHaveCount(0);
 
   const email = page.getByTestId("hero-email-input");
-  await email.click();
-  await email.pressSequentially("demo@meethint.ai");
+  await email.fill("demo@meethint.ai");
   await expect(page.getByTestId("hero-email-submit")).toBeEnabled();
   await page.getByTestId("hero-email-submit").click();
   await expect(page.getByTestId("waitlist-done").first()).toBeVisible();
