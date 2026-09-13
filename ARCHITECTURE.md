@@ -28,6 +28,24 @@ call an optional model **only** to combine cited passages from retrieved chunks;
 if the model returns no verifiable citations, the pipeline falls through to
 `localCard` or silence. See §6.
 
+### The product loop
+
+The only loop that defines whether MeetHint works:
+
+1. Hear the other person ask a question on a live call.
+2. Retrieve against loaded material.
+3. Put the right cited line on a second screen before the room moves on.
+
+**Shipped today:** tab audio + laptop mic, Chrome/Edge, on-device Whisper, auto-Search
+on questions, overlay mode (**O**) for a second monitor, `/relay` for a phone mirror.
+There is no embedded Zoom/Meet preview — the user shares the tab with audio checked.
+
+**In the repo but not the product:** `better-auth` (inactive passthrough), Pro/billing
+modals (waitlist capture only), `src/lib/multiplayer/` (scaffold), Remotion (marketing
+video, devDependency), PGlite/`pg` (waitlist when `DATABASE_URL` is set). The
+`package.json` surface area is wider than the proven loop. Do not treat auth or upgrade
+chrome as substitutes for sub-2s hear → cite → second screen on a real call.
+
 ---
 
 ## 2. The two guarantees
@@ -226,6 +244,28 @@ coordinates. Each commit becomes one chunk of kind `why`.
 Scoring is IDF-weighted with saturating term frequency, `log(1 + n / (1 + df))`,
 weighting path matches above body matches and giving a large bonus when a term is
 the file's own stem. Results are diversified: at most three chunks per file.
+
+When `USE_HYBRID_RETRIEVAL` is true (default), `hybridRetrieve` fuses lexical,
+semantic (`semantic-retrieve.ts` + `vector-store.ts`), and structural
+(`hybrid.ts`) scores via `retrieval-weights.ts`. Embedding failures degrade to
+lexical + structural only.
+
+#### Retrieval rank vs verification
+
+Two philosophies share one directory (`src/lib/search/`): **lexical IDF + exact
+word support** and **embedding similarity for recall**. They must not be confused.
+
+| Layer | Role | Can change the spoken line? |
+|---|---|---|
+| `hybridRetrieve` / `semanticRetrieve` | Rank candidate chunks | **No** |
+| `localCard` / `generateAnswer` | Extract or synthesize from chunks | Only if cited |
+| `verifyClaim` | Literal word support against evidence | **Veto** — paraphrase fails |
+
+Semantic search only surfaces chunks lexical search might miss. It never composes
+text and never relaxes `verifyClaim`. A semantic hit that leads to an unsupportable
+sentence is withdrawn like any other failed support check — “rotated” against
+“rotate” still silences. If hybrid recall improves, keep the verifier brutal; do
+not soften support checking to match embedding similarity.
 
 ### Shape
 

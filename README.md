@@ -10,6 +10,20 @@ For the full design (listening, persistence, benchmarks, known gaps), see **[ARC
 
 ---
 
+## The product loop
+
+This is the only loop that defines whether MeetHint works:
+
+1. **Hear** the other person ask a question on a live call.
+2. **Retrieve** against the material you loaded.
+3. **Show** the right cited line on a second screen before the room moves on.
+
+**What works today:** share the meeting tab with audio checked + laptop mic; **Chrome or Edge**; on-device Whisper ASR; Search fires on questions; **O** opens overlay on a second monitor; `/relay` mirrors the Card on a phone. There is no embedded Zoom/Meet preview — you share the tab yourself.
+
+**Not the product yet** (in the repo, not proven on the loop): Better Auth (inactive passthrough), Pro/billing modals (waitlist only — no Stripe), multiplayer P2P scaffold, Remotion demo renders, Postgres/PGlite (waitlist insert when `DATABASE_URL` is set). Auth and upgrade chrome do not substitute for hear → cite → second screen in under two seconds on a real call.
+
+---
+
 ## What you get on a call
 
 | Surface | What it does |
@@ -17,9 +31,9 @@ For the full design (listening, persistence, benchmarks, known gaps), see **[ARC
 | **Room** | Live transcript from tab audio + mic; questions trigger Search automatically |
 | **Card** | A cited line from your files, or silence with a reason |
 | **Repo** | The loaded pack — files, commits, citations you can open in-place |
-| **Claim Audit** (Pro) | Tracks claims heard in the meeting against your material; export a report |
+| **Claim Audit** (Pro, waitlist) | Side path — tracks claims against your material; not part of the core loop |
 
-Keyboard: **S** / **Ctrl/Cmd+K** Search · **L** Listen · **O** overlay for a second monitor.
+Keyboard: **S** / **Ctrl/Cmd+K** Search · **L** Listen · **O** overlay for a second monitor (the second-screen path).
 
 ---
 
@@ -55,6 +69,16 @@ Chunks are built per file (28-line windows, six-line overlap; structured chunks 
 Results are diversified (at most three chunks per file). Pack exclusions drop boilerplate at query time; the vector store in IndexedDB (`vector-store.ts`, `context/storage/vector-store-indexeddb.ts`) is updated incrementally when sources change.
 
 Retrieval traces (`retrieval-trace.ts`, `retrieve-trace.ts`) record which channel won each hit — useful when debugging false silence.
+
+### Retrieval rank vs verification (two philosophies, one contract)
+
+Hybrid retrieval mixes **lexical IDF** (exact-term recall) with **embedding similarity** (semantic recall). They only change which chunks become candidates. They do **not** change what may speak:
+
+- Semantic search never writes a line (`embedding.ts`, `semantic-retrieve.ts`).
+- Every speak path calls **`verifyClaim`** — spoken words must appear literally in the evidence (`evidence.ts`).
+- Subject, shape, and evidence gates run after retrieve, on every compose path.
+
+So semantic retrieve can fix recall (surface a chunk lexical missed) but cannot make the card say something the files only “kind of” contain. Paraphrases like “rotated” against evidence that says “rotate” still fail the support check and stay silent. If hybrid recall improves, keep the verifier brutal — do not soften it to match embeddings.
 
 ---
 
