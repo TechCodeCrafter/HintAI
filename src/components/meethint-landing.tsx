@@ -43,20 +43,22 @@ const BEATS: Beat[] = [
   },
 ];
 
-const MATERIAL = [
-  "Notes",
-  "Lectures",
-  "Syllabi",
-  "Folders",
-  "PDF",
-  "DOCX",
-  "XLSX",
-  "CSV",
-  "Markdown",
-  "Code",
-  "Repositories",
-  "PPTX",
-] as const;
+type MaterialChip = {
+  label: string;
+  note?: "limits" | "soon";
+};
+
+/** File formats Hint can cite today — badges must match what load paths actually support. */
+const MATERIAL: MaterialChip[] = [
+  { label: "Code" },
+  { label: "Markdown" },
+  { label: "Folders" },
+  { label: "DOCX" },
+  { label: "XLSX" },
+  { label: "CSV" },
+  { label: "PDF", note: "limits" },
+  { label: "PPTX", note: "soon" },
+];
 
 const USE_CASES = [
   {
@@ -581,7 +583,7 @@ export function MeetHintLanding() {
               <ProductFrame tone="dark" phase="answered" question={CONTRACT_BEAT.asked} beat={CONTRACT_BEAT} large />
             </div>
             <p className="text-center text-[14px] text-white/45">
-              Same conversation. Same question. Real citations, right when you need them.
+              Illustrated with PDFs and contracts — the same cite-or-silence path once you load yours.
             </p>
             <div className="mx-auto max-w-4xl space-y-3">
               <DemoVideo />
@@ -596,18 +598,25 @@ export function MeetHintLanding() {
           <div className="max-w-2xl space-y-4">
             <h2 className="hint-display text-3xl sm:text-4xl">Bring the material.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Load your notes, a lecture pack, the syllabus, a contract, or a folder of docs. Hint
-              keeps it local and cites when the files support the answer — otherwise it stays silent.
+              Load a folder or files — code, markdown, DOCX, XLSX, CSV. Add PDFs separately (page and
+              size limits apply). Hint cites what it can read — otherwise it stays silent.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {MATERIAL.map((label) => (
-              <span key={label} className={`hint-chip${label === "PPTX" ? " hint-chip-soon" : ""}`}>
+            {MATERIAL.map(({ label, note }) => (
+              <span
+                key={label}
+                className={`hint-chip${note === "soon" ? " hint-chip-soon" : note === "limits" ? " hint-chip-limits" : ""}`}
+              >
                 {label}
-                {label === "PPTX" ? <span className="ml-1 text-[var(--hint-muted)]">soon</span> : null}
+                {note ? <span className="ml-1 text-[var(--hint-muted)]">{note}</span> : null}
               </span>
             ))}
           </div>
+          <p className="max-w-2xl text-[14px] leading-relaxed text-[var(--hint-muted)]">
+            Git-history answers (who touched a file, why in a PR) ship on the built-in demo pack only.
+            Folders you load in the browser are files — no commit metadata yet.
+          </p>
         </section>
 
         <section className="hint-wrap space-y-10 py-6 pb-20">
