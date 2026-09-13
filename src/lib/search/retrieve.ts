@@ -536,6 +536,11 @@ export async function retrieveHits(
   return hits;
 }
 
+/**
+ * Fuse lexical, semantic, and structural scores into ranked chunk candidates.
+ * Rank only — composition and verifyClaim run later; embeddings must not
+ * bypass literal word support.
+ */
 export async function hybridRetrieve(
   query: string,
   chunks: IndexedChunk[],
