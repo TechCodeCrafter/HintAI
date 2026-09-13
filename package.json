@@ -1,5 +1,12 @@
 {
   "name": "meethint",
+  "description": "MeetHint — cite or silence. Live meeting copilot that cites your loaded files or stays silent.",
+  "homepage": "https://meethint.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TechCodeCrafter/HintAI.git"
+  },
+  "license": "MIT",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -29,7 +36,8 @@
     "video:render:square": "remotion render src/remotion/index.ts Square public/demo/meethint-demo-square.mp4",
     "video:render:vo": "npm run score && remotion render src/remotion/index.ts Demo public/demo/meethint-demo.mp4 --props='{\"narration\":\"vo.mp3\"}'",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "sync:github": "node scripts/sync-github-repo.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

@@ -1,15 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MeetHintLanding } from "@/components/meethint-landing";
+import { MEETHINT_DESCRIPTION, MEETHINT_TITLE } from "@/lib/brand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Hint — live answers from your own material" },
-      {
-        name: "description",
-        content:
-          "Hint listens to a live conversation, searches your files, and surfaces a cited answer in seconds. Try it on a local folder, or join the private beta.",
-      },
+      { title: MEETHINT_TITLE },
+      { name: "description", content: MEETHINT_DESCRIPTION },
     ],
   }),
   component: Landing,
