@@ -2,6 +2,7 @@ import { ArrowRight, Check, Loader2, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { highlightAnswer } from "@/components/answer-say";
 import { MeetHintMark } from "@/components/meethint-mark";
+import { MEETHINT_DOMAIN, MEETHINT_NAME } from "@/lib/brand";
 import { demoMediaUrl } from "@/lib/demo-media";
 import { joinWaitlist } from "@/lib/waitlist";
 
@@ -48,7 +49,7 @@ type MaterialChip = {
   note?: "limits" | "soon";
 };
 
-/** File formats Hint can cite today — badges must match what load paths actually support. */
+/** File formats MeetHint can cite today — badges must match what load paths actually support. */
 const MATERIAL: MaterialChip[] = [
   { label: "Code" },
   { label: "Markdown" },
@@ -89,9 +90,13 @@ const USE_CASES = [
 ] as const;
 
 const STEPS = [
-  { id: "01", title: "Listening", body: "Hint picks up the question that is actually being asked." },
+  { id: "01", title: "Listening", body: `${MEETHINT_NAME} picks up the question that is actually being asked.` },
   { id: "02", title: "Searching your files", body: "It searches the notes, docs, slides, or folder you loaded." },
-  { id: "03", title: "Cite or silence", body: "When the files support the answer, Hint cites them. When they can't, it stays silent and says why." },
+  {
+    id: "03",
+    title: "Cite or silence",
+    body: `When the files support the answer, ${MEETHINT_NAME} cites them. When they can't, it stays silent and says why.`,
+  },
   { id: "04", title: "Answer ready", body: "You get a cited line from your material — or an honest reason when nothing qualifies." },
 ] as const;
 
@@ -500,7 +505,7 @@ export function MeetHintLanding() {
         <div className="hint-wrap flex items-center justify-between gap-6 py-3">
           <a href="/" className="flex items-center gap-2.5">
             <MeetHintMark className="size-8" />
-            <span className="text-[1.15rem] font-semibold tracking-tight leading-none">Hint</span>
+            <span className="text-[1.15rem] font-semibold tracking-tight leading-none">{MEETHINT_NAME}</span>
           </a>
           <div className="flex items-center gap-8">
             <nav className="hidden items-center gap-7 text-[15px] text-[var(--hint-muted)] md:flex">
@@ -518,7 +523,7 @@ export function MeetHintLanding() {
               </a>
             </nav>
             <a href="/home" className="hint-btn hint-btn-primary">
-              Try Hint
+              Try {MEETHINT_NAME}
             </a>
           </div>
         </div>
@@ -533,12 +538,12 @@ export function MeetHintLanding() {
               <span className="block">while they're still asking.</span>
             </h1>
             <p className="hint-lede max-w-md">
-              Ask anything. Hint retrieves from your documents and answers only when it can cite
+              Ask anything. {MEETHINT_NAME} retrieves from your documents and answers only when it can cite
               them — otherwise it stays silent and says why.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row">
               <a href="/home" className="hint-btn hint-btn-primary">
-                Try Hint
+                Try {MEETHINT_NAME}
                 <ArrowRight aria-hidden className="ml-1.5 size-4" />
               </a>
               <button type="button" className="hint-btn hint-btn-secondary" onClick={watchDemo}>
@@ -546,7 +551,7 @@ export function MeetHintLanding() {
               </button>
             </div>
             <p className="max-w-md text-[14px] text-[var(--hint-muted)]">
-              Bring a lecture, a contract, a folder, or your own notes. Hint keeps it local and cites
+              Bring a lecture, a contract, a folder, or your own notes. {MEETHINT_NAME} keeps it local and cites
               exactly.
             </p>
           </div>
@@ -555,9 +560,9 @@ export function MeetHintLanding() {
 
         <section id="product" className="hint-wrap space-y-12 py-20">
           <div className="max-w-2xl space-y-3">
-            <h2 className="hint-display text-3xl sm:text-4xl">How Hint works in real time</h2>
+            <h2 className="hint-display text-3xl sm:text-4xl">How {MEETHINT_NAME} works in real time</h2>
             <p className="text-[17px] text-[var(--hint-muted)]">
-              Someone asks. Hint hears it, searches your files, and cites what it can — or stays silent.
+              Someone asks. {MEETHINT_NAME} hears it, searches your files, and cites what it can — or stays silent.
             </p>
           </div>
           <HowHintWorks />
@@ -568,14 +573,14 @@ export function MeetHintLanding() {
           <div className="hint-wrap space-y-10 py-20 lg:py-24">
             <div className="mx-auto max-w-2xl space-y-5 text-center">
               <p className="text-[12px] font-semibold tracking-[0.08em] text-white/45 uppercase">
-                See Hint in action
+                See {MEETHINT_NAME} in action
               </p>
               <h2 className="hint-display text-4xl text-white sm:text-6xl">
                 A real answer.
                 <span className="block">Backed by your source.</span>
               </h2>
               <p className="text-[17px] leading-relaxed text-white/60">
-                Hint retrieves first. When the passage is there, you get the line and the citation.
+                {MEETHINT_NAME} retrieves first. When the passage is there, you get the line and the citation.
                 When it isn't, the card stays empty.
               </p>
             </div>
@@ -599,7 +604,7 @@ export function MeetHintLanding() {
             <h2 className="hint-display text-3xl sm:text-4xl">Bring the material.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
               Load a folder or files — code, markdown, DOCX, XLSX, CSV. Add PDFs separately (page and
-              size limits apply). Hint cites what it can read — otherwise it stays silent.
+              size limits apply). {MEETHINT_NAME} cites what it can read — otherwise it stays silent.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -623,7 +628,7 @@ export function MeetHintLanding() {
           <div className="max-w-2xl space-y-4">
             <h2 className="hint-display text-3xl sm:text-4xl">Answers with receipts.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              If your material supports the answer, Hint shows you where it came from. If it does not,
+              If your material supports the answer, {MEETHINT_NAME} shows you where it came from. If it does not,
               it stays silent.
             </p>
           </div>
@@ -681,7 +686,7 @@ export function MeetHintLanding() {
           <div className="space-y-3">
             <h2 className="hint-display text-3xl">Local first. Cite or silence.</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Hint reads the folder on your machine. It does not add cloud connectors. When the files
+              {MEETHINT_NAME} reads the folder on your machine. It does not add cloud connectors. When the files
               support the answer, it cites them. When they don't, the card stays empty — no invented
               answers.
             </p>
@@ -689,7 +694,7 @@ export function MeetHintLanding() {
           <div id="docs" className="space-y-3">
             <h2 className="hint-display text-3xl">Docs</h2>
             <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-              Open Hint, load a folder or a file, and ask. The citation is the documentation.
+              Open {MEETHINT_NAME}, load a folder or a file, and ask. The citation is the documentation.
             </p>
           </div>
         </section>
@@ -699,13 +704,13 @@ export function MeetHintLanding() {
             <div className="mx-auto max-w-2xl space-y-4 text-center">
               <h2 className="hint-display text-3xl sm:text-4xl">Search that can keep up with speech.</h2>
               <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
-                Bring the material once. Hint stays with the conversation and cites what it finds
+                Bring the material once. {MEETHINT_NAME} stays with the conversation and cites what it finds
                 before the room moves on.
               </p>
             </div>
             <div className="flex justify-center">
               <a href="/home" className="hint-btn hint-btn-primary">
-                Try Hint
+                Try {MEETHINT_NAME}
                 <ArrowRight aria-hidden className="ml-1.5 size-4" />
               </a>
             </div>
@@ -720,8 +725,8 @@ export function MeetHintLanding() {
       <footer className="border-t border-[var(--hint-border)]">
         <div className="hint-wrap flex flex-col gap-6 py-8 text-[13px] text-[var(--hint-muted)] sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-0.5">
-            <p className="text-lg font-semibold text-[var(--hint-text)]">Hint</p>
-            <p>meethint.ai</p>
+            <p className="text-lg font-semibold text-[var(--hint-text)]">{MEETHINT_NAME}</p>
+            <p>{MEETHINT_DOMAIN}</p>
           </div>
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
             <a href="#product" className="hover:text-[var(--hint-text)]">
