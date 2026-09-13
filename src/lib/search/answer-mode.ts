@@ -1,15 +1,12 @@
 export type AnswerMode = "docs" | "synthesized" | "generated";
 
-/** True when the card spoke without file-backed citations (tier 2 uncited or tier 3). */
+/** Legacy history only — live Search never produces generated or uncited cards. */
 export function isGeneratedAnswer(mode?: AnswerMode, usedEvidence?: boolean): boolean {
   return mode === "generated" || (mode === "synthesized" && usedEvidence === false);
 }
 
 export function modeLabel(mode?: AnswerMode, usedEvidence?: boolean): string {
-  if (isGeneratedAnswer(mode, usedEvidence)) {
-    return "Generated · not from your files";
-  }
-  if (mode === "synthesized") return "Synthesized";
+  if (isGeneratedAnswer(mode, usedEvidence)) return "Not from your files";
   return "From your files";
 }
 

@@ -50,7 +50,7 @@ export function appendAnswerHistory(history: AnswerHistoryItem[], card: Card): A
 export function cardFromHistory(item: AnswerHistoryItem): Card {
   return {
     say: item.say,
-    reason: item.say ? undefined : "Could not generate an answer.",
+    reason: item.say ? undefined : "No cited answer.",
     citations: item.citations,
     query: item.query,
     latencyMs: 0,

@@ -1,6 +1,6 @@
 import { readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
 
-/** Free Extract is grounded RAG with a daily question cap. Pro is unlimited. */
+/** Free tier: cite-or-silence Search with a daily cap. Pro: unlimited cited answers + Claim Audit. */
 
 export const EXTRACT_DAILY_LIMIT = 20;
 export const EXTRACT_QUOTA_KEY = "meethint.extractQuota";

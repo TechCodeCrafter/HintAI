@@ -13,17 +13,20 @@ say — with the file and line it came from.
 
 The product claim is narrow and load-bearing:
 
-> **Nothing is generated. Every spoken word is a word your material already wrote,
-> and the citation points at where it wrote it.**
+> **Cite or silence. Every spoken word is backed by a citation into your material,
+> or the card stays empty with a specific reason. There is no general-knowledge
+> tier and no “generate when the files can’t answer” path.**
 
-There is no language model in the answer path. A "Card" is an extracted sentence
-plus the coordinates of that sentence. When the material does not answer the
-question, MeetHint says nothing — silence is a designed output, not a failure.
+A Card is either a cited line (from offline extraction or LLM-assisted synthesis
+*from numbered chunks only*, with markers verified) plus coordinates, or silence.
+When the material does not answer the question, MeetHint says nothing useful —
+silence is a designed output, not a failure.
 
-The default configuration runs entirely in the browser: your files are read with
-the File API, indexed in memory, and never uploaded. Speech is transcribed
-on-device by Whisper compiled to WebAssembly. An optional server transcription
-path is inert unless `XAI_API_KEY` is set — see §11. Search never calls a model.
+Files are read with the File API and indexed locally; they are not uploaded.
+Speech is transcribed on-device by Whisper compiled to WebAssembly. Search may
+call an optional model **only** to combine cited passages from retrieved chunks;
+if the model returns no verifiable citations, the pipeline falls through to
+`localCard` or silence. See §6.
 
 ---
 
@@ -185,8 +188,22 @@ would repeat the answer just given.
 
 ## 6. The answer pipeline
 
-`localCard(query, hits, pack, latencyMs, openFile)` in `local-card.ts`. Retrieval
-has already run.
+`store.search()` calls `routeSearchAnswer()` in `answer-route.ts` after hybrid
+retrieval (`retrieve.ts`). The live order is fixed:
+
+```
+retrieve (lexical + semantic + structural, exclusions at query time)
+  → generateAnswer     (grounded: cited + verifyClaim, or INSUFFICIENT)
+  → synthesizeAnswer   (cited synthesis only — uncited results discarded)
+  → localCard          (offline exact extraction, free, cited)
+  → silence            (specific reason: no hits, uncovered, transport error)
+```
+
+There is **no** general-knowledge tier. `generateGeneralAnswer`, `completeGeneral`,
+and the `freely` policy were removed; regression tests assert they cannot return.
+
+`localCard(query, hits, pack, latencyMs, openFile)` in `local-card.ts` is the
+offline cited path. Retrieval has already run when it is called.
 
 | Stage | Where | What it rejects |
 |---|---|---|
@@ -387,8 +404,9 @@ would have created two definitions of "supported".
 One zustand store (`store.ts`) holds the pack, the retrieval index, the transcript,
 the current Card, the ledger of recent answers and the thread context.
 
-`search()` runs: normalize → retrieve → `localCard` → replay guard → set state →
-persist. Auto-answered questions from the room take the local path only.
+`search()` runs: normalize → retrieve → `routeSearchAnswer` → replay guard → set
+state → persist. Quota is consumed only when a cited LLM tier succeeds; `localCard`
+and silence are free.
 
 Persistence for material is IndexedDB behind `ContextRepository`
 (`src/lib/context/`). Dexie database version 2 keeps the Phase 2 `contexts` and
@@ -412,6 +430,21 @@ not persisted.
 
 Search, auto-answer and Listen-triggered search are no-ops while a Context is
 booting or hydrating, so a question cannot be answered from the previous pack.
+
+### Billing and tiers
+
+Product copy and the upgrade modal sell one distinction:
+
+| Tier | Search | Claim Audit |
+|---|---|---|
+| **Free** | Cite-or-silence Search, 20 successful LLM-backed answers per local day | — |
+| **Pro** | Unlimited cited answers (same cite-or-silence pipeline) | Meeting claim audit and export |
+
+Quota (`extract-quota.ts`) counts only answers where `routeSearchAnswer` returns
+`consumeQuota: true` — a cited grounded or synthesis card. Offline `localCard`
+success and silence are free. There is no separate “generate” or “synthesize”
+mode in the UI; model choice affects which provider backs cited extraction, not
+whether uncited text may speak.
 
 Routes: `/` is the landing page (with a link into `/app`), `/app` is the cockpit,
 `/relay` is a read-only phone view polling the session key, `/soon` redirects to
@@ -491,9 +524,11 @@ Stated plainly, because the product's whole claim is about not overstating.
    auditable but it is not a `StructuralEvidence` type with a counted operation
    and source ids. That modelling is deliberately not built yet.
 
-3. **Search does not generate or refine a spoken line.** The live path is
-   retrieve → localCard → admit. Leftover polish/assist helpers and `cardsmith`
-   are not called from `store.search()`. A key cannot change what the card says.
+3. **Search does not speak without citations.** The live path is retrieve →
+   `routeSearchAnswer` (grounded → cited synthesis → localCard → silence).
+   Polish/assist helpers and uncited general knowledge are not called from
+   `store.search()`. A model key can help find cited combinations of chunks; it
+   cannot invent an answer the files do not support.
 
 4. **Support checking is lexical, not semantic.** A word must appear literally in
    the evidence. "rotated" fails against a message that says "rotate". This is a

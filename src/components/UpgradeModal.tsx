@@ -16,9 +16,9 @@ const FEATURE_COPY: Record<string, { kicker: string; headline: string; reason: s
     reason: "Claim Audit requires Pro. Upgrade to track and verify claims across meetings.",
   },
   "extract-limit": {
-    kicker: "Today's question limit",
-    headline: "Keep asking after today's 20",
-    reason: "You've reached your daily limit. Upgrade to Pro for unlimited answers.",
+    kicker: "Today's search limit",
+    headline: "Keep searching after today's 20",
+    reason: "You've reached your daily limit. Upgrade to Pro for unlimited cited answers and Claim Audit.",
   },
 };
 
@@ -27,14 +27,14 @@ const TIERS = [
     name: "Free",
     price: "$0",
     cadence: "",
-    points: ["Auto-routed answers", "20 questions/day", "GPT-4o Mini", "1 pack"],
+    points: ["Cite-or-silence Search", "20 searches/day", "GPT-4o Mini", "1 pack"],
     action: "Current plan",
   },
   {
     name: "Pro",
     price: "$12",
     cadence: "/mo",
-    points: ["Unlimited answers", "Claim Audit", "Model switching", "Export"],
+    points: ["Unlimited cited answers", "Claim Audit", "Model switching", "Export"],
     action: "Get early access",
     recommended: true,
   },
@@ -102,7 +102,7 @@ export function UpgradeModal({
     if (!valid || sending) return;
     setSending(true);
     setError(null);
-    const source = feature === "audit" ? "upgrade-audit" : "upgrade-synthesize";
+    const source = feature === "audit" ? "upgrade-audit" : "upgrade-search";
     const result = await joinProWaitlist(email, source);
     setSending(false);
     if (!result.ok) {

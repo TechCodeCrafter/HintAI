@@ -123,6 +123,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
 
   useEffect(() => {
     useMeetHint.getState().setListenError(null);
+    if (typeof window !== "undefined" && window.__MEETHINT_E2E__) return;
     void import("@/lib/listen/local-asr").then((m) => m.warmupAsr());
   }, []);
 
@@ -930,8 +931,8 @@ function ProofLine() {
     <p className="quota-line" data-testid="extract-quota">
       {free
         ? remaining > 0
-          ? `${remaining} questions remaining · GPT-4o Mini`
-          : "Today's 20 questions are used. Upgrade for unlimited."
+          ? `${remaining} searches remaining · GPT-4o Mini`
+          : "Today's 20 searches are used. Upgrade for unlimited cited answers."
         : "Cited from your files, or silence when they can't answer."}
     </p>
   );
@@ -1556,9 +1557,9 @@ function CardPane({
                       <p
                         className="generated-note"
                         data-testid="generated-note"
-                        title="General knowledge — verify before saying it."
+                        title="Older answer — not backed by your files."
                       >
-                        General knowledge — verify before saying it.
+                        Older answer — not backed by your files.
                       </p>
                     ) : null}
                     <div className="flex flex-wrap gap-2">

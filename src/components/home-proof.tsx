@@ -95,8 +95,8 @@ export function HomeProof() {
               {card?.say ? <AnswerSay text={card.say} /> : null}
               {card?.answerMode === "generated" ||
               (card?.answerMode === "synthesized" && !(card.usedEvidence ?? card.citations.length > 0)) ? (
-                <p className="generated-note" title="General knowledge — verify before saying it.">
-                  General knowledge — verify before saying it.
+                <p className="generated-note" title="Older answer — not backed by your files.">
+                  Older answer — not backed by your files.
                 </p>
               ) : null}
               {card && card.latencyMs > 0 ? (

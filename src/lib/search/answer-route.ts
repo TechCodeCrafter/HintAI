@@ -12,7 +12,7 @@ const ERROR_REASON_CAP = 120;
 
 export function silentCardReason(hitCount: number, errorMessage?: string): string {
   const message = errorMessage?.replace(/\s+/g, " ").trim();
-  if (message) return `Couldn't generate an answer: ${message.slice(0, ERROR_REASON_CAP)}`;
+  if (message) return `Couldn't produce a cited answer: ${message.slice(0, ERROR_REASON_CAP)}`;
   return hitCount === 0 ? "No matching material" : "Your material doesn't cover this";
 }
 

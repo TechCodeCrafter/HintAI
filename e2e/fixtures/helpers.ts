@@ -40,6 +40,19 @@ export async function waitForIndexing(page: Page) {
   await page.getByTestId("indexing-complete").waitFor({ timeout: 60000 });
 }
 
+/** Sync a React controlled input — fill() alone can race hydration in CI. */
+export async function fillControlledInput(locator: Locator, value: string) {
+  await locator.click();
+  await locator.fill(value);
+  await locator.evaluate((el, next) => {
+    const input = el as HTMLInputElement;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+    setter?.call(input, next);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }, value);
+}
+
 /** Pick a context kind and name, then continue to Add material. Retries until React has hydrated. */
 export async function fillCreateContextIdentity(
   page: Page,
@@ -47,18 +60,15 @@ export async function fillCreateContextIdentity(
   kind = "work",
 ) {
   const kindButton = page.getByTestId(`context-type-${kind}`);
+  const nameInput = page.getByTestId("context-name");
+  const submit = page.getByTestId("create-context-submit");
   await expect(kindButton).toBeVisible();
   await expect(async () => {
     await kindButton.click();
     await expect(kindButton).toHaveClass(/border-accent/);
+    await fillControlledInput(nameInput, name);
+    await expect(submit).toBeEnabled();
   }).toPass({ timeout: 15000 });
-
-  const nameInput = page.getByTestId("context-name");
-  await nameInput.fill(name);
-  await expect(nameInput).toHaveValue(name);
-
-  const submit = page.getByTestId("create-context-submit");
-  await expect(submit).toBeEnabled();
   await submit.click();
   await page.getByRole("heading", { name: "Add material" }).waitFor();
 }

@@ -1488,7 +1488,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         ...applyCard(
           {
             say: null,
-            reason: "You've reached your daily limit. Upgrade to Pro for unlimited answers.",
+            reason: "You've reached your daily limit. Upgrade to Pro for unlimited cited answers and Claim Audit.",
             citations: [],
             query,
             latencyMs: 0,
