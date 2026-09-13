@@ -26,7 +26,7 @@ function ask(text: string) {
   return async () => ({ text });
 }
 
-test("extract stays grounded; weak synthesis may fall back in prompt only", () => {
+test("extract and weak synthesis both require citations or INSUFFICIENT", () => {
   assert.doesNotMatch(source, /buildAnswerPrompt/);
   assert.doesNotMatch(source, /export async function freelyAnswer/);
   assert.doesNotMatch(source, /export async function extractAnswer/);
@@ -42,8 +42,10 @@ test("extract stays grounded; weak synthesis may fall back in prompt only", () =
   assert.match(prompt, /1-2 sentences/);
   assert.match(prompt, /\[1\]/);
   const weak = buildWeakEvidencePrompt("full stack developer role", retryHits);
-  assert.match(weak, /Use them if they help answer the question/);
-  assert.match(weak, /use your general knowledge/);
+  assert.match(weak, /ONLY the document chunks/);
+  assert.match(weak, /INSUFFICIENT/);
+  assert.match(weak, /NEVER use general knowledge/);
+  assert.doesNotMatch(weak, /use your general knowledge/);
   assert.doesNotMatch(source, /console\.info\("\[ask\]/);
   assert.match(source, /llmDebug\("\[ask\]/);
 });
@@ -165,16 +167,12 @@ test("extractBestSentence picks the overlapping line from a hit", () => {
   assert.match(extractBestSentence(hit.text, "retry three times"), /retry|three|attempt/i);
 });
 
-test("weak evidence may speak without a citation", async () => {
+test("uncited synthesis is insufficient", async () => {
   const generated = await synthesizeAnswer("Who is a full stack developer?", retryHits, 0, {
     ask: ask("A full-stack developer works across the client and the server."),
     pack: NORTHSTAR,
   });
-  assert.ok(generated.ok);
-  assert.equal(generated.answer.answerMode, "synthesized");
-  assert.equal(generated.answer.usedEvidence, false);
-  assert.equal(generated.answer.citations.length, 0);
-  assert.match(generated.answer.say, /full-stack/i);
+  assert.deepEqual(generated, { ok: false, reason: "insufficient" });
 });
 
 test("fetch errors and empty replies are errors, not insufficient", async () => {

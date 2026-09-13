@@ -85,22 +85,19 @@ function historyBlock(history?: string[]): string {
     .join("\n")}\n`;
 }
 
-/** Weak evidence: cite the files when they help, otherwise answer from knowledge. */
+/** Cited synthesis when grounded extract returned INSUFFICIENT. Same cite-or-silence contract as tier 1. */
 export function buildWeakEvidencePrompt(query: string, hits: Hit[], history?: string[]): string {
-  return `The user is in a meeting. Below are relevant document chunks. Use them if they help answer the question. If they don't contain the answer, use your general knowledge.
+  return `You synthesize an answer using ONLY the document chunks below. NEVER use general knowledge.
 ${historyBlock(history)}
+If the documents do not contain enough information to answer, respond with exactly: INSUFFICIENT
+
+Cite each claim with a chunk marker like [1] or [2] immediately after the claim.
+Keep the answer to 1-2 sentences max.
+
 DOCUMENT CHUNKS:
 ${formatChunks(hits)}
 
-QUESTION: "${query}"
-
-RULES:
-- If the documents contain the answer, cite the source with a marker like [1] or [2].
-- If the documents do NOT contain the answer, answer from general knowledge.
-- Be concise but detailed (2-4 sentences).
-- Sound like a senior engineer, not a textbook.
-
-ANSWER:`;
+QUESTION: "${query}"`;
 }
 
 /** Pick the sentence in a chunk that overlaps the question most. */
@@ -327,7 +324,7 @@ export async function generateAnswer(
   };
 }
 
-/** Weak retrieval: cite the files when they support the answer, otherwise speak from knowledge. */
+/** Cited synthesis when grounded extract returned INSUFFICIENT. Uncited lines are insufficient. */
 export async function synthesizeAnswer(
   query: string,
   hits: Hit[],
@@ -344,12 +341,15 @@ export async function synthesizeAnswer(
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient" };
   const say = stripCitationMarkers(remote.text);
   if (!say) return { ok: false, reason: "insufficient" };
-  const { citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
+  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
+  if (evidence.length === 0) return { ok: false, reason: "insufficient" };
+  const check = verifyClaim(say, evidence);
+  if (!check.ok || check.checked === 0) return { ok: false, reason: "insufficient" };
   return {
     ok: true,
     answer: {
       say,
-      usedEvidence: citations.length > 0,
+      usedEvidence: true,
       citations,
       latencyMs: Math.round(performance.now() - t0),
       modelName: remote.modelName,

@@ -2,21 +2,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import { installE2eMocks, waitForIndexing } from "./fixtures/helpers";
+import { fillCreateContextIdentity, installE2eMocks, waitForIndexing } from "./fixtures/helpers";
 
 test("folder upload reviews the pack before indexing", async ({ page }) => {
   await installE2eMocks(page);
   await page.goto("/create");
   await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
-  await page.getByTestId("context-type-work").click();
-  const name = page.getByTestId("context-name");
-  await name.fill("Review Pack");
-  await expect(name).toHaveValue("Review Pack");
-  const submit = page.getByTestId("create-context-submit");
-  await expect(submit).toBeEnabled();
-  await submit.click();
-
-  await page.getByRole("heading", { name: "Add material" }).waitFor();
+  await fillCreateContextIdentity(page, "Review Pack");
   const folder = join(tmpdir(), `hint-review-pack-${Date.now()}`);
   mkdirSync(folder);
   writeFileSync(join(folder, "retry.ts"), "export const MAX_ATTEMPTS = 3;\n");

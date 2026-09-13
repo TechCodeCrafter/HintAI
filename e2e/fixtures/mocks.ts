@@ -8,7 +8,7 @@ export async function installE2eMocks(page: Page) {
       value: undefined,
     });
     window.__mockCraftCard = async () => ({
-      say: "A concise general-knowledge answer for the meeting.",
+      say: "INSUFFICIENT",
     });
     window.__mockEmbedder = async (text: string) => {
       const vec = new Array(384).fill(0);

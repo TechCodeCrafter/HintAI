@@ -9,7 +9,10 @@ test("unwrapFnInput keeps an already-unwrapped prompt payload", () => {
 });
 
 test("unwrapFnInput reads prompt from data when query is missing", () => {
-  const inner = unwrapFnInput({ data: { prompt: "QUESTION: hello", keys: { openai: "sk-test" } } });
+  type Payload = { prompt: string; keys: { openai: string } };
+  const inner = unwrapFnInput<Payload>({
+    data: { prompt: "QUESTION: hello", keys: { openai: "sk-test" } },
+  } as unknown as Payload & { data?: Payload });
   assert.equal(inner.prompt, "QUESTION: hello");
 });
 

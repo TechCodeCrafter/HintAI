@@ -186,10 +186,7 @@ function speakInput(input: SpeakInput): {
   };
 }
 
-function systemFor(policy: SpeakPolicy): string {
-  if (policy === "synthesize") {
-    return "Follow the user instructions exactly. Use the documents when they help; otherwise answer from general knowledge. Reply with only the spoken answer.";
-  }
+function systemFor(_policy: SpeakPolicy): string {
   return "Follow the user instructions exactly. Use only the document chunks in the prompt. Never use general knowledge. Reply with only the spoken answer or INSUFFICIENT.";
 }
 
