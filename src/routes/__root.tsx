@@ -5,9 +5,8 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { THEME_BOOT } from "@/lib/theme";
 import { hydrateClientPrefs } from "@/lib/store";
+import { MEETHINT_DESCRIPTION, MEETHINT_NAME } from "@/lib/brand";
 import appCss from "../styles.css?url";
-
-const APP_NAME = "Hint";
 
 function ClientPrefs() {
   useEffect(() => {
@@ -21,12 +20,9 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: APP_NAME },
+      { title: MEETHINT_NAME },
       { name: "theme-color", content: "#0b0d12" },
-      {
-        name: "description",
-        content: "Meeting copilot that searches your repo and cites the file before you speak.",
-      },
+      { name: "description", content: MEETHINT_DESCRIPTION },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },

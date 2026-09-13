@@ -8,6 +8,7 @@ import {
   MEETHINT_CONTRACT,
   MEETHINT_DESCRIPTION,
   MEETHINT_DOMAIN,
+  MEETHINT_MARK,
   MEETHINT_NAME,
   MEETHINT_TITLE,
 } from "../brand.ts";
@@ -36,6 +37,10 @@ const FORBIDDEN_MARKETING = [
 
 const SKILL_ROOTS = [".cursor/skills", ".agents/skills"];
 
+function read(rel: string): string {
+  return readFileSync(join(root, rel), "utf8");
+}
+
 function listSkillMarkdownFiles(dir: string): string[] {
   const out: string[] = [];
   if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) return out;
@@ -48,16 +53,31 @@ function listSkillMarkdownFiles(dir: string): string[] {
   return out;
 }
 
-test("brand module exports MeetHint cite-or-silence contract", () => {
+test("brand constants are MeetHint everywhere public", () => {
   assert.equal(MEETHINT_NAME, "MeetHint");
+  assert.equal(MEETHINT_MARK, "Hint");
   assert.equal(MEETHINT_DOMAIN, "meethint.ai");
   assert.match(MEETHINT_TITLE, /MeetHint/);
   assert.match(MEETHINT_DESCRIPTION, /cite/i);
   assert.doesNotMatch(MEETHINT_DESCRIPTION, /general knowledge/i);
   assert.match(MEETHINT_CONTRACT, /Cite or silence/i);
+
+  const pkg = JSON.parse(read("package.json")) as {
+    name: string;
+    homepage: string;
+    description: string;
+  };
+  assert.equal(pkg.name, "meethint");
+  assert.equal(pkg.homepage, "https://meethint.ai");
+  assert.match(pkg.description, /MeetHint/);
+
+  const site = JSON.parse(read("src/lib/og/site.json")) as { title: string; description?: string };
+  assert.equal(site.title, "MeetHint");
+  assert.ok(site.description);
+  assert.doesNotMatch(site.description!, /general knowledge/i);
 });
 
-test("product UI files never promise a generate-from-knowledge path", () => {
+test("landing, routes, and OG never promise a generate-from-knowledge path", () => {
   const files = [
     "src/components/meethint-landing.tsx",
     "src/routes/index.tsx",
@@ -65,11 +85,26 @@ test("product UI files never promise a generate-from-knowledge path", () => {
     "src/lib/og/site.json",
   ];
   for (const rel of files) {
-    const text = readFileSync(join(root, rel), "utf8");
+    const text = read(rel);
     for (const pattern of FORBIDDEN_MARKETING) {
       assert.doesNotMatch(text, pattern, `${rel} must not match ${pattern}`);
     }
   }
+
+  const landing = read("src/components/meethint-landing.tsx");
+  assert.match(landing, /MEETHINT_NAME/);
+  assert.match(landing, /MEETHINT_MARK/);
+  assert.doesNotMatch(landing, />\s*Hint\s*</);
+  assert.match(landing, /Cite it, or stay silent/);
+
+  const index = read("src/routes/index.tsx");
+  assert.match(index, /MEETHINT_TITLE/);
+  assert.match(index, /MEETHINT_DESCRIPTION/);
+  assert.doesNotMatch(index, /Hint — live answers/);
+
+  const appRoot = read("src/routes/__root.tsx");
+  assert.match(appRoot, /MEETHINT_NAME/);
+  assert.doesNotMatch(appRoot, /APP_NAME\s*=\s*"Hint"/);
 });
 
 test("design skill files must not reference or rewrite brand module copy", () => {
@@ -119,10 +154,18 @@ test("design skill files must not reference or rewrite brand module copy", () =>
 });
 
 test("README and ARCHITECTURE agree on cite-or-silence", () => {
-  const readme = readFileSync(join(root, "README.md"), "utf8");
-  const architecture = readFileSync(join(root, "ARCHITECTURE.md"), "utf8");
-  assert.match(readme, /Cite or silence/i);
-  assert.match(readme, /no general-knowledge/i);
-  assert.match(architecture, /Cite or silence/i);
-  assert.match(architecture, /no general-knowledge/i);
+  const readme = read("README.md");
+  const architecture = read("ARCHITECTURE.md");
+  const contract = /Cite or silence/i;
+  const noGeneral = /no general-knowledge/i;
+
+  assert.match(readme, contract);
+  assert.match(readme, noGeneral);
+  assert.match(architecture, contract);
+  assert.match(architecture, noGeneral);
+  assert.match(architecture, /Generated from the repository/);
+
+  const route = read("src/lib/search/answer-route.ts");
+  assert.match(route, /localCard third — never general knowledge/);
+  assert.match(architecture, /localCard/);
 });

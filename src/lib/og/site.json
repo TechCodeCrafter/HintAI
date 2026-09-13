@@ -1,5 +1,6 @@
 {
   "title": "MeetHint",
+  "description": "Live meeting copilot — cite or silence. Every answer backed by your files, or the card stays empty with a reason.",
   "card": "custom",
   "color": "07090C"
 }

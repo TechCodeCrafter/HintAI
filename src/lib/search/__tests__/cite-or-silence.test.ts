@@ -71,6 +71,10 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.match(landing, /note: "limits"/);
   assert.match(landing, /demo pack only/);
   assert.match(landing, /Add PDFs separately/);
+  const readme = readFileSync(join(root, "README.md"), "utf8");
+  assert.match(readme, /The product loop/);
+  assert.match(readme, /Retrieval rank vs verification/);
+  assert.match(readme, /Not the product yet/);
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 
   const brand = readFileSync(join(root, "src/lib/brand.ts"), "utf8");
