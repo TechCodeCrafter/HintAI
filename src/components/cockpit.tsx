@@ -932,7 +932,7 @@ function ProofLine() {
         ? remaining > 0
           ? `${remaining} questions remaining · GPT-4o Mini`
           : "Today's 20 questions are used. Upgrade for unlimited."
-        : "Cited when possible, generated when needed."}
+        : "Cited from your files, or silence when they can't answer."}
     </p>
   );
 }

@@ -37,10 +37,9 @@ const BEATS: Beat[] = [
     asked: "Do we have a data processing agreement with them?",
     files: ["MSA.pdf", "addendum.pdf", "pricing.pdf", "notes.md"],
     fileCount: 47,
-    answer:
-      "A DPA sets who is controller vs processor, what the vendor may do with personal data, and what happens on a breach. Nothing in these files mentions one — you still typically need it before they process customer data, especially under GDPR.",
+    answer: null,
     source: null,
-    silence: null,
+    silence: "Your material doesn't cover this",
   },
 ];
 
@@ -90,8 +89,8 @@ const USE_CASES = [
 const STEPS = [
   { id: "01", title: "Listening", body: "Hint picks up the question that is actually being asked." },
   { id: "02", title: "Searching your files", body: "It searches the notes, docs, slides, or folder you loaded." },
-  { id: "03", title: "Choosing the path", body: "Strong matches are cited. Weak or missing matches are answered from knowledge." },
-  { id: "04", title: "Answer ready", body: "You get the answer — cited when the files support it, generated when they don't." },
+  { id: "03", title: "Choosing the path", body: "Strong matches are cited. When the files can't answer, Hint stays silent and says why." },
+  { id: "04", title: "Answer ready", body: "You get a cited line from your material — or an honest reason when nothing qualifies." },
 ] as const;
 
 function useReducedMotion(): boolean {
@@ -145,7 +144,7 @@ function useDemoCycle(beats: Beat[]) {
     after(askDone + 280, () => setPhase("detected"));
     after(askDone + 900, () => setPhase("searching"));
     after(askDone + 1900, () => setPhase("answered"));
-    after(askDone + 1900 + (beat.answer ? 5200 : 4200), advance);
+    after(askDone + 1900 + (beat.answer || beat.silence ? 5200 : 4200), advance);
     return clear;
   }, [beat, beats.length, reduced]);
 
@@ -182,7 +181,8 @@ function ProductFrame({
   large?: boolean;
 }) {
   const dark = tone === "dark";
-  const found = phase === "answered" && beat.source;
+  const found = phase === "answered" && Boolean(beat.source);
+  const silent = phase === "answered" && Boolean(beat.silence);
   const muted = dark ? "text-white/45" : "text-[var(--hint-muted)]";
   const ink = dark ? "text-white" : "text-[var(--hint-text)]";
   const edge = dark ? "border-white/10" : "border-[var(--hint-border)]";
@@ -194,7 +194,7 @@ function ProductFrame({
         <div className="flex min-w-0 items-center gap-2">
           <span
             className={`size-1.5 shrink-0 rounded-full ${
-              phase === "answered" && beat.answer ? "bg-[var(--hint-ok)]" : "bg-[var(--hint-accent)]"
+              phase === "answered" && (beat.answer || beat.silence) ? "bg-[var(--hint-ok)]" : "bg-[var(--hint-accent)]"
             } ${phase === "listening" || phase === "asking" || phase === "searching" ? "hint-pulse" : ""}`}
           />
           <span className={`text-[13px] font-medium ${ink}`}>{statusLabel(phase, beat.fileCount)}</span>
@@ -257,9 +257,7 @@ function ProductFrame({
                     </p>
                   </div>
                   <div className="space-y-3">
-                    <p className="receipt-kicker receipt-kicker-accent">
-                      {beat.source ? "From your docs" : "Generated"}
-                    </p>
+                    <p className="receipt-kicker receipt-kicker-accent">From your docs</p>
                     <p className="answer-body">{highlightAnswer(beat.answer)}</p>
                   </div>
                   {beat.source ? (
@@ -271,9 +269,23 @@ function ProductFrame({
                         <span className="font-mono text-[12px] text-[var(--hint-muted)]">{beat.source.detail}</span>
                       </div>
                     </div>
-                  ) : (
-                    <span className="answer-mode-badge badge-generated">Generated</span>
-                  )}
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {silent ? (
+            <div className="hint-fade space-y-4">
+              <div className="answer-receipt">
+                <div className="answer-receipt-body">
+                  <div className="min-w-0">
+                    <p className="receipt-kicker">They asked</p>
+                    <p className="mt-2 text-[17px] font-semibold leading-snug text-[var(--hint-text)]">
+                      {question ? `“${question}”` : null}
+                    </p>
+                  </div>
+                  <p className="text-[15px] leading-relaxed text-[var(--hint-muted)]">{beat.silence}</p>
                 </div>
               </div>
             </div>
@@ -547,7 +559,7 @@ export function MeetHintLanding() {
             </p>
           </div>
           <HowHintWorks />
-          <p className="hint-display text-center text-2xl sm:text-3xl">Cite it, or generate it.</p>
+          <p className="hint-display text-center text-2xl sm:text-3xl">Cite it, or stay silent.</p>
         </section>
 
         <section ref={demoRef} id="demo" className="bg-[var(--hint-demo)] text-white">
@@ -690,7 +702,7 @@ export function MeetHintLanding() {
             <div className="mx-auto max-w-lg">
               <WaitlistForm id="hero-email" />
             </div>
-            <p className="text-center text-[15px] text-[var(--hint-muted)]">Cite it, or generate it.</p>
+            <p className="text-center text-[15px] text-[var(--hint-muted)]">Cite it, or stay silent.</p>
           </div>
         </section>
       </main>
