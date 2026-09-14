@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AnonymousTierBanner } from "@/components/anonymous-tier-banner";
 import { AccountWorkspaceSync } from "./account-session";
 
 /**
@@ -14,6 +15,7 @@ import { AccountWorkspaceSync } from "./account-session";
 export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <>
+      <AnonymousTierBanner />
       <AccountWorkspaceSync />
       {children}
     </>

@@ -32,6 +32,15 @@ export function currentAccountId(): string | null {
   return boundAccountId;
 }
 
+/** Every runtime path uses an explicit workspace — authenticated or anonymous. */
+export function requireBoundAccountId(): string {
+  const id = boundAccountId;
+  if (!id) {
+    throw new Error("No workspace is bound — authenticated and anonymous tiers must bind explicitly.");
+  }
+  return id;
+}
+
 export function sanitizeAccountId(userId: string): string {
   const cleaned = userId.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 80);
   return cleaned || "account";

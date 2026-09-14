@@ -1,4 +1,5 @@
 import { LOCAL_DEV_ACCOUNT_ID, currentAccountId, readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
+import { isAnonymousWorkspaceId } from "../auth/anonymous-tier.ts";
 import { NORTHSTAR } from "../repo/northstar.ts";
 import type { RepoPack } from "../repo/types.ts";
 import type { ContextRepository } from "./repository.ts";
@@ -30,7 +31,8 @@ export function readActiveContextId(): string | null {
   try {
     const next = readAccountStorage(ACTIVE_CONTEXT_KEY);
     if (next != null) return next;
-    if (currentAccountId() !== LOCAL_DEV_ACCOUNT_ID && currentAccountId() !== null) return null;
+    const bound = currentAccountId();
+    if (bound && bound !== LOCAL_DEV_ACCOUNT_ID && !isAnonymousWorkspaceId(bound)) return null;
     const legacy = localStorage.getItem(ACTIVE_CONTEXT_KEY_LEGACY);
     if (legacy == null) return null;
     writeAccountStorage(ACTIVE_CONTEXT_KEY, legacy);
