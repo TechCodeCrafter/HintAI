@@ -40,8 +40,13 @@ export type SynthesisAsk = (payload: {
 const INSUFFICIENT = "INSUFFICIENT";
 const MARKER = /\[(\d+)\]/g;
 const CHUNK_CAP = 5;
-const CHUNK_CHARS = 1000;
+/** Trimmed from 1000 — source identity preserved in chunkHeader; lowers LLM input tokens. */
+const CHUNK_CHARS = 720;
 const CHUNKS_PER_FILE = 2;
+
+const GROUNDED_INSTRUCTION = `Use ONLY the chunks below. Never use general knowledge.
+If insufficient, respond exactly: INSUFFICIENT
+Cite claims with [1] or [2]. Max 2 sentences.`;
 
 /** Keep retrieval order but stop a single file from filling the prompt. */
 export function hitsForPrompt(hits: Hit[], cap = CHUNK_CAP, perFile = CHUNKS_PER_FILE): Hit[] {
@@ -69,12 +74,7 @@ export function buildSynthesisPrompt(query: string, hits: Hit[], material?: Spac
     return `[${i + 1}] ${chunkHeader(hit, material)}\n${(hit.text ?? "").slice(0, CHUNK_CHARS)}`;
   });
   const documents = chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
-  return `You synthesize an answer using ONLY the document chunks below. NEVER use general knowledge.
-
-If the documents do not contain enough information to answer, respond with exactly: INSUFFICIENT
-
-Cite each claim with a chunk marker like [1] or [2] immediately after the claim.
-Keep the answer to 1-2 sentences max.
+  return `${GROUNDED_INSTRUCTION}
 
 DOCUMENTS:
 ${documents}
@@ -104,13 +104,8 @@ export function buildWeakEvidencePrompt(
   history?: string[],
   material?: SpaceMaterialView,
 ): string {
-  return `You synthesize an answer using ONLY the document chunks below. NEVER use general knowledge.
+  return `${GROUNDED_INSTRUCTION}
 ${historyBlock(history)}
-If the documents do not contain enough information to answer, respond with exactly: INSUFFICIENT
-
-Cite each claim with a chunk marker like [1] or [2] immediately after the claim.
-Keep the answer to 1-2 sentences max.
-
 DOCUMENT CHUNKS:
 ${formatChunks(hits, material)}
 

@@ -9,8 +9,10 @@ import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { isFlightRecorder } from "../debug.ts";
 import type { DropReason } from "../listen/utterance-admission.ts";
 import type { Citation, Utterance } from "../repo/types.ts";
+import type { ModelProvider } from "../ai/models.ts";
 import type { AnswerStageTimings, TranscriptSummary } from "./answer-latency.ts";
 import { assertFlightPrivacy, newTraceId, summarizeTranscriptLanes } from "./answer-latency.ts";
+import type { ProgressiveTiming } from "./progressive-timing.ts";
 import type { AnswerTier, SearchLatency } from "../search/answer-route.ts";
 import type { GateVerdict } from "../search/question.ts";
 import type { Shape } from "../search/intent.ts";
@@ -53,6 +55,15 @@ export type AnswerFlightRecord = {
   gate: GateVerdictSnapshot | null;
   retrieval: string;
   tier: AnswerTier;
+  /** Selected model metadata — no API keys or prompts. */
+  modelId?: string;
+  provider?: ModelProvider;
+  modelName?: string;
+  /** Manual capture scenario tag, e.g. "multi-repo-synthesis". */
+  captureScenario?: string;
+  progressive?: ProgressiveTiming;
+  /** True when verified localCard skipped grounded/synthesis LLM (Step 5C). */
+  llmBypassed?: boolean;
   latency: SearchLatency | AnswerStageTimings;
   say: string | null;
   reason: string | null;
@@ -183,6 +194,11 @@ export function recordAnswerFlight(
     transcript?: TranscriptLanes;
     transcriptSummary?: TranscriptSummary;
     traceId?: string;
+    modelId?: string;
+    provider?: ModelProvider;
+    modelName?: string;
+    captureScenario?: string;
+    progressive?: ProgressiveTiming;
   },
 ): string | null {
   if (!isFlightRecorder()) return null;

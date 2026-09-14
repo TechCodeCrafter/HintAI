@@ -166,6 +166,7 @@ test("README and ARCHITECTURE agree on cite-or-silence", () => {
   assert.match(architecture, /Generated from the repository/);
 
   const route = read("src/lib/search/answer-route.ts");
-  assert.match(route, /localCard third — never general knowledge/);
+  assert.match(route, /localCard fallback — never general knowledge/);
+  assert.match(route, /localCardFastPathEligible/);
   assert.match(architecture, /localCard/);
 });

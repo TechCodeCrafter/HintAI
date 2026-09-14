@@ -35,6 +35,7 @@ import { NORTHSTAR } from "@/lib/repo/northstar";
 import {
   SYNTHESIZE_MAX_TOKENS,
   getDefaultModel,
+  getModelById,
   readSelectedModelId,
   writeSelectedModelId,
 } from "@/lib/ai/models";
@@ -1710,14 +1711,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     };
 
     const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
+    const selectedModel = getModelById(get().selectedModelId) ?? getDefaultModel();
     const routed = await routeSearchAnswer(query, hits, t0, {
       pack: state.pack,
       material,
       cardContext,
-      modelId: get().selectedModelId,
+      modelId: selectedModel.id,
       maxTokens: SYNTHESIZE_MAX_TOKENS,
       threadHistory,
       retrieveMs,
+      measureProgressive: isFlightRecorder(),
     });
     if (epoch !== searchEpoch) return;
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
@@ -1759,6 +1762,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       supported,
       fallbackReason: supported ? null : (routed.card.reason ?? null),
       workspaceId,
+      modelId: selectedModel.id,
+      provider: selectedModel.provider,
+      modelName: routed.card.modelName ?? selectedModel.name,
+      progressive: routed.progressive,
+      llmBypassed: routed.llmBypassed,
       transcriptSummary: summarizeTranscript(get().utterances),
       gate: gate
         ? { verdict: gate.verdict, question: gate.question, triggered: gate.triggered }

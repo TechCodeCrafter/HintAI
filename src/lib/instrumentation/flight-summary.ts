@@ -65,29 +65,7 @@ function formatStats(label: string, stats: { p50: number; p95: number; p99: numb
   return `  ${label}: ${stats.p50} / ${stats.p95} / ${stats.p99}`;
 }
 
-function subsetLatencySection(title: string, answers: AnswerFlightRecord[]): string[] {
-  if (answers.length === 0) return [`${title}: (no samples)`];
-  const lines = [`${title} (n=${answers.length})`];
-  for (const key of [
-    "retrieveMs",
-    "routeMs",
-    "groundedMs",
-    "synthesisMs",
-    "localCardMs",
-    "llmMs",
-    "verifyMs",
-    "documentHydrateMs",
-    "materialPrepMs",
-    "totalMs",
-    "uiApplyMs",
-  ] as const) {
-    const stats = latencyStats(answers, key);
-    if (stats.p50 > 0 || stats.p95 > 0) {
-      lines.push(formatStats(`${key} p50/p95/p99`, stats));
-    }
-  }
-  return lines;
-}
+const TIER_REPORT_KEYS = ["retrieveMs", "documentHydrateMs", "llmMs", "verifyMs", "totalMs"] as const;
 
 export function formatFlightSummary(records: FlightRecord[]): string {
   const answers = records.filter((row): row is AnswerFlightRecord => row.kind === "answer");
@@ -107,24 +85,51 @@ export function formatFlightSummary(records: FlightRecord[]): string {
   lines.push("");
 
   if (answers.length > 0) {
-    lines.push("Latency (ms) — p50 / p95 / p99");
-    for (const key of ["retrieveMs", "llmMs", "verifyMs", "totalMs"] as const) {
-      const stats = latencyStats(answers, key);
-      lines.push(formatStats(key, stats));
+    lines.push("Latency by tier (ms) — p50 / p95 / p99");
+    for (const tier of ["localCard", "grounded", "synthesis", "silent"] as const) {
+      const subset = answers.filter((row) => row.tier === tier);
+      if (subset.length === 0) {
+        lines.push(`  ${TIER_LABELS[tier]}: (no samples)`);
+        continue;
+      }
+      lines.push(`  ${TIER_LABELS[tier]} (n=${subset.length})`);
+      for (const key of TIER_REPORT_KEYS) {
+        const stats = latencyStats(subset, key);
+        if (stats.p50 > 0 || stats.p95 > 0 || key === "totalMs") {
+          lines.push(formatStats(`    ${key}`, stats));
+        }
+      }
     }
     lines.push("");
-    lines.push(...subsetLatencySection("All answers — extended stages", answers));
+    lines.push("Multi-source subset (sourceCount > 1)");
+    const multi = answers.filter((row) => (row.sourceCount ?? 0) > 1);
+    if (multi.length === 0) {
+      lines.push("  (no samples)");
+    } else {
+      lines.push(`  n=${multi.length}`);
+      for (const key of TIER_REPORT_KEYS) {
+        lines.push(formatStats(`  ${key}`, latencyStats(multi, key)));
+      }
+    }
     lines.push("");
-    lines.push(...subsetLatencySection("localCard tier", answers.filter((row) => row.tier === "localCard")));
-    lines.push("");
-    lines.push(
-      ...subsetLatencySection("synthesis + grounded tiers", answers.filter((row) => row.tier === "synthesis" || row.tier === "grounded")),
-    );
-    lines.push("");
-    lines.push(...subsetLatencySection("Single-source (sourceCount ≤ 1)", answers.filter((row) => (row.sourceCount ?? 1) <= 1)));
-    lines.push("");
-    lines.push(...subsetLatencySection("Multi-source (sourceCount > 1)", answers.filter((row) => (row.sourceCount ?? 0) > 1)));
-    lines.push("");
+    const models = new Map<string, AnswerFlightRecord[]>();
+    for (const row of answers) {
+      const key = `${row.provider ?? "?"}:${row.modelId ?? "?"}`;
+      const bucket = models.get(key) ?? [];
+      bucket.push(row);
+      models.set(key, bucket);
+    }
+    if (models.size > 0) {
+      lines.push("By provider / model");
+      for (const [, rows] of models) {
+        const first = rows[0]!;
+        lines.push(`  ${first.provider ?? "?"} / ${first.modelName ?? first.modelId} (n=${rows.length})`);
+        for (const key of ["totalMs", "llmMs", "verifyMs"] as const) {
+          lines.push(formatStats(`    ${key}`, latencyStats(rows, key)));
+        }
+      }
+      lines.push("");
+    }
   } else {
     lines.push("Latency: (no answer records)");
     lines.push("");

@@ -43,6 +43,9 @@
     "format": "prettier --write .",
     "sync:github": "node scripts/sync-github-repo.mjs",
     "flight:summary": "node scripts/flight-summary.mjs",
+    "flight:analyze": "node scripts/flight-analyze.mjs",
+    "flight:capture": "node --env-file=.env --experimental-strip-types scripts/capture-flight-session.mjs",
+    "flight:validate": "node scripts/flight-analyze.mjs -- --compare fixtures/flight-sessions/real-session-latest.json",
     "latency:benchmark": "node scripts/latency-benchmark.mjs",
     "redteam:smoke": "node --experimental-strip-types --test src/lib/security/__tests__/redteam-harness.test.ts",
     "redteam:harness": "node scripts/redteam-harness.mjs"

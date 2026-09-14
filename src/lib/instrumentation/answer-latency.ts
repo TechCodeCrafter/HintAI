@@ -97,6 +97,12 @@ export function assertFlightPrivacy(payload: Record<string, unknown>): void {
   if (/"evidence"\s*:\s*\[/.test(json)) {
     throw new Error("flight telemetry must not include evidence bodies");
   }
+  if (/\bsk-[a-zA-Z0-9]{10,}/.test(json) || /\bapi[_-]?key\b/i.test(json)) {
+    throw new Error("flight telemetry must not include API keys");
+  }
+  if (/"prompt"\s*:/.test(json)) {
+    throw new Error("flight telemetry must not include prompts");
+  }
 }
 
 export function stageValues(records: AnswerStageTimings[], key: keyof AnswerStageTimings): number[] {

@@ -30,7 +30,8 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.doesNotMatch(synthesis, /buildAnswerPrompt/);
   assert.doesNotMatch(route, /generateGeneralAnswer/);
   assert.doesNotMatch(cardsmith, /completeGeneral/);
-  assert.match(route, /localCard third — never general knowledge/);
+  assert.match(route, /localCardFastPathEligible/);
+  assert.match(route, /localCard fallback — never general knowledge/);
   assert.match(store, /runSpaceScopedRetrieval/);
   const searchFn = store.slice(store.indexOf("search: async"));
   assert.match(searchFn, /runSpaceScopedRetrieval\(\{/);
