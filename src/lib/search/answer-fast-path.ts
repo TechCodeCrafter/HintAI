@@ -61,6 +61,29 @@ export function needsMultiSourceCoverage(hits: Hit[], card: Card): boolean {
  * A verified localCard may bypass grounded/synthesis LLM when it already satisfies
  * the evidence contract. This is not progressive rendering — one final answer only.
  */
+/** Diagnostic reasons when fast-path is declined — for Step 5D validation only. */
+export function explainFastPathIneligibility(card: Card, hits: Hit[]): string[] {
+  const reasons: string[] = [];
+  if (!card.say?.trim()) reasons.push("localCard returned no supported say");
+  if (!card.evidence?.length) reasons.push("localCard missing evidence spans");
+  if (!card.citations?.length) reasons.push("localCard missing citations");
+  const evidenceIds = new Set((card.evidence ?? []).map((row) => row.id));
+  const citedEvidence = (card.citations ?? [])
+    .map((cite) => cite.evidenceId)
+    .filter((id): id is string => Boolean(id));
+  if (card.citations?.length && citedEvidence.length === 0) {
+    reasons.push("citations lack evidenceId linkage");
+  } else if (citedEvidence.some((id) => !evidenceIds.has(id))) {
+    reasons.push("citation evidenceId does not match card evidence");
+  }
+  const topScore = hits[0]?.score ?? 0;
+  if (topScore < FAST_PATH_MIN_SCORE) reasons.push(`top retrieval score ${topScore} below ${FAST_PATH_MIN_SCORE}`);
+  if (needsMultiSourceCoverage(hits, card)) {
+    reasons.push("hits span multiple sources but citations cover fewer than two");
+  }
+  return reasons;
+}
+
 export function localCardFastPathEligible(card: Card, hits: Hit[]): boolean {
   if (!card.say?.trim()) return false;
   if (!card.evidence?.length) return false;

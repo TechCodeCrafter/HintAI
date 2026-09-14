@@ -206,11 +206,10 @@ export type CaptureOptions = {
   cases?: CaptureCase[];
 };
 
-export async function captureProductionTrace(
-  captureCase: CaptureCase,
-  options: CaptureOptions = {},
-): Promise<AnswerFlightRecord> {
-  const model = options.model ?? getDefaultModel();
+export type CaptureRetrievalContext = Awaited<ReturnType<typeof loadCaptureRetrieval>>;
+
+/** Retrieval + localCard prep for diagnostics (Step 5D) — does not route or call LLM. */
+export async function loadCaptureRetrieval(captureCase: CaptureCase) {
   const ctx = await spaceFor(captureCase.space);
   const material = buildSpaceMaterialView({
     workspaceId: defaultWorkspaceId(),
@@ -220,8 +219,6 @@ export async function captureProductionTrace(
     pack: ctx.runtime.pack,
     sources: ctx.runtime.allSources,
   });
-
-  const t0 = performance.now();
   const canonical = normalizeSpokenQuestion(captureCase.query).canonical;
   const hits = await runSpaceScopedRetrieval({
     query: canonical,
@@ -237,9 +234,24 @@ export async function captureProductionTrace(
     limit: 6,
     hybrid: false,
   });
-  const retrieveMs = Math.round(performance.now() - t0);
+  const { context: cardContext } = await hydratePdfDocumentsForHits(
+    ctx.repo,
+    ctx.runtime.allSources,
+    hits,
+    material,
+  );
+  return { ctx, material, hits, cardContext, canonical, spaceSourceCount: ctx.runtime.allSources.length };
+}
 
-  const { context: cardContext, documentHydrateMs } = await hydratePdfDocumentsForHits(
+export async function captureProductionTrace(
+  captureCase: CaptureCase,
+  options: CaptureOptions = {},
+): Promise<AnswerFlightRecord> {
+  const model = options.model ?? getDefaultModel();
+  const t0 = performance.now();
+  const { ctx, material, hits, cardContext, canonical } = await loadCaptureRetrieval(captureCase);
+  const retrieveMs = Math.round(performance.now() - t0);
+  const { documentHydrateMs } = await hydratePdfDocumentsForHits(
     ctx.repo,
     ctx.runtime.allSources,
     hits,

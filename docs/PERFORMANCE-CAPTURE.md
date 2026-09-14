@@ -55,6 +55,17 @@ npm run flight:analyze path/to/flight-export.json
 npm run flight:analyze -- --synthetic   # validation dataset only
 ```
 
+## Step 5D — Fast-path quality validation
+
+Compare post-5C captures against the 5B.1 baseline fixture (no answer bodies in telemetry):
+
+```bash
+node scripts/flight-validate-5d.mjs
+node scripts/flight-grounded-5d.mjs     # requires OPENAI_API_KEY in .env
+```
+
+Unit tests: `src/lib/instrumentation/__tests__/fast-path-quality.test.ts`
+
 ## Decision thresholds
 
 See `OPTIMIZATION_THRESHOLDS` in `src/lib/instrumentation/flight-analysis.ts`:

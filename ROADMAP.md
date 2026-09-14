@@ -70,7 +70,9 @@ Pairs with anticipatory retrieval (Phase 4).
 
 ---
 
-## Phase 3 — Latency instrumentation (measure before optimizing)
+## Phase 3 — Latency instrumentation — **Milestone 2 performance: complete (2026-09-14)**
+
+Measured baseline (50-trace production capture): supported p50 ~1 ms, p95 ~816 ms, p99 ~1603 ms; fast-path semantic acceptance 100% (0 conflicting, 0 incomplete). Source routing, anticipatory retrieval, progressive replacement, and model swapping remain **deferred** — see [docs/PERFORMANCE-MILESTONE-2.md](./docs/PERFORMANCE-MILESTONE-2.md).
 
 Instrument each stage separately:
 

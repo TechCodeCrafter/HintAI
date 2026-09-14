@@ -74,6 +74,7 @@ const GROUPS = [
       "src/lib/instrumentation/__tests__/answer-latency.test.ts",
       "src/lib/instrumentation/__tests__/flight-analysis.test.ts",
       "src/lib/instrumentation/__tests__/progressive-agreement.test.ts",
+      "src/lib/instrumentation/__tests__/fast-path-quality.test.ts",
       "src/lib/listen/__tests__/utterance-admission.test.ts",
       "src/lib/__tests__/demo-media.test.ts",
       "src/lib/document/__tests__/evidence.test.ts",
