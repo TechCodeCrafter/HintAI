@@ -18,7 +18,7 @@ export class WorkspaceScopeError extends Error {
   }
 }
 
-/** Active workspace, or null before account bind. */
+/** Active workspace — null only while binding is in flight. */
 export function currentWorkspaceId(): WorkspaceId | null {
   return currentAccountId();
 }
