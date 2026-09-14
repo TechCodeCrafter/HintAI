@@ -197,7 +197,7 @@ Build in this order:
 | Silero utterance admission + audio e2e | Shipped (#46) |
 | Flight recorder + export + summary CLI | Shipped |
 | Thumbs-down feedback reasons | Shipped (feedback branch) |
-| Tenant isolation | **Not started — Phase 0 blocker** |
+| Tenant isolation | **In progress** — `workspaceId` on contexts/chunks/answers; scoped retrieve + vector keys; cross-user tests |
 | Knowledge Spaces UX | Conceptual only (`context` ≈ one folder) |
 | Source routing / anticipatory retrieval | Not started |
 | Per-stage latency KPI | Partial (answer-level latency in flight log) |

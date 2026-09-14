@@ -1581,10 +1581,20 @@ function CardPane({
                 ) : null}
                 {speaking ? (
                   <div className="space-y-3">
-                    <p className="receipt-kicker receipt-kicker-accent">{receiptKicker(card?.answerMode, usedEvidence)}</p>
+                    <p className="receipt-kicker font-semibold uppercase tracking-wide text-fg">Say this</p>
                     {card?.say ? (
                       <AnswerSay text={card.say} className={sayClamped ? "line-clamp-2" : undefined} />
                     ) : null}
+                    <p className="text-xs text-muted" data-testid="answer-confidence">
+                      {card?.flightTier === "grounded"
+                        ? "High confidence"
+                        : card?.flightTier === "synthesis"
+                          ? "Synthesized"
+                          : card?.flightTier === "localCard"
+                            ? "From your files"
+                            : "Supported"}
+                      {card?.citations?.length ? ` · ${card.citations.length} source${card.citations.length === 1 ? "" : "s"}` : ""}
+                    </p>
                     {generated ? (
                       <p
                         className="generated-note"

@@ -6,6 +6,8 @@ import { pathExcluded } from "./exclusions.ts";
 import { preferredOpenFile, prunePack } from "../repo/folder.ts";
 import type { Chunk, IndexedChunk, RepoFile, RepoPack } from "../repo/types.ts";
 import { isDocumentChunk } from "../repo/types.ts";
+import { defaultWorkspaceId } from "../auth/workspace.ts";
+import { tagChunksForScope } from "../search/retrieval-scope.ts";
 import { buildChunks, packVocabulary } from "../search/retrieve.ts";
 import type { HydratedRuntime } from "./hydrate.ts";
 import { packFromSources } from "./hydrate.ts";
@@ -207,6 +209,7 @@ async function rebuildSource(
   const chunks = chunksFromFile(file, { structured });
   const record: IndexedSourceRecord = {
     id: indexedSourceKey(source.contextId, source.id),
+    workspaceId: source.workspaceId ?? defaultWorkspaceId(),
     contextId: source.contextId,
     sourceId: source.id,
     contentHash: source.contentHash,
@@ -228,6 +231,7 @@ async function persistDocumentChunks(
 ): Promise<void> {
   const record: IndexedSourceRecord = {
     id: documentLedgerKey(source.contextId, source.id, contentHash),
+    workspaceId: source.workspaceId ?? defaultWorkspaceId(),
     contextId: source.contextId,
     sourceId: source.id,
     contentHash,
@@ -358,6 +362,12 @@ export async function indexContext(
   assembled.push(...commits);
   timings.assembleMs = nowMs() - assembleStart;
 
+  const scope = {
+    workspaceId: context.workspaceId ?? defaultWorkspaceId(),
+    contextId: context.id,
+  };
+  const scopedChunks = tagChunksForScope(assembled, scope);
+
   const shouldEmbed = options.embed ?? USE_HYBRID_RETRIEVAL;
   if (shouldEmbed) {
     const embedStart = nowMs();
@@ -366,7 +376,7 @@ export async function indexContext(
       if (store) {
         setVectorStore(store);
         const { embedIndexedChunks } = await import("../search/embed-chunks.ts");
-        await embedIndexedChunks(assembled, store);
+        await embedIndexedChunks(scopedChunks, store);
       }
     } catch {
       // Embedding is a sidecar. A failed encode must not block searchability.
@@ -375,7 +385,7 @@ export async function indexContext(
   }
 
   const vocabStart = nowMs();
-  const vocab = packVocabulary(assembled);
+  const vocab = packVocabulary(scopedChunks);
   timings.vocabMs = nowMs() - vocabStart;
   timings.totalMs = nowMs() - started;
 
@@ -385,7 +395,7 @@ export async function indexContext(
 
   return {
     pack: use,
-    chunks: assembled,
+    chunks: scopedChunks,
     vocab,
     openFile: preferredOpenFile(use) ?? use.files[0]?.path ?? null,
     weak,

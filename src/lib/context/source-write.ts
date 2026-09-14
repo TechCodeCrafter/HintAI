@@ -1,3 +1,4 @@
+import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { byteLengthOf, hashBlob, hashContent } from "./hash.ts";
 import type {
   PdfReadiness,
@@ -49,6 +50,7 @@ export async function textSourceFromDraft(
   const existing = prior && isTextSource(prior) ? prior : undefined;
   return {
     id: existing?.id ?? (prior && isPdfSource(prior) ? prior.id : crypto.randomUUID()),
+    workspaceId: existing?.workspaceId ?? prior?.workspaceId ?? defaultWorkspaceId(),
     contextId,
     path,
     language: draft.language,

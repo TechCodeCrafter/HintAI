@@ -48,6 +48,7 @@ import {
   findHistoryItem,
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
+import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
 import { recordAnswerFlight, transcriptLanes } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
 import { officeReadError, packFromFiles, truncationNotice, type FolderLoadOptions } from "@/lib/repo/folder";
@@ -1512,10 +1513,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const resolved = Boolean(opts?.resolved);
     const previousQuestion = previousRetrievalQuestion(state.answerHistory.map((item) => item.query));
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
+    const workspaceId = currentWorkspaceId() ?? defaultWorkspaceId();
+    const contextId = state.activeContextId ?? state.pack.id;
     const hits = await retrieveHits(
       expandRetrievalQuery(canonical, previousQuestion),
       state.chunks,
-      retrieveHitsOptionsForPack(state.pack, { limit: 6, vectorStore: getVectorStore() }),
+      retrieveHitsOptionsForPack(state.pack, {
+        limit: 6,
+        vectorStore: getVectorStore(),
+        scope: { workspaceId, contextId },
+      }),
     );
     const retrieveMs = Math.round(performance.now() - t0);
     if (epoch !== searchEpoch) return;
@@ -1560,6 +1567,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const gate = gateRecords().at(-1);
     const answerId = recordAnswerFlight({
       query,
+      contextId: get().activeContextId ?? state.pack.id,
+      workspaceId,
       transcript: transcriptLanes(get().utterances),
       gate: gate
         ? { verdict: gate.verdict, question: gate.question, triggered: gate.triggered }

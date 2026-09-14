@@ -5,6 +5,8 @@ export type ContextKind = "work" | "course" | "client" | "presentation" | "resea
 
 export type ContextRecord = {
   id: string;
+  /** Account/team boundary — required on new rows; backfilled on read for legacy data. */
+  workspaceId?: string;
   name: string;
   description?: string;
   kind?: ContextKind;
@@ -20,6 +22,7 @@ export type ContextRecord = {
 
 export type TextStoredSource = {
   id: string;
+  workspaceId?: string;
   contextId: string;
   path: string;
   language?: string;
@@ -40,6 +43,7 @@ export function isTerminalPdfReadiness(readiness: PdfReadiness): readiness is Pd
 
 export type PdfStoredSource = {
   id: string;
+  workspaceId?: string;
   contextId: string;
   path: string;
   kind: "pdf";

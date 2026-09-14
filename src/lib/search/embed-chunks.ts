@@ -1,4 +1,5 @@
 import type { IndexedChunk } from "../repo/types.ts";
+import { vectorCacheKey } from "./retrieval-scope.ts";
 import { hashText } from "./evidence.ts";
 import { embedBatch, embedText, embeddingTextFor } from "./embedding.ts";
 import type { VectorStore } from "./vector-store.ts";
@@ -18,8 +19,9 @@ export async function embedIndexedChunks(
   const needing: IndexedChunk[] = [];
   for (const chunk of chunks) {
     const hash = hashChunk(chunk);
-    const hasEmbedding = await store.has(chunk.id);
-    if (!hasEmbedding || (await store.isStale(chunk.id, hash))) needing.push(chunk);
+    const key = vectorCacheKey(chunk);
+    const hasEmbedding = await store.has(key);
+    if (!hasEmbedding || (await store.isStale(key, hash))) needing.push(chunk);
   }
   const reused = chunks.length - needing.length;
   if (needing.length === 0) return { wrote: 0, reused };
@@ -33,7 +35,7 @@ export async function embedIndexedChunks(
 
   const written = needing
     .map((chunk, i) => ({
-      chunkId: chunk.id,
+      chunkId: vectorCacheKey(chunk),
       embedding: embeddings[i] ?? [],
       contentHash: hashChunk(chunk),
     }))
@@ -48,13 +50,13 @@ export async function syncChunkEmbeddings(
   store: VectorStore,
   embed: (text: string) => Promise<number[]> = embedText,
 ): Promise<{ wrote: number; reused: number }> {
-  const ids = chunks.map((chunk) => chunk.id);
+  const ids = chunks.map((chunk) => vectorCacheKey(chunk));
   const existing = await store.entries(ids);
   const fresh: typeof chunks = [];
   let reused = 0;
   for (const chunk of chunks) {
     const hash = hashChunk(chunk);
-    const row = existing.get(chunk.id);
+    const row = existing.get(vectorCacheKey(chunk));
     if (row && row.contentHash === hash && row.embedding.length > 0) {
       reused += 1;
       continue;
@@ -67,7 +69,7 @@ export async function syncChunkEmbeddings(
       const text = embeddingTextFor(chunk.text, chunk.path);
       const embedding = await embed(text);
       if (embedding.length === 0) continue;
-      written.push({ chunkId: chunk.id, embedding, contentHash: hashChunk(chunk) });
+      written.push({ chunkId: vectorCacheKey(chunk), embedding, contentHash: hashChunk(chunk) });
     } catch {
       // A failed encode must not drop the file from lexical search.
     }

@@ -1,3 +1,4 @@
+import { defaultWorkspaceId } from "../../auth/workspace.ts";
 import { CONTEXT_SCHEMA_VERSION, type ContextRecord, type StoredSource } from "../types.ts";
 
 export const DATABASE_NAME = "meethint";
@@ -22,6 +23,7 @@ export function newContextRecord(input: {
   const now = Date.now();
   return {
     id: crypto.randomUUID(),
+    workspaceId: defaultWorkspaceId(),
     name: input.name,
     description: input.description,
     kind: input.kind,

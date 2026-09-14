@@ -1,5 +1,6 @@
 import type { Hit, IndexedChunk } from "../repo/types.ts";
 import { cosineSimilarity, embedText } from "./embedding.ts";
+import { vectorCacheKey } from "./retrieval-scope.ts";
 import { RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
 import type { VectorStore } from "./vector-store.ts";
 
@@ -14,10 +15,10 @@ export async function semanticRetrieve(
   limit = 6,
 ): Promise<Hit[]> {
   const queryEmbedding = await embedText(query);
-  const embeddingMap = await vectorStore.get(chunks.map((chunk) => chunk.id));
+  const embeddingMap = await vectorStore.get(chunks.map((chunk) => vectorCacheKey(chunk)));
   const scored: Array<{ chunk: IndexedChunk; score: number }> = [];
   for (const chunk of chunks) {
-    const emb = embeddingMap.get(chunk.id);
+    const emb = embeddingMap.get(vectorCacheKey(chunk));
     if (!emb) continue;
     const similarity = cosineSimilarity(queryEmbedding, emb);
     if (similarity > RETRIEVAL_WEIGHTS.semanticFloor) {
