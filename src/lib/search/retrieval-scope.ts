@@ -6,6 +6,8 @@ import type { IndexedChunk } from "../repo/types.ts";
 export type RetrievalScope = {
   workspaceId: WorkspaceId;
   contextId: string;
+  /** When set, rank chunks from any listed context in the same workspace (Knowledge Space). */
+  contextIds?: string[];
 };
 
 export type ScopedChunkMeta = {
@@ -21,12 +23,18 @@ export function tagChunksForScope(chunks: IndexedChunk[], scope: RetrievalScope)
   }));
 }
 
+function contextAllowed(meta: ScopedChunkMeta, scope: RetrievalScope): boolean {
+  if (meta.contextId == null) return true;
+  if (scope.contextIds?.length) return scope.contextIds.includes(meta.contextId);
+  return meta.contextId === scope.contextId;
+}
+
 /** Drop chunks stamped for another workspace or context before ranking. */
 export function filterChunksForScope(chunks: IndexedChunk[], scope: RetrievalScope): IndexedChunk[] {
   return chunks.filter((chunk) => {
     const meta = chunk as IndexedChunk & ScopedChunkMeta;
     if (meta.workspaceId != null && meta.workspaceId !== scope.workspaceId) return false;
-    if (meta.contextId != null && meta.contextId !== scope.contextId) return false;
+    if (!contextAllowed(meta, scope)) return false;
     return true;
   });
 }
@@ -40,7 +48,7 @@ export function assertRetrievalScope(chunks: IndexedChunk[], scope: RetrievalSco
         `retrieve blocked: chunk ${chunk.id} belongs to workspace ${meta.workspaceId}`,
       );
     }
-    if (meta.contextId && meta.contextId !== scope.contextId) {
+    if (meta.contextId && !contextAllowed(meta, scope)) {
       throw new WorkspaceScopeError(`retrieve blocked: chunk ${chunk.id} belongs to context ${meta.contextId}`);
     }
   }

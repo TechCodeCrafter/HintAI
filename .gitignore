@@ -24,6 +24,8 @@ public/vad
 .grok/preview.log
 .tmp-kits
 .cursor/skills/**/__pycache__/
+security/deepteam/.venv/
+security/reports/*.json
 .impeccable/last-run.json
 .impeccable/config.local.json
 .impeccable/hook.cache.json

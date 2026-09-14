@@ -37,3 +37,8 @@
 | Cross-workspace retrieve | `filterChunksForScope` before rank + tagged chunks from `indexContext` |
 | Embedding cache bleed | Scoped vector keys + per-account vector DB |
 | Legacy global `ground.pack` | Migrated once into bound account; wiped on logout |
+
+## Adversarial red teaming
+
+Deterministic isolation tests: `tenant-isolation.test.ts`, `redteam-harness.test.ts`.
+For DeepTeam adversarial runs (prompt injection, corpus poisoning), see **[RED-TEAM.md](./RED-TEAM.md)**.

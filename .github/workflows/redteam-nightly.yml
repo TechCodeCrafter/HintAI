@@ -1,0 +1,59 @@
+name: redteam-nightly
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Harness scenario"
+        required: false
+        default: cross-tenant
+        type: choice
+        options:
+          - cross-tenant
+          - corpus-poison
+          - multi-source
+          - multi-source-irrelevant
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run redteam:smoke
+
+  deepteam:
+    runs-on: ubuntu-latest
+    needs: smoke
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci
+      - run: pip install -e security/deepteam
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      - name: Run DeepTeam adversarial suite
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDTEAM_SCENARIO: ${{ github.event.inputs.scenario || 'cross-tenant' }}
+          REDTEAM_ATTACKS_PER_TYPE: "2"
+        run: python security/deepteam/redteam_hintai.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deepteam-report
+          path: security/reports/*.json
+          if-no-files-found: ignore
