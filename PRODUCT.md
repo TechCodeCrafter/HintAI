@@ -40,6 +40,16 @@ Keyboard-first cockpit (Search, Listen, overlay). Live captions and cited cards 
 - Contract phrase: **Cite or silence** / **Cite it, or stay silent.**
 - Never promise answers from general knowledge or generation when files cannot answer.
 
+Canonical product nouns (see [ROADMAP.md](./ROADMAP.md)):
+
+- **Workspace** — account/team boundary
+- **Knowledge Space** — grouped sources for a project/domain
+- **Source** — repo, doc, or future connector unit
+- **Session** — live conversation
+- **Answer** — cited or silent Card output
+
+Legacy terms (*pack*, *context*, *material*) are being retired from user-facing copy.
+
 ## Evidence and constraints
 
 - Pipeline: retrieve → grounded synthesis (verified citations) → localCard → silence (`answer-route.ts`).

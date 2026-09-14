@@ -6,7 +6,7 @@ Browser meeting copilot for live calls. Load your material once. When someone as
 
 This is not a thin RAG wrapper. The search layer alone is ~3,600 lines across 60+ modules under `src/lib/search/` — hybrid retrieval, an evidence model with byte-level coordinates, shape-aware admission, offline exact extraction, and LLM-assisted synthesis that must pass citation verification before it can speak.
 
-For the full design (listening, persistence, benchmarks, known gaps), see **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
+For the full design (listening, persistence, benchmarks, known gaps), see **[ARCHITECTURE.md](./ARCHITECTURE.md)**. For build order and vocabulary, see **[ROADMAP.md](./ROADMAP.md)**.
 
 ---
 
