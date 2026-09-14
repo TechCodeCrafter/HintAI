@@ -6,7 +6,12 @@ import type { ContextRecord, ContextRuntimeStatus, StoredSource } from "@/lib/co
 import { isPdfSource } from "@/lib/context/types";
 import { indexSpace } from "@/lib/context/space-index";
 import type { SpaceRecord } from "@/lib/context/space-types.ts";
-import { authorizedSourceIdsFrom, assertSpaceWorkspace, runSpaceScopedRetrieval } from "@/lib/search/search-scope.ts";
+import {
+  authorizedSourceIdsFrom,
+  assertSpaceWorkspace,
+  buildSearchRetrievalScope,
+  runSpaceScopedRetrieval,
+} from "@/lib/search/search-scope.ts";
 import type { ContextRepository } from "@/lib/context/repository";
 import type { IndexedSpaceRuntime } from "@/lib/context/space-index";
 import { runtimeFromPack } from "@/lib/context/hydrate";
@@ -54,9 +59,12 @@ import {
   telemetryFromCard,
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
+import { newTraceId, summarizeTranscript } from "@/lib/instrumentation/answer-latency";
+import { isFlightRecorder } from "@/lib/debug";
+import { hydratePdfDocumentsForHits } from "@/lib/search/live-card-context";
 import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
-import { recordAnswerFlight, transcriptLanes } from "@/lib/instrumentation/flight-recorder";
+import { recordAnswerFlight } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
 import { officeReadError, packFromFiles, truncationNotice, type FolderLoadOptions } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
@@ -75,7 +83,7 @@ import {
   formatFlightRetrievalSummary,
   packVocabulary,
 } from "@/lib/search/retrieve";
-import { shapeOf } from "@/lib/search/intent";
+import { shapeOf, type Shape } from "@/lib/search/intent";
 import {
   contentWords,
   normalizeSpokenQuestion,
@@ -1616,13 +1624,22 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     }
     const epoch = ++searchEpoch;
     const t0 = performance.now();
+    const gate = gateRecords().at(-1);
+    const transcriptFinalizeMs =
+      gate?.triggered && gate.at != null ? Math.max(0, Math.round(t0 - gate.at)) : null;
+
+    const canonT0 = performance.now();
     const canonical = normalizeSpokenQuestion(query).canonical;
+    const canonicalizeMs = Math.round(performance.now() - canonT0);
+    const questionShape: Shape = shapeOf(canonical);
     const resolved = Boolean(opts?.resolved);
     const previousQuestion = previousRetrievalQuestion(state.answerHistory.map((item) => item.query));
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
     const workspaceId = currentWorkspaceId() ?? defaultWorkspaceId();
     const contextId = state.activeContextId ?? state.pack.id;
     const spaceId = state.activeSpaceId ?? contextId;
+
+    const materialT0 = performance.now();
     const material = buildSpaceMaterialView({
       workspaceId,
       spaceId,
@@ -1631,7 +1648,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       pack: state.pack,
       sources: state.sources,
     });
-    const cardContext: LocalCardContext = { material };
+    const materialPrepMs = Math.round(performance.now() - materialT0);
+
+    const scopeT0 = performance.now();
+    buildSearchRetrievalScope(state, workspaceId);
+    const scopePrepMs = Math.round(performance.now() - scopeT0);
+
+    const retrieveT0 = performance.now();
     const hits = await runSpaceScopedRetrieval({
       query: canonical,
       previousQuestion,
@@ -1642,7 +1665,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       vectorStore: getVectorStore(),
       limit: 6,
     });
-    const retrieveMs = Math.round(performance.now() - t0);
+    const retrieveMs = Math.round(performance.now() - retrieveT0);
+    if (epoch !== searchEpoch) return;
+
+    const { context: cardContext, documentHydrateMs } = await hydratePdfDocumentsForHits(
+      getContextRepository(),
+      state.sources,
+      hits,
+      material,
+    );
     if (epoch !== searchEpoch) return;
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
@@ -1691,36 +1722,55 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     if (epoch !== searchEpoch) return;
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
     const remaining = extractRemaining();
-    const gate = gateRecords().at(-1);
     const flightTelemetry = telemetryFromCard(routed.card);
-    const answerId = recordAnswerFlight({
+    const sourceCount = new Set(flightTelemetry.sourceIds).size || state.sources.length;
+    const supported = Boolean(routed.card.say);
+    const latency = {
+      ...routed.latency,
+      transcriptFinalizeMs,
+      canonicalizeMs,
+      materialPrepMs,
+      scopePrepMs,
+      documentHydrateMs,
+      retrieveMs,
+    };
+    const traceId = isFlightRecorder() ? newTraceId() : null;
+    const uiApplyT0 = performance.now();
+    finish(
+      {
+        ...routed.card,
+        answerId: traceId ?? undefined,
+        flightTier: routed.tier,
+        flightLatencyMs: latency.totalMs,
+      },
+      remaining,
+    );
+    const uiApplyMs = Math.round(performance.now() - uiApplyT0);
+    recordAnswerFlight({
+      traceId: traceId ?? undefined,
       query,
       contextId: get().activeContextId ?? state.pack.id,
       spaceId: get().activeSpaceId ?? spaceId,
       sourceIds: flightTelemetry.sourceIds,
+      sourceCount,
       evidenceCount: flightTelemetry.evidenceCount,
+      hitCount: hits.length,
+      questionShape,
+      supported,
+      fallbackReason: supported ? null : (routed.card.reason ?? null),
       workspaceId,
-      transcript: transcriptLanes(get().utterances),
+      transcriptSummary: summarizeTranscript(get().utterances),
       gate: gate
         ? { verdict: gate.verdict, question: gate.question, triggered: gate.triggered }
         : null,
       retrieval: formatFlightRetrievalSummary(state.chunks, hits, state.pack.excludePatterns),
       tier: routed.tier,
-      latency: routed.latency,
+      latency: { ...latency, uiApplyMs },
       say: routed.card.say,
       reason: routed.card.reason ?? null,
       citations: routed.card.citations,
       quotaRemaining: remaining,
     });
-    finish(
-      {
-        ...routed.card,
-        answerId: answerId ?? undefined,
-        flightTier: routed.tier,
-        flightLatencyMs: routed.latency.totalMs,
-      },
-      remaining,
-    );
   },
 }));
 

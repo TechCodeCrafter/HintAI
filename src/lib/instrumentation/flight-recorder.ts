@@ -9,8 +9,11 @@ import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { isFlightRecorder } from "../debug.ts";
 import type { DropReason } from "../listen/utterance-admission.ts";
 import type { Citation, Utterance } from "../repo/types.ts";
+import type { AnswerStageTimings, TranscriptSummary } from "./answer-latency.ts";
+import { assertFlightPrivacy, newTraceId, summarizeTranscriptLanes } from "./answer-latency.ts";
 import type { AnswerTier, SearchLatency } from "../search/answer-route.ts";
 import type { GateVerdict } from "../search/question.ts";
+import type { Shape } from "../search/intent.ts";
 
 const STORAGE_BASE = "meethint.flightLog";
 const MAX_LINES = 500;
@@ -28,19 +31,29 @@ export type GateVerdictSnapshot = {
 
 export type AnswerFlightRecord = {
   kind: "answer";
+  /** Stable per-answer trace id (same as answerId for feedback linkage). */
+  traceId: string;
   answerId: string;
   workspaceId?: string;
   contextId?: string;
   spaceId?: string;
   sourceIds?: string[];
+  sourceCount?: number;
   evidenceCount?: number;
+  hitCount?: number;
+  questionShape?: Shape;
+  supported?: boolean;
+  fallbackReason?: string | null;
   timestamp: number;
   query: string;
-  transcript: TranscriptLanes;
+  /** Privacy-safe transcript summary — full lanes omitted by default. */
+  transcriptSummary: TranscriptSummary;
+  /** @deprecated Full transcript lanes — omitted on new records. */
+  transcript?: TranscriptLanes;
   gate: GateVerdictSnapshot | null;
   retrieval: string;
   tier: AnswerTier;
-  latency: SearchLatency;
+  latency: SearchLatency | AnswerStageTimings;
   say: string | null;
   reason: string | null;
   citations: Citation[];
@@ -98,12 +111,6 @@ declare global {
   }
 }
 
-function newAnswerId(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  return `ans-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-}
 
 export function parseFlightLine(line: string): FlightRecord | null {
   try {
@@ -159,25 +166,43 @@ function appendRecord(record: FlightRecord): void {
 }
 
 export function recordAnswerFlight(
-  input: Omit<AnswerFlightRecord, "kind" | "answerId" | "workspaceId" | "timestamp" | "droppedUtterances"> & {
+  input: Omit<
+    AnswerFlightRecord,
+    "kind" | "traceId" | "answerId" | "workspaceId" | "timestamp" | "droppedUtterances" | "transcriptSummary"
+  > & {
     workspaceId?: string;
     contextId?: string;
     spaceId?: string;
     sourceIds?: string[];
+    sourceCount?: number;
     evidenceCount?: number;
+    hitCount?: number;
+    questionShape?: Shape;
+    supported?: boolean;
+    fallbackReason?: string | null;
+    transcript?: TranscriptLanes;
+    transcriptSummary?: TranscriptSummary;
+    traceId?: string;
   },
 ): string | null {
   if (!isFlightRecorder()) return null;
-  const answerId = newAnswerId();
-  appendRecord({
+  const traceId = input.traceId ?? newTraceId();
+  const { transcript, transcriptSummary: summaryIn, ...rest } = input;
+  const transcriptSummary =
+    summaryIn ?? (transcript ? summarizeTranscriptLanes(transcript) : { theyLines: 0, youLines: 0 });
+  const record: AnswerFlightRecord = {
     kind: "answer",
-    answerId,
-    workspaceId: input.workspaceId ?? defaultWorkspaceId(),
+    traceId,
+    answerId: traceId,
+    workspaceId: rest.workspaceId ?? defaultWorkspaceId(),
     timestamp: Date.now(),
     droppedUtterances,
-    ...input,
-  });
-  return answerId;
+    transcriptSummary,
+    ...rest,
+  };
+  assertFlightPrivacy(record as unknown as Record<string, unknown>);
+  appendRecord(record);
+  return traceId;
 }
 
 export type AnswerFeedbackInput = {

@@ -279,7 +279,7 @@ test("flight recorder records spaceId and multiple source IDs", () => {
     spaceId: "space-9",
     sourceIds: telemetry.sourceIds,
     evidenceCount: telemetry.evidenceCount,
-    transcript: { they: [], you: [] },
+    transcriptSummary: { theyLines: 0, youLines: 0 },
     gate: null,
     retrieval: "2 hits",
     tier: "grounded",
