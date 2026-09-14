@@ -25,6 +25,7 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
+import { AnswerFeedback } from "@/components/answer-feedback";
 import { ApiKeySettings } from "@/components/api-key-settings";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerHistory } from "@/components/answer-history";
@@ -1554,8 +1555,17 @@ function CardPane({
           {speaking ? <AnswerModeBadge mode={card?.answerMode} usedEvidence={usedEvidence} /> : null}
           {searching ? <span className="search-spin" aria-label="Searching" /> : null}
         </span>
-        <span className="ground-status tabular-nums">
-          {found ?? (searching ? "Searching" : speaking ? "Ready" : "Ready")}
+        <span className="ground-head-right flex items-center gap-1">
+          {card?.answerId && card.flightTier != null && card.flightLatencyMs != null ? (
+            <AnswerFeedback
+              answerId={card.answerId}
+              tier={card.flightTier}
+              latencyMs={card.flightLatencyMs}
+            />
+          ) : null}
+          <span className="ground-status tabular-nums">
+            {found ?? (searching ? "Searching" : speaking ? "Ready" : "Ready")}
+          </span>
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">

@@ -1558,7 +1558,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
     const remaining = extractRemaining();
     const gate = gateRecords().at(-1);
-    recordAnswerFlight({
+    const answerId = recordAnswerFlight({
       query,
       transcript: transcriptLanes(get().utterances),
       gate: gate
@@ -1572,7 +1572,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       citations: routed.card.citations,
       quotaRemaining: remaining,
     });
-    finish(routed.card, remaining);
+    finish(
+      {
+        ...routed.card,
+        answerId: answerId ?? undefined,
+        flightTier: routed.tier,
+        flightLatencyMs: routed.latency.totalMs,
+      },
+      remaining,
+    );
   },
 }));
 

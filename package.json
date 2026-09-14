@@ -39,7 +39,8 @@
     "video:render:vo": "npm run score && remotion render src/remotion/index.ts Demo public/demo/meethint-demo.mp4 --props='{\"narration\":\"vo.mp3\"}'",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "sync:github": "node scripts/sync-github-repo.mjs"
+    "sync:github": "node scripts/sync-github-repo.mjs",
+    "flight:summary": "node scripts/flight-summary.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

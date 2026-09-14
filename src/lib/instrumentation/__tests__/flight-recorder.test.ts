@@ -8,9 +8,12 @@ import { buildChunks, formatFlightRetrievalSummary, retrieve } from "../../searc
 import {
   droppedRecords,
   exportFlightSession,
+  feedbackRecords,
   flightRecords,
   flightSessionJson,
   noteDroppedUtterance,
+  parseFlightLine,
+  recordAnswerFeedback,
   recordAnswerFlight,
   resetFlightSession,
   transcriptLanes,
@@ -75,7 +78,7 @@ test("search answer round-trip records and exports parseable JSON", async () => 
     }),
   });
 
-  recordAnswerFlight({
+  const answerId = recordAnswerFlight({
     query: routed.card.query,
     transcript: transcriptLanes([
       { id: "1", at: Date.now(), speaker: "them", role: "them", text: "Why does that retry three times?" },
@@ -90,13 +93,17 @@ test("search answer round-trip records and exports parseable JSON", async () => 
     quotaRemaining: 19,
   });
 
+  assert.ok(answerId);
   assert.equal(flightRecords().length, 1);
   const exported = exportFlightSession();
   assert.ok(Array.isArray(exported.records));
-  assert.equal(exported.records[0]?.tier, "grounded");
-  assert.equal(exported.records[0]?.latency.retrieveMs, 12);
-  assert.ok(exported.records[0]?.retrieval.includes("hits"));
-  assert.equal(exported.records[0]?.transcript.they.length, 1);
+  const first = exported.records[0];
+  assert.equal(first?.kind, "answer");
+  if (first?.kind !== "answer") throw new Error("expected answer record");
+  assert.equal(first.tier, "grounded");
+  assert.equal(first.latency.retrieveMs, 12);
+  assert.ok(first.retrieval.includes("hits"));
+  assert.equal(first.transcript.they.length, 1);
 
   const parsed = JSON.parse(flightSessionJson(false)) as {
     exportedAt: number;
@@ -145,4 +152,52 @@ test("dropped utterances append per-drop JSONL with tuning fields", () => {
   const answer = flightRecords().find((r) => r.kind === "answer");
   assert.ok(answer);
   assert.equal(answer?.droppedUtterances, 1);
+});
+
+test("feedback lines round-trip through export and parser", () => {
+  enableFlightRecorder();
+  installStorage();
+
+  const answerId = recordAnswerFlight({
+    query: "Why retry?",
+    transcript: { they: ["Why retry?"], you: [] },
+    gate: { verdict: "question", question: "Why retry?", triggered: true },
+    retrieval: "1 chunks | 0 excluded | 1 hits",
+    tier: "grounded",
+    latency: { retrieveMs: 5, llmMs: 80, verifyMs: 10, totalMs: 95 },
+    say: "Three tries max.",
+    reason: null,
+    citations: [],
+    quotaRemaining: 19,
+  });
+  assert.ok(answerId);
+
+  recordAnswerFeedback({
+    answerId,
+    reason: "wrong-source",
+    tier: "grounded",
+    latencyMs: 95,
+  });
+
+  assert.equal(feedbackRecords().length, 1);
+  const exported = exportFlightSession();
+  const feedback = exported.records.filter((row) => row.kind === "feedback");
+  assert.equal(feedback.length, 1);
+  assert.equal(feedback[0]?.answerId, answerId);
+  assert.equal(feedback[0]?.reason, "wrong-source");
+
+  const roundTrip = JSON.parse(flightSessionJson(false)) as {
+    records: Array<{ kind: string; reason?: string; answerId?: string }>;
+  };
+  const line = roundTrip.records.find((row) => row.kind === "feedback");
+  assert.ok(line);
+  assert.equal(line.reason, "wrong-source");
+  assert.equal(line.answerId, answerId);
+
+  const parsed = parseFlightLine(JSON.stringify(line));
+  assert.equal(parsed?.kind, "feedback");
+  if (parsed?.kind === "feedback") {
+    assert.equal(parsed.tier, "grounded");
+    assert.equal(parsed.latencyMs, 95);
+  }
 });
