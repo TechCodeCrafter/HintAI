@@ -5,6 +5,7 @@
  * localStorage. Nothing leaves the machine; no audio or embeddings are stored.
  */
 import { readAccountStorage, writeAccountStorage } from "../auth/account-boundary.ts";
+import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { isFlightRecorder } from "../debug.ts";
 import type { DropReason } from "../listen/utterance-admission.ts";
 import type { Citation, Utterance } from "../repo/types.ts";
@@ -28,6 +29,8 @@ export type GateVerdictSnapshot = {
 export type AnswerFlightRecord = {
   kind: "answer";
   answerId: string;
+  workspaceId?: string;
+  contextId?: string;
   timestamp: number;
   query: string;
   transcript: TranscriptLanes;
@@ -153,13 +156,17 @@ function appendRecord(record: FlightRecord): void {
 }
 
 export function recordAnswerFlight(
-  input: Omit<AnswerFlightRecord, "kind" | "answerId" | "timestamp" | "droppedUtterances">,
+  input: Omit<AnswerFlightRecord, "kind" | "answerId" | "workspaceId" | "timestamp" | "droppedUtterances"> & {
+    workspaceId?: string;
+    contextId?: string;
+  },
 ): string | null {
   if (!isFlightRecorder()) return null;
   const answerId = newAnswerId();
   appendRecord({
     kind: "answer",
     answerId,
+    workspaceId: input.workspaceId ?? defaultWorkspaceId(),
     timestamp: Date.now(),
     droppedUtterances,
     ...input,

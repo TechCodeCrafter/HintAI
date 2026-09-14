@@ -3,6 +3,7 @@ import type { IndexedChunk } from "../repo/types.ts";
 export type IndexedSourceRecord = {
   /** `${contextId}:${sourceId}` */
   id: string;
+  workspaceId?: string;
   contextId: string;
   sourceId: string;
   contentHash: string;
@@ -20,6 +21,7 @@ export type IndexedSourceRecord = {
 export type StoredChunkRow = {
   /** `${contextId}:${sourceId}:${chunk.id}` */
   id: string;
+  workspaceId?: string;
   contextId: string;
   sourceId: string;
   ordinal: number;

@@ -497,6 +497,8 @@ export type RetrieveHitsOptions = {
   limit?: number;
   vectorStore?: VectorStore | null;
   hybrid?: boolean;
+  /** Tenant + knowledge-space guard — required on live search paths. */
+  scope?: import("./retrieval-scope.ts").RetrievalScope;
 };
 
 /** Options `search()` and every other live path must pass. */
@@ -535,6 +537,10 @@ export async function retrieveHits(
   chunks: IndexedChunk[],
   options: RetrieveHitsOptions,
 ): Promise<Hit[]> {
+  if (options.scope) {
+    const { assertRetrievalScope } = await import("./retrieval-scope.ts");
+    assertRetrievalScope(chunks, options.scope);
+  }
   const excludePatterns = options.excludePatterns;
   const limit = options.limit ?? 6;
   const vectorStore = options.vectorStore === undefined ? getVectorStore() : options.vectorStore;
@@ -562,7 +568,8 @@ export async function hybridRetrieve(
   vectorStore: VectorStore,
   limit = 6,
 ): Promise<Hit[]> {
-  const cached = await vectorStore.get(chunks.map((chunk) => chunk.id));
+  const { vectorCacheKey } = await import("./retrieval-scope.ts");
+  const cached = await vectorStore.get(chunks.map((chunk) => vectorCacheKey(chunk)));
   const lexicalHits = retrieve(query, chunks, limit * 2);
   const { retrieveStructural } = await import("./hybrid.ts");
   const structuralHits = retrieveStructural(query, chunks, limit * 2);

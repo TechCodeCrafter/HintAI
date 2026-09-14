@@ -1,4 +1,5 @@
 import Dexie, { type Table } from "dexie";
+import { assertWorkspaceMatch, defaultWorkspaceId, withWorkspaceBackfill } from "../../auth/workspace.ts";
 import type { NormalizedDocumentRow, SourceBlobRecord } from "../../document/types.ts";
 import { normalizedDocumentKey, sourceBlobKey } from "../../document/types.ts";
 import type { IndexedSourceRecord, StoredChunkRow } from "../index-types.ts";
@@ -79,7 +80,13 @@ function sortContexts(rows: ContextRecord[]): ContextRecord[] {
 }
 
 function sortSources(rows: StoredSource[]): StoredSource[] {
-  return [...rows].sort((a, b) => a.path.localeCompare(b.path)).map(metadataOnly);
+  return [...rows]
+    .sort((a, b) => a.path.localeCompare(b.path))
+    .map((row) => metadataOnly(withWorkspaceBackfill(row, defaultWorkspaceId())));
+}
+
+function normalizeContext(row: ContextRecord): ContextRecord {
+  return withWorkspaceBackfill(row, defaultWorkspaceId());
 }
 
 async function draftsToTextSources(
@@ -153,15 +160,17 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
 
   return {
     async listContexts() {
-      return sortContexts(await db.contexts.toArray());
+      return sortContexts((await db.contexts.toArray()).map(normalizeContext));
     },
 
     async getContext(id) {
-      return (await db.contexts.get(id)) ?? null;
+      const row = await db.contexts.get(id);
+      return row ? normalizeContext(row) : null;
     },
 
     async createContext(input) {
       const record = newContextRecord(input);
+      assertWorkspaceMatch(record.workspaceId, "createContext");
       await db.contexts.add(record);
       return record;
     },
@@ -267,6 +276,11 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
 
     async writeIndexed(record, chunks) {
       await db.transaction("rw", db.indexedSources, db.storedChunks, async () => {
+        const ctx = await db.contexts.get(record.contextId);
+        if (!ctx) throw new ContextNotFoundError(record.contextId);
+        const workspaceId = normalizeContext(ctx).workspaceId;
+        assertWorkspaceMatch(workspaceId, "writeIndexed");
+        const scopedRecord = { ...record, workspaceId };
         const existing = await db.storedChunks.where("[contextId+sourceId]").equals([record.contextId, record.sourceId]).toArray();
         for (const row of existing) {
           const replace =
@@ -275,11 +289,12 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
               : row.chunk.kind !== "document";
           if (replace) await db.storedChunks.delete(row.id);
         }
-        await db.indexedSources.put({ ...record, id: ledgerKey(record) });
+        await db.indexedSources.put({ ...scopedRecord, id: ledgerKey(scopedRecord) });
         if (chunks.length === 0) return;
         await db.storedChunks.bulkAdd(
           chunks.map((chunk, ordinal) => ({
             id: storedChunkKey(record.contextId, record.sourceId, chunk.id),
+            workspaceId,
             contextId: record.contextId,
             sourceId: record.sourceId,
             ordinal,
