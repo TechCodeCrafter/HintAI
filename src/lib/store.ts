@@ -46,12 +46,15 @@ import {
   type SubscriptionTier,
 } from "@/lib/billing/subscription";
 import type { Card, DocumentCitation, HeardEvent, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
+import { buildSpaceMaterialView } from "@/lib/context/material-view";
 import {
   appendAnswerHistory,
   cardFromHistory,
   findHistoryItem,
+  telemetryFromCard,
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
+import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
 import { recordAnswerFlight, transcriptLanes } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
@@ -1609,6 +1612,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
     const workspaceId = currentWorkspaceId() ?? defaultWorkspaceId();
     const contextId = state.activeContextId ?? state.pack.id;
+    const spaceId = state.activeSpaceId ?? contextId;
+    const material = buildSpaceMaterialView({
+      workspaceId,
+      spaceId,
+      primaryContextId: contextId,
+      memberContextIds: state.memberContextIds.length ? state.memberContextIds : [contextId],
+      pack: state.pack,
+      sources: state.sources,
+    });
+    const cardContext: LocalCardContext = { material };
     const hits = await runSpaceScopedRetrieval({
       query: canonical,
       previousQuestion,
@@ -1624,9 +1637,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
       set((s) => {
+        const telemetry = telemetryFromCard(card);
         const answerHistory = appendAnswerHistory(s.answerHistory, card, {
           workspaceId,
           contextId: get().activeContextId ?? state.pack.id,
+          spaceId: get().activeSpaceId ?? spaceId,
+          sourceIds: telemetry.sourceIds,
+          evidenceCount: telemetry.evidenceCount,
         });
         const currentMeeting =
           s.currentMeeting && s.currentMeeting.endedAt == null
@@ -1654,6 +1671,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
     const routed = await routeSearchAnswer(query, hits, t0, {
       pack: state.pack,
+      material,
+      cardContext,
       modelId: get().selectedModelId,
       maxTokens: SYNTHESIZE_MAX_TOKENS,
       threadHistory,
@@ -1663,9 +1682,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
     const remaining = extractRemaining();
     const gate = gateRecords().at(-1);
+    const flightTelemetry = telemetryFromCard(routed.card);
     const answerId = recordAnswerFlight({
       query,
       contextId: get().activeContextId ?? state.pack.id,
+      spaceId: get().activeSpaceId ?? spaceId,
+      sourceIds: flightTelemetry.sourceIds,
+      evidenceCount: flightTelemetry.evidenceCount,
       workspaceId,
       transcript: transcriptLanes(get().utterances),
       gate: gate

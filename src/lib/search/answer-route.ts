@@ -1,4 +1,6 @@
+import type { SpaceMaterialView } from "../context/material-view.ts";
 import type { Card, Hit, RepoPack } from "../repo/types.ts";
+import type { LocalCardContext } from "./local-card.ts";
 import {
   generateAnswer,
   synthesizeAnswer,
@@ -35,6 +37,8 @@ export type RoutedSearchAnswer = {
 
 export type RouteSearchOpts = GenerateOpts & {
   pack?: RepoPack;
+  material?: SpaceMaterialView;
+  cardContext?: LocalCardContext;
   /** Time spent in retrieveHits before routing. */
   retrieveMs?: number;
 };
@@ -77,6 +81,7 @@ function successCard(
     card: {
       say: answer.say,
       citations: answer.citations,
+      evidence: answer.evidence,
       query,
       latencyMs: answer.latencyMs,
       source: answer.modelName ?? fallbackSource,
@@ -92,10 +97,14 @@ function localCardRoute(
   hits: Hit[],
   t0: number,
   retrieveMs: number,
-  pack?: RepoPack,
+  opts?: Pick<RouteSearchOpts, "pack" | "material" | "cardContext">,
 ): RoutedSearchAnswer | null {
-  if (!pack) return null;
-  const local = localCard(query, hits, pack, Math.round(performance.now() - t0));
+  if (!opts?.pack) return null;
+  const ctx: LocalCardContext = {
+    ...opts.cardContext,
+    material: opts.material ?? opts.cardContext?.material,
+  };
+  const local = localCard(query, hits, opts.pack, Math.round(performance.now() - t0), null, ctx);
   if (!local.say) return null;
   return {
     consumeQuota: false,
@@ -166,7 +175,7 @@ export async function routeSearchAnswer(
     if (isTransportError(synthesized)) return failedCard(query, hits.length, t0, retrieveMs, firstError);
   }
 
-  const local = localCardRoute(query, hits, t0, retrieveMs, opts?.pack);
+  const local = localCardRoute(query, hits, t0, retrieveMs, opts);
   if (local) return local;
 
   return failedCard(query, hits.length, t0, retrieveMs, firstError);

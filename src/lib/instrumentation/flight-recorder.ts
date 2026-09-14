@@ -31,6 +31,9 @@ export type AnswerFlightRecord = {
   answerId: string;
   workspaceId?: string;
   contextId?: string;
+  spaceId?: string;
+  sourceIds?: string[];
+  evidenceCount?: number;
   timestamp: number;
   query: string;
   transcript: TranscriptLanes;
@@ -159,6 +162,9 @@ export function recordAnswerFlight(
   input: Omit<AnswerFlightRecord, "kind" | "answerId" | "workspaceId" | "timestamp" | "droppedUtterances"> & {
     workspaceId?: string;
     contextId?: string;
+    spaceId?: string;
+    sourceIds?: string[];
+    evidenceCount?: number;
   },
 ): string | null {
   if (!isFlightRecorder()) return null;

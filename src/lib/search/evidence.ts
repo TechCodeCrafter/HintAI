@@ -146,6 +146,7 @@ export function textEvidence(args: {
   normalizedText: string;
   symbol?: string;
   sourceType?: SourceType;
+  sourceId?: string;
 }): TextEvidence | null {
   const { path, content, normalizedText } = args;
   if (args.start < 0 || args.end > content.length || args.start >= args.end) return null;
@@ -156,7 +157,7 @@ export function textEvidence(args: {
   const evidence: TextEvidence = {
     kind: "text",
     id: `${path}@${start}-${end}#${contentHash}`,
-    sourceId: path,
+    sourceId: args.sourceId ?? path,
     sourceType: args.sourceType ?? sourceTypeOf(path),
     path,
     startLine: lineAt(content, start),

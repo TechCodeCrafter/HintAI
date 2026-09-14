@@ -1,5 +1,7 @@
 import { llmDebug } from "../debug.ts";
 import { getDefaultModel, getModelById } from "../ai/models.ts";
+import type { SpaceMaterialView } from "../context/material-view.ts";
+import { enrichFileCitation, fileInMaterial, sourceLabel } from "../context/material-view.ts";
 import { isFileHit, type Citation, type Hit, type RepoPack } from "../repo/types.ts";
 import type { AnswerMode } from "./answer-mode.ts";
 import { provenanceLabel } from "./cite.ts";
@@ -11,6 +13,7 @@ export type GeneratedAnswer = {
   say: string;
   usedEvidence: boolean;
   citations: Citation[];
+  evidence?: Evidence[];
   latencyMs: number;
   modelName?: string;
   answerMode: AnswerMode;
@@ -54,11 +57,16 @@ export function hitsForPrompt(hits: Hit[], cap = CHUNK_CAP, perFile = CHUNKS_PER
   return out;
 }
 
+function chunkHeader(hit: Hit, material?: SpaceMaterialView): string {
+  const where = isFileHit(hit) ? `${hit.path}:${hit.startLine}` : `${hit.path} (page ${hit.page})`;
+  const label = sourceLabel(material, "sourceId" in hit ? hit.sourceId : undefined);
+  return label ? `${label} · ${where}` : where;
+}
+
 /** Grounded synthesis prompt. The model may use only the numbered chunks. */
-export function buildSynthesisPrompt(query: string, hits: Hit[]): string {
+export function buildSynthesisPrompt(query: string, hits: Hit[], material?: SpaceMaterialView): string {
   const chunks = hitsForPrompt(hits).map((hit, i) => {
-    const where = isFileHit(hit) ? `${hit.path}:${hit.startLine}` : `${hit.path} (page ${hit.page})`;
-    return `[${i + 1}] ${where}\n${hit.text.slice(0, CHUNK_CHARS)}`;
+    return `[${i + 1}] ${chunkHeader(hit, material)}\n${(hit.text ?? "").slice(0, CHUNK_CHARS)}`;
   });
   const documents = chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
   return `You synthesize an answer using ONLY the document chunks below. NEVER use general knowledge.
@@ -74,10 +82,9 @@ ${documents}
 QUESTION: "${query}"`;
 }
 
-function formatChunks(hits: Hit[]): string {
+function formatChunks(hits: Hit[], material?: SpaceMaterialView): string {
   const chunks = hitsForPrompt(hits).map((hit, i) => {
-    const where = isFileHit(hit) ? `${hit.path}:${hit.startLine}` : `${hit.path} (page ${hit.page})`;
-    return `[${i + 1}] ${where}\n${hit.text.slice(0, CHUNK_CHARS)}`;
+    return `[${i + 1}] ${chunkHeader(hit, material)}\n${(hit.text ?? "").slice(0, CHUNK_CHARS)}`;
   });
   return chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
 }
@@ -91,7 +98,12 @@ function historyBlock(history?: string[]): string {
 }
 
 /** Cited synthesis when grounded extract returned INSUFFICIENT. Same cite-or-silence contract as tier 1. */
-export function buildWeakEvidencePrompt(query: string, hits: Hit[], history?: string[]): string {
+export function buildWeakEvidencePrompt(
+  query: string,
+  hits: Hit[],
+  history?: string[],
+  material?: SpaceMaterialView,
+): string {
   return `You synthesize an answer using ONLY the document chunks below. NEVER use general knowledge.
 ${historyBlock(history)}
 If the documents do not contain enough information to answer, respond with exactly: INSUFFICIENT
@@ -100,7 +112,7 @@ Cite each claim with a chunk marker like [1] or [2] immediately after the claim.
 Keep the answer to 1-2 sentences max.
 
 DOCUMENT CHUNKS:
-${formatChunks(hits)}
+${formatChunks(hits, material)}
 
 QUESTION: "${query}"`;
 }
@@ -150,9 +162,18 @@ function isInsufficient(text: string): boolean {
   return text.replace(/[.!]+$/g, "").trim().toUpperCase() === INSUFFICIENT;
 }
 
-function evidenceFromHit(hit: Hit, pack?: RepoPack): Evidence | null {
+function resolveFileContent(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView) {
+  if (!isFileHit(hit)) return null;
+  return (
+    (material ? fileInMaterial(material, hit.path, hit.sourceId) : undefined) ??
+    pack?.files.find((item) => item.path === hit.path) ??
+    null
+  );
+}
+
+function evidenceFromHit(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView): Evidence | null {
   if (isFileHit(hit)) {
-    const file = pack?.files.find((item) => item.path === hit.path);
+    const file = resolveFileContent(hit, pack, material);
     if (file) {
       const fromOffset = file.content.slice(hit.startOffset, hit.startOffset + hit.text.length);
       const start = fromOffset === hit.text ? hit.startOffset : file.content.indexOf(hit.text);
@@ -163,6 +184,7 @@ function evidenceFromHit(hit: Hit, pack?: RepoPack): Evidence | null {
           start,
           end: start + hit.text.length,
           normalizedText: hit.text,
+          sourceId: hit.sourceId ?? (material ? fileInMaterial(material, hit.path, hit.sourceId)?.sourceId : undefined),
         });
       }
     }
@@ -177,20 +199,27 @@ function evidenceFromHit(hit: Hit, pack?: RepoPack): Evidence | null {
   });
 }
 
-function citationFrom(hit: Hit, evidence: Evidence): Citation {
+function citationFrom(hit: Hit, evidence: Evidence, material?: SpaceMaterialView): Citation {
   if (evidence.kind === "text" && isFileHit(hit)) {
-    return {
-      kind: "file",
-      path: evidence.path,
-      line: evidence.startLine,
-      endLine: evidence.endLine,
-      evidenceId: evidence.id,
-      sha: hit.sha,
-      pr: hit.pr,
-      label: provenanceLabel(hit),
-    };
+    return enrichFileCitation(
+      {
+        kind: "file",
+        path: evidence.path,
+        line: evidence.startLine,
+        endLine: evidence.endLine,
+        evidenceId: evidence.id,
+        sha: hit.sha,
+        pr: hit.pr,
+        label: provenanceLabel(hit),
+        sourceId: evidence.sourceId,
+        contentHash: evidence.contentHash,
+      },
+      material,
+      evidence.sourceId,
+    );
   }
   if (hit.kind === "document") {
+    const ref = material?.sources.find((row) => row.sourceId === hit.sourceId);
     return {
       kind: "document",
       sourceId: hit.sourceId,
@@ -198,30 +227,42 @@ function citationFrom(hit: Hit, evidence: Evidence): Citation {
       page: hit.page,
       heading: hit.heading,
       evidenceId: evidence.id,
-      label: hit.heading ?? "",
+      displayName: ref?.displayName,
+      contextId: ref?.contextId,
+      label: hit.heading ?? ref?.displayName ?? "",
     };
   }
-  return {
-    kind: "file",
-    path: hit.path,
-    line: isFileHit(hit) ? hit.startLine : 1,
-    endLine: isFileHit(hit) && hit.endLine > hit.startLine ? hit.endLine : undefined,
-    label: hit.path,
-  };
+  return enrichFileCitation(
+    {
+      kind: "file",
+      path: hit.path,
+      line: isFileHit(hit) ? hit.startLine : 1,
+      endLine: isFileHit(hit) && hit.endLine > hit.startLine ? hit.endLine : undefined,
+      sourceId: isFileHit(hit) ? hit.sourceId : undefined,
+      label: hit.path,
+    },
+    material,
+    isFileHit(hit) ? hit.sourceId : undefined,
+  );
 }
 
-function evidenceForMarkers(text: string, hits: Hit[], pack?: RepoPack): { evidence: Evidence[]; citations: Citation[] } {
+function evidenceForMarkers(
+  text: string,
+  hits: Hit[],
+  pack?: RepoPack,
+  material?: SpaceMaterialView,
+): { evidence: Evidence[]; citations: Citation[] } {
   const evidence: Evidence[] = [];
   const citations: Citation[] = [];
   const seen = new Set<string>();
   for (const index of citationIndexes(text)) {
     const hit = hits[index - 1];
     if (!hit) continue;
-    const span = evidenceFromHit(hit, pack);
+    const span = evidenceFromHit(hit, pack, material);
     if (!span || seen.has(span.id)) continue;
     seen.add(span.id);
     evidence.push(span);
-    citations.push(citationFrom(hit, span));
+    citations.push(citationFrom(hit, span, material));
   }
   return { evidence, citations };
 }
@@ -237,6 +278,7 @@ export type GenerateOpts = {
   ask?: SynthesisAsk;
   modelId?: string;
   pack?: RepoPack;
+  material?: SpaceMaterialView;
   maxTokens?: number;
   threadHistory?: string[];
 };
@@ -308,13 +350,13 @@ export async function generateAnswer(
 ): Promise<AnswerResult> {
   if (hits.length === 0) return { ok: false, reason: "insufficient" };
   const llmStart = performance.now();
-  const remote = await completePrompt(query, buildSynthesisPrompt(query, hits), "extract", opts);
+  const remote = await completePrompt(query, buildSynthesisPrompt(query, hits, opts?.material), "extract", opts);
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = stripCitationMarkers(remote.text);
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
+  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
   const check = verifyClaim(say, evidence);
@@ -328,6 +370,7 @@ export async function generateAnswer(
       say,
       usedEvidence: true,
       citations,
+      evidence,
       latencyMs: Math.round(performance.now() - t0),
       modelName: remote.modelName,
       answerMode: "docs",
@@ -346,7 +389,7 @@ export async function synthesizeAnswer(
   const llmStart = performance.now();
   const remote = await completePrompt(
     query,
-    buildWeakEvidencePrompt(query, hits, opts?.threadHistory),
+    buildWeakEvidencePrompt(query, hits, opts?.threadHistory, opts?.material),
     "synthesize",
     opts,
   );
@@ -355,7 +398,7 @@ export async function synthesizeAnswer(
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = stripCitationMarkers(remote.text);
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack);
+  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
   const check = verifyClaim(say, evidence);
@@ -369,6 +412,7 @@ export async function synthesizeAnswer(
       say,
       usedEvidence: true,
       citations,
+      evidence,
       latencyMs: Math.round(performance.now() - t0),
       modelName: remote.modelName,
       answerMode: "synthesized",

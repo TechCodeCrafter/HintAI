@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import type { RepoPack } from "../../repo/types.ts";
+import type { IndexedChunk, RepoPack } from "../../repo/types.ts";
+import { isFileChunk } from "../../repo/types.ts";
 import { buildChunks } from "../../search/retrieve.ts";
 import { persistPackAsContext } from "../service.ts";
 import { createMemoryRepository } from "../memory.ts";
@@ -54,8 +55,9 @@ test("persisted sources reconstruct a RepoPack and reuse buildChunks", async () 
     PACK.files.map((f) => `payments-backend/${f.path}`).sort(),
   );
 
-  const byPathText = (chunks: ReturnType<typeof buildChunks>) =>
+  const byPathText = (chunks: IndexedChunk[]) =>
     [...chunks]
+      .filter(isFileChunk)
       .sort((a, b) => a.path.localeCompare(b.path))
       .map((c) => ({ path: c.path, text: c.text, startOffset: c.startOffset }));
   const fromPersisted = buildChunks(reconstructed);

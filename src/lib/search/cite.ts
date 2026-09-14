@@ -1,3 +1,5 @@
+import type { SpaceMaterialView } from "../context/material-view.ts";
+import { fileInMaterial } from "../context/material-view.ts";
 import type { Citation, DocumentCitation, FileCitation, RepoPack } from "@/lib/repo/types";
 
 /**
@@ -65,9 +67,19 @@ export function isDocumentCitation(cite: Citation): cite is DocumentCitation {
  * the runtime gate uses, so the two cannot drift into disagreeing about what
  * counts as evidence for a commit.
  */
-export function citedSource(cite: Citation, pack: Pick<RepoPack, "files" | "commits">): string {
+export function citedSource(
+  cite: Citation,
+  pack: Pick<RepoPack, "files" | "commits">,
+  material?: SpaceMaterialView,
+): string {
   if (cite.kind === "document") return "";
-  if (cite.kind === "file") return pack.files.find((f) => f.path === cite.path)?.content ?? "";
+  if (cite.kind === "file") {
+    return (
+      (material ? fileInMaterial(material, cite.path, cite.sourceId)?.content : undefined) ??
+      pack.files.find((f) => f.path === cite.path)?.content ??
+      ""
+    );
+  }
   const commit = pack.commits.find((c) => c.sha === cite.sha);
   return commit ? [commit.message, commit.author, commit.pr ?? ""].join("\n") : "";
 }
