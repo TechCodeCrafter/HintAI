@@ -7,6 +7,8 @@ export type AnswerHistoryBadge = "from-docs" | "synthesized" | "generated";
 
 export type AnswerHistoryItem = {
   id: string;
+  workspaceId?: string;
+  contextId?: string;
   query: string;
   say: string | null;
   badge: AnswerHistoryBadge | null;
@@ -29,9 +31,15 @@ export function answerModeFromBadge(badge: AnswerHistoryBadge | null | undefined
   return undefined;
 }
 
-export function historyItemFromCard(card: Card, at = Date.now()): AnswerHistoryItem {
+export function historyItemFromCard(
+  card: Card,
+  at = Date.now(),
+  scope?: { workspaceId?: string; contextId?: string },
+): AnswerHistoryItem {
   return {
     id: `${at}-${Math.random().toString(36).slice(2, 7)}`,
+    workspaceId: scope?.workspaceId,
+    contextId: scope?.contextId,
     query: card.query,
     say: card.say,
     badge:
@@ -42,9 +50,13 @@ export function historyItemFromCard(card: Card, at = Date.now()): AnswerHistoryI
   };
 }
 
-export function appendAnswerHistory(history: AnswerHistoryItem[], card: Card): AnswerHistoryItem[] {
+export function appendAnswerHistory(
+  history: AnswerHistoryItem[],
+  card: Card,
+  scope?: { workspaceId?: string; contextId?: string },
+): AnswerHistoryItem[] {
   if (!card.query.trim()) return history;
-  return [historyItemFromCard(card), ...history].slice(0, ANSWER_HISTORY_LIMIT);
+  return [historyItemFromCard(card, Date.now(), scope), ...history].slice(0, ANSWER_HISTORY_LIMIT);
 }
 
 export function cardFromHistory(item: AnswerHistoryItem): Card {

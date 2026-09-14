@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ACCOUNT_EPOCH_KEY,
   bindAccountId,
@@ -7,7 +7,8 @@ import {
   wipeBrowserAccountData,
 } from "./account-boundary";
 import { authEnabled } from "./client";
-import { useCurrentUserState } from "./use-current-user";
+import { useCurrentUserState, DEV_USER } from "./use-current-user";
+import { resolveWorkspaceIdentity } from "./workspace.server";
 
 async function resetWorkspaceMemory(): Promise<void> {
   const { useMeetHint } = await import("../store");
@@ -40,13 +41,50 @@ export async function switchAccount(accountId: string | null): Promise<void> {
   await useMeetHint.getState().boot();
 }
 
-/** Bind the vault to the current session. Auth-off uses the stable dev user. */
+/** Bind the vault to the server-verified user id. Auth-off uses the stable dev user. */
 export function useAccountVaultReady(): { ready: boolean; accountId: string | null } {
   const { user, isPending } = useCurrentUserState();
-  if (isPending) return { ready: false, accountId: null };
-  const accountId = user?.id ?? null;
-  if (currentAccountId() !== accountId) bindAccountId(accountId);
-  return { ready: true, accountId };
+  const [verifiedId, setVerifiedId] = useState<string | null>(authEnabled ? null : DEV_USER.id);
+  const [verifyError, setVerifyError] = useState(false);
+
+  useEffect(() => {
+    if (!authEnabled) {
+      if (currentAccountId() !== DEV_USER.id) bindAccountId(DEV_USER.id);
+      setVerifiedId(DEV_USER.id);
+      return;
+    }
+    if (isPending) return;
+    if (!user) {
+      bindAccountId(null);
+      setVerifiedId(null);
+      setVerifyError(false);
+      return;
+    }
+    let cancelled = false;
+    void resolveWorkspaceIdentity()
+      .then(({ userId }) => {
+        if (cancelled) return;
+        bindAccountId(userId);
+        publishAccountEpoch(userId);
+        setVerifiedId(userId);
+        setVerifyError(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        bindAccountId(null);
+        setVerifiedId(null);
+        setVerifyError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, isPending]);
+
+  if (!authEnabled) return { ready: true, accountId: verifiedId };
+  if (isPending || (user && verifiedId == null && !verifyError)) {
+    return { ready: false, accountId: null };
+  }
+  return { ready: !verifyError && verifiedId === currentAccountId(), accountId: verifiedId };
 }
 
 function otherTabLeft(): void {

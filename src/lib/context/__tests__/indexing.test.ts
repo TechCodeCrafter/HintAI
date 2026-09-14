@@ -16,6 +16,7 @@ import {
   retrieveHits,
   retrieveHitsOptionsForPack,
 } from "../../search/retrieve.ts";
+import { testRetrievalScope } from "../../search/retrieval-scope.ts";
 import { createMemoryVectorStore, type VectorStore } from "../../search/vector-store.ts";
 import { dropExcludedEvidence } from "../exclusions.ts";
 import { chunksEquivalent, indexContext, lastIndexReport } from "../chunk-index.ts";
@@ -226,6 +227,7 @@ test("excluding a file drops chunks, vectors, and retrieveHits without a reload"
 
   const before = await retrieveHits("authentication", indexed.chunks, {
     excludePatterns: undefined,
+    scope: testRetrievalScope(context.id),
     limit: 6,
     vectorStore: store,
     hybrid: true,
@@ -248,12 +250,14 @@ test("excluding a file drops chunks, vectors, and retrieveHits without a reload"
   assert.ok(leftover.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"));
   const lexical = await retrieveHits("authentication", leftover, {
     excludePatterns: exclude,
+    scope: testRetrievalScope(context.id),
     limit: 6,
     vectorStore: store,
     hybrid: false,
   });
   const semantic = await retrieveHits("authentication", leftover, {
     excludePatterns: exclude,
+    scope: testRetrievalScope(context.id),
     limit: 6,
     vectorStore: store,
     hybrid: true,
@@ -295,7 +299,10 @@ test("store search path filters leftover excluded chunks via pack.excludePattern
     { chunkId: "docs-auth", embedding: bagEmbedding384(leftover[0].text), contentHash: "d" },
     { chunkId: "deploy-auth", embedding: bagEmbedding384(leftover[1].text), contentHash: "e" },
   ]);
-  const options = retrieveHitsOptionsForPack(pack, { limit: 6, vectorStore: store });
+  const options = retrieveHitsOptionsForPack(pack, testRetrievalScope("indexing-test"), {
+    limit: 6,
+    vectorStore: store,
+  });
   const leftoverAuth = leftover.filter((chunk) => chunk.path === "docs/API_DOCUMENTATION.md");
   assert.ok(leftoverAuth.length > 0);
   const authHits = await retrieveHits("authentication", leftover, options);

@@ -166,8 +166,10 @@ test("retrieval summary names channels and the top hit", async () => {
   const upload = chunk("u", "src/upload.ts", "Generate a presigned S3 URL for the upload.");
   const store = createMemoryVectorStore();
   await store.set([{ chunkId: "u", embedding: bagEmbedding384(upload.text), contentHash: "u" }]);
+  const { testRetrievalScope } = await import("../retrieval-scope.ts");
   const hits = await retrieveHits("Where does document upload happen?", [upload], {
     excludePatterns: undefined,
+    scope: testRetrievalScope("hybrid-test"),
     limit: 2,
     vectorStore: store,
     hybrid: true,

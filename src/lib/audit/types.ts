@@ -18,6 +18,7 @@ export type Claim = {
 
 export type MeetingRecord = {
   id: string;
+  workspaceId?: string;
   name: string;
   startedAt: number;
   endedAt: number | null;
@@ -26,9 +27,10 @@ export type MeetingRecord = {
   answerHistory: AnswerHistoryItem[];
 };
 
-export function newMeetingRecord(name: string, startedAt = Date.now()): MeetingRecord {
+export function newMeetingRecord(name: string, startedAt = Date.now(), workspaceId?: string): MeetingRecord {
   return {
     id: crypto.randomUUID(),
+    workspaceId,
     name,
     startedAt,
     endedAt: null,

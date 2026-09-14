@@ -497,16 +497,17 @@ export type RetrieveHitsOptions = {
   limit?: number;
   vectorStore?: VectorStore | null;
   hybrid?: boolean;
-  /** Tenant + knowledge-space guard — required on live search paths. */
-  scope?: import("./retrieval-scope.ts").RetrievalScope;
+  /** Tenant filter applied before ranking — required on every retrieveHits call. */
+  scope: import("./retrieval-scope.ts").RetrievalScope;
 };
 
 /** Options `search()` and every other live path must pass. */
 export function retrieveHitsOptionsForPack(
   pack: Pick<RepoPack, "excludePatterns">,
-  extras: Omit<RetrieveHitsOptions, "excludePatterns"> = {},
+  scope: RetrieveHitsOptions["scope"],
+  extras: Omit<RetrieveHitsOptions, "excludePatterns" | "scope"> = {},
 ): RetrieveHitsOptions {
-  return { ...extras, excludePatterns: pack.excludePatterns };
+  return { ...extras, excludePatterns: pack.excludePatterns, scope };
 }
 
 export function formatExclusionSummary(chunkCount: number, excludedCount: number, hitCount: number): string {
@@ -537,17 +538,16 @@ export async function retrieveHits(
   chunks: IndexedChunk[],
   options: RetrieveHitsOptions,
 ): Promise<Hit[]> {
-  if (options.scope) {
-    const { assertRetrievalScope } = await import("./retrieval-scope.ts");
-    assertRetrievalScope(chunks, options.scope);
-  }
+  const { assertRetrievalScope, filterChunksForScope } = await import("./retrieval-scope.ts");
+  const scoped = filterChunksForScope(chunks, options.scope);
+  assertRetrievalScope(scoped, options.scope);
   const excludePatterns = options.excludePatterns;
   const limit = options.limit ?? 6;
   const vectorStore = options.vectorStore === undefined ? getVectorStore() : options.vectorStore;
   const hybrid = options.hybrid ?? USE_HYBRID_RETRIEVAL;
   const usable = excludePatterns?.length
-    ? chunks.filter((chunk) => !pathExcluded(chunk.path, excludePatterns))
-    : chunks;
+    ? scoped.filter((chunk) => !pathExcluded(chunk.path, excludePatterns))
+    : scoped;
   const excludedCount = chunks.length - usable.length;
   const hits =
     hybrid && vectorStore
