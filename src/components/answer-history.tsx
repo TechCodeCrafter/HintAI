@@ -108,6 +108,9 @@ export function HistoryRow({
           <div className="history-answer">{historyPreview(item)}</div>
           <div className="history-meta">
             {item.badge ? <AnswerModeBadge mode={answerModeFromBadge(item.badge)} /> : null}
+            {item.sourceIds && item.sourceIds.length > 1 ? (
+              <span className="history-sources">{item.sourceIds.length} sources cited</span>
+            ) : null}
             <span className="history-time">{formatHistoryTime(item.timestamp)}</span>
           </div>
         </button>

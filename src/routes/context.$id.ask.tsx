@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AskStub } from "@/components/ask-stub";
+import { AskPanel } from "@/components/ask-panel";
 
 export const Route = createFileRoute("/context/$id/ask")({
   head: () => ({
@@ -10,5 +10,5 @@ export const Route = createFileRoute("/context/$id/ask")({
 
 function AskPage() {
   const { id } = Route.useParams();
-  return <AskStub id={id} />;
+  return <AskPanel spaceId={id} />;
 }

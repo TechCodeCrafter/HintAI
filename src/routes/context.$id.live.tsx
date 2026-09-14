@@ -10,5 +10,5 @@ export const Route = createFileRoute("/context/$id/live")({
 
 function LivePage() {
   const { id } = Route.useParams();
-  return <Cockpit contextId={id} />;
+  return <Cockpit spaceId={id} />;
 }

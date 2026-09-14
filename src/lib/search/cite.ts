@@ -34,6 +34,21 @@ export function citationText(cite: Citation): string {
   return `${cite.path}:${range}`;
 }
 
+/** User-facing chip label — prefixes repo/document identity when Step 3 metadata is present. */
+export function citationChipText(cite: Citation): string {
+  if (cite.kind === "file") {
+    const range = cite.endLine && cite.endLine > cite.line ? `${cite.line}-${cite.endLine}` : `${cite.line}`;
+    const coords = `${cite.path}:${range}`;
+    return cite.displayName ? `${cite.displayName} · ${coords}` : coords;
+  }
+  if (cite.kind === "document") {
+    const name = cite.displayName ?? cite.path;
+    const heading = cite.heading ? ` · "${cite.heading}"` : "";
+    return `${name} · Page ${cite.page}${heading}`;
+  }
+  return citationText(cite);
+}
+
 /** The file a citation opens, or nothing when it does not point into one. */
 export function citedPath(cite: Citation): string | null {
   return cite.kind === "file" ? cite.path : null;

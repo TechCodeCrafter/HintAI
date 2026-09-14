@@ -4,6 +4,7 @@ import { draftsFromPack, fingerprintPack, fingerprintsMatch, hydrateContext, pac
 import { upsertRepoBundle, verifyRepoBundleFiles } from "./repo-bundle.ts";
 import { sanitizePathPrefix } from "./source-identity.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
+import type { SpaceRecord } from "./space-types.ts";
 import { createIndexedDbRepository } from "./storage/indexeddb.ts";
 import type { ContextKind, ContextRecord } from "./types.ts";
 import { isPdfSource, isTextSource } from "./types.ts";
@@ -42,6 +43,15 @@ export type ContextSummary = {
   pdfCount: number;
   chunkCount: number;
   symbolCount: number;
+};
+
+export type SpaceSummary = {
+  space: SpaceRecord;
+  repoCount: number;
+  docCount: number;
+  fileCount: number;
+  status: "ready" | "indexing" | "error";
+  updatedAt: number;
 };
 
 /**
@@ -104,6 +114,36 @@ export async function listContextSummaries(
     });
   }
   return summaries;
+}
+
+export async function listSpaceSummaries(
+  repo: ContextRepository = getContextRepository(),
+): Promise<SpaceSummary[]> {
+  const spaces = await repo.listSpaces();
+  const summaries: SpaceSummary[] = [];
+  for (const space of spaces) {
+    const sources = (
+      await Promise.all(space.memberContextIds.map((contextId) => repo.listSources(contextId)))
+    ).flat();
+    const repoIds = new Set(sources.filter(isTextSource).map((row) => row.sourceId));
+    const contexts = await Promise.all(
+      space.memberContextIds.map((contextId) => repo.getContext(contextId)),
+    );
+    const status = contexts.some((row) => row?.status === "error")
+      ? "error"
+      : contexts.some((row) => row?.status === "indexing")
+        ? "indexing"
+        : "ready";
+    summaries.push({
+      space,
+      repoCount: repoIds.size,
+      docCount: sources.filter(isPdfSource).length,
+      fileCount: sources.filter(isTextSource).length,
+      status,
+      updatedAt: space.updatedAt,
+    });
+  }
+  return summaries.sort((a, b) => b.updatedAt - a.updatedAt);
 }
 
 export async function verifyPersistedPack(

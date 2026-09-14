@@ -234,8 +234,10 @@ type MeetHintState = {
   setAsrStatus: (status: MeetHintState["asrStatus"]) => void;
   setAsrNote: (note: string) => void;
   setListenError: (text: string | null, blocked?: MeetHintState["listenBlocked"]) => void;
-  boot: (preferredId?: string) => Promise<void>;
-  activateContext: (id: string) => Promise<void>;
+  boot: (preferredSpaceId?: string) => Promise<void>;
+  activateSpace: (spaceId: string) => Promise<void>;
+  /** Compatibility — resolves the member space and activates it. */
+  activateContext: (contextId: string) => Promise<void>;
   createNamedContext: (input: CreateContextInput) => Promise<string>;
   attachFolderToContext: (contextId: string, list: FileList | File[], options?: FolderLoadOptions) => Promise<void>;
   deleteStoredContext: (id: string) => Promise<void>;
@@ -645,8 +647,17 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         return;
       }
       const remembered = preferredId ?? readActiveSpaceId();
-      const preferred = preferredId ? contexts.find((item) => item.id === preferredId) : null;
-      if (preferredId && !preferred) {
+      const repo = getContextRepository();
+      const spaces = await repo.listSpaces();
+      if (epoch !== hydrationEpoch) return;
+      const targetSpaceId =
+        preferredId ??
+        (remembered && spaces.some((row) => row.id === remembered) ? remembered : null) ??
+        spaces[0]?.id ??
+        (migration.kind === "migrated" ? migration.context.id : null) ??
+        contexts[0]?.id ??
+        null;
+      if (preferredId && !spaces.some((row) => row.id === preferredId) && !contexts.some((row) => row.id === preferredId)) {
         persistActiveSpaceId(null);
         set({
           activeSpaceId: null,
@@ -654,7 +665,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           memberContextIds: [],
           authorizedSourceIds: [],
           contextStatus: "ready",
-          contextError: "That workspace is not in this account.",
+          contextError: "That Knowledge Space is not in this account.",
           contexts,
           pack: NORTHSTAR,
           chunks: NORTHSTAR_CHUNKS,
@@ -668,13 +679,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         set({ meetingHistory: history, currentMeeting: latestOpenMeeting(history) });
         return;
       }
-      const target =
-        preferred ??
-        contexts.find((item) => item.id === remembered) ??
-        (migration.kind === "migrated" ? migration.context : null) ??
-        contexts[0] ??
-        null;
-      if (!target) {
+      if (!targetSpaceId) {
         persistActiveSpaceId(null);
         set({
           activeSpaceId: null,
@@ -689,7 +694,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         set({ meetingHistory: history, currentMeeting: latestOpenMeeting(history) });
         return;
       }
-      await get().activateContext(target.id);
+      await get().activateSpace(targetSpaceId);
       if (epoch !== hydrationEpoch) return;
       const history = await loadMeetings().catch(() => []);
       if (epoch !== hydrationEpoch) return;
@@ -804,7 +809,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   refreshContexts: async () => {
     set({ contexts: await listStoredContexts() });
   },
-  activateContext: async (id) => {
+  activateSpace: async (spaceId) => {
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
@@ -817,16 +822,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
     try {
-      await withContextWrite(id, async () => {
-        const repo = getContextRepository();
-        const record = await repo.getContext(id);
-        if (!record) throw new Error("Context not in this account");
-        const space = await resolveSpaceForActivation(repo, id);
+      const repo = getContextRepository();
+      const space = await resolveSpaceForActivation(repo, spaceId);
+      const primaryId = space.primaryContextId;
+      await withContextWrite(primaryId, async () => {
+        const record = await repo.getContext(primaryId);
+        if (!record) throw new Error("Knowledge space not in this account");
         const allSources = await listAllSpaceSources(repo, space.memberContextIds);
-        const contextSources = await repo.listSources(id);
+        const primarySources = await repo.listSources(primaryId);
         if (epoch !== hydrationEpoch) return;
         if (allSources.length === 0) {
-          if (epoch !== hydrationEpoch) return;
           persistActiveSpaceId(space.id);
           const contexts = await listStoredContexts();
           if (epoch !== hydrationEpoch) return;
@@ -850,12 +855,12 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             contextUpdating: false,
             ingestProgress: null,
             contextError: null,
-            folderError: "This context has no material yet. Add a folder, files, or PDFs.",
+            folderError: "This Knowledge Space has no sources yet. Add a repo, folder, or PDF.",
           });
           return;
         }
-        const serveNow = canServeSnapshot(contextSources);
-        const pending = pdfWorkPending(contextSources);
+        const serveNow = canServeSnapshot(primarySources);
+        const pending = pdfWorkPending(primarySources);
 
         if (serveNow) {
           const runtime = await indexSpace(repo, space.id, {
@@ -876,10 +881,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           if (!pending) return;
         }
 
-        const finished = await resumePdfWork(repo, id, {
+        const finished = await resumePdfWork(repo, primaryId, {
           isCancelled: () => epoch !== hydrationEpoch,
           onProgress: (progress) => {
-            if (epoch !== hydrationEpoch || get().activeContextId !== id) return;
+            if (epoch !== hydrationEpoch || get().activeSpaceId !== space.id) return;
             set({ ingestProgress: progress, contextUpdating: serveNow, sources: get().sources });
           },
         });
@@ -928,10 +933,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       if (epoch !== hydrationEpoch) return;
       set({
         contextStatus: "error",
-        contextError: "Could not load that context.",
+        contextError: "Could not load that Knowledge Space.",
         contextUpdating: false,
       });
     }
+  },
+  activateContext: async (contextId) => {
+    const repo = getContextRepository();
+    const space = await resolveSpaceForActivation(repo, contextId);
+    await get().activateSpace(space.id);
   },
   hydratePack: (pack) => {
     const runtime = runtimeFromPack(pack);

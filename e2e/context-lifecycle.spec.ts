@@ -1,13 +1,19 @@
 import { expect, test } from "@playwright/test";
-import { installE2eMocks, typeQuestion, waitForCard, waitForIndexing } from "./fixtures/helpers";
+import {
+  fillCreateContextIdentity,
+  installE2eMocks,
+  typeQuestion,
+  waitForCard,
+  waitForIndexing,
+} from "./fixtures/helpers";
 
-test("Create context, add files, search, delete", async ({ page }) => {
+test.setTimeout(90_000);
+
+test("Create Knowledge Space, add files, search, delete", async ({ page }) => {
   await installE2eMocks(page);
-  await page.goto("/home");
-  await page.getByTestId("create-context-button").click();
-  await page.getByTestId("context-type-work").click();
-  await page.getByTestId("context-name").fill("Test Project");
-  await page.getByTestId("create-context-submit").click();
+  await page.goto("/create");
+  await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
+  await fillCreateContextIdentity(page, "Test Project");
 
   const [fileChooser] = await Promise.all([
     page.waitForEvent("filechooser"),
@@ -45,8 +51,8 @@ export const MAX_ATTEMPTS = 3;
 
   await page.goto("/home");
   await page.getByRole("link", { name: "Test Project" }).click();
-  await page.getByTestId("delete-context").click();
+  await page.getByTestId("delete-space").click();
   await page.getByTestId("confirm-delete").click();
-  await expect(page.getByTestId("create-context-button")).toBeVisible();
+  await expect(page.getByTestId("create-space-button")).toBeVisible();
   await expect(page.locator("body")).not.toContainText("Test Project");
 });

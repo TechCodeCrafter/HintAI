@@ -33,3 +33,26 @@ export function formatContextCounts(input: {
   parts.push(`${input.chunkCount} ${input.chunkCount === 1 ? "chunk" : "chunks"}`);
   return parts.join(", ");
 }
+
+/** User-facing Knowledge Space counts — repos and documents, not internal chunks. */
+export function formatSpaceCounts(input: { repoCount: number; docCount: number }): string {
+  const parts: string[] = [];
+  if (input.repoCount > 0) {
+    parts.push(`${input.repoCount} ${input.repoCount === 1 ? "repo" : "repos"}`);
+  }
+  if (input.docCount > 0) {
+    parts.push(`${input.docCount} ${input.docCount === 1 ? "doc" : "docs"}`);
+  }
+  if (parts.length === 0) return "No sources yet";
+  return parts.join(" · ");
+}
+
+export function spaceHasSources(input: { repoCount: number; docCount: number }): boolean {
+  return input.repoCount + input.docCount > 0;
+}
+
+export function spaceStatusLabel(status: "ready" | "indexing" | "error"): string {
+  if (status === "indexing") return "Indexing";
+  if (status === "error") return "Error";
+  return "Ready";
+}

@@ -52,7 +52,7 @@ test("a second browser profile cannot see another user's loaded repo", async ({ 
   await pageB.goto("/home");
   await expect(pageB.locator("body")).not.toContainText(CONTEXT_NAME);
   await expect(pageB.locator("body")).not.toContainText(MARKER);
-  await expect(pageB.getByTestId("context-list")).toHaveCount(0);
+  await expect(pageB.getByTestId("space-list")).toHaveCount(0);
 
   await contextA.close();
   await contextB.close();
@@ -71,7 +71,7 @@ test("signing in as B on the same profile does not surface A's repo", async ({ p
   await page.goto("/home");
   await expect(page.locator("body")).not.toContainText(CONTEXT_NAME);
   await expect(page.locator("body")).not.toContainText(MARKER);
-  await expect(page.getByTestId("context-list")).toHaveCount(0);
+  await expect(page.getByTestId("space-list")).toHaveCount(0);
 
   await page.goto(`/context/${contextId}`);
   await expect(page.getByTestId("context-missing")).toBeVisible();
