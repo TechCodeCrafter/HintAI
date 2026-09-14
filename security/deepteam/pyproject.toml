@@ -1,0 +1,12 @@
+[project]
+name = "hintai-deepteam"
+version = "0.1.0"
+description = "DeepTeam red teaming harness for HintAI cite-or-silence and tenant isolation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "deepteam>=0.2.0",
+]
+
+[project.scripts]
+hintai-redteam = "redteam_hintai:main"

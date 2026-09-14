@@ -8,7 +8,7 @@ import {
 } from "./account-boundary";
 import { authEnabled } from "./client";
 import { useCurrentUserState, DEV_USER } from "./use-current-user";
-import { resolveWorkspaceIdentity } from "./workspace.server";
+import { resolveWorkspaceIdentity } from "./workspace-identity";
 
 async function resetWorkspaceMemory(): Promise<void> {
   const { useMeetHint } = await import("../store");

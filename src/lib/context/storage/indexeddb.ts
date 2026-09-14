@@ -285,7 +285,7 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
     },
 
     async writeIndexed(record, chunks) {
-      await db.transaction("rw", db.indexedSources, db.storedChunks, async () => {
+      await db.transaction("rw", db.contexts, db.indexedSources, db.storedChunks, async () => {
         const ctx = await db.contexts.get(record.contextId);
         if (!ctx) throw new ContextNotFoundError(record.contextId);
         const workspaceId = normalizeContext(ctx).workspaceId;
