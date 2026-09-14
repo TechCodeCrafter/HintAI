@@ -27,6 +27,7 @@ export type GateVerdictSnapshot = {
 
 export type AnswerFlightRecord = {
   kind: "answer";
+  answerId: string;
   timestamp: number;
   query: string;
   transcript: TranscriptLanes;
@@ -50,7 +51,26 @@ export type DroppedUtteranceRecord = {
   energy: number;
 };
 
-export type FlightRecord = AnswerFlightRecord | DroppedUtteranceRecord;
+export const FEEDBACK_REASONS = [
+  "wrong-answer",
+  "too-slow",
+  "wrong-source",
+  "missed-context",
+  "other",
+] as const;
+
+export type FeedbackReason = (typeof FEEDBACK_REASONS)[number];
+
+export type FeedbackFlightRecord = {
+  kind: "feedback";
+  timestamp: number;
+  answerId: string;
+  reason: FeedbackReason;
+  tier: AnswerTier;
+  latencyMs: number;
+};
+
+export type FlightRecord = AnswerFlightRecord | DroppedUtteranceRecord | FeedbackFlightRecord;
 
 export type FlightSessionExport = {
   exportedAt: number;
@@ -65,9 +85,27 @@ declare global {
     __groundFlight?: {
       records: () => FlightRecord[];
       droppedRecords: () => DroppedUtteranceRecord[];
+      feedbackRecords: () => FeedbackFlightRecord[];
       reset: () => void;
       droppedUtterances: () => number;
     };
+  }
+}
+
+function newAnswerId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `ans-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+export function parseFlightLine(line: string): FlightRecord | null {
+  try {
+    const row = JSON.parse(line) as FlightRecord;
+    if (row.kind === "answer" || row.kind === "dropped" || row.kind === "feedback") return row;
+    return null;
+  } catch {
+    return null;
   }
 }
 
@@ -88,21 +126,12 @@ function persistLines(lines: string[]): void {
   writeAccountStorage(STORAGE_BASE, lines.length ? lines.join("\n") : null);
 }
 
-function parseLine(line: string): FlightRecord | null {
-  try {
-    const row = JSON.parse(line) as FlightRecord;
-    if (row.kind === "answer" || row.kind === "dropped") return row;
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 function installWindowHook(): void {
   if (typeof window === "undefined") return;
   window.__groundFlight = {
     records: () => flightRecords(),
     droppedRecords: () => droppedRecords(),
+    feedbackRecords: () => feedbackRecords(),
     reset: () => resetFlightSession(),
     droppedUtterances: () => droppedUtterances,
   };
@@ -124,13 +153,32 @@ function appendRecord(record: FlightRecord): void {
 }
 
 export function recordAnswerFlight(
-  input: Omit<AnswerFlightRecord, "kind" | "timestamp" | "droppedUtterances">,
-): void {
-  if (!isFlightRecorder()) return;
+  input: Omit<AnswerFlightRecord, "kind" | "answerId" | "timestamp" | "droppedUtterances">,
+): string | null {
+  if (!isFlightRecorder()) return null;
+  const answerId = newAnswerId();
   appendRecord({
     kind: "answer",
+    answerId,
     timestamp: Date.now(),
     droppedUtterances,
+    ...input,
+  });
+  return answerId;
+}
+
+export type AnswerFeedbackInput = {
+  answerId: string;
+  reason: FeedbackReason;
+  tier: AnswerTier;
+  latencyMs: number;
+};
+
+export function recordAnswerFeedback(input: AnswerFeedbackInput): void {
+  if (!isFlightRecorder()) return;
+  appendRecord({
+    kind: "feedback",
+    timestamp: Date.now(),
     ...input,
   });
 }
@@ -154,12 +202,16 @@ export function noteDroppedUtterance(input: DroppedUtteranceInput): void {
 
 export function flightRecords(): FlightRecord[] {
   return loadLines()
-    .map(parseLine)
+    .map(parseFlightLine)
     .filter((row): row is FlightRecord => row != null);
 }
 
 export function droppedRecords(): DroppedUtteranceRecord[] {
   return flightRecords().filter((row): row is DroppedUtteranceRecord => row.kind === "dropped");
+}
+
+export function feedbackRecords(): FeedbackFlightRecord[] {
+  return flightRecords().filter((row): row is FeedbackFlightRecord => row.kind === "feedback");
 }
 
 export function exportFlightSession(): FlightSessionExport {
