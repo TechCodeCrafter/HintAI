@@ -9,6 +9,7 @@ import { persistPackAsContext } from "../../context/service.ts";
 import { createIndexedDbVectorStore } from "../../context/storage/vector-store-indexeddb.ts";
 import { bagEmbedding384, setEmbedderForTests } from "../embedding.ts";
 import { embedIndexedChunks, hashChunk } from "../embed-chunks.ts";
+import { vectorCacheKey } from "../retrieval-scope.ts";
 import { createMemoryVectorStore, type VectorStore } from "../vector-store.ts";
 
 function chunk(id: string, text: string) {
@@ -77,7 +78,7 @@ test("indexContext embeds when asked and never blocks the index", async () => {
   assert.equal(indexed.report.embedMs >= 0, true);
   let stored = 0;
   for (const row of indexed.chunks) {
-    if (await store.has(row.id)) stored += 1;
+    if (await store.has(vectorCacheKey(row))) stored += 1;
   }
   assert.ok(stored > 0, "index-time embed should write vectors");
   setEmbedderForTests(null);
