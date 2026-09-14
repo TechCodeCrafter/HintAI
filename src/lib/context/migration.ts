@@ -9,6 +9,7 @@ import type { ContextRecord } from "./types.ts";
 export const PACK_KEY = "ground.pack";
 export const MIGRATION_MARKER_KEY = "ground.pack.migrating";
 export const ACTIVE_CONTEXT_KEY = "meethint.activeContextId";
+export const ACTIVE_SPACE_KEY = "meethint.activeSpaceId";
 const ACTIVE_CONTEXT_KEY_LEGACY = "ground.activeContextId";
 
 export function readSavedPack(): RepoPack | null {
@@ -50,6 +51,21 @@ export function persistActiveContextId(id: string | null): void {
   } catch {
     /* ignore quota */
   }
+}
+
+export function readActiveSpaceId(): string | null {
+  try {
+    const next = readAccountStorage(ACTIVE_SPACE_KEY);
+    if (next != null) return next;
+    return readActiveContextId();
+  } catch {
+    return null;
+  }
+}
+
+export function persistActiveSpaceId(id: string | null): void {
+  writeAccountStorage(ACTIVE_SPACE_KEY, id);
+  persistActiveContextId(id);
 }
 
 function writeMarker(id: string): void {

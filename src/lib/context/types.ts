@@ -1,4 +1,4 @@
-export const CONTEXT_SCHEMA_VERSION = 1;
+export const CONTEXT_SCHEMA_VERSION = 2;
 
 /** Why this context exists. Optional so older IndexedDB rows stay valid. */
 export type ContextKind = "work" | "course" | "client" | "presentation" | "research" | "other";
@@ -20,10 +20,17 @@ export type ContextRecord = {
   excludePatterns?: string[];
 };
 
+export type SourceType = "repo" | "pdf" | "file";
+
 export type TextStoredSource = {
   id: string;
   workspaceId?: string;
   contextId: string;
+  /** Stable ingest unit (repo bundle). Shared by all files from one folder attach. */
+  sourceId: string;
+  sourceType: SourceType;
+  displayName: string;
+  pathPrefix: string;
   path: string;
   language?: string;
   kind: "file";
@@ -45,6 +52,11 @@ export type PdfStoredSource = {
   id: string;
   workspaceId?: string;
   contextId: string;
+  /** Same as `id` for PDFs — one document per source. */
+  sourceId: string;
+  sourceType: "pdf";
+  displayName: string;
+  pathPrefix: string;
   path: string;
   kind: "pdf";
   mimeType: "application/pdf";
@@ -92,8 +104,15 @@ export type PdfSourceDraft = {
   blob: Blob;
 };
 
-/** Folder replace path — text only, unchanged. */
+/** Full context text replace (tests / legacy). Prefer repo bundle upsert for attach flows. */
 export type SourceDraft = TextSourceDraft;
+
+export type RepoBundleInput = {
+  displayName: string;
+  bundleSourceId?: string;
+  pathPrefix?: string;
+  files: TextSourceDraft[];
+};
 
 export type UpsertDraft = TextSourceDraft | PdfSourceDraft;
 

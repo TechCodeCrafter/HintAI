@@ -94,10 +94,10 @@ test("the same path can exist in two contexts without colliding", async () => {
     const b = await persistPackAsContext(PACK_B, repo);
     const sourcesA = await repo.listSources(a.context.id);
     const sourcesB = await repo.listSources(b.context.id);
-    assert.ok(sourcesA.some((s) => s.path === "src/index.ts"), name);
-    assert.ok(sourcesB.some((s) => s.path === "src/index.ts"), name);
-    const fileA = sourcesA.find((s) => s.path === "src/index.ts");
-    const fileB = sourcesB.find((s) => s.path === "src/index.ts");
+    assert.ok(sourcesA.some((s) => s.path === "payments-backend/src/index.ts"), name);
+    assert.ok(sourcesB.some((s) => s.path === "cs401-notes/src/index.ts"), name);
+    const fileA = sourcesA.find((s) => s.path === "payments-backend/src/index.ts");
+    const fileB = sourcesB.find((s) => s.path === "cs401-notes/src/index.ts");
     assert.ok(fileA && isTextSource(fileA) && fileB && isTextSource(fileB), name);
     assert.notEqual(fileA.content, fileB.content, name);
     assert.notEqual(a.context.id, b.context.id, name);

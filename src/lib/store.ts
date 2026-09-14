@@ -4,15 +4,19 @@ import { bindAccountId, LOCAL_DEV_ACCOUNT_ID, readAccountStorage, writeAccountSt
 import { authEnabled } from "@/lib/auth/client";
 import type { ContextRecord, ContextRuntimeStatus, StoredSource } from "@/lib/context/types";
 import { isPdfSource } from "@/lib/context/types";
-import { indexContext } from "@/lib/context/chunk-index";
+import { indexSpace } from "@/lib/context/space-index";
+import type { SpaceRecord } from "@/lib/context/space-types.ts";
+import { authorizedSourceIdsFrom, assertSpaceWorkspace, runSpaceScopedRetrieval } from "@/lib/search/search-scope.ts";
+import type { ContextRepository } from "@/lib/context/repository";
+import type { IndexedSpaceRuntime } from "@/lib/context/space-index";
 import { runtimeFromPack } from "@/lib/context/hydrate";
 import { pdfWorkPending } from "@/lib/context/source-write";
 import { addPdfFilesToContext, planPdfBatch } from "@/lib/document/pdf/add-files";
 import { canServeSnapshot, resumePdfWork, type IngestProgress } from "@/lib/document/pdf/ingest-flow";
 import {
   migrateLegacyPack,
-  persistActiveContextId,
-  readActiveContextId,
+  persistActiveSpaceId,
+  readActiveSpaceId,
   readSavedPack,
 } from "@/lib/context/migration";
 import { dropExcludedEvidence, normalizeExcludePatterns, pathExcluded, toggleExcludePath } from "@/lib/context/exclusions";
@@ -67,13 +71,10 @@ import {
   buildChunks,
   formatFlightRetrievalSummary,
   packVocabulary,
-  retrieveHits,
-  retrieveHitsOptionsForPack,
 } from "@/lib/search/retrieve";
 import { shapeOf } from "@/lib/search/intent";
 import {
   contentWords,
-  expandRetrievalQuery,
   normalizeSpokenQuestion,
   previousRetrievalQuestion,
 } from "@/lib/search/spoken";
@@ -161,7 +162,12 @@ type MeetHintState = {
   pack: RepoPack;
   chunks: IndexedChunk[];
   contexts: ContextRecord[];
+  /** Active Knowledge Space — production search corpus boundary. */
+  activeSpaceId: string | null;
+  /** Legacy route/UI alias — primary member context id. */
   activeContextId: string | null;
+  memberContextIds: string[];
+  authorizedSourceIds: string[];
   contextStatus: ContextRuntimeStatus;
   contextError: string | null;
   hydrationEpoch: number;
@@ -406,11 +412,76 @@ function isTyping(): boolean {
 
 const NORTHSTAR_CHUNKS = buildChunks(NORTHSTAR);
 
+async function resolveSpaceForActivation(
+  repo: ContextRepository,
+  contextOrSpaceId: string,
+): Promise<SpaceRecord> {
+  let space = await repo.getSpace(contextOrSpaceId);
+  if (!space) {
+    const all = await repo.listSpaces();
+    space = all.find((item) => item.memberContextIds.includes(contextOrSpaceId)) ?? null;
+  }
+  if (!space) {
+    const ctx = await repo.getContext(contextOrSpaceId);
+    if (!ctx) throw new Error("Context not in this account");
+    space = await repo.createSpace({
+      id: ctx.id,
+      name: ctx.name,
+      memberContextIds: [ctx.id],
+      primaryContextId: ctx.id,
+    });
+  }
+  assertSpaceWorkspace(space);
+  return space;
+}
+
+async function listAllSpaceSources(repo: ContextRepository, memberContextIds: string[]): Promise<StoredSource[]> {
+  const rows: StoredSource[] = [];
+  for (const contextId of memberContextIds) {
+    rows.push(...(await repo.listSources(contextId)));
+  }
+  return rows;
+}
+
+function patchFromSpaceRuntime(
+  space: SpaceRecord,
+  runtime: Pick<
+    IndexedSpaceRuntime,
+    "memberContextIds" | "allSources" | "pack" | "chunks" | "vocab" | "openFile"
+  >,
+): Pick<
+  MeetHintState,
+  | "activeSpaceId"
+  | "activeContextId"
+  | "memberContextIds"
+  | "authorizedSourceIds"
+  | "sources"
+  | "pack"
+  | "chunks"
+  | "vocab"
+  | "openFile"
+> {
+  return {
+    activeSpaceId: space.id,
+    activeContextId: space.primaryContextId,
+    memberContextIds: runtime.memberContextIds,
+    authorizedSourceIds: authorizedSourceIdsFrom(runtime.allSources),
+    sources: runtime.allSources,
+    pack: runtime.pack,
+    chunks: runtime.chunks,
+    vocab: runtime.vocab,
+    openFile: runtime.openFile,
+  };
+}
+
 export const useMeetHint = create<MeetHintState>((set, get) => ({
   pack: NORTHSTAR,
   chunks: NORTHSTAR_CHUNKS,
   contexts: [],
+  activeSpaceId: null,
   activeContextId: null,
+  memberContextIds: [],
+  authorizedSourceIds: [],
   contextStatus: "booting",
   contextError: null,
   hydrationEpoch: 0,
@@ -570,12 +641,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         });
         return;
       }
-      const remembered = preferredId ?? readActiveContextId();
+      const remembered = preferredId ?? readActiveSpaceId();
       const preferred = preferredId ? contexts.find((item) => item.id === preferredId) : null;
       if (preferredId && !preferred) {
-        persistActiveContextId(null);
+        persistActiveSpaceId(null);
         set({
+          activeSpaceId: null,
           activeContextId: null,
+          memberContextIds: [],
+          authorizedSourceIds: [],
           contextStatus: "ready",
           contextError: "That workspace is not in this account.",
           contexts,
@@ -598,9 +672,12 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contexts[0] ??
         null;
       if (!target) {
-        persistActiveContextId(null);
+        persistActiveSpaceId(null);
         set({
+          activeSpaceId: null,
           activeContextId: null,
+          memberContextIds: [],
+          authorizedSourceIds: [],
           contextStatus: "ready",
           contextError: null,
         });
@@ -625,11 +702,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   createNamedContext: async (input) => {
     const repo = getContextRepository();
     const context = await repo.createContext(input);
-    persistActiveContextId(context.id);
+    persistActiveSpaceId(context.id);
     const contexts = await listStoredContexts();
     set({
       contexts,
+      activeSpaceId: context.id,
       activeContextId: context.id,
+      memberContextIds: [context.id],
+      authorizedSourceIds: [],
       sources: [],
     });
     return context.id;
@@ -645,9 +725,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       contextError: null,
       hydrationEpoch: epoch,
       activeContextId: contextId,
+      activeSpaceId: contextId,
       ...clearSessionOnSwitch(),
     });
-    persistActiveContextId(contextId);
+    persistActiveSpaceId(contextId);
     try {
       const { pack: raw, skipped, truncated, failed } = await packFromFiles(list, options);
       if (raw.files.length === 0) {
@@ -662,25 +743,21 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         });
         return;
       }
-      const { context } = await persistPackAsContext(raw, getContextRepository(), { contextId });
+      const repo = getContextRepository();
+      const { context } = await persistPackAsContext(raw, repo, { contextId });
       if (epoch !== hydrationEpoch) return;
-      const hydrated = await indexContext(getContextRepository(), context.id, {
+      const space = await resolveSpaceForActivation(repo, context.id);
+      const hydrated = await indexSpace(repo, space.id, {
         isCancelled: () => epoch !== hydrationEpoch,
       });
       if (epoch !== hydrationEpoch || hydrated.cancelled) return;
-      persistActiveContextId(context.id);
+      persistActiveSpaceId(space.id);
       const contexts = await listStoredContexts();
-      const sources = await getContextRepository().listSources(context.id);
       if (epoch !== hydrationEpoch) return;
       set({
         contexts,
-        activeContextId: context.id,
-        sources,
-        pack: hydrated.pack,
-        chunks: hydrated.chunks,
-        vocab: hydrated.vocab,
+        ...patchFromSpaceRuntime(space, hydrated),
         loadingFolder: false,
-        openFile: hydrated.openFile,
         contextStatus: "ready",
         contextUpdating: false,
         ingestProgress: null,
@@ -708,8 +785,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const repo = getContextRepository();
     await repo.deleteContext(id);
     const contexts = await listStoredContexts();
-    if (get().activeContextId === id) {
-      persistActiveContextId(null);
+    if (get().activeContextId === id || get().activeSpaceId === id) {
+      persistActiveSpaceId(null);
       const next = contexts[0];
       if (next) {
         await get().activateContext(next.id);
@@ -741,27 +818,31 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         const repo = getContextRepository();
         const record = await repo.getContext(id);
         if (!record) throw new Error("Context not in this account");
-        const sources = await repo.listSources(id);
+        const space = await resolveSpaceForActivation(repo, id);
+        const allSources = await listAllSpaceSources(repo, space.memberContextIds);
+        const contextSources = await repo.listSources(id);
         if (epoch !== hydrationEpoch) return;
-        if (sources.length === 0) {
+        if (allSources.length === 0) {
           if (epoch !== hydrationEpoch) return;
-          persistActiveContextId(id);
+          persistActiveSpaceId(space.id);
           const contexts = await listStoredContexts();
           if (epoch !== hydrationEpoch) return;
           set({
-            activeContextId: id,
+            ...patchFromSpaceRuntime(space, {
+              memberContextIds: space.memberContextIds,
+              allSources: [],
+              pack: {
+                id: space.id,
+                name: space.name,
+                description: record.description ?? "No sources yet",
+                files: [],
+                commits: [],
+              },
+              chunks: [],
+              vocab: new Set(),
+              openFile: null,
+            }),
             contexts,
-            sources,
-            pack: {
-              id,
-              name: record.name,
-              description: record.description ?? "No sources yet",
-              files: [],
-              commits: [],
-            },
-            chunks: [],
-            vocab: new Set(),
-            openFile: null,
             contextStatus: "ready",
             contextUpdating: false,
             ingestProgress: null,
@@ -770,25 +851,20 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           });
           return;
         }
-        const serveNow = canServeSnapshot(sources);
-        const pending = pdfWorkPending(sources);
+        const serveNow = canServeSnapshot(contextSources);
+        const pending = pdfWorkPending(contextSources);
 
         if (serveNow) {
-          const runtime = await indexContext(repo, id, {
+          const runtime = await indexSpace(repo, space.id, {
             isCancelled: () => epoch !== hydrationEpoch,
           });
           if (epoch !== hydrationEpoch || runtime.cancelled) return;
-          persistActiveContextId(id);
+          persistActiveSpaceId(space.id);
           const contexts = await listStoredContexts();
           if (epoch !== hydrationEpoch) return;
           set({
-            activeContextId: id,
             contexts,
-            sources,
-            pack: runtime.pack,
-            chunks: runtime.chunks,
-            vocab: runtime.vocab,
-            openFile: runtime.openFile,
+            ...patchFromSpaceRuntime(space, runtime),
             contextStatus: "ready",
             contextUpdating: pending,
             contextError: null,
@@ -805,9 +881,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           },
         });
         if (epoch !== hydrationEpoch) return;
-        persistActiveContextId(id);
+        persistActiveSpaceId(space.id);
         const contexts = await listStoredContexts();
-        const liveSources = finished.sources;
+        const liveSources = await listAllSpaceSources(repo, space.memberContextIds);
         if (epoch !== hydrationEpoch) return;
         if (!finished.runtime) {
           if (serveNow) {
@@ -815,28 +891,34 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             return;
           }
           set({
-            activeContextId: id,
+            ...patchFromSpaceRuntime(space, {
+              memberContextIds: space.memberContextIds,
+              allSources: liveSources,
+              pack: get().pack,
+              chunks: get().chunks,
+              vocab: get().vocab,
+              openFile: get().openFile,
+            }),
             contexts,
-            sources: liveSources,
             contextStatus: "hydrating",
             contextUpdating: false,
             ingestProgress: null,
           });
           return;
         }
+        const runtime = await indexSpace(repo, space.id, {
+          isCancelled: () => epoch !== hydrationEpoch,
+        });
+        if (epoch !== hydrationEpoch || runtime.cancelled) return;
         set({
-          activeContextId: id,
           contexts,
-          sources: liveSources,
-          pack: finished.runtime.pack,
-          chunks: finished.runtime.chunks,
-          vocab: finished.runtime.vocab,
-          openFile: get().openDocument ? get().openFile : finished.runtime.openFile,
+          ...patchFromSpaceRuntime(space, runtime),
+          openFile: get().openDocument ? get().openFile : runtime.openFile,
           contextStatus: "ready",
           contextUpdating: false,
           ingestProgress: null,
           contextError: null,
-          folderError: packWarning(finished.runtime.weak, finished.runtime.pack.files.length),
+          folderError: packWarning(runtime.weak, runtime.pack.files.length),
         });
       });
     } catch {
@@ -1027,15 +1109,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         });
         return;
       }
-      const { context } = await persistPackAsContext(raw);
+      const repo = getContextRepository();
+      const { context } = await persistPackAsContext(raw, repo);
       if (epoch !== hydrationEpoch) return;
-      const hydrated = await indexContext(getContextRepository(), context.id, {
+      const space = await resolveSpaceForActivation(repo, context.id);
+      const hydrated = await indexSpace(repo, space.id, {
         isCancelled: () => epoch !== hydrationEpoch,
       });
       if (epoch !== hydrationEpoch || hydrated.cancelled) return;
-      persistActiveContextId(context.id);
+      persistActiveSpaceId(space.id);
       const contexts = await listStoredContexts();
-      const sources = await getContextRepository().listSources(context.id);
       if (epoch !== hydrationEpoch) return;
       const sample = hydrated.pack.files
         .slice(0, 3)
@@ -1043,13 +1126,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         .join(", ");
       set({
         contexts,
-        activeContextId: context.id,
-        sources,
-        pack: hydrated.pack,
-        chunks: hydrated.chunks,
-        vocab: hydrated.vocab,
+        ...patchFromSpaceRuntime(space, hydrated),
         loadingFolder: false,
-        openFile: hydrated.openFile,
         contextStatus: "ready",
         contextUpdating: false,
         ingestProgress: null,
@@ -1107,10 +1185,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const epoch = created ? nextHydrationEpoch() : get().hydrationEpoch;
     if (created) {
       searchEpoch += 1;
-      persistActiveContextId(contextId);
+      persistActiveSpaceId(contextId);
       const contexts = await listStoredContexts();
       set({
+        activeSpaceId: contextId,
         activeContextId: contextId,
+        memberContextIds: [contextId],
+        authorizedSourceIds: [],
         contexts,
         contextStatus: "hydrating",
         contextUpdating: false,
@@ -1170,20 +1251,21 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         return;
       }
 
-      persistActiveContextId(targetId);
+      const space = await resolveSpaceForActivation(repo, targetId);
+      const runtime = await indexSpace(repo, space.id, {
+        isCancelled: () => get().hydrationEpoch !== epoch,
+      });
+      if (get().hydrationEpoch !== epoch || runtime.cancelled) return;
+      persistActiveSpaceId(space.id);
       set({
-        activeContextId: targetId,
         contexts,
-        sources: finished.sources,
-        pack: finished.runtime.pack,
-        chunks: finished.runtime.chunks,
-        vocab: finished.runtime.vocab,
-        openFile: get().openDocument ? get().openFile : finished.runtime.openFile,
+        ...patchFromSpaceRuntime(space, runtime),
+        openFile: get().openDocument ? get().openFile : runtime.openFile,
         contextStatus: "ready",
         contextUpdating: false,
         ingestProgress: null,
         contextError: null,
-        folderError: rejectNote || packWarning(finished.runtime.weak, finished.runtime.pack.files.length),
+        folderError: rejectNote || packWarning(runtime.weak, runtime.pack.files.length),
       });
     } catch {
       if (created && get().hydrationEpoch !== epoch) return;
@@ -1206,7 +1288,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       chunks: NORTHSTAR_CHUNKS,
       vocab: packVocabulary(NORTHSTAR_CHUNKS),
       contexts: [],
+      activeSpaceId: null,
       activeContextId: null,
+      memberContextIds: [],
+      authorizedSourceIds: [],
       contextStatus: "ready",
       contextError: null,
       hydrationEpoch: epoch,
@@ -1252,24 +1337,32 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       chunks: purged.chunks,
       vocab: packVocabulary(purged.chunks),
     });
-    const id = state.activeContextId;
-    if (!id) return;
+    const spaceId = state.activeSpaceId ?? state.activeContextId;
+    if (!spaceId) return;
     const epoch = nextHydrationEpoch();
     try {
-      await withContextWrite(id, async () => {
+      await withContextWrite(state.activeContextId ?? spaceId, async () => {
         const repo = getContextRepository();
-        await repo.patchContext(id, { excludePatterns: nextPack.excludePatterns });
+        const space = await repo.getSpace(spaceId);
+        if (!space) return;
+        for (const memberId of space.memberContextIds) {
+          await repo.patchContext(memberId, { excludePatterns: nextPack.excludePatterns });
+        }
         const excludedIds = state.sources
           .filter((source) => pathExcluded(source.path, next))
           .map((source) => source.id);
-        if (excludedIds.length > 0) await repo.deleteIndexed(id, excludedIds);
+        if (excludedIds.length > 0) {
+          for (const memberId of space.memberContextIds) {
+            await repo.deleteIndexed(memberId, excludedIds);
+          }
+        }
         if (!restored) {
           const contexts = await listStoredContexts();
           if (epoch !== hydrationEpoch) return;
           set({ contexts });
           return;
         }
-        const runtime = await indexContext(repo, id, {
+        const runtime = await indexSpace(repo, space.id, {
           isCancelled: () => epoch !== hydrationEpoch,
         });
         if (epoch !== hydrationEpoch || runtime.cancelled) return;
@@ -1277,9 +1370,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         if (epoch !== hydrationEpoch) return;
         set({
           contexts,
-          pack: runtime.pack,
-          chunks: runtime.chunks,
-          vocab: runtime.vocab,
+          ...patchFromSpaceRuntime(space, runtime),
         });
       });
     } catch {
@@ -1293,13 +1384,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   resetPack: () => {
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
-    persistActiveContextId(null);
+    persistActiveSpaceId(null);
     set({
       pack: NORTHSTAR,
       chunks: NORTHSTAR_CHUNKS,
       vocab: packVocabulary(NORTHSTAR_CHUNKS),
       sources: [],
+      activeSpaceId: null,
       activeContextId: null,
+      memberContextIds: [],
+      authorizedSourceIds: [],
       contextStatus: "ready",
       contextUpdating: false,
       contextError: null,
@@ -1515,14 +1609,16 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     set({ searching: true, refining: false, typedQuery: explicit ?? get().typedQuery });
     const workspaceId = currentWorkspaceId() ?? defaultWorkspaceId();
     const contextId = state.activeContextId ?? state.pack.id;
-    const hits = await retrieveHits(
-      expandRetrievalQuery(canonical, previousQuestion),
-      state.chunks,
-      retrieveHitsOptionsForPack(state.pack, { workspaceId, contextId }, {
-        limit: 6,
-        vectorStore: getVectorStore(),
-      }),
-    );
+    const hits = await runSpaceScopedRetrieval({
+      query: canonical,
+      previousQuestion,
+      chunks: state.chunks,
+      pack: state.pack,
+      spaceState: state,
+      workspaceId,
+      vectorStore: getVectorStore(),
+      limit: 6,
+    });
     const retrieveMs = Math.round(performance.now() - t0);
     if (epoch !== searchEpoch) return;
 

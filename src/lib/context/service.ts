@@ -1,6 +1,8 @@
 import { contextDatabaseName, onAccountUnbind, requireBoundAccountId } from "../auth/account-boundary.ts";
 import type { RepoPack } from "../repo/types.ts";
 import { draftsFromPack, fingerprintPack, fingerprintsMatch, hydrateContext, packFromSources } from "./hydrate.ts";
+import { upsertRepoBundle, verifyRepoBundleFiles } from "./repo-bundle.ts";
+import { sanitizePathPrefix } from "./source-identity.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { createIndexedDbRepository } from "./storage/indexeddb.ts";
 import type { ContextKind, ContextRecord } from "./types.ts";
@@ -63,8 +65,12 @@ export async function persistPackAsContext(
   const context = existing ?? created;
   if (!context) throw new Error("Could not create a context");
   try {
-    await repo.replaceSources(context.id, draftsFromPack(pack));
-    const stored = await verifyPersistedPack(repo, context.id, pack);
+    const pathPrefix = sanitizePathPrefix(pack.name);
+    await repo.upsertRepoBundle(context.id, {
+      displayName: pack.name,
+      files: draftsFromPack(pack),
+    });
+    const stored = await verifyPersistedPack(repo, context.id, pack, pathPrefix);
     const ready = (await repo.getContext(context.id)) ?? { ...context, sourceCount: stored.files.length, status: "ready" as const };
     return { context: ready, pack: stored };
   } catch (error) {
@@ -104,15 +110,27 @@ export async function verifyPersistedPack(
   repo: ContextRepository,
   contextId: string,
   expected: RepoPack,
+  pathPrefix?: string,
 ): Promise<RepoPack> {
   const context = await repo.getContext(contextId);
   if (!context) throw new Error("Context disappeared after write");
   const sources = await repo.listSources(contextId);
   const reconstructed = packFromSources(context, sources);
-  const written = await fingerprintPack(expected);
-  const readBack = await fingerprintPack(reconstructed);
-  if (!fingerprintsMatch(written, readBack)) {
-    throw new Error("Persisted sources did not match the pack that was written");
+  const prefix = pathPrefix ?? sanitizePathPrefix(expected.name);
+  const bundleOk = await verifyRepoBundleFiles(
+    sources.filter(isTextSource),
+    draftsFromPack(expected),
+    prefix,
+  );
+  if (!bundleOk) {
+    throw new Error("Persisted repo bundle did not match the pack that was written");
+  }
+  if (pathPrefix === undefined) {
+    const written = await fingerprintPack(expected);
+    const readBack = await fingerprintPack(reconstructed);
+    if (!fingerprintsMatch(written, readBack)) {
+      throw new Error("Persisted sources did not match the pack that was written");
+    }
   }
   const counted = await repo.countSources(contextId);
   if (counted !== sources.length || context.sourceCount !== counted) {

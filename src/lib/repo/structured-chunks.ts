@@ -1,3 +1,4 @@
+import { fileChunkId, type BuildChunksOptions } from "../context/source-identity.ts";
 import type { CodeParser } from "./parser.ts";
 import { computeLineOffsets, inferLanguage } from "./parser.ts";
 import type { Chunk } from "./types.ts";
@@ -9,6 +10,7 @@ import type { Chunk } from "./types.ts";
 export function buildStructuredChunks(
   file: { path: string; content: string },
   parser: CodeParser,
+  options?: BuildChunksOptions,
 ): Chunk[] | null {
   let symbols: ReturnType<CodeParser["parse"]>;
   try {
@@ -32,9 +34,13 @@ export function buildStructuredChunks(
     }
     const text = file.content.slice(chunkStartOffset, chunkEndOffset);
     if (!text.trim()) continue;
+    const rangeKey = `${sym.name}@${chunkStartLine}`;
     chunks.push({
-      id: `${file.path}:${sym.name}@${chunkStartLine}`,
+      id: options?.chunkScope
+        ? fileChunkId(options.chunkScope, file.path, rangeKey)
+        : `${file.path}:${rangeKey}`,
       kind: "code",
+      sourceId: options?.sourceId ?? options?.chunkScope?.sourceId,
       path: file.path,
       startLine: chunkStartLine,
       endLine: chunkEndLine,

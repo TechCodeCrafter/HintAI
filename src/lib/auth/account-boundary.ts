@@ -12,6 +12,7 @@ export const ACCOUNT_EPOCH_KEY = "meethint.accountEpoch";
 
 export const SENSITIVE_LOCAL_KEYS = [
   "meethint.activeContextId",
+  "meethint.activeSpaceId",
   "ground.activeContextId",
   "ground.pack",
   "ground.pack.migrating",

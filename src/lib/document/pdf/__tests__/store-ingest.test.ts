@@ -57,7 +57,7 @@ test("Add PDF to an existing Context preserves text sources", async () => {
   assert.equal(outcome.created, false);
   assert.equal(outcome.hadSnapshot, true);
   const sources = await repo.listSources(context.id);
-  assert.ok(sources.some((row) => isTextSource(row) && row.path === "src/retry.ts"));
+  assert.ok(sources.some((row) => isTextSource(row) && row.path === "payments-backend/src/retry.ts"));
   assert.ok(sources.some((row) => isPdfSource(row) && row.path === "lecture.pdf" && row.readiness === "ready"));
 });
 

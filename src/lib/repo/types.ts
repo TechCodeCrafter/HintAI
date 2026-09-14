@@ -32,6 +32,8 @@ export type RepoPack = {
 export type FileChunk = {
   id: string;
   kind: "code" | "why";
+  /** Ingest unit id (repo bundle). Required on indexed chunks; optional during in-memory pack builds. */
+  sourceId?: string;
   path: string;
   startLine: number;
   endLine: number;

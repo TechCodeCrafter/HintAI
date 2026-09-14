@@ -195,7 +195,7 @@ test("mixed Context retrieves PDF pages and still prefers code for code question
 
   const codeHits = retrieve("What does RETRIES mean in retry.ts?", runtime.chunks);
   assert.ok(codeHits[0] && codeHits[0].kind === "code");
-  assert.equal(codeHits[0].path, "src/retry.ts");
+  assert.equal(codeHits[0].path, "payments-backend/src/retry.ts");
 
   const trace = retrieveTrace("What does serializable isolation prevent?", runtime.chunks);
   assert.equal(trace[0]?.kind, "document");

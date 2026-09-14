@@ -2,7 +2,7 @@
  * Bump these when the chunk representation or the retrieval index contract
  * changes. Cache hits require both to match the rows that were written.
  */
-export const CHUNKER_VERSION = 1;
+export const CHUNKER_VERSION = 2;
 /**
  * Structured symbol chunks are implemented but off. Do not bump
  * CHUNKER_VERSION until this flips — cached window rows stay valid.
