@@ -17,6 +17,7 @@ import { Route as RelayRouteImport } from './routes/relay'
 import { Route as SoonRouteImport } from './routes/soon'
 import { Route as ContextIdRouteImport } from './routes/context.$id'
 import { Route as EvalViewerRouteImport } from './routes/eval.viewer'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ContextIdIndexRouteImport } from './routes/context.$id.index'
 import { Route as ContextIdAskRouteImport } from './routes/context.$id.ask'
 import { Route as ContextIdLiveRouteImport } from './routes/context.$id.live'
@@ -61,6 +62,11 @@ const EvalViewerRoute = EvalViewerRouteImport.update({
   path: '/eval/viewer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContextIdIndexRoute = ContextIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/soon': typeof SoonRoute
   '/context/$id': typeof ContextIdRouteWithChildren
   '/eval/viewer': typeof EvalViewerRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/context/$id/ask': typeof ContextIdAskRoute
   '/context/$id/live': typeof ContextIdLiveRoute
   '/context/$id/': typeof ContextIdIndexRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/relay': typeof RelayRoute
   '/soon': typeof SoonRoute
   '/eval/viewer': typeof EvalViewerRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/context/$id/ask': typeof ContextIdAskRoute
   '/context/$id/live': typeof ContextIdLiveRoute
   '/context/$id': typeof ContextIdIndexRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/soon': typeof SoonRoute
   '/context/$id': typeof ContextIdRouteWithChildren
   '/eval/viewer': typeof EvalViewerRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/context/$id/ask': typeof ContextIdAskRoute
   '/context/$id/live': typeof ContextIdLiveRoute
   '/context/$id/': typeof ContextIdIndexRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/soon'
     | '/context/$id'
     | '/eval/viewer'
+    | '/api/auth/$'
     | '/context/$id/ask'
     | '/context/$id/live'
     | '/context/$id/'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/relay'
     | '/soon'
     | '/eval/viewer'
+    | '/api/auth/$'
     | '/context/$id/ask'
     | '/context/$id/live'
     | '/context/$id'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/soon'
     | '/context/$id'
     | '/eval/viewer'
+    | '/api/auth/$'
     | '/context/$id/ask'
     | '/context/$id/live'
     | '/context/$id/'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   SoonRoute: typeof SoonRoute
   ContextIdRoute: typeof ContextIdRouteWithChildren
   EvalViewerRoute: typeof EvalViewerRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EvalViewerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/context/$id/': {
       id: '/context/$id/'
       path: '/'
@@ -275,6 +295,7 @@ const rootRouteChildren: RootRouteChildren = {
   SoonRoute: SoonRoute,
   ContextIdRoute: ContextIdRouteWithChildren,
   EvalViewerRoute: EvalViewerRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

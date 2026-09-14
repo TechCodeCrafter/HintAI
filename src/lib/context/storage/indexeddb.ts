@@ -89,6 +89,15 @@ function normalizeContext(row: ContextRecord): ContextRecord {
   return withWorkspaceBackfill(row, defaultWorkspaceId());
 }
 
+function contextVisible(row: ContextRecord | undefined): ContextRecord | null {
+  if (!row) return null;
+  try {
+    return normalizeContext(row);
+  } catch {
+    return null;
+  }
+}
+
 async function draftsToTextSources(
   contextId: string,
   drafts: SourceDraft[],
@@ -165,7 +174,7 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
 
     async getContext(id) {
       const row = await db.contexts.get(id);
-      return row ? normalizeContext(row) : null;
+      return contextVisible(row);
     },
 
     async createContext(input) {
@@ -176,8 +185,9 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
     },
 
     async patchContext(id, patch) {
-      const existing = await db.contexts.get(id);
+      const existing = contextVisible(await db.contexts.get(id));
       if (!existing) throw new ContextNotFoundError(id);
+      assertWorkspaceMatch(existing.workspaceId, "patchContext");
       const next = { ...existing, ...patch, updatedAt: Date.now() };
       await db.contexts.put(next);
       return next;

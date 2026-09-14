@@ -1,4 +1,4 @@
-import type { WorkspaceId } from "../auth/workspace.ts";
+import { defaultWorkspaceId, type WorkspaceId } from "../auth/workspace.ts";
 import { WorkspaceScopeError } from "../auth/workspace.ts";
 import type { IndexedChunk } from "../repo/types.ts";
 
@@ -21,7 +21,17 @@ export function tagChunksForScope(chunks: IndexedChunk[], scope: RetrievalScope)
   }));
 }
 
-/** Defense in depth: reject chunks stamped for another workspace or context. */
+/** Drop chunks stamped for another workspace or context before ranking. */
+export function filterChunksForScope(chunks: IndexedChunk[], scope: RetrievalScope): IndexedChunk[] {
+  return chunks.filter((chunk) => {
+    const meta = chunk as IndexedChunk & ScopedChunkMeta;
+    if (meta.workspaceId != null && meta.workspaceId !== scope.workspaceId) return false;
+    if (meta.contextId != null && meta.contextId !== scope.contextId) return false;
+    return true;
+  });
+}
+
+/** Defense in depth: reject chunk sets that include foreign workspace/context stamps. */
 export function assertRetrievalScope(chunks: IndexedChunk[], scope: RetrievalScope): void {
   for (const chunk of chunks) {
     const meta = chunk as IndexedChunk & ScopedChunkMeta;
@@ -34,6 +44,11 @@ export function assertRetrievalScope(chunks: IndexedChunk[], scope: RetrievalSco
       throw new WorkspaceScopeError(`retrieve blocked: chunk ${chunk.id} belongs to context ${meta.contextId}`);
     }
   }
+}
+
+/** Unit tests — scope aligned with bound account and context id. */
+export function testRetrievalScope(contextId: string): RetrievalScope {
+  return { workspaceId: defaultWorkspaceId(), contextId };
 }
 
 /** Vector cache key — scoped so embeddings never collide across spaces. */

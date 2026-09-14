@@ -1518,10 +1518,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const hits = await retrieveHits(
       expandRetrievalQuery(canonical, previousQuestion),
       state.chunks,
-      retrieveHitsOptionsForPack(state.pack, {
+      retrieveHitsOptionsForPack(state.pack, { workspaceId, contextId }, {
         limit: 6,
         vectorStore: getVectorStore(),
-        scope: { workspaceId, contextId },
       }),
     );
     const retrieveMs = Math.round(performance.now() - t0);
@@ -1529,7 +1528,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
       set((s) => {
-        const answerHistory = appendAnswerHistory(s.answerHistory, card);
+        const answerHistory = appendAnswerHistory(s.answerHistory, card, {
+          workspaceId,
+          contextId: get().activeContextId ?? state.pack.id,
+        });
         const currentMeeting =
           s.currentMeeting && s.currentMeeting.endedAt == null
             ? { ...s.currentMeeting, answerHistory }
