@@ -6,6 +6,13 @@ export const MEETHINT_MARK = "Hint";
 
 export const MEETHINT_DOMAIN = "meethint.ai";
 
+/** Public GitHub repository (security reporting + general contact for Phase A). */
+export const MEETHINT_REPO = "https://github.com/TechCodeCrafter/HintAI";
+
+export const MEETHINT_SECURITY_CONTACT = `${MEETHINT_REPO}/security/advisories/new`;
+
+export const MEETHINT_SUPPORT_CONTACT = `${MEETHINT_REPO}/issues`;
+
 /** Page title suffix for marketing routes. */
 export const MEETHINT_TITLE = `${MEETHINT_NAME} — cite or silence from your files`;
 

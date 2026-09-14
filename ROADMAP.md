@@ -206,6 +206,17 @@ Build in this order:
 
 ---
 
+## Launch hygiene
+
+Before broad enterprise outreach or paid acquisition, keep the public domain
+trustworthy and filter-friendly. See **[docs/DOMAIN-REPUTATION.md](./docs/DOMAIN-REPUTATION.md)**
+for the full program (ticket #25): Grok script removal on production, trust/legal
+pages, `security.txt`, CSP and baseline headers, external-domain inventory, and
+Phase B–D checklists (email, vendor submissions, monitoring). Phase A is
+code-only; registrar and mailbox work stays in Phase B.
+
+---
+
 ## Decision log
 
 - **2026-03:** Three-column live session is the product shell; home stays calm;

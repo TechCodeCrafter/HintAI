@@ -21,8 +21,12 @@ import { renderInstallPage } from "./grok-pwa-plugin.mjs";
 
 const TEMPLATE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+const GROK_PREVIEW_HOST = "wild-race.grok.me";
+
 test("injects before </head>", () => {
-  const out = injectGrokPwaHead("<html><head><title>x</title></head><body></body></html>");
+  const out = injectGrokPwaHead("<html><head><title>x</title></head><body></body></html>", {
+    host: GROK_PREVIEW_HOST,
+  });
   assert.match(out, /rel="manifest"/);
   assert.match(out, /apple-touch-icon/);
   assert.match(out, /grok-app-builder\/extensions\.js/);
@@ -33,6 +37,7 @@ test("injects the extensions script without a project id", () => {
   const out = injectGrokPwaHead("<html><head></head></html>", {
     appName: "Demo",
     projectId: "",
+    host: GROK_PREVIEW_HOST,
   });
   assert.match(out, /src="https:\/\/grok\.com\/grok-app-builder\/extensions\.js" defer/);
   assert.doesNotMatch(out, /grok-project-id/);
@@ -44,6 +49,7 @@ test("injects project id on the script and meta when provided", () => {
   const out = injectGrokPwaHead("<html><head></head></html>", {
     appName: "Demo",
     projectId: "proj-123",
+    host: GROK_PREVIEW_HOST,
   });
   assert.match(out, /name="grok-project-id" content="proj-123"/);
   assert.match(out, /data-project-id="proj-123"/);
@@ -51,7 +57,7 @@ test("injects project id on the script and meta when provided", () => {
 });
 
 test("does not duplicate grok:app_id", () => {
-  const ctx = { appName: "Demo", projectId: "proj-123" };
+  const ctx = { appName: "Demo", projectId: "proj-123", host: GROK_PREVIEW_HOST };
   const once = injectGrokPwaHead("<html><head></head></html>", ctx);
   const twice = injectGrokPwaHead(once, ctx);
   assert.equal(once, twice);
@@ -76,6 +82,7 @@ test("injects x:creator tags when both creator values are set", () => {
     projectId: "",
     creator: "@alice",
     creatorId: "42",
+    host: GROK_PREVIEW_HOST,
   });
   assert.match(out, /property="x:creator" content="@alice"/);
   assert.match(out, /property="x:creator:id" content="42"/);
@@ -94,7 +101,7 @@ test("escapes x:creator values", () => {
 });
 
 test("does not duplicate x:creator tags", () => {
-  const ctx = { appName: "Demo", projectId: "", creator: "@alice", creatorId: "42" };
+  const ctx = { appName: "Demo", projectId: "", creator: "@alice", creatorId: "42", host: GROK_PREVIEW_HOST };
   const once = injectGrokPwaHead("<html><head></head></html>", ctx);
   const twice = injectGrokPwaHead(once, ctx);
   assert.equal(once, twice);
@@ -399,7 +406,7 @@ test("streaming injector matches </HEAD> case-insensitively", () => {
 });
 
 test("does not duplicate the extensions script", () => {
-  const ctx = { appName: "Demo", projectId: "proj-123" };
+  const ctx = { appName: "Demo", projectId: "proj-123", host: GROK_PREVIEW_HOST };
   const once = injectGrokPwaHead("<html><head></head></html>", ctx);
   const twice = injectGrokPwaHead(once, ctx);
   assert.equal(once, twice);
@@ -511,14 +518,33 @@ test("nitro middleware and its bundled assets exist", () => {
   const middleware = readFileSync(join(TEMPLATE_ROOT, "server/middleware/grok-pwa.ts"), "utf8");
   assert.match(middleware, /install-page\.html\?raw/);
   assert.match(middleware, /virtual:grok-og-identity/);
+  const security = readFileSync(join(TEMPLATE_ROOT, "server/middleware/0-security-headers.ts"), "utf8");
+  assert.match(security, /applySecurityHeaders/);
   readFileSync(join(TEMPLATE_ROOT, "scripts/install-page.html"));
   readFileSync(join(TEMPLATE_ROOT, "public/__grok/icon-180.png"));
   readFileSync(join(TEMPLATE_ROOT, "public/__grok/install/styles.css"));
+  readFileSync(join(TEMPLATE_ROOT, "public/.well-known/security.txt"));
 });
 
 test("vite plugin bakes og identity as a virtual module", () => {
   const plugin = readFileSync(join(TEMPLATE_ROOT, "scripts/grok-pwa-plugin.mjs"), "utf8");
   assert.match(plugin, /virtual:grok-og-identity/);
   assert.match(plugin, /snapshotOgIdentity/);
+});
+
+test("production meethint.ai hosts omit grok.com executable scripts", () => {
+  for (const host of ["meethint.ai", "www.meethint.ai"]) {
+    const out = injectGrokPwaHead("<html><head></head><body></body></html>", {
+      host,
+      projectId: "proj-should-not-appear",
+      creator: "@alice",
+      creatorId: "42",
+    });
+    assert.doesNotMatch(out, /grok\.com\/grok-app-builder\/extensions\.js/);
+    assert.doesNotMatch(out, /grok-project-id/);
+    assert.doesNotMatch(out, /property="grok:app_id"/);
+    assert.doesNotMatch(out, /property="x:creator"/);
+    assert.match(out, /rel="manifest"/);
+  }
 });
 

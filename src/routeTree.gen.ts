@@ -11,10 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RelayRouteImport } from './routes/relay'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SoonRouteImport } from './routes/soon'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ContextIdRouteImport } from './routes/context.$id'
 import { Route as EvalViewerRouteImport } from './routes/eval.viewer'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -32,6 +36,11 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreateRoute = CreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -42,14 +51,29 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RelayRoute = RelayRouteImport.update({
   id: '/relay',
   path: '/relay',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SoonRoute = SoonRouteImport.update({
   id: '/soon',
   path: '/soon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContextIdRoute = ContextIdRouteImport.update({
@@ -86,10 +110,14 @@ const ContextIdLiveRoute = ContextIdLiveRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
   '/home': typeof HomeRoute
+  '/privacy': typeof PrivacyRoute
   '/relay': typeof RelayRoute
+  '/security': typeof SecurityRoute
   '/soon': typeof SoonRoute
+  '/terms': typeof TermsRoute
   '/context/$id': typeof ContextIdRouteWithChildren
   '/eval/viewer': typeof EvalViewerRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -100,10 +128,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
   '/home': typeof HomeRoute
+  '/privacy': typeof PrivacyRoute
   '/relay': typeof RelayRoute
+  '/security': typeof SecurityRoute
   '/soon': typeof SoonRoute
+  '/terms': typeof TermsRoute
   '/eval/viewer': typeof EvalViewerRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/context/$id/ask': typeof ContextIdAskRoute
@@ -114,10 +146,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRoute
+  '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
   '/home': typeof HomeRoute
+  '/privacy': typeof PrivacyRoute
   '/relay': typeof RelayRoute
+  '/security': typeof SecurityRoute
   '/soon': typeof SoonRoute
+  '/terms': typeof TermsRoute
   '/context/$id': typeof ContextIdRouteWithChildren
   '/eval/viewer': typeof EvalViewerRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -130,10 +166,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/contact'
     | '/create'
     | '/home'
+    | '/privacy'
     | '/relay'
+    | '/security'
     | '/soon'
+    | '/terms'
     | '/context/$id'
     | '/eval/viewer'
     | '/api/auth/$'
@@ -144,10 +184,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/app'
+    | '/contact'
     | '/create'
     | '/home'
+    | '/privacy'
     | '/relay'
+    | '/security'
     | '/soon'
+    | '/terms'
     | '/eval/viewer'
     | '/api/auth/$'
     | '/context/$id/ask'
@@ -157,10 +201,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
+    | '/contact'
     | '/create'
     | '/home'
+    | '/privacy'
     | '/relay'
+    | '/security'
     | '/soon'
+    | '/terms'
     | '/context/$id'
     | '/eval/viewer'
     | '/api/auth/$'
@@ -172,10 +220,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
+  ContactRoute: typeof ContactRoute
   CreateRoute: typeof CreateRoute
   HomeRoute: typeof HomeRoute
+  PrivacyRoute: typeof PrivacyRoute
   RelayRoute: typeof RelayRoute
+  SecurityRoute: typeof SecurityRoute
   SoonRoute: typeof SoonRoute
+  TermsRoute: typeof TermsRoute
   ContextIdRoute: typeof ContextIdRouteWithChildren
   EvalViewerRoute: typeof EvalViewerRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -197,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/create': {
       id: '/create'
       path: '/create'
@@ -211,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relay': {
       id: '/relay'
       path: '/relay'
@@ -218,11 +284,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RelayRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/soon': {
       id: '/soon'
       path: '/soon'
       fullPath: '/soon'
       preLoaderRoute: typeof SoonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/context/$id': {
@@ -289,10 +369,14 @@ const ContextIdRouteWithChildren = ContextIdRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
+  ContactRoute: ContactRoute,
   CreateRoute: CreateRoute,
   HomeRoute: HomeRoute,
+  PrivacyRoute: PrivacyRoute,
   RelayRoute: RelayRoute,
+  SecurityRoute: SecurityRoute,
   SoonRoute: SoonRoute,
+  TermsRoute: TermsRoute,
   ContextIdRoute: ContextIdRouteWithChildren,
   EvalViewerRoute: EvalViewerRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

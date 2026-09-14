@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
-import { THEME_BOOT } from "@/lib/theme";
 import { hydrateClientPrefs } from "@/lib/store";
 import { MEETHINT_DESCRIPTION, MEETHINT_NAME } from "@/lib/brand";
+import "../fonts.css";
 import appCss from "../styles.css?url";
 
 function ClientPrefs() {
@@ -29,18 +29,12 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap",
-      },
     ],
   }),
   component: () => (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+        <script src="/theme-boot.js" />
         <HeadContent />
       </head>
       <body>
