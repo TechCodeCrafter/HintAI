@@ -1,10 +1,12 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { e2eSignIn, USER_A } from "./auth";
 import { installE2eMocks, mockLLM } from "./mocks";
 
 export { installE2eMocks, injectUtterance, mockLLM } from "./mocks";
 
 export async function openCockpit(page: Page) {
   await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
   await page.goto("/app");
   await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", {
     timeout: 20000,
@@ -15,6 +17,20 @@ export async function typeQuestion(page: Page, text: string) {
   const input = page.getByTestId("search-input");
   await input.fill(text);
   await input.press("Enter");
+}
+
+export async function askQuestion(page: Page, text: string) {
+  const input = page.getByTestId("ask-query");
+  await input.fill(text);
+  await page.getByTestId("ask-submit").click();
+}
+
+export async function waitForAskCard(page: Page) {
+  const card = page.getByTestId("ask-card");
+  await card.waitFor({ timeout: 30000 });
+  await expect(card.getByTestId("card-say")).toBeVisible({ timeout: 30000 });
+  await expect(card.getByTestId("card-say")).not.toBeEmpty();
+  return card;
 }
 
 export async function waitForCard(

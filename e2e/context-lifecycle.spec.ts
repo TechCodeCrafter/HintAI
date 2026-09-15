@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { e2eSignIn, USER_A } from "./fixtures/auth";
 import {
   fillCreateContextIdentity,
   installE2eMocks,
@@ -11,6 +12,7 @@ test.setTimeout(90_000);
 
 test("Create Knowledge Space, add files, search, delete", async ({ page }) => {
   await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
   await page.goto("/create");
   await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
   await fillCreateContextIdentity(page, "Test Project");

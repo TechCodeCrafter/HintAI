@@ -7,4 +7,6 @@
  *
  * Do NOT edit `server.ts` for this — that file is frozen pre-wired config.
  */
-export const emailAndPasswordEnabled = false;
+/** E2E-only: programmatic sign-in for Playwright (never enabled in production builds). */
+export const emailAndPasswordEnabled =
+  typeof process !== "undefined" && process.env.MEETHINT_E2E === "1";

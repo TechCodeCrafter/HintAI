@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { expect, type Page } from "@playwright/test";
 
+import { e2eSignIn, USER_A } from "./auth";
 import { readWavMono16 } from "./wav-pcm";
 
 const FIXTURES_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -27,6 +28,7 @@ export async function installAudioPath(page: Page) {
 
 export async function openAudioCockpit(page: Page) {
   await installAudioPath(page);
+  await e2eSignIn(page, USER_A);
   await page.goto("/home");
   await expect(page.getByTestId("home-proof-chips")).toBeVisible({ timeout: 30000 });
   await page.goto("/app");

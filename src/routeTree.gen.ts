@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RelayRouteImport } from './routes/relay'
 import { Route as SecurityRouteImport } from './routes/security'
@@ -49,6 +50,11 @@ const CreateRoute = CreateRouteImport.update({
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/relay': typeof RelayRoute
   '/security': typeof SecurityRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/relay': typeof RelayRoute
   '/security': typeof SecurityRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/relay': typeof RelayRoute
   '/security': typeof SecurityRoute
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/create'
     | '/home'
+    | '/login'
     | '/privacy'
     | '/relay'
     | '/security'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/create'
     | '/home'
+    | '/login'
     | '/privacy'
     | '/relay'
     | '/security'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/create'
     | '/home'
+    | '/login'
     | '/privacy'
     | '/relay'
     | '/security'
@@ -223,6 +235,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CreateRoute: typeof CreateRoute
   HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RelayRoute: typeof RelayRoute
   SecurityRoute: typeof SecurityRoute
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CreateRoute: CreateRoute,
   HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RelayRoute: RelayRoute,
   SecurityRoute: SecurityRoute,

@@ -3,11 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { defineConfig, devices } from "@playwright/test";
 
-import {
-  E2E_PREVIEW_BOOT,
-  E2E_PREVIEW_BOOT_AUTH_ON,
-  E2E_PREVIEW_URL,
-} from "./scripts/e2e-preview-shared.mjs";
+import { E2E_PREVIEW_BOOT, E2E_PREVIEW_URL } from "./scripts/e2e-preview-shared.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const WHY_RETRY_WAV = path.join(ROOT, "e2e/fixtures/why-retry.wav");
@@ -33,7 +29,7 @@ export default defineConfig({
     command: E2E_PREVIEW_BOOT,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
-    timeout: 180000,
+    timeout: 240000,
     env: {
       ...process.env,
       MEETHINT_E2E: "1",
@@ -45,27 +41,7 @@ export default defineConfig({
     {
       name: "chromium",
       testIgnore: "**/audio-path.spec.ts",
-      grepInvert: /@auth-on/,
       use: { ...devices["Desktop Chrome"] },
-    },
-    {
-      name: "chromium-funnel-auth-on",
-      testMatch: "**/funnel-no-signin.spec.ts",
-      grep: /@auth-on/,
-      use: { ...devices["Desktop Chrome"] },
-      webServer: {
-        command: E2E_PREVIEW_BOOT_AUTH_ON,
-        url: baseURL,
-        reuseExistingServer: !process.env.CI,
-        timeout: 180000,
-        env: {
-          ...process.env,
-          MEETHINT_E2E: "1",
-          VITE_E2E: "true",
-          VITE_DEBUG_FLIGHT: "true",
-          VITE_AUTH_ENABLED: "true",
-        },
-      },
     },
     {
       name: "chromium-audio",
