@@ -33,18 +33,15 @@ test("extract and weak synthesis both require citations or INSUFFICIENT", () => 
   assert.doesNotMatch(source, /generateGeneralAnswer/);
   assert.doesNotMatch(source, /buildGeneralPrompt/);
   const prompt = buildSynthesisPrompt("Why does that retry three times?", retryHits);
-  assert.match(
-    prompt,
-    /If the documents do not contain enough information to answer, respond with exactly: INSUFFICIENT/,
-  );
-  assert.match(prompt, /ONLY the document chunks/);
-  assert.match(prompt, /NEVER use general knowledge/);
-  assert.match(prompt, /1-2 sentences/);
+  assert.match(prompt, /If insufficient, respond exactly: INSUFFICIENT/);
+  assert.match(prompt, /Use ONLY the chunks below/);
+  assert.match(prompt, /Never use general knowledge/);
+  assert.match(prompt, /Max 2 sentences/);
   assert.match(prompt, /\[1\]/);
   const weak = buildWeakEvidencePrompt("full stack developer role", retryHits);
-  assert.match(weak, /ONLY the document chunks/);
+  assert.match(weak, /Use ONLY the chunks below/);
   assert.match(weak, /INSUFFICIENT/);
-  assert.match(weak, /NEVER use general knowledge/);
+  assert.match(weak, /Never use general knowledge/);
   assert.doesNotMatch(weak, /use your general knowledge/);
   assert.doesNotMatch(source, /console\.info\("\[ask\]/);
   assert.match(source, /llmDebug\("\[ask\]/);
