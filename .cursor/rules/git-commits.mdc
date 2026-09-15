@@ -12,4 +12,4 @@ Never append any of these to commit messages (including inside HEREDOC bodies):
 - `Made-with: Cursor`
 - `Authored-by: Cursor <...>`
 
-Commits are authored by the repository user only. This repo strips stray trailers via `.githooks/commit-msg` when `core.hooksPath` is `.githooks`.
+Human `Co-authored-by: Name <email>` trailers are allowed. This repo strips **Cursor-only** trailers via `.githooks` when `core.hooksPath` is `.githooks`; CI runs `npm run check:cursor-attribution`.
