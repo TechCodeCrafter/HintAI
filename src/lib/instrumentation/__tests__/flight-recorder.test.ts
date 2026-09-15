@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "../../auth/account-boundary.ts";
 import { NORTHSTAR } from "../../repo/northstar.ts";
+import { FAST_PATH_MIN_SCORE } from "../../search/answer-fast-path.ts";
 import { routeSearchAnswer } from "../../search/answer-route.ts";
 import { buildChunks, formatFlightRetrievalSummary, retrieve } from "../../search/retrieve.ts";
 import {
@@ -69,8 +70,11 @@ test("search answer round-trip records and exports parseable JSON", async () => 
   const hits = retrieve("Why does that retry three times?", chunks);
   const body = hits.findIndex((hit) => /Attempts are capped at three/.test(hit.text));
   assert.ok(body >= 0);
+  const llmHits = hits.map((hit, index) =>
+    index === 0 ? { ...hit, score: FAST_PATH_MIN_SCORE - 1 } : hit,
+  );
 
-  const routed = await routeSearchAnswer("Why does that retry three times?", hits, performance.now(), {
+  const routed = await routeSearchAnswer("Why does that retry three times?", llmHits, performance.now(), {
     pack: NORTHSTAR,
     retrieveMs: 12,
     ask: async () => ({

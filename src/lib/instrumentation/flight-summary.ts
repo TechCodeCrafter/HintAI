@@ -65,7 +65,9 @@ function formatStats(label: string, stats: { p50: number; p95: number; p99: numb
   return `  ${label}: ${stats.p50} / ${stats.p95} / ${stats.p99}`;
 }
 
-const TIER_REPORT_KEYS = ["retrieveMs", "documentHydrateMs", "llmMs", "verifyMs", "totalMs"] as const;
+const TIER_REPORT_KEYS = ["retrieveMs", "documentHydrateMs", "llmMs", "verifyMs", "localCardMs", "totalMs"] as const;
+
+const AGGREGATE_LATENCY_KEYS = ["retrieveMs", "documentHydrateMs", "llmMs", "verifyMs", "localCardMs", "totalMs"] as const;
 
 export function formatFlightSummary(records: FlightRecord[]): string {
   const answers = records.filter((row): row is AnswerFlightRecord => row.kind === "answer");
@@ -95,9 +97,24 @@ export function formatFlightSummary(records: FlightRecord[]): string {
       lines.push(`  ${TIER_LABELS[tier]} (n=${subset.length})`);
       for (const key of TIER_REPORT_KEYS) {
         const stats = latencyStats(subset, key);
-        if (stats.p50 > 0 || stats.p95 > 0 || key === "totalMs") {
+        if (stats.p50 > 0 || stats.p95 > 0 || key === "totalMs" || (key === "localCardMs" && subset.some((row) => row.latency.localCardMs != null))) {
           lines.push(formatStats(`    ${key}`, stats));
         }
+      }
+    }
+    lines.push("");
+    lines.push("Extended latency (all answers) — p50 / p95 / p99");
+    for (const key of AGGREGATE_LATENCY_KEYS) {
+      const values = stageValues(
+        answers.map((row) => row.latency as AnswerStageTimings),
+        key,
+      );
+      if (values.length === 0 && key !== "retrieveMs" && key !== "totalMs") continue;
+      const stats = latencyPercentiles(values);
+      if (key === "localCardMs") {
+        lines.push(`  localCardMs p50/p95/p99: ${stats.p50} / ${stats.p95} / ${stats.p99}`);
+      } else {
+        lines.push(formatStats(key, stats));
       }
     }
     lines.push("");
