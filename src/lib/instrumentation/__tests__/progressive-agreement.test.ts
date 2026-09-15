@@ -29,10 +29,12 @@ test("classifyProgressiveAgreement marks overlapping answers partial", () => {
 test("summarizeProgressiveAgreement computes safe threshold", () => {
   const summary = summarizeProgressiveAgreement([
     { tier: "grounded", progressive: { shadowLocalCardSupported: true, progressiveAgreement: "consistent" } },
+    { tier: "grounded", progressive: { shadowLocalCardSupported: true, progressiveAgreement: "consistent" } },
     { tier: "grounded", progressive: { shadowLocalCardSupported: true, progressiveAgreement: "partial" } },
     { tier: "synthesis", progressive: { shadowLocalCardSupported: true, progressiveAgreement: "consistent" } },
   ]);
-  assert.equal(summary.comparable, 3);
+  assert.equal(summary.comparable, 4);
   assert.equal(summary.conflicting, 0);
+  assert.equal(summary.agreementRate, 0.875);
   assert.equal(summary.safeForProgressive, true);
 });
