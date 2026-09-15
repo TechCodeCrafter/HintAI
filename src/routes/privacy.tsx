@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TrustPageShell } from "@/components/trust-page";
 import { MEETHINT_DOMAIN, MEETHINT_NAME, MEETHINT_SUPPORT_CONTACT } from "@/lib/brand";
+import { MEETHINT_MAIL_CONTACTS_VERIFIED, MEETHINT_SECURITY_EMAIL } from "@/lib/mail-contacts";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -59,7 +60,13 @@ function PrivacyPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Contact</h2>
         <p>
-          Privacy questions: <a href={MEETHINT_SUPPORT_CONTACT}>open a GitHub issue</a> or see our{" "}
+          Privacy questions:{" "}
+          {MEETHINT_MAIL_CONTACTS_VERIFIED ? (
+            <>
+              <a href={`mailto:${MEETHINT_SECURITY_EMAIL}`}>{MEETHINT_SECURITY_EMAIL}</a>,{" "}
+            </>
+          ) : null}
+          <a href={MEETHINT_SUPPORT_CONTACT}>open a GitHub issue</a>, or see our{" "}
           <a href="/contact">Contact</a> page.
         </p>
         <p className="text-[var(--hint-muted)]">Last updated: September 14, 2026.</p>

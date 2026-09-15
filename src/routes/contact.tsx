@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TrustPageShell } from "@/components/trust-page";
 import {
-  MEETHINT_DOMAIN,
-  MEETHINT_NAME,
-  MEETHINT_REPO,
-  MEETHINT_SECURITY_CONTACT,
-  MEETHINT_SUPPORT_CONTACT,
-} from "@/lib/brand";
+  TrustAbuseContacts,
+  TrustProductContacts,
+  TrustSecurityContacts,
+} from "@/components/trust-mail-contacts";
+import { TrustPageShell } from "@/components/trust-page";
+import { MEETHINT_DOMAIN, MEETHINT_NAME } from "@/lib/brand";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -35,32 +34,17 @@ function ContactPage() {
         </p>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Security reporting</h2>
-        <p>
-          Report vulnerabilities via{" "}
-          <a href={MEETHINT_SECURITY_CONTACT}>GitHub Security Advisories</a> on{" "}
-          <a href={MEETHINT_REPO}>{MEETHINT_REPO.replace("https://", "")}</a>.
-        </p>
-        <p className="text-[var(--hint-muted)]">
-          Dedicated <code>security@meethint.ai</code> mail will be added in Phase B once delivery is
-          verified.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Product questions and abuse</h2>
-        <p>
-          Open a <a href={MEETHINT_SUPPORT_CONTACT}>GitHub issue</a> for product questions or abuse
-          reports.
-        </p>
-      </section>
+      <TrustSecurityContacts />
+      <TrustAbuseContacts />
+      <TrustProductContacts />
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Enterprise allowlisting</h2>
         <p>
-          If your organization blocks {MEETHINT_DOMAIN} as a newly observed domain, share our{" "}
-          <a href="/security">Security</a> page and the external-domain inventory in{" "}
+          If your organization blocks {MEETHINT_DOMAIN} as a newly observed domain, share{" "}
+          <a href="/security">Security</a>,{" "}
+          <code className="rounded bg-[var(--hint-border)] px-1.5 py-0.5 text-sm">docs/ENTERPRISE-ALLOWLIST.md</code>
+          , and{" "}
           <code className="rounded bg-[var(--hint-border)] px-1.5 py-0.5 text-sm">docs/DOMAIN-REPUTATION.md</code>{" "}
           with your IT team.
         </p>

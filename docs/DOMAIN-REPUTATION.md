@@ -88,20 +88,123 @@ Same as marketing, plus:
 
 ## Known limitations (Phase A)
 
-- Security contact is **GitHub Security Advisories** until `security@meethint.ai` / `abuse@meethint.ai` are verified in Phase B.
+- Security contact is **GitHub Security Advisories** until Phase B mail forwarding is verified and published (Phase B on hold — see below).
 - HSTS is configured at deploy/CDN; not duplicated in app middleware (intentional — avoid conflicting max-age).
 - Enterprise allowlist pack for IT (full URL/domain CSV) is documented here but not yet published as a separate vendor-facing PDF.
 - Domain age and NOD clearance require time and benign traffic — no code fix.
 
-## Phase B checklist (registrar / email — do not start automatically)
+## Phase B — domain / email identity (**on hold**)
 
-- [ ] Activate `security@meethint.ai` and `abuse@meethint.ai` (Google Workspace, Fastmail, or forwarding with working delivery)
-- [ ] SPF record aligned with sending provider
-- [ ] DKIM signing for outbound mail
-- [ ] DMARC policy (`p=none` → `p=quarantine` after monitoring)
-- [ ] Verify `security.txt` mailto contacts receive mail (add after mailboxes work)
-- [ ] Submit domain to Microsoft Defender SmartScreen / Google Safe Browsing if flagged
-- [ ] Publish `docs/ENTERPRISE-ALLOWLIST.md` with exact URLs for IT allowlists
+**Goal:** working `security@` / `abuse@` contacts and baseline DNS authentication **without paid mail as a launch blocker**.
+
+**Status (2026-09-14):** DNS authentication records are live. Remaining mailbox/forwarding work is **deferred manual ops** — product focus returned to core roadmap (Knowledge Spaces / Milestone 2).
+
+### Completed (registrar — keep)
+
+| Step | Action | Status |
+|------|--------|--------|
+| MX | Keep `eforward*.registrar-servers.com` | **Live** |
+| SPF | `v=spf1 include:spf.efwd.registrar-servers.com ~all` | **Live** |
+| DMARC | `_dmarc` TXT with `p=none` | **Live** |
+| CAA | `0 issue "letsencrypt.org"` @ apex | **Live** |
+
+Live DMARC record:
+
+```txt
+v=DMARC1; p=none; rua=mailto:dmarc-reports@meethint.ai; adkim=r; aspf=r; pct=100
+```
+
+### Deferred manual tasks (resume when prioritized)
+
+| Task | Notes |
+|------|-------|
+| `security@meethint.ai` forwarding | Namecheap Email Forwarding → owner inbox; inbound test required |
+| `abuse@meethint.ai` forwarding | Same |
+| Mail contact publishing | `npm run publish:mail-contacts` + deploy — **only after** forwards verified |
+| Outbound DKIM-capable email provider | Paid tier (Google Workspace, etc.) — not a launch blocker |
+
+Tooling remains in repo (`verify:domain-email`, `publish:mail-contacts`); do **not** publish mailto on site until forwarding is confirmed.
+
+### Launch setup reference (free / near-zero cost)
+
+Uses **Namecheap Email Forwarding**. No Google Workspace required to ship.
+
+| Step | Action | Status |
+|------|--------|--------|
+| Forwards | Create `security@`, `abuse@` → owner inbox | **Deferred** |
+| DKIM | **Deferred** — forwarding does not sign outbound `@meethint.ai` | N/A at launch |
+| Inbound test | External mail → `security@` / `abuse@` arrives | **Deferred** |
+| Publish | `npm run publish:mail-contacts` after verify + inbound test | **Deferred** |
+
+**DKIM policy at launch:** inbound security/abuse forwarding is OK. **Do not** send production transactional or support mail **From** `@meethint.ai` until a paid provider enables DKIM (see paid tier below).
+
+Exact records: **[docs/dns/meethint.ai-records.md](./dns/meethint.ai-records.md)**
+
+### Paid mail setup (later — not a launch blocker)
+
+Upgrade when you need outbound mail **as** `@meethint.ai` (waitlist, support, transactional), DKIM alignment, or stricter DMARC (`quarantine` / `reject`).
+
+| Provider | Typical cost | When |
+|----------|--------------|------|
+| Google Workspace | ~$7/user/mo | Team inbox + DKIM + outbound |
+| Cloudflare Email Routing | Free (DNS on Cloudflare) | Budget outbound routing |
+| Fastmail / Zoho / Migadu | Varies | Alternative hosted mail |
+
+After upgrade: replace MX/SPF, enable DKIM, tighten DMARC. Verify with `npm run verify:domain-email -- --provider google`.
+
+### Live DNS snapshot (2026-09-14)
+
+| Record | Current |
+|--------|---------|
+| **MX** | `eforward*.registrar-servers.com` |
+| **SPF** | `v=spf1 include:spf.efwd.registrar-servers.com ~all` |
+| **DKIM** | *(none — deferred)* |
+| **DMARC** | `v=DMARC1; p=none; rua=mailto:dmarc-reports@meethint.ai; adkim=r; aspf=r; pct=100` |
+| **CAA** | `0 issue "letsencrypt.org"` |
+| **DNSSEC** | *(none — optional)* |
+
+**Registrar:** Namecheap · **Web:** Vercel
+
+### Mailbox status
+
+| Address | Forward configured | Public mailto | Inbound verified |
+|---------|-------------------|---------------|------------------|
+| `security@meethint.ai` | Deferred | **No** | Deferred |
+| `abuse@meethint.ai` | Deferred | **No** | Deferred |
+| `support@meethint.ai` | Optional | **No** | Not required at launch |
+| `hello@meethint.ai` | Optional | **No** | Not required at launch |
+
+GitHub Security Advisories remain the public contact until forwarding is verified and mail is published.
+
+### Verification tooling (when resuming Phase B)
+
+```bash
+npm run verify:domain-email                         # launch profile (default)
+npm run verify:domain-email -- --provider google    # paid-tier check
+npm run publish:mail-contacts                       # after inbound tests pass
+```
+
+Not part of `npm test` (live DNS).
+
+### Phase B checklist
+
+- [x] DMARC `_dmarc` with `p=none`
+- [x] CAA `letsencrypt.org` at apex
+- [x] SPF + MX (Namecheap forwarding)
+- [ ] **Deferred:** Namecheap forwards `security@`, `abuse@`
+- [ ] **Deferred:** Inbound delivery test
+- [ ] **Deferred:** `npm run publish:mail-contacts` + deploy
+- [ ] **Deferred:** Outbound DKIM provider (paid tier)
+- [ ] Share [ENTERPRISE-ALLOWLIST.md](./ENTERPRISE-ALLOWLIST.md) with IT reviewers
+
+**Not in Phase B:** vendor recategorization (Phase C).
+
+### DMARC rollout (paid tier only)
+
+1. `p=none` at launch (relaxed alignment — no DKIM)  
+2. After paid provider + DKIM: monitor RUA, move toward `adkim=s; aspf=s`  
+3. `p=quarantine` → `p=reject` only with consistent SPF **and** DKIM pass  
+4. SPF `-all` only with authenticated outbound mail
 
 ## Phase C — vendor matrix template
 
@@ -184,6 +287,11 @@ Verify:
 | `scripts/copy-demo-media.mjs` | Restore landing mp4 at build time |
 | `public/theme-boot.js` | External theme bootstrap (CSP-friendly) |
 | `public/.well-known/security.txt` | Security contact file |
+| `config/mail-contacts.json` | Mail verification gate (verified flag) |
+| `scripts/verify-domain-email.mjs` | Live DNS / security.txt ops check |
+| `scripts/publish-mail-contacts.mjs` | Publish mailto after verification |
+| `docs/ENTERPRISE-ALLOWLIST.md` | IT allowlisting guide |
+| `docs/dns/meethint.ai-records.md` | Exact DNS templates |
 | `src/routes/privacy.tsx` … `contact.tsx` | Trust pages |
 | `scripts/domain-reputation.test.mjs` | Unit/regression tests |
 | `e2e/domain-reputation.spec.ts` | HTTP-level checks (e2e job) |

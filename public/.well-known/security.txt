@@ -5,4 +5,4 @@ Canonical: https://www.meethint.ai/.well-known/security.txt
 Expires: 2027-09-14T00:00:00.000Z
 Policy: https://www.meethint.ai/security
 
-# Phase B: add mailto:security@meethint.ai and mailto:abuse@meethint.ai once delivery is verified.
+# Phase B (on hold): add mailto:security@meethint.ai and mailto:abuse@meethint.ai after forwarding verified.

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TrustPageShell } from "@/components/trust-page";
-import { MEETHINT_DOMAIN, MEETHINT_NAME, MEETHINT_SECURITY_CONTACT } from "@/lib/brand";
+import { TrustSecurityContacts } from "@/components/trust-mail-contacts";
+import { MEETHINT_DOMAIN, MEETHINT_NAME } from "@/lib/brand";
 
 export const Route = createFileRoute("/security")({
   head: () => ({
@@ -48,12 +49,10 @@ function SecurityPage() {
         </p>
       </section>
 
+      <TrustSecurityContacts />
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Reporting issues</h2>
         <p>
-          See <a href="/.well-known/security.txt">/.well-known/security.txt</a> or report via{" "}
-          <a href={MEETHINT_SECURITY_CONTACT}>GitHub Security Advisories</a>. Dedicated{" "}
-          <code>security@meethint.ai</code> mail is planned for Phase B.
+          Machine-readable contacts: <a href="/.well-known/security.txt">/.well-known/security.txt</a>
         </p>
         <p className="text-[var(--hint-muted)]">Last updated: September 14, 2026.</p>
       </section>
