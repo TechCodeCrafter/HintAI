@@ -42,6 +42,7 @@ import { highlightLine } from "@/lib/highlight";
 import { stopHear, toggleHear } from "@/lib/listen/call-share";
 import { isFramed, useLiveListen } from "@/lib/listen/speech";
 import { PdfPane } from "@/components/pdf-pane";
+import { AuthChrome } from "@/components/auth-chrome";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { pathExcluded } from "@/lib/context/exclusions";
 import { isPdfSource } from "@/lib/context/types";
@@ -798,6 +799,7 @@ function UtilityLinks({
           {playing ? <Square className="size-4" /> : <Play className="size-4" />}
         </button>
       ) : null}
+      <AuthChrome />
       <ThemeToggle className="cockpit-icon border-transparent" />
     </>
   );

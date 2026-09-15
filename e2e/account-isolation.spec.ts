@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { e2eSignIn, USER_A, USER_B } from "./fixtures/auth";
 import {
   fillCreateContextIdentity,
   installE2eMocks,
@@ -12,8 +13,9 @@ test.setTimeout(90_000);
 const MARKER = "USER_A_PRIVATE_92817";
 const CONTEXT_NAME = "user-a-private-92817";
 
-async function loadPrivateRepo(page: Page) {
+async function loadPrivateRepo(page: Page, user = USER_A) {
   await installE2eMocks(page);
+  await e2eSignIn(page, user);
   await page.goto("/create");
   await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
   await fillCreateContextIdentity(page, CONTEXT_NAME);
@@ -49,6 +51,7 @@ test("a second browser profile cannot see another user's loaded repo", async ({ 
   await expect(card).toContainText(/token|secret|USER_A_PRIVATE|material|cover|generate/i);
 
   await installE2eMocks(pageB);
+  await e2eSignIn(pageB, USER_B);
   await pageB.goto("/home");
   await expect(pageB.locator("body")).not.toContainText(CONTEXT_NAME);
   await expect(pageB.locator("body")).not.toContainText(MARKER);
@@ -63,10 +66,9 @@ test("signing in as B on the same profile does not surface A's repo", async ({ p
   const contextId = await page.evaluate(() => window.useMeetHint?.getState?.().activeContextId ?? "");
   expect(contextId).toBeTruthy();
 
-  await page.evaluate(async () => {
-    if (!window.__meethintSwitchAccount) throw new Error("account switch hook missing");
-    await window.__meethintSwitchAccount("user-b");
-  });
+  const { e2eSignOut } = await import("./fixtures/auth");
+  await e2eSignOut(page);
+  await e2eSignIn(page, USER_B);
 
   await page.goto("/home");
   await expect(page.locator("body")).not.toContainText(CONTEXT_NAME);

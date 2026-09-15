@@ -2,10 +2,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
+import { e2eSignIn, USER_A } from "./fixtures/auth";
 import { fillCreateContextIdentity, installE2eMocks, waitForIndexing } from "./fixtures/helpers";
 
 test("folder upload reviews the pack before indexing", async ({ page }) => {
   await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
   await page.goto("/create");
   await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
   await fillCreateContextIdentity(page, "Review Pack");

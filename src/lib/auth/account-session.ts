@@ -6,15 +6,8 @@ import {
   publishAccountEpoch,
   wipeBrowserAccountData,
 } from "./account-boundary";
-import {
-  anonymousTierError,
-  bindAnonymousWorkspace,
-  ensureAnonymousTierReady,
-  reportAnonymousTierFailure,
-} from "./anonymous-tier";
 import { authEnabled } from "./client";
 import { useCurrentUserState, DEV_USER } from "./use-current-user";
-import { resolveWorkspaceIdentity } from "./workspace-identity";
 
 async function resetWorkspaceMemory(): Promise<void> {
   const { useMeetHint } = await import("../store");
@@ -26,18 +19,6 @@ async function bindDevUser(): Promise<void> {
   publishAccountEpoch(DEV_USER.id);
 }
 
-async function bindAnonymousOrThrow(): Promise<string> {
-  try {
-    const id = await bindAnonymousWorkspace();
-    publishAccountEpoch(id);
-    return id;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    reportAnonymousTierFailure(message);
-    throw err;
-  }
-}
-
 /**
  * Cancel in-flight work, drop in-memory workspace state, and delete local
  * copies of repos, indexes, answers, meetings, and API keys.
@@ -45,9 +26,9 @@ async function bindAnonymousOrThrow(): Promise<string> {
 export async function leaveAccount(): Promise<void> {
   await resetWorkspaceMemory();
   await wipeBrowserAccountData();
-  if (authEnabled) {
-    await bindAnonymousOrThrow();
-  } else {
+  bindAccountId(null);
+  publishAccountEpoch(null);
+  if (!authEnabled) {
     await bindDevUser();
   }
 }
@@ -66,7 +47,7 @@ export async function switchAccount(accountId: string | null): Promise<void> {
   await useMeetHint.getState().boot();
 }
 
-/** Bind the vault to the server-verified user id, dev user, or anonymous workspace. */
+/** Bind the vault to the server-verified user id, or dev user when auth is off. */
 export function useAccountVaultReady(): { ready: boolean; accountId: string | null; tierError: string | null } {
   const { user, isPending } = useCurrentUserState();
   const [verifiedId, setVerifiedId] = useState<string | null>(authEnabled ? null : DEV_USER.id);
@@ -81,36 +62,19 @@ export function useAccountVaultReady(): { ready: boolean; accountId: string | nu
       return;
     }
 
-    let cancelled = false;
-    void ensureAnonymousTierReady().catch((err) => {
-      if (cancelled) return;
-      const message = err instanceof Error ? err.message : String(err);
-      setBindError(message);
-    });
-
     if (isPending) return;
 
     if (!user) {
-      void bindAnonymousOrThrow()
-        .then((id) => {
-          if (cancelled) return;
-          setVerifiedId(id);
-          setVerifyError(false);
-          setBindError(null);
-        })
-        .catch((err) => {
-          if (cancelled) return;
-          const message = err instanceof Error ? err.message : String(err);
-          setVerifiedId(null);
-          setVerifyError(true);
-          setBindError(message);
-        });
-      return () => {
-        cancelled = true;
-      };
+      if (currentAccountId() !== null) bindAccountId(null);
+      setVerifiedId(null);
+      setVerifyError(false);
+      setBindError(null);
+      return;
     }
 
-    void resolveWorkspaceIdentity()
+    let cancelled = false;
+    void import("./workspace-identity")
+      .then(({ resolveWorkspaceIdentity }) => resolveWorkspaceIdentity())
       .then(({ userId }) => {
         if (cancelled) return;
         bindAccountId(userId);
@@ -130,27 +94,24 @@ export function useAccountVaultReady(): { ready: boolean; accountId: string | nu
     };
   }, [user, isPending]);
 
-  const tierError = bindError ?? anonymousTierError();
-
   if (!authEnabled) return { ready: true, accountId: verifiedId, tierError: null };
   if (isPending || (user && verifiedId == null && !verifyError)) {
-    return { ready: false, accountId: null, tierError };
+    return { ready: false, accountId: null, tierError: bindError };
+  }
+  if (!user) {
+    return { ready: false, accountId: null, tierError: null };
   }
   if (verifyError || bindError) {
-    return { ready: false, accountId: null, tierError };
+    return { ready: false, accountId: null, tierError: bindError };
   }
   return { ready: verifiedId === currentAccountId(), accountId: verifiedId, tierError: null };
 }
 
 function otherTabLeft(): void {
   void resetWorkspaceMemory().then(async () => {
-    if (authEnabled) {
-      try {
-        await bindAnonymousOrThrow();
-      } catch {
-        bindAccountId(null);
-      }
-    } else {
+    bindAccountId(null);
+    publishAccountEpoch(null);
+    if (!authEnabled) {
       await bindDevUser();
     }
     if (typeof window !== "undefined") window.location.reload();

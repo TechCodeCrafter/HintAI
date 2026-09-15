@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Cockpit } from "@/components/cockpit";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -9,5 +10,9 @@ export const Route = createFileRoute("/app")({
 });
 
 function Home() {
-  return <Cockpit />;
+  return (
+    <RequireAuth>
+      <Cockpit />
+    </RequireAuth>
+  );
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CreateContextFlow } from "@/components/create-context-flow";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/create")({
   head: () => ({
@@ -9,5 +10,9 @@ export const Route = createFileRoute("/create")({
 });
 
 function CreatePage() {
-  return <CreateContextFlow />;
+  return (
+    <RequireAuth>
+      <CreateContextFlow />
+    </RequireAuth>
+  );
 }

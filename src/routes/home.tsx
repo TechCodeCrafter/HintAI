@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ContextHome } from "@/components/context-home";
+import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -15,5 +16,9 @@ export const Route = createFileRoute("/home")({
 });
 
 function Home() {
-  return <ContextHome />;
+  return (
+    <RequireAuth>
+      <ContextHome />
+    </RequireAuth>
+  );
 }

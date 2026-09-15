@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Check, Circle } from "lucide-react";
+import { authEnabled } from "@/lib/auth/client";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { summarizeBetaFunnel } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
 
 const STEPS = [
-  { key: "sign-in", label: "Sign in", href: "/home" },
+  { key: "sign-in", label: "Sign in", href: "/login" },
   { key: "space", label: "Create Knowledge Space", href: "/create" },
   { key: "sources", label: "Add repo, folder, or PDF", href: "/create" },
   { key: "index", label: "Wait for indexing", href: null },
@@ -13,9 +15,11 @@ const STEPS = [
 ] as const;
 
 export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
+  const { user, isPending } = useCurrentUserState();
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const sources = useMeetHint((s) => s.sources.length);
   const funnel = summarizeBetaFunnel();
+  const signedIn = !authEnabled || (!isPending && Boolean(user));
   const hasSpace = funnel.steps.some((row) => row.step === "SPACE_CREATED" && row.timestamp != null);
   const hasSources = funnel.steps.some((row) => row.step === "SOURCE_CONNECTED" && row.timestamp != null);
   const indexReady = contextStatus === "ready" && sources > 0;
@@ -24,7 +28,7 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
   const askHref = spaceId ? `/context/${spaceId}/ask` : null;
 
   const done = [
-    true,
+    signedIn,
     hasSpace,
     hasSources,
     indexReady,

@@ -1,10 +1,12 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { e2eSignIn, USER_A } from "./auth";
 import { installE2eMocks, mockLLM } from "./mocks";
 
 export { installE2eMocks, injectUtterance, mockLLM } from "./mocks";
 
 export async function openCockpit(page: Page) {
   await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
   await page.goto("/app");
   await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", {
     timeout: 20000,

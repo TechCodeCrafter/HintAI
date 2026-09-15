@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { e2eSignIn, USER_A } from "./fixtures/auth";
 import { fillCreateContextIdentity, installE2eMocks, typeQuestion, waitForCard, waitForIndexing } from "./fixtures/helpers";
 import { mockLLM } from "./fixtures/mocks";
 
@@ -8,6 +9,7 @@ test("Knowledge Space: two repos, live session, multi-source answer with source-
   page,
 }) => {
   await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
   await page.goto("/create");
   await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
   await fillCreateContextIdentity(page, "Platform Space");

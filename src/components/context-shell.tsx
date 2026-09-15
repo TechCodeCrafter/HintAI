@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { AuthChrome } from "@/components/auth-chrome";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -17,8 +18,9 @@ export function ContextShell({
             <MeetHintMark className="size-11" />
             <span className="brand-word">Hint</span>
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {aside}
+            <AuthChrome />
             <ThemeToggle />
           </div>
         </div>
