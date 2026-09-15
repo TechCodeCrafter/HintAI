@@ -2,7 +2,8 @@ import type { NormalizedDocument } from "../document/types.ts";
 import type { IndexedChunk } from "../repo/types.ts";
 import type { IndexedSourceRecord } from "./index-types.ts";
 import type { PdfParsePatch } from "./source-write.ts";
-import type { ContextKind, ContextRecord, SourceDraft, StoredSource, UpsertDraft } from "./types.ts";
+import type { SpaceRecord } from "./space-types.ts";
+import type { ContextKind, ContextRecord, RepoBundleInput, SourceDraft, StoredSource, UpsertDraft } from "./types.ts";
 
 export type CreateContextInput = {
   name: string;
@@ -17,12 +18,22 @@ export type CreateContextInput = {
 export type ContextRepository = {
   listContexts(): Promise<ContextRecord[]>;
   getContext(id: string): Promise<ContextRecord | null>;
+  listSpaces(): Promise<SpaceRecord[]>;
+  getSpace(id: string): Promise<SpaceRecord | null>;
+  createSpace(input: {
+    name: string;
+    memberContextIds: string[];
+    primaryContextId: string;
+    id?: string;
+  }): Promise<SpaceRecord>;
   createContext(input: CreateContextInput): Promise<ContextRecord>;
   patchContext(
     id: string,
     patch: Partial<Pick<ContextRecord, "name" | "description" | "excludePatterns">>,
   ): Promise<ContextRecord>;
   replaceSources(contextId: string, drafts: SourceDraft[]): Promise<StoredSource[]>;
+  /** Add or update one repo bundle without removing other bundles in the context. */
+  upsertRepoBundle(contextId: string, bundle: RepoBundleInput): Promise<StoredSource[]>;
   upsertSources(contextId: string, drafts: UpsertDraft[]): Promise<StoredSource[]>;
   listSources(contextId: string): Promise<StoredSource[]>;
   countSources(contextId: string): Promise<number>;

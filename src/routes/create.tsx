@@ -3,7 +3,7 @@ import { CreateContextFlow } from "@/components/create-context-flow";
 
 export const Route = createFileRoute("/create")({
   head: () => ({
-    meta: [{ title: "Create context — MeetHint" }],
+    meta: [{ title: "Create Knowledge Space — MeetHint" }],
   }),
   component: CreatePage,
 });

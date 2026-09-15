@@ -7,6 +7,7 @@ import { test } from "node:test";
 import { NORTHSTAR } from "../../repo/northstar.ts";
 import type { RepoPack } from "../../repo/types.ts";
 import { isFileHit } from "../../repo/types.ts";
+import { FAST_PATH_MIN_SCORE } from "../answer-fast-path.ts";
 import { routeSearchAnswer, silentCardReason } from "../answer-route.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
 
@@ -46,16 +47,38 @@ function uncitedSynthesisAsk(text: string = UNCITED_UPLOAD_SYNTHESIS) {
   };
 }
 
-test("hits plus grounded success become a cited docs card", async () => {
+test("verified localCard fast path returns cited docs without LLM", async () => {
+  let llmCalls = 0;
+  const routed = await routeSearchAnswer("Why does that retry three times?", retryHits, 0, {
+    pack: NORTHSTAR,
+    ask: async () => {
+      llmCalls += 1;
+      return { text: "INSUFFICIENT" };
+    },
+  });
+  assert.equal(llmCalls, 0);
+  assert.equal(routed.tier, "localCard");
+  assert.equal(routed.llmBypassed, true);
+  assert.equal(routed.consumeQuota, false);
+  assert.equal(routed.card.answerMode, "docs");
+  assert.ok(routed.card.say);
+  assert.ok(routed.card.citations.length >= 1);
+});
+
+test("hits plus grounded success become a cited docs card when fast path is ineligible", async () => {
   const body = retryHits.findIndex((hit) => /Attempts are capped at three/.test(hit.text));
   assert.ok(body >= 0);
-  const routed = await routeSearchAnswer("Why does that retry three times?", retryHits, 0, {
+  const borderHits = retryHits.map((hit, index) =>
+    index === 0 ? { ...hit, score: FAST_PATH_MIN_SCORE - 1 } : hit,
+  );
+  const routed = await routeSearchAnswer("Why does that retry three times?", borderHits, 0, {
     pack: NORTHSTAR,
     ask: ask(
       `Attempts are capped at three because a fourth attempt duplicates the settlement file. [${body + 1}]`,
     ),
   });
   assert.equal(routed.consumeQuota, true);
+  assert.equal(routed.tier, "grounded");
   assert.equal(routed.card.answerMode, "docs");
   assert.ok(routed.card.say);
   assert.ok(routed.card.citations.length >= 1);
@@ -152,8 +175,11 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
   }
 });
 
+const llmOnlyHits = () =>
+  retryHits.map((hit, index) => (index === 0 ? { ...hit, score: FAST_PATH_MIN_SCORE - 1 } : hit));
+
 test("an API error is not disguised as missing material", async () => {
-  const broken = await routeSearchAnswer("What is the weather in Tokyo?", retryHits, 0, {
+  const broken = await routeSearchAnswer("Why does that retry three times?", llmOnlyHits(), 0, {
     pack: NORTHSTAR,
     ask: async () => ({ text: null, reason: "Add API key" }),
   });
@@ -166,7 +192,7 @@ test("an API error is not disguised as missing material", async () => {
 
 test("a timeout does not spend two more model calls", async () => {
   let asks = 0;
-  const routed = await routeSearchAnswer("What is the weather in Tokyo?", retryHits, 0, {
+  const routed = await routeSearchAnswer("Why does that retry three times?", llmOnlyHits(), 0, {
     pack: NORTHSTAR,
     ask: async () => {
       asks += 1;

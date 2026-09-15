@@ -1,0 +1,15 @@
+{
+  "verified": false,
+  "launchProfile": "namecheap-forwarding",
+  "mailProvider": null,
+  "securityEmail": "security@meethint.ai",
+  "abuseEmail": "abuse@meethint.ai",
+  "supportEmail": "support@meethint.ai",
+  "helloEmail": "hello@meethint.ai",
+  "dmarcReportEmail": "dmarc-reports@meethint.ai",
+  "dkimSelector": null,
+  "dkimRequiredForOutbound": true,
+  "githubSecurityAdvisory": "https://github.com/TechCodeCrafter/HintAI/security/advisories/new",
+  "githubIssues": "https://github.com/TechCodeCrafter/HintAI/issues",
+  "verificationNotes": "Phase B on hold. DNS (SPF/MX/DMARC/CAA) live at registrar. Resume: configure Namecheap forwards, inbound test, npm run publish:mail-contacts, deploy. Do not send production outbound mail From @meethint.ai until DKIM on a paid provider."
+}

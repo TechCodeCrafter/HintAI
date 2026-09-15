@@ -40,6 +40,7 @@ test("every speak path still calls verifyClaim after hybrid retrieve", () => {
   assert.match(localCard, /verifyClaim\(/);
   assert.match(generate, /verifyClaim\(/);
   assert.match(route, /routeSearchAnswer/);
-  assert.match(route, /localCard third — never general knowledge/);
+  assert.match(route, /localCard fallback — never general knowledge/);
+  assert.match(route, /localCardFastPathEligible/);
   assert.doesNotMatch(route, /verifyClaim.*semantic|semantic.*skip.*verify/i);
 });

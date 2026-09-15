@@ -1,5 +1,6 @@
 import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { byteLengthOf, hashBlob, hashContent } from "./hash.ts";
+import { displayNameFromPath, pdfSourceIdentity, type SourceIdentityFields } from "./source-identity.ts";
 import type {
   PdfReadiness,
   PdfStoredSource,
@@ -45,13 +46,19 @@ export async function textSourceFromDraft(
   draft: TextSourceDraft,
   prior: StoredSource | undefined,
   now: number,
+  identity?: SourceIdentityFields,
 ): Promise<TextStoredSource> {
   const path = normalizePath(draft.path);
   const existing = prior && isTextSource(prior) ? prior : undefined;
+  const sourceId = identity?.sourceId ?? existing?.sourceId ?? crypto.randomUUID();
   return {
     id: existing?.id ?? (prior && isPdfSource(prior) ? prior.id : crypto.randomUUID()),
     workspaceId: existing?.workspaceId ?? prior?.workspaceId ?? defaultWorkspaceId(),
     contextId,
+    sourceId,
+    sourceType: identity?.sourceType ?? existing?.sourceType ?? "file",
+    displayName: identity?.displayName ?? existing?.displayName ?? displayNameFromPath(path),
+    pathPrefix: identity?.pathPrefix ?? existing?.pathPrefix ?? "",
     path,
     language: draft.language,
     kind: "file",
@@ -118,8 +125,13 @@ export async function mergeUpsert(
         continue;
       }
       const id = prior?.id ?? crypto.randomUUID();
+      const pdfIdentity = pdfSourceIdentity(id, path);
       const created: PdfStoredSource = {
         id,
+        sourceId: id,
+        sourceType: "pdf",
+        displayName: pdfIdentity.displayName,
+        pathPrefix: "",
         contextId,
         path,
         kind: "pdf",

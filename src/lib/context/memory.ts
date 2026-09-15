@@ -14,8 +14,12 @@ import {
   referencedBlobHashes,
   textSourceFromDraft,
 } from "./source-write.ts";
-import { newContextRecord } from "./storage/schema.ts";
-import type { ContextRecord, SourceDraft, StoredSource, UpsertDraft } from "./types.ts";
+import { upsertRepoBundle as mergeRepoBundle } from "./repo-bundle.ts";
+import { displayNameFromPath, legacyRepoIdentity } from "./source-identity.ts";
+import type { SpaceRecord } from "./space-types.ts";
+import { SPACE_SCHEMA_VERSION } from "./space-types.ts";
+import { newContextRecord, newSpaceRecord } from "./storage/schema.ts";
+import type { ContextRecord, RepoBundleInput, SourceDraft, StoredSource, UpsertDraft } from "./types.ts";
 import { isPdfSource, isTextSource, metadataOnly } from "./types.ts";
 
 export type MemoryRepository = ContextRepository & {
@@ -29,6 +33,7 @@ export type MemoryRepository = ContextRepository & {
  */
 export function createMemoryRepository(): MemoryRepository {
   const contexts = new Map<string, ContextRecord>();
+  const spaces = new Map<string, SpaceRecord>();
   const sources = new Map<string, StoredSource>();
   const indexed = new Map<string, IndexedSourceRecord>();
   const chunkRows = new Map<string, IndexedChunk[]>();
@@ -45,9 +50,37 @@ export function createMemoryRepository(): MemoryRepository {
       return contexts.get(id) ?? null;
     },
 
+    async listSpaces() {
+      return [...spaces.values()].sort((a, b) => b.updatedAt - a.updatedAt || a.name.localeCompare(b.name));
+    },
+
+    async getSpace(id) {
+      return spaces.get(id) ?? null;
+    },
+
+    async createSpace(input) {
+      const record = newSpaceRecord({
+        id: input.id ?? crypto.randomUUID(),
+        name: input.name,
+        memberContextIds: input.memberContextIds,
+        primaryContextId: input.primaryContextId,
+      });
+      spaces.set(record.id, record);
+      return record;
+    },
+
     async createContext(input) {
       const record = newContextRecord(input);
       contexts.set(record.id, record);
+      spaces.set(
+        record.id,
+        newSpaceRecord({
+          id: record.id,
+          name: record.name,
+          memberContextIds: [record.id],
+          primaryContextId: record.id,
+        }),
+      );
       return record;
     },
 
@@ -65,6 +98,7 @@ export function createMemoryRepository(): MemoryRepository {
       const now = Date.now();
       const previous = sourcesFor(contextId);
       const pdfs = previous.filter(isPdfSource);
+      const identity = legacyRepoIdentity(contextId, existing.name);
       const byPath = new Map(previous.filter(isTextSource).map((row) => [row.path, row]));
       for (const [id, row] of sources) {
         if (row.contextId === contextId && isTextSource(row)) sources.delete(id);
@@ -74,10 +108,22 @@ export function createMemoryRepository(): MemoryRepository {
         const path = draft.path.replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
         if (!path || seen.has(path)) continue;
         seen.add(path);
-        const row = await textSourceFromDraft(contextId, draft, byPath.get(path), now);
+        const row = await textSourceFromDraft(contextId, draft, byPath.get(path), now, identity);
         sources.set(row.id, row);
       }
       for (const pdf of pdfs) sources.set(pdf.id, pdf);
+      return finishWrite(contextId, existing, now);
+    },
+
+    async upsertRepoBundle(contextId, bundle: RepoBundleInput) {
+      const existing = contexts.get(contextId);
+      if (!existing) throw new ContextNotFoundError(contextId);
+      const now = Date.now();
+      const current = sourcesFor(contextId);
+      const merged = await mergeRepoBundle(contextId, bundle, current, now);
+      for (const id of merged.removedFileIds) sources.delete(id);
+      for (const row of merged.sources) sources.set(row.id, row);
+      if (merged.removedFileIds.length > 0) dropIndexed(contextId, merged.removedFileIds);
       return finishWrite(contextId, existing, now);
     },
 
@@ -122,6 +168,19 @@ export function createMemoryRepository(): MemoryRepository {
         if (row.contextId === id) documents.delete(key);
       }
       contexts.delete(id);
+      const space = spaces.get(id);
+      if (space && space.memberContextIds.length === 1 && space.memberContextIds[0] === id) {
+        spaces.delete(id);
+      } else {
+        for (const [spaceId, row] of spaces) {
+          if (!row.memberContextIds.includes(id)) continue;
+          spaces.set(spaceId, {
+            ...row,
+            memberContextIds: row.memberContextIds.filter((member) => member !== id),
+            updatedAt: Date.now(),
+          });
+        }
+      }
     },
 
     async listIndexed(contextId) {
@@ -227,10 +286,31 @@ export function createMemoryRepository(): MemoryRepository {
   };
 
   function sourcesFor(contextId: string): StoredSource[] {
+    const contextName = contexts.get(contextId)?.name ?? "repo";
     return [...sources.values()]
       .filter((row) => row.contextId === contextId)
       .sort((a, b) => a.path.localeCompare(b.path))
-      .map(metadataOnly);
+      .map((row) => metadataOnly(normalizeMemorySource(row, contextName)));
+  }
+
+  function normalizeMemorySource(row: StoredSource, contextName: string): StoredSource {
+    if (isPdfSource(row)) {
+      return {
+        ...row,
+        sourceId: row.sourceId ?? row.id,
+        sourceType: row.sourceType ?? "pdf",
+        displayName: row.displayName ?? displayNameFromPath(row.path),
+        pathPrefix: row.pathPrefix ?? "",
+      };
+    }
+    const identity = legacyRepoIdentity(row.contextId, contextName);
+    return {
+      ...row,
+      sourceId: row.sourceId ?? identity.sourceId,
+      sourceType: row.sourceType ?? identity.sourceType,
+      displayName: row.displayName ?? identity.displayName,
+      pathPrefix: row.pathPrefix ?? identity.pathPrefix,
+    };
   }
 
   function dropIndexed(contextId: string, sourceIds?: string[]) {

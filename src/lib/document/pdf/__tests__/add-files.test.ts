@@ -115,7 +115,7 @@ test("PDF upsert preserves existing text sources", async () => {
   await repo.upsertSources(context.id, plan.accepted.map((item) => item.draft));
   await finishPdfIngest(repo, context.id);
   const sources = await repo.listSources(context.id);
-  assert.ok(sources.some((row) => isTextSource(row) && row.path === "src/retry.ts"));
+  assert.ok(sources.some((row) => isTextSource(row) && row.path === "payments-backend/src/retry.ts"));
   assert.ok(sources.some((row) => isPdfSource(row) && row.path === "lecture.pdf" && row.readiness === "ready"));
 });
 
@@ -305,6 +305,10 @@ test("commitStagedPdfs abandons a failed staged revision", () => {
     [
       {
         id: "src",
+        sourceId: "src",
+        sourceType: "pdf",
+        displayName: "lecture",
+        pathPrefix: "",
         contextId: "ctx",
         path: "lecture.pdf",
         kind: "pdf",

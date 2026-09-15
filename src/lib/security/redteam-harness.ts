@@ -1,13 +1,13 @@
 import { bindAccountId } from "../auth/account-boundary.ts";
 import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { indexContext } from "../context/chunk-index.ts";
+import { indexSpace } from "../context/space-index.ts";
 import { createMemoryRepository } from "../context/memory.ts";
 import { persistPackAsContext, setContextRepository } from "../context/service.ts";
 import type { Hit, IndexedChunk, RepoPack } from "../repo/types.ts";
 import { routeSearchAnswer } from "../search/answer-route.ts";
 import { expandRetrievalQuery } from "../search/spoken.ts";
 import { retrieveHits, retrieveHitsOptionsForPack } from "../search/retrieve.ts";
-import { tagChunksForScope } from "../search/retrieval-scope.ts";
 import {
   REDTEAM_FORBIDDEN_PHRASE,
   REDTEAM_MARKER_A,
@@ -45,6 +45,7 @@ export type RedteamHarnessResult = {
 type PreparedRuntime = {
   workspaceId: string;
   contextId: string;
+  spaceId?: string;
   pack: RepoPack;
   chunks: IndexedChunk[];
 };
@@ -84,20 +85,19 @@ async function prepareMultiSourceRuntime(workspaceId: string): Promise<
   setContextRepository(repo);
   const auth = await persistPackAsContext(REDTEAM_PACK_AUTH, repo);
   const billing = await persistPackAsContext(REDTEAM_PACK_BILLING, repo);
-  const authRuntime = await indexContext(repo, auth.context.id, { embed: false });
-  const billingRuntime = await indexContext(repo, billing.context.id, { embed: false });
-  const scopeAuth = { workspaceId, contextId: auth.context.id };
-  const scopeBilling = { workspaceId, contextId: billing.context.id };
-  const chunks = [
-    ...tagChunksForScope(authRuntime.chunks, scopeAuth),
-    ...tagChunksForScope(billingRuntime.chunks, scopeBilling),
-  ];
+  const space = await repo.createSpace({
+    name: "redteam-multi",
+    memberContextIds: [auth.context.id, billing.context.id],
+    primaryContextId: auth.context.id,
+  });
+  const runtime = await indexSpace(repo, space.id, { embed: false });
   return {
     workspaceId,
     contextId: auth.context.id,
+    spaceId: space.id,
     contextIds: [auth.context.id, billing.context.id],
-    pack: authRuntime.pack,
-    chunks,
+    pack: runtime.pack,
+    chunks: runtime.chunks,
   };
 }
 
@@ -121,15 +121,17 @@ async function scenarioRuntime(scenario: RedteamScenarioId): Promise<PreparedRun
 function retrievalScopeForScenario(
   scenario: RedteamScenarioId,
   runtime: PreparedRuntime & { contextIds?: string[] },
-): { workspaceId: string; contextId: string; contextIds?: string[] } {
+): { workspaceId: string; spaceId: string; contextId: string; contextIds?: string[] } {
+  const spaceId = runtime.spaceId ?? runtime.contextId;
   if (scenario === "multi-source" || scenario === "multi-source-irrelevant") {
     return {
       workspaceId: runtime.workspaceId,
+      spaceId,
       contextId: runtime.contextId,
       contextIds: runtime.contextIds,
     };
   }
-  return { workspaceId: runtime.workspaceId, contextId: runtime.contextId };
+  return { workspaceId: runtime.workspaceId, spaceId, contextId: runtime.contextId, contextIds: [runtime.contextId] };
 }
 
 function leaksMarker(text: string): boolean {

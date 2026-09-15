@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "../../auth/account-boundary.ts";
 import { NORTHSTAR } from "../../repo/northstar.ts";
+import { FAST_PATH_MIN_SCORE } from "../../search/answer-fast-path.ts";
 import { routeSearchAnswer } from "../../search/answer-route.ts";
 import { buildChunks, formatFlightRetrievalSummary, retrieve } from "../../search/retrieve.ts";
 import {
@@ -48,7 +49,7 @@ test("flight recorder is a no-op unless DEBUG_FLIGHT is set", () => {
   installStorage();
   recordAnswerFlight({
     query: "ignored",
-    transcript: { they: [], you: [] },
+    transcriptSummary: { theyLines: 0, youLines: 0 },
     gate: null,
     retrieval: "0 chunks | 0 excluded | 0 hits",
     tier: "silent",
@@ -69,8 +70,11 @@ test("search answer round-trip records and exports parseable JSON", async () => 
   const hits = retrieve("Why does that retry three times?", chunks);
   const body = hits.findIndex((hit) => /Attempts are capped at three/.test(hit.text));
   assert.ok(body >= 0);
+  const llmHits = hits.map((hit, index) =>
+    index === 0 ? { ...hit, score: FAST_PATH_MIN_SCORE - 1 } : hit,
+  );
 
-  const routed = await routeSearchAnswer("Why does that retry three times?", hits, performance.now(), {
+  const routed = await routeSearchAnswer("Why does that retry three times?", llmHits, performance.now(), {
     pack: NORTHSTAR,
     retrieveMs: 12,
     ask: async () => ({
@@ -80,9 +84,7 @@ test("search answer round-trip records and exports parseable JSON", async () => 
 
   const answerId = recordAnswerFlight({
     query: routed.card.query,
-    transcript: transcriptLanes([
-      { id: "1", at: Date.now(), speaker: "them", role: "them", text: "Why does that retry three times?" },
-    ]),
+    transcriptSummary: { theyLines: 1, youLines: 0, lastQuestion: routed.card.query },
     gate: { verdict: "question", question: routed.card.query, triggered: true },
     retrieval: formatFlightRetrievalSummary(chunks, hits),
     tier: routed.tier,
@@ -91,6 +93,7 @@ test("search answer round-trip records and exports parseable JSON", async () => 
     reason: routed.card.reason ?? null,
     citations: routed.card.citations,
     quotaRemaining: 19,
+    traceId: "test-trace-grounded",
   });
 
   assert.ok(answerId);
@@ -101,9 +104,10 @@ test("search answer round-trip records and exports parseable JSON", async () => 
   assert.equal(first?.kind, "answer");
   if (first?.kind !== "answer") throw new Error("expected answer record");
   assert.equal(first.tier, "grounded");
+  assert.equal(first.traceId, "test-trace-grounded");
   assert.equal(first.latency.retrieveMs, 12);
   assert.ok(first.retrieval.includes("hits"));
-  assert.equal(first.transcript.they.length, 1);
+  assert.equal(first.transcriptSummary.theyLines, 1);
 
   const parsed = JSON.parse(flightSessionJson(false)) as {
     exportedAt: number;
@@ -138,7 +142,7 @@ test("dropped utterances append per-drop JSONL with tuning fields", () => {
 
   recordAnswerFlight({
     query: "test",
-    transcript: { they: [], you: [] },
+    transcriptSummary: { theyLines: 0, youLines: 0 },
     gate: null,
     retrieval: "0 chunks | 0 excluded | 0 hits",
     tier: "silent",
@@ -160,7 +164,7 @@ test("feedback lines round-trip through export and parser", () => {
 
   const answerId = recordAnswerFlight({
     query: "Why retry?",
-    transcript: { they: ["Why retry?"], you: [] },
+    transcriptSummary: { theyLines: 1, youLines: 0, lastQuestion: "Why retry?" },
     gate: { verdict: "question", question: "Why retry?", triggered: true },
     retrieval: "1 chunks | 0 excluded | 1 hits",
     tier: "grounded",

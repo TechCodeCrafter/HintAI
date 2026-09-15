@@ -86,7 +86,7 @@ test("a user pack is migrated only after a read-back fingerprint matches", async
   assert.equal(reconstructed.files.length, USER_PACK.files.length);
   assert.deepEqual(
     reconstructed.files.map((f) => f.path),
-    USER_PACK.files.map((f) => f.path),
+    USER_PACK.files.map((f) => `${USER_PACK.name}/${f.path}`),
   );
   assert.equal(
     await hashContent(reconstructed.files[0].content),
@@ -99,7 +99,7 @@ test("a failed write leaves the legacy pack in place", async () => {
   const repo = createMemoryRepository();
   const broken = {
     ...repo,
-    async replaceSources() {
+    async upsertRepoBundle() {
       throw new Error("disk full");
     },
   };

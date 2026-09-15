@@ -1,3 +1,5 @@
+import type { SpaceMaterialView } from "../context/material-view.ts";
+import { fileInMaterial } from "../context/material-view.ts";
 import type { Citation, DocumentCitation, FileCitation, RepoPack } from "@/lib/repo/types";
 
 /**
@@ -30,6 +32,21 @@ export function citationText(cite: Citation): string {
   }
   const range = cite.endLine && cite.endLine > cite.line ? `${cite.line}-${cite.endLine}` : `${cite.line}`;
   return `${cite.path}:${range}`;
+}
+
+/** User-facing chip label — prefixes repo/document identity when Step 3 metadata is present. */
+export function citationChipText(cite: Citation): string {
+  if (cite.kind === "file") {
+    const range = cite.endLine && cite.endLine > cite.line ? `${cite.line}-${cite.endLine}` : `${cite.line}`;
+    const coords = `${cite.path}:${range}`;
+    return cite.displayName ? `${cite.displayName} · ${coords}` : coords;
+  }
+  if (cite.kind === "document") {
+    const name = cite.displayName ?? cite.path;
+    const heading = cite.heading ? ` · "${cite.heading}"` : "";
+    return `${name} · Page ${cite.page}${heading}`;
+  }
+  return citationText(cite);
 }
 
 /** The file a citation opens, or nothing when it does not point into one. */
@@ -65,9 +82,19 @@ export function isDocumentCitation(cite: Citation): cite is DocumentCitation {
  * the runtime gate uses, so the two cannot drift into disagreeing about what
  * counts as evidence for a commit.
  */
-export function citedSource(cite: Citation, pack: Pick<RepoPack, "files" | "commits">): string {
+export function citedSource(
+  cite: Citation,
+  pack: Pick<RepoPack, "files" | "commits">,
+  material?: SpaceMaterialView,
+): string {
   if (cite.kind === "document") return "";
-  if (cite.kind === "file") return pack.files.find((f) => f.path === cite.path)?.content ?? "";
+  if (cite.kind === "file") {
+    return (
+      (material ? fileInMaterial(material, cite.path, cite.sourceId)?.content : undefined) ??
+      pack.files.find((f) => f.path === cite.path)?.content ??
+      ""
+    );
+  }
   const commit = pack.commits.find((c) => c.sha === cite.sha);
   return commit ? [commit.message, commit.author, commit.pr ?? ""].join("\n") : "";
 }

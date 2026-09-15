@@ -1,27 +1,27 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HomeProof } from "@/components/home-proof";
 import { ContextShell } from "@/components/context-shell";
-import { contextHasSources, formatContextCounts } from "@/lib/context/kinds";
+import { formatSpaceCounts, spaceHasSources, spaceStatusLabel } from "@/lib/context/kinds";
 import { migrateLegacyPack, readSavedPack } from "@/lib/context/migration";
+import { listSpaceSummaries, type SpaceSummary } from "@/lib/context/service";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
-import { listContextSummaries, type ContextSummary } from "@/lib/context/service";
 
 export function ContextHome() {
   const { ready: vaultReady, accountId } = useAccountVaultReady();
-  const [summaries, setSummaries] = useState<ContextSummary[] | null>(null);
+  const [spaces, setSpaces] = useState<SpaceSummary[] | null>(null);
   const [legacy, setLegacy] = useState(false);
   const [migrating, setMigrating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function reload() {
     try {
-      setSummaries(await listContextSummaries());
+      setSpaces(await listSpaceSummaries());
       setLegacy(Boolean(readSavedPack()));
     } catch {
-      setError("Could not read saved contexts.");
-      setSummaries([]);
+      setError("Could not read Knowledge Spaces.");
+      setSpaces([]);
     }
   }
 
@@ -48,7 +48,7 @@ export function ContextHome() {
     <ContextShell
       aside={
         <a href="/app" className="mh-chip hover:text-fg">
-          Live session
+          Demo session
           <ArrowRight aria-hidden className="size-3.5 text-accent" />
         </a>
       }
@@ -58,10 +58,11 @@ export function ContextHome() {
           <HomeProof />
           <Link
             to="/create"
-            data-testid="create-context-button"
+            data-testid="create-space-button"
             className="inline-flex items-center gap-1.5 text-sm text-body hover:text-fg"
           >
-            Create a named context
+            <Plus aria-hidden className="size-3.5" />
+            Create a Knowledge Space
             <ArrowRight aria-hidden className="size-3.5" />
           </Link>
         </div>
@@ -69,7 +70,7 @@ export function ContextHome() {
         {legacy ? (
           <div className="mh-panel space-y-3 p-5">
             <p className="text-sm text-body">
-              A folder from a previous visit is still on this device. Convert it to a context to
+              A folder from a previous visit is still on this device. Convert it to a Knowledge Space to
               keep using it.
             </p>
             <button type="button" className="mh-cta" disabled={migrating} onClick={() => void convertLegacy()}>
@@ -84,43 +85,50 @@ export function ContextHome() {
           </p>
         ) : null}
 
-        {summaries && summaries.length > 0 ? (
+        {spaces && spaces.length > 0 ? (
           <section className="space-y-3">
-            <p className="mh-eyebrow">Your contexts</p>
-            <ul className="space-y-2" data-testid="context-list">
-              {summaries.map((item) => (
-                <li key={item.context.id}>
+            <p className="mh-eyebrow">Knowledge Spaces</p>
+            <ul className="space-y-2" data-testid="space-list">
+              {spaces.map((item) => (
+                <li key={item.space.id}>
                   <article className="mh-panel flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-                    <Link to="/context/$id" params={{ id: item.context.id }} className="min-w-0 space-y-1">
-                      <p className="truncate font-medium text-fg">{item.context.name}</p>
-                      <p className="text-xs text-muted">
-                        {formatContextCounts({
-                          fileCount: item.fileCount,
-                          pdfCount: item.pdfCount,
-                          chunkCount: item.chunkCount,
-                        })}
-                      </p>
+                    <Link to="/context/$id" params={{ id: item.space.id }} className="min-w-0 space-y-1">
+                      <p className="truncate font-medium text-fg">{item.space.name}</p>
+                      <p className="text-xs text-muted">{formatSpaceCounts(item)}</p>
+                      <p className="text-xs text-faint">{spaceStatusLabel(item.status)}</p>
                     </Link>
                     <div className="flex flex-wrap gap-2">
                       <Link
+                        to="/context/$id"
+                        params={{ id: item.space.id }}
+                        className="inline-flex h-11 items-center justify-center rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
+                      >
+                        Open
+                      </Link>
+                      <Link
                         to="/context/$id/ask"
-                        params={{ id: item.context.id }}
+                        params={{ id: item.space.id }}
                         className="inline-flex h-11 items-center justify-center rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
                       >
                         Ask
                       </Link>
-                      {contextHasSources(item) ? (
+                      {spaceHasSources(item) ? (
                         <Link
                           to="/context/$id/live"
-                          params={{ id: item.context.id }}
+                          params={{ id: item.space.id }}
+                          data-testid="start-live"
                           className="inline-flex h-11 items-center justify-center rounded-sm border border-accent bg-accent px-3 text-xs font-medium text-on-accent"
                         >
-                          Live
+                          Start live
                         </Link>
                       ) : (
-                        <span className="inline-flex h-11 items-center justify-center rounded-sm border border-line px-3 text-xs font-medium text-faint">
-                          Live
-                        </span>
+                        <Link
+                          to="/context/$id"
+                          params={{ id: item.space.id }}
+                          className="inline-flex h-11 items-center justify-center rounded-sm border border-line px-3 text-xs font-medium text-faint"
+                        >
+                          Add source
+                        </Link>
                       )}
                     </div>
                   </article>
@@ -128,6 +136,8 @@ export function ContextHome() {
               ))}
             </ul>
           </section>
+        ) : spaces ? (
+          <p className="text-sm text-muted">No Knowledge Spaces yet. Create one to add repos and documents.</p>
         ) : null}
       </main>
     </ContextShell>

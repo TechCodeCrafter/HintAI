@@ -24,6 +24,8 @@ import { persistPackAsContext, setContextRepository } from "../service.ts";
 import { createMemoryRepository } from "../memory.ts";
 import { createIndexedDbRepository } from "../storage/indexeddb.ts";
 import { CONTEXT_INDEXES, SOURCE_INDEXES } from "../storage/schema.ts";
+import { CHUNKER_VERSION, RETRIEVAL_INDEX_VERSION } from "../index-versions.ts";
+import type { ContextRepository } from "../repository.ts";
 import { isTextSource, type ContextRecord, type StoredSource } from "../types.ts";
 
 function snapEvidence(item: Evidence) {
@@ -54,6 +56,16 @@ function file(path: string, content: string) {
 
 function pack(name: string, files: RepoPack["files"], id = name): RepoPack {
   return { id, name, description: name, commits: [], files };
+}
+
+function bundlePath(packName: string, path: string): string {
+  return `${packName}/${path.replace(/^\.\/+/, "")}`;
+}
+
+async function primaryBundleSourceId(repo: ContextRepository, contextId: string): Promise<string> {
+  const row = (await repo.listSources(contextId)).find(isTextSource);
+  assert.ok(row?.sourceId, "expected a text bundle source");
+  return row!.sourceId!;
 }
 
 const ALPHA = "ALPHA_ONLY_92817";
@@ -90,11 +102,15 @@ test("changed hash rebuilds only that source", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
   await indexContext(repo, context.id);
-  const next = pack("alpha-ctx", [
-    file("src/a.ts", `/** Unique token ${ALPHA} was edited. */\nexport const a = 2\n`),
-    file("src/shared.ts", PACK_A.files[1].content),
-  ]);
-  await repo.replaceSources(context.id, next.files);
+  const bundleSourceId = await primaryBundleSourceId(repo, context.id);
+  await repo.upsertRepoBundle(context.id, {
+    displayName: PACK_A.name,
+    bundleSourceId,
+    files: [
+      file("src/a.ts", `/** Unique token ${ALPHA} was edited. */\nexport const a = 2\n`),
+      file("src/shared.ts", PACK_A.files[1].content),
+    ],
+  });
   const report = (await indexContext(repo, context.id)).report;
   assert.equal(report.rebuiltSourceCount, 1);
   assert.equal(report.reusedSourceCount, 1);
@@ -104,11 +120,15 @@ test("a new source is indexed alone", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
   await indexContext(repo, context.id);
-  const next = pack("alpha-ctx", [
-    ...PACK_A.files,
-    file("src/new.ts", "/** Brand new source for the exporter. */\nexport const n = 3\n"),
-  ]);
-  await repo.replaceSources(context.id, next.files);
+  const bundleSourceId = await primaryBundleSourceId(repo, context.id);
+  await repo.upsertRepoBundle(context.id, {
+    displayName: PACK_A.name,
+    bundleSourceId,
+    files: [
+      ...PACK_A.files,
+      file("src/new.ts", "/** Brand new source for the exporter. */\nexport const n = 3\n"),
+    ],
+  });
   const report = (await indexContext(repo, context.id)).report;
   assert.equal(report.newSourceCount, 1);
   assert.equal(report.reusedSourceCount, 2);
@@ -119,9 +139,14 @@ test("deleted sources drop their cached chunks", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
   await indexContext(repo, context.id);
-  await repo.replaceSources(context.id, [PACK_A.files[1]]);
+  const bundleSourceId = await primaryBundleSourceId(repo, context.id);
+  await repo.upsertRepoBundle(context.id, {
+    displayName: PACK_A.name,
+    bundleSourceId,
+    files: [PACK_A.files[1]],
+  });
   const report = (await indexContext(repo, context.id)).report;
-  assert.equal(report.deletedSourceCount, 1);
+  assert.equal(report.deletedSourceCount, 0, "bundle removal drops index at upsert time");
   assert.equal(report.reusedSourceCount, 1);
   const leftover = await repo.listIndexed(context.id);
   assert.equal(leftover.length, 1);
@@ -131,7 +156,7 @@ test("chunker version invalidation rebuilds", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
   await indexContext(repo, context.id);
-  const report = (await indexContext(repo, context.id, { chunkerVersion: 2 })).report;
+  const report = (await indexContext(repo, context.id, { chunkerVersion: CHUNKER_VERSION + 1 })).report;
   assert.equal(report.rebuiltSourceCount, 2);
   assert.equal(report.reusedSourceCount, 0);
 });
@@ -140,19 +165,19 @@ test("index version invalidation rebuilds", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
   await indexContext(repo, context.id);
-  const report = (await indexContext(repo, context.id, { indexVersion: 2 })).report;
+  const report = (await indexContext(repo, context.id, { indexVersion: RETRIEVAL_INDEX_VERSION + 1 })).report;
   assert.equal(report.rebuiltSourceCount, 2);
   assert.equal(report.reusedSourceCount, 0);
 });
 
 test("cached chunks round-trip to equivalent runtime chunks", async () => {
   const repo = createMemoryRepository();
-  const { context, pack: stored } = await persistPackAsContext(PACK_A, repo);
-  const fresh = buildChunks(stored);
+  const { context } = await persistPackAsContext(PACK_A, repo);
   const first = await indexContext(repo, context.id);
   const warm = await indexContext(repo, context.id);
-  assert.ok(chunksEquivalent(fresh, first.chunks));
-  assert.ok(chunksEquivalent(fresh, warm.chunks));
+  assert.ok(chunksEquivalent(first.chunks, warm.chunks));
+  assert.equal(warm.report.reusedSourceCount, 2);
+  assert.equal(warm.report.rebuiltSourceCount, 0);
 });
 
 test("cached chunks never cross contexts", async () => {
@@ -221,9 +246,11 @@ test("excluding a file drops chunks, vectors, and retrieveHits without a reload"
     ],
   };
   const { context } = await persistPackAsContext(pack, repo);
+  const authDoc = bundlePath(pack.name, "docs/API_DOCUMENTATION.md");
+  const deployDoc = bundlePath(pack.name, "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md");
   const { store, deleted } = spyDelete(createMemoryVectorStore());
   const indexed = await indexContext(repo, context.id, { embed: true, vectorStore: store });
-  assert.ok(indexed.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"));
+  assert.ok(indexed.chunks.some((chunk) => chunk.path === authDoc));
 
   const before = await retrieveHits("authentication", indexed.chunks, {
     excludePatterns: undefined,
@@ -232,22 +259,22 @@ test("excluding a file drops chunks, vectors, and retrieveHits without a reload"
     vectorStore: store,
     hybrid: true,
   });
-  assert.ok(before.some((hit) => hit.path === "docs/API_DOCUMENTATION.md"));
+  assert.ok(before.some((hit) => hit.path === authDoc));
 
-  const exclude = ["docs/API_DOCUMENTATION.md"];
+  const exclude = [authDoc];
   const expectedIds = indexed.chunks
-    .filter((chunk) => chunk.path === "docs/API_DOCUMENTATION.md")
+    .filter((chunk) => chunk.path === authDoc)
     .map((chunk) => chunk.id)
     .sort();
   deleted.length = 0;
   const purged = await dropExcludedEvidence(indexed.chunks, exclude, store);
-  assert.equal(purged.chunks.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"), false);
+  assert.equal(purged.chunks.some((chunk) => chunk.path === authDoc), false);
   assert.deepEqual([...purged.droppedIds].sort(), expectedIds);
   assert.deepEqual([...deleted].sort(), expectedIds);
   assert.equal((await store.get(purged.droppedIds)).size, 0);
 
   const leftover = indexed.chunks;
-  assert.ok(leftover.some((chunk) => chunk.path === "docs/API_DOCUMENTATION.md"));
+  assert.ok(leftover.some((chunk) => chunk.path === authDoc));
   const lexical = await retrieveHits("authentication", leftover, {
     excludePatterns: exclude,
     scope: testRetrievalScope(context.id),
@@ -262,9 +289,9 @@ test("excluding a file drops chunks, vectors, and retrieveHits without a reload"
     vectorStore: store,
     hybrid: true,
   });
-  assert.equal(lexical.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 0);
-  assert.equal(semantic.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 0);
-  assert.ok(purged.chunks.some((chunk) => chunk.path === "docs/API_DEPLOYMENT_EXTERNAL_ACCESS.md"));
+  assert.equal(lexical.filter((hit) => hit.path === authDoc).length, 0);
+  assert.equal(semantic.filter((hit) => hit.path === authDoc).length, 0);
+  assert.ok(purged.chunks.some((chunk) => chunk.path === deployDoc));
   assert.equal(
     formatExclusionSummary(leftover.length, expectedIds.length, lexical.length),
     `${leftover.length} chunks | ${expectedIds.length} excluded | ${lexical.length} hits`,
@@ -315,19 +342,21 @@ test("store search path filters leftover excluded chunks via pack.excludePattern
 test("excluded file yields zero chunks and re-include rebuilds them", async () => {
   const repo = createMemoryRepository();
   const { context } = await persistPackAsContext(PACK_A, repo);
+  const aPath = bundlePath(PACK_A.name, "src/a.ts");
+  const sharedPath = bundlePath(PACK_A.name, "src/shared.ts");
   const first = await indexContext(repo, context.id);
-  assert.ok(first.chunks.some((chunk) => chunk.path === "src/a.ts"));
-  const source = (await repo.listSources(context.id)).find((row) => row.path === "src/a.ts");
+  assert.ok(first.chunks.some((chunk) => chunk.path === aPath));
+  const source = (await repo.listSources(context.id)).find((row) => row.path === aPath);
   assert.ok(source);
-  await repo.patchContext(context.id, { excludePatterns: ["src/a.ts"] });
+  await repo.patchContext(context.id, { excludePatterns: [aPath] });
   const second = await indexContext(repo, context.id);
-  assert.equal(second.chunks.some((chunk) => chunk.path === "src/a.ts"), false);
-  assert.ok(second.chunks.some((chunk) => chunk.path === "src/shared.ts"));
+  assert.equal(second.chunks.some((chunk) => chunk.path === aPath), false);
+  assert.ok(second.chunks.some((chunk) => chunk.path === sharedPath));
   assert.equal(await repo.readIndexedChunks(context.id, source.id), null);
 
   await repo.patchContext(context.id, { excludePatterns: undefined });
   const restored = await indexContext(repo, context.id);
-  assert.ok(restored.chunks.some((chunk) => chunk.path === "src/a.ts"));
+  assert.ok(restored.chunks.some((chunk) => chunk.path === aPath));
   assert.ok((await repo.readIndexedChunks(context.id, source.id))?.length);
 });
 
@@ -398,8 +427,13 @@ test("Phase 2 database upgrades without losing sources", async () => {
     status: "ready",
     schemaVersion: 1,
   };
+  const sourceId = crypto.randomUUID();
   const source: StoredSource = {
-    id: crypto.randomUUID(),
+    id: sourceId,
+    sourceId,
+    sourceType: "file",
+    displayName: "keep.ts",
+    pathPrefix: "",
     contextId: context.id,
     path: "src/keep.ts",
     language: "ts",
@@ -419,8 +453,9 @@ test("Phase 2 database upgrades without losing sources", async () => {
   const sources = await v2.listSources(context.id);
   assert.equal(restored?.name, "legacy");
   assert.equal(sources.length, 1);
-  assert.ok(isTextSource(sources[0]));
-  assert.equal(sources[0].content, source.content);
+  const row = sources[0];
+  assert.ok(row && isTextSource(row));
+  assert.equal(row.content, source.content);
   const indexed = await indexContext(v2, context.id);
   assert.ok(indexed.chunks.length >= 0);
   assert.equal((await v2.listIndexed(context.id)).length, 1);

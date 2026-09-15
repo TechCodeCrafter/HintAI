@@ -1,5 +1,8 @@
 import type { Card, Citation, FileHit, Hit, RepoPack } from "@/lib/repo/types";
+import type { SpaceMaterialView } from "../context/material-view.ts";
+import { enrichFileCitation, fileInMaterial } from "../context/material-view.ts";
 import { isDocumentHit, isFileHit } from "../repo/types.ts";
+import { tryMultiSourceCard } from "./multi-source-compose.ts";
 import type { NormalizedDocument } from "../document/types.ts";
 import { documentCard, documentFitsShape } from "./document-card.ts";
 import { buildQuestionContract, contractBlocksAll, sourceHitEligible } from "./question-contract.ts";
@@ -103,9 +106,10 @@ function overlap(haystack: string, terms: string[]): number {
  * line it occupies, not the line the chunk happens to begin on. The file head
  * is likewise cited where its docstring actually starts, which is rarely line 1.
  */
-function claimsFor(hit: FileHit, pack: RepoPack, query: string): Claim[] {
+function claimsFor(hit: FileHit, pack: RepoPack, query: string, material?: SpaceMaterialView): Claim[] {
   const out: Claim[] = [];
-  const file = pack.files.find((f) => f.path === hit.path);
+  const file = material?.filesByPath.get(hit.path) ?? pack.files.find((f) => f.path === hit.path);
+  const sourceId = hit.sourceId ?? (material ? fileInMaterial(material, hit.path)?.sourceId : undefined);
 
   const consider = (
     source: { path: string; content: string } | null,
@@ -150,6 +154,7 @@ function claimsFor(hit: FileHit, pack: RepoPack, query: string): Claim[] {
       start: fileStart,
       end: fileEnd,
       normalizedText: claim.say,
+      sourceId,
     });
     if (!span) return note("NO_EVIDENCE_SPAN", fallbackLine);
     const verified = verifyEvidenceSpan(span, {
@@ -178,6 +183,7 @@ function bestClaim(
   pack: RepoPack,
   query: string,
   canonical: string,
+  material?: SpaceMaterialView,
 ): { claim: Claim; hit: FileHit } | null {
   // Subject selection reads the canonical question: filler is rare in code and
   // would otherwise look like the most discriminating word in the sentence.
@@ -185,7 +191,7 @@ function bestClaim(
   const subject = subjectTerms(terms, pack);
   const eligible: Array<{ claim: Claim; hit: FileHit; relevance: number; score: number }> = [];
   for (const hit of ordered) {
-    for (const claim of claimsFor(hit, pack, query)) {
+    for (const claim of claimsFor(hit, pack, query, material)) {
       const path = claim.span.path ?? hit.path;
       const relevance = overlap(path, terms) * 3 + overlap(claim.say, terms);
       // A module docstring describes the whole thing; a docstring buried
@@ -306,6 +312,7 @@ function genericLocalCard(
   openFile?: string | null,
   context?: LocalCardContext,
 ): Card {
+  const material = context?.material;
   const named = fileFromQuery(canonical, pack, openFile);
   const usable = hits.filter((h) => !/(site-packages|dist-packages|\.venv|\/venv\/)/i.test(h.path));
   const seeded = usable.length === 0 && named ? [hitFromFile(named)] : usable;
@@ -338,7 +345,15 @@ function genericLocalCard(
   const why = seeded.find((h) => h.kind === "why");
 
   const ordered = [preferred, ...codeHits, ...seeded].filter(Boolean) as FileHit[];
-  const picked = bestClaim(ordered, pack, query, canonical);
+  const sourceIdsInHits = new Set(
+    seeded.map((hit) => hit.sourceId ?? material?.filesByPath.get(hit.path)?.sourceId).filter(Boolean),
+  );
+  if (material && sourceIdsInHits.size >= 2) {
+    const multi = tryMultiSourceCard(query, canonical, seeded, pack, material, latencyMs, context);
+    if (multi?.say) return multi;
+  }
+
+  const picked = bestClaim(ordered, pack, query, canonical, material);
   const claim = picked?.claim ?? null;
   const code = picked?.hit ?? ordered[0];
 
@@ -373,7 +388,7 @@ function genericLocalCard(
       return {
         say: null,
         reason: shapeGap("who"),
-        citations: [citationOfHit(code)],
+        citations: [citationOfHit(code, material)],
         query,
         latencyMs,
         source: "local",
@@ -396,7 +411,7 @@ function genericLocalCard(
     }
   }
 
-  const fallback = citationOfHit(code);
+  const fallback = citationOfHit(code, material);
   if (!say) {
     closeDecision(query, false);
     return {
@@ -414,7 +429,7 @@ function genericLocalCard(
     return {
       say: null,
       reason: checked.reason,
-      citations: citationsFor(evidence, code) ?? [fallback],
+      citations: citationsFor(evidence, code, material) ?? [fallback],
       query,
       latencyMs,
       source: "local",
@@ -432,7 +447,7 @@ function genericLocalCard(
   closeDecision(query, true);
   return {
     say,
-    citations: citationsFor(evidence, code) ?? [fallback],
+    citations: citationsFor(evidence, code, material) ?? [fallback],
     evidence,
     query,
     latencyMs,
@@ -448,15 +463,18 @@ function genericLocalCard(
  * somewhere to hang it, and that line is an artefact of indexing rather than a
  * position in the file — so a commit is cited as a commit here too.
  */
-function citationOfHit(hit: Hit): Citation {
+function citationOfHit(hit: Hit, material?: SpaceMaterialView): Citation {
   if (hit.kind === "document") {
+    const ref = material?.sources.find((row) => row.sourceId === hit.sourceId);
     return {
       kind: "document",
       sourceId: hit.sourceId,
       path: hit.path,
       page: hit.page,
       heading: hit.heading,
-      label: hit.heading ?? "",
+      displayName: ref?.displayName,
+      contextId: ref?.contextId,
+      label: hit.heading ?? ref?.displayName ?? "",
     };
   }
   if (hit.kind === "why" && hit.sha) {
@@ -470,15 +488,20 @@ function citationOfHit(hit: Hit): Citation {
       label: [hit.author, hit.date].filter(Boolean).join(" · "),
     };
   }
-  return {
-    kind: "file",
-    path: hit.path,
-    line: hit.startLine,
-    endLine: hit.endLine > hit.startLine ? hit.endLine : undefined,
-    sha: hit.sha,
-    pr: hit.pr,
-    label: provenanceLabel(hit),
-  };
+  return enrichFileCitation(
+    {
+      kind: "file",
+      path: hit.path,
+      line: hit.startLine,
+      endLine: hit.endLine > hit.startLine ? hit.endLine : undefined,
+      sha: hit.sha,
+      pr: hit.pr,
+      label: provenanceLabel(hit),
+      sourceId: hit.sourceId,
+    },
+    material,
+    hit.sourceId,
+  );
 }
 
 /**
@@ -552,7 +575,8 @@ function admitEvidence(
   // exempt, and neither is checked against the other's.
   for (const item of evidence) {
     if (item.kind !== "text") continue;
-    const source = pack.files.find((file) => file.path === item.path);
+    const source =
+      context?.material?.filesByPath.get(item.path) ?? pack.files.find((file) => file.path === item.path);
     if (!source) {
       noteAttempt({
         query, path: item.path, line: item.startLine, origin: "span",
@@ -603,6 +627,7 @@ function admitEvidence(
 
 /** The loaded material, as the evidence model asks about it. */
 export type LocalCardContext = {
+  material?: SpaceMaterialView;
   document?: (sourceId: string) => NormalizedDocument | undefined;
   /** All loaded PDFs, including scanned / refused / empty. Used for source resolution. */
   documents?: NormalizedDocument[];
@@ -610,8 +635,10 @@ export type LocalCardContext = {
 };
 
 function sourcesOf(pack: RepoPack, context?: LocalCardContext) {
+  const material = context?.material;
   return {
-    file: (path: string) => pack.files.find((f) => f.path === path)?.content,
+    file: (path: string) =>
+      material?.filesByPath.get(path)?.content ?? pack.files.find((f) => f.path === path)?.content,
     commit: (sha: string) => pack.commits.find((c) => c.sha === sha),
     document: (sourceId: string) => context?.document?.(sourceId),
   };
@@ -626,20 +653,31 @@ function sourcesOf(pack: RepoPack, context?: LocalCardContext) {
  * for a commit message was pointing at a line that did not contain a word of
  * what was being said.
  */
-function citationsFor(evidence: Evidence[], provenance: FileHit): Citation[] | null {
+function citationsFor(
+  evidence: Evidence[],
+  provenance: FileHit,
+  material?: SpaceMaterialView,
+): Citation[] | null {
   const cites: Citation[] = evidence.map((item) => {
     if (item.kind === "text") {
-      // Lines come from the verified EvidenceSpan, never the retrieved chunk.
-      return {
-        kind: "file" as const,
-        path: item.path,
-        line: item.startLine,
-        endLine: item.endLine,
-        evidenceId: item.id,
-        sha: provenance.path === item.path ? provenance.sha : undefined,
-        pr: provenance.path === item.path ? provenance.pr : undefined,
-        label: provenance.path === item.path ? provenanceLabel(provenance) : "",
-      };
+      const samePath = provenance.path === item.path;
+      const sameSource = !provenance.sourceId || provenance.sourceId === item.sourceId;
+      return enrichFileCitation(
+        {
+          kind: "file" as const,
+          path: item.path,
+          line: item.startLine,
+          endLine: item.endLine,
+          evidenceId: item.id,
+          sha: samePath && sameSource ? provenance.sha : undefined,
+          pr: samePath && sameSource ? provenance.pr : undefined,
+          label: samePath && sameSource ? provenanceLabel(provenance) : "",
+          sourceId: item.sourceId,
+          contentHash: item.contentHash,
+        },
+        material,
+        item.sourceId,
+      );
     }
     if (item.kind === "document") {
       return {
@@ -752,7 +790,7 @@ export function localCard(
     return {
       say: null,
       reason: shapeGap("absence"),
-      citations: top && isFileHit(top) ? [citationOfHit(top)] : [],
+      citations: top && isFileHit(top) ? [citationOfHit(top, context?.material)] : [],
       query,
       latencyMs,
       source: "local",

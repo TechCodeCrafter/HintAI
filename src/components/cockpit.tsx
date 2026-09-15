@@ -59,7 +59,7 @@ import { useMeetHint } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
 
-export function Cockpit({ contextId }: { contextId?: string } = {}) {
+export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const armed = useMeetHint((s) => s.armed);
   const playing = useMeetHint((s) => s.playing);
   const overlay = useMeetHint((s) => s.overlay);
@@ -82,7 +82,9 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
   const setAutoAnswer = useMeetHint((s) => s.setAutoAnswer);
   const loadFolder = useMeetHint((s) => s.loadFolder);
   const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
+  const activeSpaceId = useMeetHint((s) => s.activeSpaceId);
   const activeContextId = useMeetHint((s) => s.activeContextId);
+  const authorizedSourceIds = useMeetHint((s) => s.authorizedSourceIds);
   const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const contextError = useMeetHint((s) => s.contextError);
@@ -135,12 +137,12 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
     const params = new URLSearchParams(window.location.search);
     if (params.get("overlay") === "1") setOverlay(true);
     if (!vaultReady) return;
-    void useMeetHint.getState().boot(contextId).then(() => {
+    void useMeetHint.getState().boot(spaceId).then(() => {
       if (params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
     });
-  }, [contextId, setOverlay, vaultReady]);
+  }, [spaceId, setOverlay, vaultReady]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -214,6 +216,8 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
       className="cockpit-shell text-fg"
       data-testid="cockpit"
       data-context-status={contextStatus}
+      data-space-id={activeSpaceId ?? undefined}
+      data-source-count={authorizedSourceIds.length || undefined}
       data-context-updating={contextUpdating ? "true" : undefined}
     >
       <header className="cockpit-glass-bar shrink-0 px-5 md:px-8">
@@ -305,7 +309,7 @@ export function Cockpit({ contextId }: { contextId?: string } = {}) {
             ) : null}
           </div>
           <div className="cockpit-pack">
-            <ContextSwitcher onOpenFolder={() => void folderPicker.offerFolder()} />
+            <SpaceSwitcher onOpenFolder={() => void folderPicker.offerFolder()} />
             <AddMaterial onOpenFolder={() => void folderPicker.offerFolder()} filesRef={filesRef} pdfRef={pdfRef} />
             <div className="cockpit-utils">
               <UtilityLinks
@@ -557,26 +561,36 @@ function AddMaterial({
   );
 }
 
-function ContextSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
+function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
   const pack = useMeetHint((s) => s.pack);
-  const contexts = useMeetHint((s) => s.contexts);
-  const activeContextId = useMeetHint((s) => s.activeContextId);
+  const activeSpaceId = useMeetHint((s) => s.activeSpaceId);
+  const authorizedSourceIds = useMeetHint((s) => s.authorizedSourceIds);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const loadingFolder = useMeetHint((s) => s.loadingFolder);
-  const activateContext = useMeetHint((s) => s.activateContext);
+  const activateSpace = useMeetHint((s) => s.activateSpace);
   const deleteStoredContext = useMeetHint((s) => s.deleteStoredContext);
   const resetPack = useMeetHint((s) => s.resetPack);
   const [open, setOpen] = useState(false);
+  const [spaces, setSpaces] = useState<Array<{ id: string; name: string; primaryContextId: string }>>([]);
   const [removeId, setRemoveId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const hydrating = contextStatus === "booting" || contextStatus === "hydrating" || loadingFolder;
-  const label = hydrating ? "Loading…" : pack.name;
+  const sourceNote =
+    authorizedSourceIds.length > 0
+      ? `${authorizedSourceIds.length} source${authorizedSourceIds.length === 1 ? "" : "s"}`
+      : null;
+  const label = hydrating ? "Loading…" : sourceNote ? `${pack.name} · ${sourceNote}` : pack.name;
 
   useEffect(() => {
     if (!open) {
       setRemoveId(null);
       return;
     }
+    void import("@/lib/context/service").then((mod) =>
+      mod.listSpaceSummaries().then((rows) =>
+        setSpaces(rows.map((row) => ({ id: row.space.id, name: row.space.name, primaryContextId: row.space.primaryContextId }))),
+      ),
+    );
     const onPointer = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
@@ -604,14 +618,15 @@ function ContextSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
         aria-expanded={open}
         title={label}
         disabled={hydrating}
+        data-testid="space-switcher"
         onClick={() => setOpen((value) => !value)}
       >
         <FolderOpen className="size-4" />
-        <span className="hidden max-w-40 truncate md:inline">{label}</span>
+        <span className="hidden max-w-52 truncate md:inline">{label}</span>
         <ChevronDown className="size-3.5 shrink-0 text-faint" />
       </Button>
       {open ? (
-        <div className="context-menu" role="listbox" aria-label="Contexts">
+        <div className="context-menu" role="listbox" aria-label="Knowledge Spaces">
           <button
             type="button"
             role="option"
@@ -625,18 +640,18 @@ function ContextSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
           >
             northstar-payments
           </button>
-          {contexts.map((context) =>
-            removeId === context.id ? (
-              <div key={context.id} className="context-remove-confirm" data-testid="confirm-remove-context">
+          {spaces.map((space) =>
+            removeId === space.id ? (
+              <div key={space.id} className="context-remove-confirm" data-testid="confirm-remove-space">
                 <p>
-                  Remove <span className="text-fg">{context.name}</span> from this device?
+                  Remove <span className="text-fg">{space.name}</span> from this device?
                 </p>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     className="context-option context-option-danger"
                     onClick={() => {
-                      void deleteStoredContext(context.id);
+                      void deleteStoredContext(space.primaryContextId);
                       setRemoveId(null);
                       setOpen(false);
                     }}
@@ -649,30 +664,30 @@ function ContextSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
                 </div>
               </div>
             ) : (
-              <div key={context.id} className="context-row">
+              <div key={space.id} className="context-row">
                 <button
                   type="button"
                   role="option"
-                  aria-selected={context.id === activeContextId}
+                  aria-selected={space.id === activeSpaceId}
                   className="context-option"
-                  data-active={context.id === activeContextId ? "true" : undefined}
+                  data-active={space.id === activeSpaceId ? "true" : undefined}
                   onClick={() => {
-                    void activateContext(context.id);
+                    void activateSpace(space.id);
                     setOpen(false);
                   }}
                 >
-                  {context.name}
+                  {space.name}
                 </button>
                 <button
                   type="button"
                   className="context-remove"
-                  data-testid={`remove-context-${context.id}`}
-                  aria-label={`Remove ${context.name}`}
+                  data-testid={`remove-space-${space.id}`}
+                  aria-label={`Remove ${space.name}`}
                   title="Remove from this device"
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    setRemoveId(context.id);
+                    setRemoveId(space.id);
                   }}
                 >
                   <Trash2 className="size-3.5" />
@@ -682,7 +697,7 @@ function ContextSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
           )}
           <div className="context-menu-rule" />
           <a href="/home" className="context-option" onClick={() => setOpen(false)}>
-            Your contexts
+            Knowledge Spaces
           </a>
           <a href="/create" className="context-option" onClick={() => setOpen(false)}>
             <Plus className="size-3.5 shrink-0" />

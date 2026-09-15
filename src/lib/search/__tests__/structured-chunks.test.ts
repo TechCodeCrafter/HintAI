@@ -31,9 +31,9 @@ afterEach(() => {
   setContextRepository(null);
 });
 
-test("USE_STRUCTURED_CHUNKER stays off and CHUNKER_VERSION is unchanged", () => {
+test("USE_STRUCTURED_CHUNKER stays off and CHUNKER_VERSION tracks scoped chunk ids", () => {
   assert.equal(USE_STRUCTURED_CHUNKER, false);
-  assert.equal(CHUNKER_VERSION, 1);
+  assert.equal(CHUNKER_VERSION, 2);
 });
 
 test("a TypeScript file gets structured chunks with symbol names", () => {
@@ -102,14 +102,37 @@ test("indexContext accepts both window and structured chunk types", async () => 
   const { context: windowCtx } = await persistPackAsContext(pack, windows);
   const windowed = await indexContext(windows, windowCtx.id, { structured: false });
   assert.ok(windowed.chunks.length > 0);
-  assert.ok(windowed.chunks.filter((c) => c.kind === "code").every((c) => /:\d+-\d+$/.test(c.id)));
+  assert.ok(
+    windowed.chunks
+      .filter((c) => c.kind === "code")
+      .every((c) => /^\d+-\d+$/.test(c.id.split(":").pop() ?? c.id)),
+  );
 
   const structured = createMemoryRepository();
   const { context: structuredCtx } = await persistPackAsContext(pack, structured);
   const indexed = await indexContext(structured, structuredCtx.id, { structured: true });
   assert.ok(indexed.chunks.some((c) => "symbol" in c && c.symbol === "addOne"));
-  assert.ok(indexed.chunks.some((c) => c.path === "notes.txt" && /:\d+-\d+$/.test(c.id)));
+  assert.ok(
+    indexed.chunks.some(
+      (c) => c.path.includes("notes.txt") && /^\d+-\d+$/.test(c.id.split(":").pop() ?? c.id),
+    ),
+  );
 
-  const fromFile = chunksFromFile(file("src/math.ts", TS), { structured: true });
+  const fromFile = chunksFromFile(file("src/math.ts", TS), {
+    id: "f1",
+    sourceId: "bundle-1",
+    sourceType: "repo",
+    displayName: "idx-mixed",
+    pathPrefix: "idx-mixed/",
+    workspaceId: "ws",
+    contextId: structuredCtx.id,
+    path: "idx-mixed/src/math.ts",
+    kind: "file",
+    byteLength: TS.length,
+    contentHash: "h",
+    content: TS,
+    createdAt: 1,
+    updatedAt: 1,
+  }, { structured: true });
   assert.ok(fromFile.some((c) => c.symbol === "addOne"));
 });

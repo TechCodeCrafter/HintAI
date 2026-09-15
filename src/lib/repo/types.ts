@@ -32,6 +32,8 @@ export type RepoPack = {
 export type FileChunk = {
   id: string;
   kind: "code" | "why";
+  /** Ingest unit id (repo bundle). Required on indexed chunks; optional during in-memory pack builds. */
+  sourceId?: string;
   path: string;
   startLine: number;
   endLine: number;
@@ -101,6 +103,12 @@ export type FileCitation = {
   endLine?: number;
   /** The Evidence this citation was generated from. */
   evidenceId?: string;
+  /** Stable ingest unit — required for multi-source spaces. */
+  sourceId?: string;
+  sourceType?: "repo" | "pdf" | "file";
+  displayName?: string;
+  contextId?: string;
+  contentHash?: string;
   sha?: string;
   pr?: string;
   label: string;
@@ -124,6 +132,9 @@ export type DocumentCitation = {
   page: number;
   heading?: string;
   evidenceId?: string;
+  displayName?: string;
+  contextId?: string;
+  contentHash?: string;
   label: string;
 };
 

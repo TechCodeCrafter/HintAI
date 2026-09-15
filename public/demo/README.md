@@ -1,4 +1,6 @@
 Landing posters stay in git. The mp4s do not (~25MB).
 
-- Dev: keep rendered files here (`npm run video:render` and friends), or copy from the last commit that had them: `git checkout ba30b35 -- public/demo`
-- Production: `demoMediaUrl()` loads from the pinned jsDelivr copy of that commit, or from `VITE_DEMO_MEDIA_BASE`
+- Dev: run `node scripts/copy-demo-media.mjs` (or `git checkout 54057ff -- public/demo/*.mp4`)
+- Build: `npm run build` runs `copy-demo-media.mjs` automatically
+- Production: `demoMediaUrl()` serves first-party `/demo/*` on the deployed origin
+- Override: set `VITE_DEMO_MEDIA_BASE` (no trailing slash) for a custom CDN base

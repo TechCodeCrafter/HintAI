@@ -70,7 +70,9 @@ Pairs with anticipatory retrieval (Phase 4).
 
 ---
 
-## Phase 3 — Latency instrumentation (measure before optimizing)
+## Phase 3 — Latency instrumentation — **Milestone 2 performance: complete (2026-09-14)**
+
+Measured baseline (50-trace production capture): supported p50 ~1 ms, p95 ~816 ms, p99 ~1603 ms; fast-path semantic acceptance 100% (0 conflicting, 0 incomplete). Source routing, anticipatory retrieval, progressive replacement, and model swapping remain **deferred** — see [docs/PERFORMANCE-MILESTONE-2.md](./docs/PERFORMANCE-MILESTONE-2.md).
 
 Instrument each stage separately:
 
@@ -203,6 +205,17 @@ Build in this order:
 | Per-stage latency KPI | Partial (answer-level latency in flight log) |
 | Answer hero layout | Partial (Card exists; not yet “SAY THIS” pattern) |
 | Terminology standardization | Documented here; copy not fully migrated |
+
+---
+
+## Launch hygiene
+
+Before broad enterprise outreach or paid acquisition, keep the public domain
+trustworthy and filter-friendly. See **[docs/DOMAIN-REPUTATION.md](./docs/DOMAIN-REPUTATION.md)**
+for the full program (ticket #25): Grok script removal on production, trust/legal
+pages, `security.txt`, CSP and baseline headers, external-domain inventory, and
+Phase B–D checklists (email, vendor submissions, monitoring). Phase A is
+code-only; registrar and mailbox work stays in Phase B.
 
 ---
 

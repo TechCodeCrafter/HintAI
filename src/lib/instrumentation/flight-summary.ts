@@ -1,9 +1,11 @@
 import type { AnswerTier } from "../search/answer-route.ts";
+import type { AnswerStageTimings, TranscriptSummary } from "./answer-latency.ts";
+import { latencyPercentiles, stageValues } from "./answer-latency.ts";
+import { P95_SUPPORTED_ANSWER_TARGET_MS } from "./answer-latency.ts";
 import type {
   AnswerFlightRecord,
   DroppedUtteranceRecord,
   FeedbackFlightRecord,
-  FeedbackReason,
   FlightRecord,
 } from "./flight-recorder.ts";
 import { parseFlightLine } from "./flight-recorder.ts";
@@ -29,12 +31,6 @@ export function parseFlightInput(text: string): FlightRecord[] {
     .filter((row): row is FlightRecord => row != null);
 }
 
-function percentile(sorted: number[], p: number): number {
-  if (sorted.length === 0) return 0;
-  const idx = Math.ceil((p / 100) * sorted.length) - 1;
-  return sorted[Math.max(0, Math.min(sorted.length - 1, idx))]!;
-}
-
 function median(values: number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
@@ -42,13 +38,12 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1]! + sorted[mid]!) / 2 : sorted[mid]!;
 }
 
-function latencyStats(answers: AnswerFlightRecord[], key: keyof AnswerFlightRecord["latency"]) {
-  const values = answers.map((row) => row.latency[key]).sort((a, b) => a - b);
-  return {
-    p50: percentile(values, 50),
-    p95: percentile(values, 95),
-    p99: percentile(values, 99),
-  };
+function latencyStats(answers: AnswerFlightRecord[], key: keyof AnswerStageTimings) {
+  const values = stageValues(
+    answers.map((row) => row.latency as AnswerStageTimings),
+    key,
+  );
+  return latencyPercentiles(values);
 }
 
 const TIER_LABELS: Record<AnswerTier, string> = {
@@ -58,7 +53,7 @@ const TIER_LABELS: Record<AnswerTier, string> = {
   silent: "silent-reason",
 };
 
-const FEEDBACK_LABELS: Record<FeedbackReason, string> = {
+const FEEDBACK_LABELS: Record<FeedbackFlightRecord["reason"], string> = {
   "wrong-answer": "Wrong answer",
   "too-slow": "Too slow",
   "wrong-source": "Wrong source",
@@ -66,12 +61,23 @@ const FEEDBACK_LABELS: Record<FeedbackReason, string> = {
   other: "Other",
 };
 
+function formatStats(label: string, stats: { p50: number; p95: number; p99: number }): string {
+  return `  ${label}: ${stats.p50} / ${stats.p95} / ${stats.p99}`;
+}
+
+const TIER_REPORT_KEYS = ["retrieveMs", "documentHydrateMs", "llmMs", "verifyMs", "localCardMs", "totalMs"] as const;
+
+const AGGREGATE_LATENCY_KEYS = ["retrieveMs", "documentHydrateMs", "llmMs", "verifyMs", "localCardMs", "totalMs"] as const;
+
 export function formatFlightSummary(records: FlightRecord[]): string {
   const answers = records.filter((row): row is AnswerFlightRecord => row.kind === "answer");
   const dropped = records.filter((row): row is DroppedUtteranceRecord => row.kind === "dropped");
   const feedback = records.filter((row): row is FeedbackFlightRecord => row.kind === "feedback");
 
   const lines: string[] = ["MeetHint flight log summary", ""];
+
+  lines.push(`Product target: p95 supported answer < ${P95_SUPPORTED_ANSWER_TARGET_MS} ms`);
+  lines.push("");
 
   lines.push("Answers by tier");
   for (const tier of ["grounded", "synthesis", "localCard", "silent"] as const) {
@@ -81,12 +87,66 @@ export function formatFlightSummary(records: FlightRecord[]): string {
   lines.push("");
 
   if (answers.length > 0) {
-    lines.push("Latency (ms) — p50 / p95 / p99");
-    for (const key of ["retrieveMs", "llmMs", "verifyMs", "totalMs"] as const) {
-      const stats = latencyStats(answers, key);
-      lines.push(`  ${key}: ${stats.p50} / ${stats.p95} / ${stats.p99}`);
+    lines.push("Latency by tier (ms) — p50 / p95 / p99");
+    for (const tier of ["localCard", "grounded", "synthesis", "silent"] as const) {
+      const subset = answers.filter((row) => row.tier === tier);
+      if (subset.length === 0) {
+        lines.push(`  ${TIER_LABELS[tier]}: (no samples)`);
+        continue;
+      }
+      lines.push(`  ${TIER_LABELS[tier]} (n=${subset.length})`);
+      for (const key of TIER_REPORT_KEYS) {
+        const stats = latencyStats(subset, key);
+        if (stats.p50 > 0 || stats.p95 > 0 || key === "totalMs" || (key === "localCardMs" && subset.some((row) => row.latency.localCardMs != null))) {
+          lines.push(formatStats(`    ${key}`, stats));
+        }
+      }
     }
     lines.push("");
+    lines.push("Extended latency (all answers) — p50 / p95 / p99");
+    for (const key of AGGREGATE_LATENCY_KEYS) {
+      const values = stageValues(
+        answers.map((row) => row.latency as AnswerStageTimings),
+        key,
+      );
+      if (values.length === 0 && key !== "retrieveMs" && key !== "totalMs") continue;
+      const stats = latencyPercentiles(values);
+      if (key === "localCardMs") {
+        lines.push(`  localCardMs p50/p95/p99: ${stats.p50} / ${stats.p95} / ${stats.p99}`);
+      } else {
+        lines.push(formatStats(key, stats));
+      }
+    }
+    lines.push("");
+    lines.push("Multi-source subset (sourceCount > 1)");
+    const multi = answers.filter((row) => (row.sourceCount ?? 0) > 1);
+    if (multi.length === 0) {
+      lines.push("  (no samples)");
+    } else {
+      lines.push(`  n=${multi.length}`);
+      for (const key of TIER_REPORT_KEYS) {
+        lines.push(formatStats(`  ${key}`, latencyStats(multi, key)));
+      }
+    }
+    lines.push("");
+    const models = new Map<string, AnswerFlightRecord[]>();
+    for (const row of answers) {
+      const key = `${row.provider ?? "?"}:${row.modelId ?? "?"}`;
+      const bucket = models.get(key) ?? [];
+      bucket.push(row);
+      models.set(key, bucket);
+    }
+    if (models.size > 0) {
+      lines.push("By provider / model");
+      for (const [, rows] of models) {
+        const first = rows[0]!;
+        lines.push(`  ${first.provider ?? "?"} / ${first.modelName ?? first.modelId} (n=${rows.length})`);
+        for (const key of ["totalMs", "llmMs", "verifyMs"] as const) {
+          lines.push(formatStats(`    ${key}`, latencyStats(rows, key)));
+        }
+      }
+      lines.push("");
+    }
   } else {
     lines.push("Latency: (no answer records)");
     lines.push("");
@@ -119,11 +179,11 @@ export function formatFlightSummary(records: FlightRecord[]): string {
   if (feedback.length === 0) {
     lines.push("  (none)");
   } else {
-    const byReason = new Map<FeedbackReason, number>();
+    const byReason = new Map<FeedbackFlightRecord["reason"], number>();
     for (const row of feedback) {
       byReason.set(row.reason, (byReason.get(row.reason) ?? 0) + 1);
     }
-    for (const reason of Object.keys(FEEDBACK_LABELS) as FeedbackReason[]) {
+    for (const reason of Object.keys(FEEDBACK_LABELS) as FeedbackFlightRecord["reason"][]) {
       const count = byReason.get(reason) ?? 0;
       if (count > 0) lines.push(`  ${FEEDBACK_LABELS[reason]}: ${count}`);
     }
@@ -131,3 +191,5 @@ export function formatFlightSummary(records: FlightRecord[]): string {
 
   return lines.join("\n");
 }
+
+export type { TranscriptSummary };

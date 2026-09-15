@@ -13,6 +13,11 @@ export function isFlightRecorder(): boolean {
   return flag("VITE_DEBUG_FLIGHT") || flag("DEBUG_FLIGHT") || flag("VITE_E2E");
 }
 
+/** Step 5B performance capture — same gate as flight recorder; privacy-safe telemetry only. */
+export function isPerformanceCapture(): boolean {
+  return isFlightRecorder();
+}
+
 function flag(name: string): boolean {
   try {
     const value = (import.meta as { env?: Record<string, unknown> }).env?.[name];

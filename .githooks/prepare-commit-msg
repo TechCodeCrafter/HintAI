@@ -1,0 +1,4 @@
+#!/bin/sh
+# Strip Cursor attribution before commit-msg runs (covers IDE prepare-commit-msg injection).
+set -eu
+exec node "$(git rev-parse --show-toplevel)/scripts/strip-cursor-trailer.mjs" "$1"

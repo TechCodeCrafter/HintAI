@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import type { RepoPack } from "../../repo/types.ts";
+import type { IndexedChunk, RepoPack } from "../../repo/types.ts";
+import { isFileChunk } from "../../repo/types.ts";
 import { buildChunks } from "../../search/retrieve.ts";
 import { persistPackAsContext } from "../service.ts";
 import { createMemoryRepository } from "../memory.ts";
+import { indexContext } from "../chunk-index.ts";
 import { hydrateContext, packFromSources, runtimeFromPack } from "../hydrate.ts";
 
 const PACK: RepoPack = {
@@ -50,16 +52,17 @@ test("persisted sources reconstruct a RepoPack and reuse buildChunks", async () 
   assert.equal(reconstructed.files.length, PACK.files.length);
   assert.deepEqual(
     reconstructed.files.map((f) => f.path).sort(),
-    PACK.files.map((f) => f.path).sort(),
+    PACK.files.map((f) => `payments-backend/${f.path}`).sort(),
   );
 
-  const byId = (chunks: ReturnType<typeof buildChunks>) =>
+  const byPathText = (chunks: IndexedChunk[]) =>
     [...chunks]
-      .sort((a, b) => a.id.localeCompare(b.id))
-      .map((c) => ({ id: c.id, path: c.path, text: c.text, startOffset: c.startOffset }));
-  const expected = buildChunks({ ...PACK, id: context.id, files: [...PACK.files].sort((a, b) => a.path.localeCompare(b.path)) });
-  const actual = buildChunks(reconstructed);
-  assert.deepEqual(byId(actual), byId(expected));
+      .filter(isFileChunk)
+      .sort((a, b) => a.path.localeCompare(b.path))
+      .map((c) => ({ path: c.path, text: c.text, startOffset: c.startOffset }));
+  const fromPersisted = buildChunks(reconstructed);
+  const indexed = await indexContext(repo, context.id);
+  assert.deepEqual(byPathText(indexed.chunks), byPathText(fromPersisted));
 });
 
 test("runtime hydration is still prune → chunks → vocabulary", async () => {

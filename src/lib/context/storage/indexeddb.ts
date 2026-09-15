@@ -22,10 +22,13 @@ import type { MeetingRecord } from "../../audit/types.ts";
 import {
   CONTEXT_INDEXES,
   DATABASE_NAME,
+  DATABASE_VERSION,
   INDEXED_SOURCE_INDEXES,
   MEETING_INDEXES,
   newContextRecord,
+  newSpaceRecord,
   normalizePath,
+  SPACE_INDEXES,
   NORMALIZED_DOCUMENT_INDEXES,
   SOURCE_BLOB_INDEXES,
   SOURCE_INDEXES,
@@ -33,6 +36,11 @@ import {
   type ContextRow,
   type SourceRow,
 } from "./schema.ts";
+import { upsertRepoBundle } from "../repo-bundle.ts";
+import { displayNameFromPath, legacyRepoIdentity } from "../source-identity.ts";
+import type { SpaceRecord } from "../space-types.ts";
+import { SPACE_SCHEMA_VERSION } from "../space-types.ts";
+import { CONTEXT_SCHEMA_VERSION } from "../types.ts";
 
 class MeetHintDatabase extends Dexie {
   contexts!: Table<ContextRow, string>;
@@ -42,6 +50,7 @@ class MeetHintDatabase extends Dexie {
   sourceBlobs!: Table<SourceBlobRecord, string>;
   normalizedDocuments!: Table<NormalizedDocumentRow, string>;
   meetings!: Table<MeetingRecord, string>;
+  spaces!: Table<SpaceRecord, string>;
 
   constructor(name = DATABASE_NAME) {
     super(name);
@@ -72,21 +81,118 @@ class MeetHintDatabase extends Dexie {
       normalizedDocuments: NORMALIZED_DOCUMENT_INDEXES,
       meetings: MEETING_INDEXES,
     });
+    this.version(5).stores({
+      contexts: CONTEXT_INDEXES,
+      sources: SOURCE_INDEXES,
+      indexedSources: INDEXED_SOURCE_INDEXES,
+      storedChunks: STORED_CHUNK_INDEXES,
+      sourceBlobs: SOURCE_BLOB_INDEXES,
+      normalizedDocuments: NORMALIZED_DOCUMENT_INDEXES,
+      meetings: MEETING_INDEXES,
+    }).upgrade(async (tx) => {
+      const contexts = await tx.table("contexts").toArray();
+      const names = new Map(contexts.map((row: ContextRow) => [row.id, row.name]));
+      await tx.table("sources").toCollection().modify((row: SourceRow) => {
+        backfillSourceIdentity(row, names.get(row.contextId) ?? "repo");
+      });
+      await tx.table("contexts").toCollection().modify((row: ContextRow) => {
+        row.schemaVersion = CONTEXT_SCHEMA_VERSION;
+      });
+    });
+    this.version(DATABASE_VERSION).stores({
+      contexts: CONTEXT_INDEXES,
+      sources: SOURCE_INDEXES,
+      indexedSources: INDEXED_SOURCE_INDEXES,
+      storedChunks: STORED_CHUNK_INDEXES,
+      sourceBlobs: SOURCE_BLOB_INDEXES,
+      normalizedDocuments: NORMALIZED_DOCUMENT_INDEXES,
+      meetings: MEETING_INDEXES,
+      spaces: SPACE_INDEXES,
+    }).upgrade(async (tx) => {
+      const contexts = await tx.table("contexts").toArray();
+      const spaces = tx.table("spaces");
+      for (const ctx of contexts as ContextRow[]) {
+        const id = ctx.id;
+        const existing = await spaces.get(id);
+        if (existing) continue;
+        await spaces.add(
+          newSpaceRecord({
+            id,
+            name: ctx.name,
+            memberContextIds: [id],
+            primaryContextId: id,
+          }),
+        );
+      }
+    });
   }
+}
+
+function backfillSourceIdentity(row: SourceRow, contextName: string): void {
+  if (row.kind === "pdf") {
+    row.sourceId = row.sourceId ?? row.id;
+    row.sourceType = row.sourceType ?? "pdf";
+    row.displayName = row.displayName ?? displayNameFromPath(row.path);
+    row.pathPrefix = row.pathPrefix ?? "";
+    return;
+  }
+  const identity = legacyRepoIdentity(row.contextId, contextName);
+  row.sourceId = row.sourceId ?? identity.sourceId;
+  row.sourceType = row.sourceType ?? identity.sourceType;
+  row.displayName = row.displayName ?? identity.displayName;
+  row.pathPrefix = row.pathPrefix ?? identity.pathPrefix;
 }
 
 function sortContexts(rows: ContextRecord[]): ContextRecord[] {
   return [...rows].sort((a, b) => b.updatedAt - a.updatedAt || a.name.localeCompare(b.name));
 }
 
-function sortSources(rows: StoredSource[]): StoredSource[] {
+function sortSources(rows: StoredSource[], contextName = "repo"): StoredSource[] {
   return [...rows]
     .sort((a, b) => a.path.localeCompare(b.path))
-    .map((row) => metadataOnly(withWorkspaceBackfill(row, defaultWorkspaceId())));
+    .map((row) => metadataOnly(withWorkspaceBackfill(normalizeStoredSource(row, contextName), defaultWorkspaceId())));
+}
+
+function normalizeStoredSource(row: StoredSource, contextName: string): StoredSource {
+  if (isPdfSource(row)) {
+    return {
+      ...row,
+      sourceId: row.sourceId ?? row.id,
+      sourceType: row.sourceType ?? "pdf",
+      displayName: row.displayName ?? displayNameFromPath(row.path),
+      pathPrefix: row.pathPrefix ?? "",
+    };
+  }
+  const identity = legacyRepoIdentity(row.contextId, contextName);
+  return {
+    ...row,
+    sourceId: row.sourceId ?? identity.sourceId,
+    sourceType: row.sourceType ?? identity.sourceType,
+    displayName: row.displayName ?? identity.displayName,
+    pathPrefix: row.pathPrefix ?? identity.pathPrefix,
+  };
 }
 
 function normalizeContext(row: ContextRecord): ContextRecord {
   return withWorkspaceBackfill(row, defaultWorkspaceId());
+}
+
+function normalizeSpace(row: SpaceRecord): SpaceRecord {
+  return withWorkspaceBackfill(
+    {
+      ...row,
+      schemaVersion: row.schemaVersion ?? SPACE_SCHEMA_VERSION,
+      memberContextIds: [...(row.memberContextIds ?? [])],
+      primaryContextId: row.primaryContextId ?? row.memberContextIds?.[0] ?? row.id,
+    },
+    defaultWorkspaceId(),
+  );
+}
+
+function sortSpaces(rows: SpaceRecord[]): SpaceRecord[] {
+  return [...rows]
+    .map(normalizeSpace)
+    .sort((a, b) => b.updatedAt - a.updatedAt || a.name.localeCompare(b.name));
 }
 
 function contextVisible(row: ContextRecord | undefined): ContextRecord | null {
@@ -103,7 +209,9 @@ async function draftsToTextSources(
   drafts: SourceDraft[],
   existing: StoredSource[],
   now: number,
+  contextName = "repo",
 ): Promise<StoredSource[]> {
+  const identity = legacyRepoIdentity(contextId, contextName);
   const byPath = new Map(existing.filter(isTextSource).map((row) => [row.path, row]));
   const seen = new Set<string>();
   const sources: StoredSource[] = [];
@@ -111,7 +219,7 @@ async function draftsToTextSources(
     const path = normalizePath(draft.path);
     if (!path || seen.has(path)) continue;
     seen.add(path);
-    sources.push(await textSourceFromDraft(contextId, draft, byPath.get(path), now));
+    sources.push(await textSourceFromDraft(contextId, draft, byPath.get(path), now, identity));
   }
   return sources;
 }
@@ -137,7 +245,8 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
   }
 
   async function loadSources(contextId: string): Promise<StoredSource[]> {
-    return sortSources(await db.sources.where("contextId").equals(contextId).toArray());
+    const ctx = await db.contexts.get(contextId);
+    return sortSources(await db.sources.where("contextId").equals(contextId).toArray(), ctx?.name ?? "repo");
   }
 
   async function writeContextSources(existing: ContextRecord, sources: StoredSource[], now: number, status?: ContextRecord["status"]) {
@@ -177,10 +286,46 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
       return contextVisible(row);
     },
 
+    async listSpaces() {
+      return sortSpaces(await db.spaces.toArray());
+    },
+
+    async getSpace(id) {
+      const row = await db.spaces.get(id);
+      if (!row) return null;
+      try {
+        return normalizeSpace(row);
+      } catch {
+        return null;
+      }
+    },
+
+    async createSpace(input) {
+      const record = newSpaceRecord({
+        id: input.id ?? crypto.randomUUID(),
+        name: input.name,
+        memberContextIds: input.memberContextIds,
+        primaryContextId: input.primaryContextId,
+      });
+      assertWorkspaceMatch(record.workspaceId, "createSpace");
+      await db.spaces.add(record);
+      return record;
+    },
+
     async createContext(input) {
       const record = newContextRecord(input);
       assertWorkspaceMatch(record.workspaceId, "createContext");
-      await db.contexts.add(record);
+      await db.transaction("rw", db.contexts, db.spaces, async () => {
+        await db.contexts.add(record);
+        await db.spaces.add(
+          newSpaceRecord({
+            id: record.id,
+            name: record.name,
+            memberContextIds: [record.id],
+            primaryContextId: record.id,
+          }),
+        );
+      });
       return record;
     },
 
@@ -195,14 +340,29 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
 
     async replaceSources(contextId, drafts) {
       const now = Date.now();
+      const existing = await db.contexts.get(contextId);
+      if (!existing) throw new ContextNotFoundError(contextId);
       const existingSources = await loadSources(contextId);
       const pdfs = existingSources.filter(isPdfSource);
-      const texts = await draftsToTextSources(contextId, drafts, existingSources, now);
-      const sources = sortSources([...pdfs, ...texts]);
+      const texts = await draftsToTextSources(contextId, drafts, existingSources, now, existing.name);
+      const sources = sortSources([...pdfs, ...texts], existing.name);
       await db.transaction("rw", db.contexts, db.sources, async () => {
-        const existing = await db.contexts.get(contextId);
-        if (!existing) throw new ContextNotFoundError(contextId);
         await writeContextSources(existing, sources, now);
+      });
+      return loadSources(contextId);
+    },
+
+    async upsertRepoBundle(contextId, bundle) {
+      const existing = await db.contexts.get(contextId);
+      if (!existing) throw new ContextNotFoundError(contextId);
+      const now = Date.now();
+      const current = await loadSources(contextId);
+      const merged = await upsertRepoBundle(contextId, bundle, current, now);
+      await db.transaction("rw", db.contexts, db.sources, db.indexedSources, db.storedChunks, async () => {
+        await writeContextSources(existing, merged.sources, now);
+        if (merged.removedFileIds.length > 0) {
+          await deleteIndexed(contextId, merged.removedFileIds);
+        }
       });
       return loadSources(contextId);
     },

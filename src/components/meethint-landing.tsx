@@ -510,7 +510,7 @@ export function MeetHintLanding() {
               <a href="#use-cases" className="hover:text-[var(--hint-text)]">
                 Use cases
               </a>
-              <a href="#security" className="hover:text-[var(--hint-text)]">
+              <a href="/security" className="hover:text-[var(--hint-text)]">
                 Security
               </a>
               <a href="#docs" className="hover:text-[var(--hint-text)]">
@@ -712,18 +712,21 @@ export function MeetHintLanding() {
             <p className="text-lg font-semibold text-[var(--hint-text)]">{MEETHINT_MARK}</p>
             <p>{MEETHINT_DOMAIN}</p>
           </div>
-          <nav className="flex flex-wrap gap-x-5 gap-y-2">
+          <nav className="flex flex-wrap gap-x-5 gap-y-2" data-testid="landing-footer-trust-nav">
             <a href="#product" className="hover:text-[var(--hint-text)]">
               Product
             </a>
-            <a href="#security" className="hover:text-[var(--hint-text)]">
+            <a href="/privacy" className="hover:text-[var(--hint-text)]">
+              Privacy
+            </a>
+            <a href="/terms" className="hover:text-[var(--hint-text)]">
+              Terms
+            </a>
+            <a href="/security" className="hover:text-[var(--hint-text)]">
               Security
             </a>
-            <a href="#docs" className="hover:text-[var(--hint-text)]">
-              Docs
-            </a>
-            <a href="#security" className="hover:text-[var(--hint-text)]">
-              Privacy
+            <a href="/contact" className="hover:text-[var(--hint-text)]">
+              Contact
             </a>
           </nav>
           <a href="/home" className="hover:text-[var(--hint-text)]">

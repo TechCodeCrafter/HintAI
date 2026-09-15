@@ -1,5 +1,6 @@
 import type { Chunk, Hit, IndexedChunk, RepoFile, RepoPack } from "@/lib/repo/types";
 import { pathExcluded } from "../context/exclusions.ts";
+import { fileChunkId, type BuildChunksOptions } from "../context/source-identity.ts";
 import { USE_HYBRID_RETRIEVAL, USE_STRUCTURED_CHUNKER } from "../context/index-versions.ts";
 import { llmDebug } from "../debug.ts";
 import { createRegexParser } from "../repo/parsers/regex-parser.ts";
@@ -166,10 +167,7 @@ export function isEvidencePath(path: string): boolean {
 
 const REGEX_PARSER = createRegexParser();
 
-export type BuildChunksOptions = {
-  /** Overrides USE_STRUCTURED_CHUNKER for tests and the eval harness. */
-  structured?: boolean;
-};
+export type { BuildChunksOptions } from "../context/source-identity.ts";
 
 export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk[] {
   const useStructured = options?.structured ?? USE_STRUCTURED_CHUNKER;
@@ -179,7 +177,7 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
     if (pathExcluded(file.path, pack.excludePatterns)) continue;
     if (useStructured) {
       try {
-        const structured = buildStructuredChunks(file, REGEX_PARSER);
+        const structured = buildStructuredChunks(file, REGEX_PARSER, options);
         if (structured && structured.length > 0) {
           chunks.push(...structured);
           continue;
@@ -188,14 +186,17 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
         // Parser failure must not prevent the file from being searchable.
       }
     }
-    chunks.push(...buildWindowChunks(file));
+    chunks.push(...buildWindowChunks(file, options));
   }
   for (const commit of pack.commits) {
     const commitPath = commit.files[0] ?? "git";
     if (pathExcluded(commitPath, pack.excludePatterns)) continue;
     chunks.push({
-      id: `commit:${commit.sha}`,
+      id: options?.chunkScope
+        ? fileChunkId(options.chunkScope, commit.files[0] ?? "git", `commit:${commit.sha}`)
+        : `commit:${commit.sha}`,
       kind: "why",
+      sourceId: options?.sourceId ?? options?.chunkScope?.sourceId,
       path: commit.files[0] ?? "git",
       startLine: 1,
       endLine: 1,
@@ -212,7 +213,7 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
 }
 
 /** Existing 28-line windows, 22-line step. Kept as the default and the fallback. */
-function buildWindowChunks(file: RepoFile): Chunk[] {
+function buildWindowChunks(file: RepoFile, options?: BuildChunksOptions): Chunk[] {
   const chunks: Chunk[] = [];
   const lines = file.content.replace(/\n$/, "").split("\n");
   // Offset of the first character of each line, so a chunk knows its position
@@ -229,9 +230,13 @@ function buildWindowChunks(file: RepoFile): Chunk[] {
     const slice = lines.slice(start, start + size);
     const startLine = start + 1;
     const endLine = start + slice.length;
+    const rangeKey = `${startLine}-${endLine}`;
     chunks.push({
-      id: `${file.path}:${startLine}-${endLine}`,
+      id: options?.chunkScope
+        ? fileChunkId(options.chunkScope, file.path, rangeKey)
+        : `${file.path}:${rangeKey}`,
       kind: "code",
+      sourceId: options?.sourceId ?? options?.chunkScope?.sourceId,
       path: file.path,
       startLine,
       endLine,

@@ -201,8 +201,13 @@ test("Dexie v2 → v3 preserves existing Contexts and text sources", async () =>
     status: "ready",
     schemaVersion: 1,
   };
+  const sourceId = crypto.randomUUID();
   const source: StoredSource = {
-    id: crypto.randomUUID(),
+    id: sourceId,
+    sourceId,
+    sourceType: "file",
+    displayName: "keep.ts",
+    pathPrefix: "",
     contextId: context.id,
     path: "src/keep.ts",
     language: "ts",
@@ -222,8 +227,9 @@ test("Dexie v2 → v3 preserves existing Contexts and text sources", async () =>
   const sources = await v3.listSources(context.id);
   assert.equal(restored?.name, "legacy-v2");
   assert.equal(sources.length, 1);
-  assert.ok(isTextSource(sources[0]));
-  assert.equal(sources[0].content, source.content);
+  const row = sources[0];
+  assert.ok(row && isTextSource(row));
+  assert.equal(row.content, source.content);
   assert.equal(await v3.getSourceBlob(sources[0].id, sources[0].contentHash), null);
 });
 
@@ -233,7 +239,10 @@ test("upsertSources does not replace unrelated sources", async () => {
     await repo.upsertSources(context.id, [{ path: "Lecture-08.pdf", kind: "pdf", blob: pdfBlob("%PDF-notes") }]);
     const sources = await repo.listSources(context.id);
     assert.equal(sources.length, 2, name);
-    assert.ok(sources.some((row) => isTextSource(row) && row.path === "src/retry.ts"), name);
+    assert.ok(
+      sources.some((row) => isTextSource(row) && row.path === "payments-backend/src/retry.ts"),
+      name,
+    );
     assert.ok(sources.some((row) => isPdfSource(row) && row.path === "Lecture-08.pdf"), name);
     const text = sources.find(isTextSource);
     assert.equal(text?.content, TEXT_PACK.files[0].content, name);

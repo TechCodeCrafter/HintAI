@@ -92,6 +92,7 @@ export function chunkEquivalent(a: IndexedChunk, b: IndexedChunk): boolean {
   return (
     a.id === b.id &&
     a.kind === b.kind &&
+    ("sourceId" in a ? a.sourceId : undefined) === ("sourceId" in b ? b.sourceId : undefined) &&
     a.path === b.path &&
     a.startLine === b.startLine &&
     a.endLine === b.endLine &&
@@ -105,7 +106,16 @@ export function chunkEquivalent(a: IndexedChunk, b: IndexedChunk): boolean {
   );
 }
 
-export function chunksFromFile(file: RepoFile, options?: { structured?: boolean }): Chunk[] {
+export function chunksFromFile(
+  file: RepoFile,
+  source: TextStoredSource,
+  options?: { structured?: boolean },
+): Chunk[] {
+  const chunkScope = {
+    workspaceId: source.workspaceId ?? defaultWorkspaceId(),
+    contextId: source.contextId,
+    sourceId: source.sourceId,
+  };
   return buildChunks(
     {
       id: "file",
@@ -114,7 +124,7 @@ export function chunksFromFile(file: RepoFile, options?: { structured?: boolean 
       files: [file],
       commits: [],
     },
-    options,
+    { ...options, chunkScope, sourceId: source.sourceId },
   );
 }
 
@@ -200,13 +210,13 @@ function orderDocumentChunks(chunks: IndexedChunk[]): IndexedChunk[] {
 
 async function rebuildSource(
   repo: ContextRepository,
-  source: StoredSource,
+  source: TextStoredSource,
   file: RepoFile,
   chunkerVersion: number,
   indexVersion: number,
   structured?: boolean,
 ): Promise<Chunk[]> {
-  const chunks = chunksFromFile(file, { structured });
+  const chunks = chunksFromFile(file, source, { structured });
   const record: IndexedSourceRecord = {
     id: indexedSourceKey(source.contextId, source.id),
     workspaceId: source.workspaceId ?? defaultWorkspaceId(),
@@ -364,7 +374,9 @@ export async function indexContext(
 
   const scope = {
     workspaceId: context.workspaceId ?? defaultWorkspaceId(),
+    spaceId: context.id,
     contextId: context.id,
+    contextIds: [context.id],
   };
   const scopedChunks = tagChunksForScope(assembled, scope);
 

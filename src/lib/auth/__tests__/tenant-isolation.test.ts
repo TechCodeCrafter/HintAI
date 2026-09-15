@@ -62,7 +62,7 @@ test("acceptance: User B cannot search User A secret or get a sourced answer", a
   const repo = createMemoryRepository();
   const savedA = await persistPackAsContext(PACK_A, repo);
   const runtimeA = await indexContext(repo, savedA.context.id, { embed: false });
-  const scopeA = { workspaceId: "user-a", contextId: savedA.context.id };
+  const scopeA = testRetrievalScope(savedA.context.id);
   const scopedA = tagChunksForScope(runtimeA.chunks, scopeA);
 
   bindAccountId("user-b");
@@ -71,7 +71,7 @@ test("acceptance: User B cannot search User A secret or get a sourced answer", a
   setContextRepository(repoB);
   const savedB = await persistPackAsContext(PACK_B, repoB);
   const runtimeB = await indexContext(repoB, savedB.context.id, { embed: false });
-  const scopeB = { workspaceId: "user-b", contextId: savedB.context.id };
+  const scopeB = testRetrievalScope(savedB.context.id);
   const scopedB = tagChunksForScope(runtimeB.chunks, scopeB);
 
   const crossSearch = await retrieveHits(MARKER_A, scopedB, {
@@ -108,15 +108,12 @@ test("acceptance: retrieve drops foreign stamped chunks before ranking", async (
   const repo = createMemoryRepository();
   const savedA = await persistPackAsContext(PACK_A, repo);
   const runtimeA = await indexContext(repo, savedA.context.id, { embed: false });
-  const scopedA = tagChunksForScope(runtimeA.chunks, {
-    workspaceId: "user-a",
-    contextId: savedA.context.id,
-  });
+  const scopedA = tagChunksForScope(runtimeA.chunks, testRetrievalScope(savedA.context.id));
 
   bindAccountId("user-b");
   const hits = await retrieveHits("secret", scopedA, {
     excludePatterns: undefined,
-    scope: { workspaceId: "user-b", contextId: savedA.context.id },
+    scope: { workspaceId: "user-b", spaceId: savedA.context.id, contextId: savedA.context.id },
     hybrid: false,
   });
   assert.equal(hits.length, 0, "foreign-stamped chunks must not rank under another workspace");
@@ -127,10 +124,7 @@ test("acceptance: embedding cache keys never cross workspaces", async () => {
   const repo = createMemoryRepository();
   const savedA = await persistPackAsContext(PACK_A, repo);
   const runtimeA = await indexContext(repo, savedA.context.id, { embed: false });
-  const scopedA = tagChunksForScope(runtimeA.chunks, {
-    workspaceId: "user-a",
-    contextId: savedA.context.id,
-  });
+  const scopedA = tagChunksForScope(runtimeA.chunks, testRetrievalScope(savedA.context.id));
   const store = createMemoryVectorStore();
   await embedIndexedChunks(scopedA, store);
   const keyA = vectorCacheKey(scopedA[0]!);
@@ -139,7 +133,9 @@ test("acceptance: embedding cache keys never cross workspaces", async () => {
   bindAccountId("user-b");
   const chunkB = tagChunksForScope(runtimeA.chunks, {
     workspaceId: "user-b",
+    spaceId: "other-space",
     contextId: "other-context",
+    contextIds: ["other-context"],
   });
   const keyB = vectorCacheKey(chunkB[0]!);
   assert.notEqual(keyA, keyB);
@@ -155,7 +151,11 @@ test("retrieveHits filters stamped foreign chunks silently when scopes align on 
   const scope = testRetrievalScope(savedA.context.id);
   const mixed = [
     ...tagChunksForScope(runtimeA.chunks, scope),
-    ...tagChunksForScope(runtimeA.chunks, { workspaceId: "user-b", contextId: savedA.context.id }),
+    ...tagChunksForScope(runtimeA.chunks, {
+      workspaceId: "user-b",
+      spaceId: savedA.context.id,
+      contextId: savedA.context.id,
+    }),
   ];
   const hits = await retrieveHits("secret", mixed, {
     excludePatterns: undefined,
@@ -164,7 +164,11 @@ test("retrieveHits filters stamped foreign chunks silently when scopes align on 
   });
   assert.ok(hits.some((hit) => hit.text.includes(MARKER_A)), "in-scope chunks still rank after foreign drop");
   assert.equal(
-    filterChunksForScope(mixed, { workspaceId: "user-b", contextId: savedA.context.id }).length,
+    filterChunksForScope(mixed, {
+      workspaceId: "user-b",
+      spaceId: savedA.context.id,
+      contextId: savedA.context.id,
+    }).length,
     runtimeA.chunks.length,
     "foreign workspace half is droppable without touching in-scope rows",
   );

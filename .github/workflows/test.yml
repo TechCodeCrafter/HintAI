@@ -16,6 +16,15 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
+      - name: Reject Cursor commit attribution on branch
+        env:
+          CURSOR_ATTRIBUTION_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$CURSOR_ATTRIBUTION_BASE" ] || [ "$CURSOR_ATTRIBUTION_BASE" = "0000000000000000000000000000000000000000" ]; then
+            npm run check:cursor-attribution -- --base HEAD~1
+          else
+            npm run check:cursor-attribution -- --base "$CURSOR_ATTRIBUTION_BASE"
+          fi
 
   e2e:
     runs-on: ubuntu-latest
