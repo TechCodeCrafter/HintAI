@@ -1,7 +1,7 @@
 "use client";
 
 import { Navigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { authClient, authEnabled, signIn } from "@/lib/auth/client";
 import { GROK_PROVIDERS } from "@/lib/auth/providers";
@@ -17,6 +17,26 @@ export function LoginPage() {
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/auth/status")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { oauthReady?: boolean; reason?: string } | null) => {
+        if (cancelled || !data || data.oauthReady) return;
+        if (data.reason === "missing-production-oauth-client") {
+          setError(
+            "Google and X sign-in are not configured for this domain yet. " +
+              "Production needs GROK_AUTH_CLIENT_ID and GROK_AUTH_CLIENT_SECRET in Vercel " +
+              "(a meethint.ai OAuth client on auth.grok.me — not grok_preview).",
+          );
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!authEnabled) {
     return (

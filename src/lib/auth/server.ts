@@ -103,10 +103,12 @@ const LOCAL_DEV_ORIGINS: string[] = [
   "http://127.0.0.1:8080",
   "http://[::1]:8080",
 ];
+/** Production marketing/app hosts — OAuth callbacks must use a per-app broker client. */
+const PRODUCTION_ALLOWED_HOSTS: string[] = ["meethint.ai", "www.meethint.ai"];
 const baseURL = explicitBaseURL ?? {
   // Include loopback hosts so dynamic baseURL resolves for local email/password
   // (not only the preview wildcard).
-  allowedHosts: [...previewAllowedHosts, "localhost", "127.0.0.1", "[::1]"],
+  allowedHosts: [...previewAllowedHosts, ...PRODUCTION_ALLOWED_HOSTS, "localhost", "127.0.0.1", "[::1]"],
   // `auto` → trust both http:// and https:// expansions of allowedHosts
   // (preview is https; local dev is http).
   protocol: "auto" as const,
@@ -120,10 +122,23 @@ const trustedOrigins: string[] = explicitBaseURL
   : [
       // Host wildcards (matched against Origin's host)
       ...previewAllowedHosts,
+      ...PRODUCTION_ALLOWED_HOSTS,
       // Full-origin wildcards (matched against Origin)
       ...previewAllowedHosts.flatMap((host) => [`https://${host}`, `http://${host}`]),
+      ...PRODUCTION_ALLOWED_HOSTS.flatMap((host) => [`https://${host}`, `http://${host}`]),
       ...LOCAL_DEV_ORIGINS,
     ];
+
+if (
+  authConfigured &&
+  grokClientId === PREVIEW_CLIENT_ID &&
+  env("VERCEL") === "1"
+) {
+  console.error(
+    "[auth] Production deploy is using the preview OAuth client (grok_preview). " +
+      "Set GROK_AUTH_CLIENT_ID, GROK_AUTH_CLIENT_SECRET, BETTER_AUTH_URL, BETTER_AUTH_SECRET, and DATABASE_URL in Vercel.",
+  );
+}
 
 const databaseUrl = env("DATABASE_URL");
 
