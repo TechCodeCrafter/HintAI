@@ -74,7 +74,7 @@ test("signing in as B on the same profile does not surface A's repo", async ({ p
   await expect(page.getByTestId("space-list")).toHaveCount(0);
 
   await page.goto(`/context/${contextId}`);
-  await expect(page.getByTestId("context-missing")).toBeVisible();
+  await expect(page.getByTestId("space-missing")).toBeVisible();
   await expect(page.locator("body")).not.toContainText(MARKER);
 
   await page.goto(`/context/${contextId}/live`);

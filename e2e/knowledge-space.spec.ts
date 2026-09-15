@@ -33,8 +33,10 @@ test("Knowledge Space: two repos, live session, multi-source answer with source-
   await page.getByRole("link", { name: "Platform Space" }).click();
   await expect(page.getByTestId("space-detail")).toBeVisible();
 
-  const fileInputs = page.locator('input[type="file"]');
-  const [chooser2] = await Promise.all([page.waitForEvent("filechooser"), fileInputs.nth(1).click()]);
+  const [chooser2] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    page.getByRole("button", { name: "Add files" }).click(),
+  ]);
   await chooser2.setFiles([
     {
       name: "billing.ts",
