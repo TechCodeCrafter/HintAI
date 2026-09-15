@@ -53,8 +53,16 @@ import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
+import { BetaPrivacyNotice } from "@/components/beta-privacy-notice";
+import { BetaSearchScopeNote } from "@/components/beta-onboarding";
+import { ProductStateAlert } from "@/components/product-state-alert";
 import { isFlightRecorder } from "@/lib/debug";
+import { downloadBetaDiagnostics } from "@/lib/instrumentation/beta-diagnostics";
+import { recordBetaEventOnce, noteBetaSessionStart } from "@/lib/instrumentation/beta-telemetry";
 import { downloadFlightLog } from "@/lib/instrumentation/flight-recorder";
+import { inferProductStateFromReason, productState } from "@/lib/product-states";
+import { telemetryFromCard } from "@/lib/search/answer-history";
+import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
 
 type MobilePane = "repo" | "room" | "card";
@@ -141,6 +149,8 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
       if (params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
+      noteBetaSessionStart();
+      if (spaceId) recordBetaEventOnce("FIRST_LIVE_SESSION", { spaceId, workspaceId: currentWorkspaceId() ?? defaultWorkspaceId() });
     });
   }, [spaceId, setOverlay, vaultReady]);
 
@@ -292,6 +302,18 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             >
               <ClipboardList className="size-4" />
               <span className="hidden lg:inline">Audit</span>
+            </Button>
+            <Button
+              variant="quiet"
+              size="sm"
+              data-testid="export-beta-diagnostics"
+              aria-label="Export beta diagnostics"
+              title="Download privacy-safe diagnostics for support"
+              disabled={!searchReady}
+              onClick={() => downloadBetaDiagnostics()}
+            >
+              <Download className="size-4" />
+              <span className="hidden lg:inline">Diagnostics</span>
             </Button>
             {isFlightRecorder() ? (
               <Button
@@ -1530,6 +1552,8 @@ function CardPane({
   const search = useMeetHint((s) => s.search);
   const searching = useMeetHint((s) => s.searching);
   const searchReady = useMeetHint((s) => s.contextStatus === "ready");
+  const activeSpaceId = useMeetHint((s) => s.activeSpaceId);
+  const sources = useMeetHint((s) => s.sources);
   const heardQuestion = useMeetHint((s) => s.heardQuestion);
   const theySaid = card?.query || heardQuestion;
   const chips = useMemo(() => questionChips(pack), [pack]);
@@ -1561,6 +1585,11 @@ function CardPane({
     !generated && card && card.citations.length > 0 ? (
       <VerifiedCitations citations={card.citations} overlay={overlay} onOpenCited={onOpenCited} />
     ) : null;
+  const productAlert =
+    !speaking && card?.reason
+      ? inferProductStateFromReason(card.reason) ??
+        (needsApiKey(card.reason) ? productState("missing-api-key") : productState("unsupported-answer"))
+      : null;
 
   return (
     <section className="ground-panel answer-panel" data-testid="card">
@@ -1571,11 +1600,15 @@ function CardPane({
           {searching ? <span className="search-spin" aria-label="Searching" /> : null}
         </span>
         <span className="ground-head-right flex items-center gap-1">
-          {card?.answerId && card.flightTier != null && card.flightLatencyMs != null ? (
+          {card?.say && card.answerId && card.flightTier != null && card.flightLatencyMs != null ? (
             <AnswerFeedback
+              traceId={card.answerId}
               answerId={card.answerId}
               tier={card.flightTier}
               latencyMs={card.flightLatencyMs}
+              workspaceId={currentWorkspaceId() ?? defaultWorkspaceId()}
+              spaceId={activeSpaceId ?? undefined}
+              sourceIds={telemetryFromCard(card).sourceIds}
             />
           ) : null}
           <span className="ground-status tabular-nums">
@@ -1644,6 +1677,7 @@ function CardPane({
                   </div>
                 ) : (
                   <>
+                    {productAlert ? <ProductStateAlert state={productAlert} /> : null}
                     <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
                       {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
                     </p>
@@ -1674,6 +1708,8 @@ function CardPane({
           <AnswerHistory onOpenCited={onOpenCited} overlay={overlay} />
         </div>
         <div className="shrink-0 space-y-3 px-5 py-4">
+          <BetaSearchScopeNote spaceName={pack.name} sourceCount={sources.length} ready={searchReady} />
+          <BetaPrivacyNotice />
           <p className="ground-hint">Try another question</p>
           <div className="card-chips">
             {chips.map((q) => (

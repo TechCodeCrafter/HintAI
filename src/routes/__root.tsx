@@ -2,6 +2,7 @@ import "@/lib/silence-onnx-warnings";
 import { useEffect } from "react";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
+import { BetaTelemetryBoot } from "@/components/beta-telemetry-boot";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { hydrateClientPrefs } from "@/lib/store";
 import { MEETHINT_DESCRIPTION, MEETHINT_NAME } from "@/lib/brand";
@@ -41,6 +42,7 @@ export const Route = createRootRoute({
         <ClientPrefs />
         <PreviewHostBridge />
         <AuthProvider>
+          <BetaTelemetryBoot />
           <Outlet />
         </AuthProvider>
         <Scripts />

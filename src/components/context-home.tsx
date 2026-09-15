@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { BetaOnboardingChecklist } from "@/components/beta-onboarding";
+import { BetaPrivacyNotice } from "@/components/beta-privacy-notice";
 import { HomeProof } from "@/components/home-proof";
 import { ContextShell } from "@/components/context-shell";
 import { formatSpaceCounts, spaceHasSources, spaceStatusLabel } from "@/lib/context/kinds";
@@ -54,6 +56,8 @@ export function ContextHome() {
       }
     >
       <main className="mh-rise space-y-10 pb-16 pt-6 sm:pt-10">
+        <BetaPrivacyNotice />
+        <BetaOnboardingChecklist spaceId={spaces?.[0]?.space.id} />
         <div className="space-y-5">
           <HomeProof />
           <Link

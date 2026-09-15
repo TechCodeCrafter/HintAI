@@ -23,6 +23,8 @@ export const SENSITIVE_LOCAL_KEYS = [
   "meethint.subscription",
   "meethint.extractQuota",
   "meethint.flightLog",
+  "meethint.betaTelemetry",
+  "meethint.betaLastActive",
 ] as const;
 
 const unbindHooks: Array<() => void> = [];

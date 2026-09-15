@@ -61,6 +61,12 @@ import {
   type AnswerHistoryItem,
 } from "@/lib/search/answer-history";
 import { newTraceId, summarizeTranscript } from "@/lib/instrumentation/answer-latency";
+import {
+  isBetaTelemetryEnabled,
+  recordBetaAnswer,
+  recordBetaEvent,
+  recordBetaEventOnce,
+} from "@/lib/instrumentation/beta-telemetry";
 import { isFlightRecorder } from "@/lib/debug";
 import { hydratePdfDocumentsForHits } from "@/lib/search/live-card-context";
 import type { LocalCardContext } from "@/lib/search/local-card";
@@ -729,6 +735,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       authorizedSourceIds: [],
       sources: [],
     });
+    recordBetaEventOnce("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
+    recordBetaEvent("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
     return context.id;
   },
   attachFolderToContext: async (contextId, list, options) => {
@@ -787,6 +795,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           fileCount: hydrated.pack.files.length,
         }),
       });
+      const ws = currentWorkspaceId() ?? defaultWorkspaceId();
+      recordBetaEvent("SOURCE_CONNECTED", { workspaceId: ws, spaceId: space.id, meta: { fileCount: hydrated.pack.files.length } });
+      recordBetaEventOnce("INDEX_READY", { workspaceId: ws, spaceId: space.id });
+      recordBetaEvent("INDEX_READY", { workspaceId: ws, spaceId: space.id });
     } catch {
       if (epoch !== hydrationEpoch) return;
       set({
@@ -795,6 +807,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextError: "Could not save that material.",
         folderError: "Could not read those files.",
         packNotice: null,
+      });
+      recordBetaEvent("SOURCE_CONNECTED", {
+        workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(),
+        spaceId: contextId,
+        meta: { errorCode: "source-index-failure" },
       });
     }
   },
@@ -1639,6 +1656,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const workspaceId = currentWorkspaceId() ?? defaultWorkspaceId();
     const contextId = state.activeContextId ?? state.pack.id;
     const spaceId = state.activeSpaceId ?? contextId;
+    recordBetaEventOnce("FIRST_QUESTION", { workspaceId, spaceId });
+    recordBetaEventOnce("FIRST_ASK", { workspaceId, spaceId });
+    recordBetaEvent("QUESTION_DETECTED", { workspaceId, spaceId });
 
     const materialT0 = performance.now();
     const material = buildSpaceMaterialView({
@@ -1737,7 +1757,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       documentHydrateMs,
       retrieveMs,
     };
-    const traceId = isFlightRecorder() ? newTraceId() : null;
+    const traceId = isFlightRecorder() || isBetaTelemetryEnabled() ? newTraceId() : null;
     const uiApplyT0 = performance.now();
     finish(
       {
@@ -1749,6 +1769,25 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       remaining,
     );
     const uiApplyMs = Math.round(performance.now() - uiApplyT0);
+    if (traceId && isBetaTelemetryEnabled()) {
+      recordBetaAnswer({
+        traceId,
+        workspaceId,
+        spaceId,
+        sourceIds: flightTelemetry.sourceIds,
+        tier: routed.tier,
+        supported,
+        latencyMs: latency.totalMs,
+        evidenceCount: flightTelemetry.evidenceCount,
+        sourceCount,
+      });
+      if (supported) {
+        recordBetaEventOnce("SUPPORTED_ANSWER", { workspaceId, spaceId });
+        recordBetaEvent("SUPPORTED_ANSWER", { workspaceId, spaceId });
+      } else {
+        recordBetaEvent("SILENT_ANSWER", { workspaceId, spaceId });
+      }
+    }
     recordAnswerFlight({
       traceId: traceId ?? undefined,
       query,

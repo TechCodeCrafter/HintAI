@@ -226,6 +226,12 @@ export type AnswerFeedbackInput = {
   reason: FeedbackReason;
   tier: AnswerTier;
   latencyMs: number;
+  result?: "useful" | "not-useful";
+  failureCategory?: string;
+  traceId?: string;
+  workspaceId?: string;
+  spaceId?: string;
+  sourceIds?: string[];
 };
 
 export function recordAnswerFeedback(input: AnswerFeedbackInput): void {
