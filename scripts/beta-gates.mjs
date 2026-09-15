@@ -93,5 +93,11 @@ if (metrics.latencyP95 >= P95_TARGET_MS) {
 }
 console.log(`[beta-gates] OK — representative capture p95 ${metrics.latencyP95}ms < ${P95_TARGET_MS}ms`);
 
-console.log("[beta-gates] Manual E2E still required: auth-production, account-isolation, knowledge-space");
+run("private workspace isolation E2E", "npx", [
+  "playwright",
+  "test",
+  "e2e/private-workspace.spec.ts",
+  "--project=chromium",
+]);
+
 console.log("[beta-gates] All automated gates passed");

@@ -19,6 +19,20 @@ export async function typeQuestion(page: Page, text: string) {
   await input.press("Enter");
 }
 
+export async function askQuestion(page: Page, text: string) {
+  const input = page.getByTestId("ask-query");
+  await input.fill(text);
+  await page.getByTestId("ask-submit").click();
+}
+
+export async function waitForAskCard(page: Page) {
+  const card = page.getByTestId("ask-card");
+  await card.waitFor({ timeout: 30000 });
+  await expect(card.getByTestId("card-say")).toBeVisible({ timeout: 30000 });
+  await expect(card.getByTestId("card-say")).not.toBeEmpty();
+  return card;
+}
+
 export async function waitForCard(
   page: Page,
   opts?: { badge?: string; allowNull?: boolean },
