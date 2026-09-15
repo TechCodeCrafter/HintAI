@@ -3,7 +3,7 @@
 import { Navigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
-import { authClient, authEnabled, signIn } from "@/lib/auth/client";
+import { authClient, authEnabled, signIn, signInWithGoogle } from "@/lib/auth/client";
 import { GROK_PROVIDERS } from "@/lib/auth/providers";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 
@@ -17,18 +17,23 @@ export function LoginPage() {
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [googleDirect, setGoogleDirect] = useState(false);
+  const [oauthReady, setOauthReady] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     void fetch("/api/auth/status")
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: { oauthReady?: boolean; reason?: string } | null) => {
-        if (cancelled || !data || data.oauthReady) return;
+      .then((data: { oauthReady?: boolean; googleDirect?: boolean; reason?: string } | null) => {
+        if (cancelled || !data) return;
+        setGoogleDirect(Boolean(data.googleDirect));
+        setOauthReady(data.oauthReady !== false);
+        if (data.oauthReady) return;
         if (data.reason === "missing-production-oauth-client") {
           setError(
-            "Google and X sign-in are not configured for this domain yet. " +
-              "Production needs GROK_AUTH_CLIENT_ID and GROK_AUTH_CLIENT_SECRET in Vercel " +
-              "(a meethint.ai OAuth client on auth.grok.me — not grok_preview).",
+            "Google sign-in is not configured for this domain yet. " +
+              "Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel, " +
+              "or register a meethint.ai OAuth client on auth.grok.me.",
           );
         }
       })
@@ -88,29 +93,49 @@ export function LoginPage() {
           <MeetHintMark className="size-14" />
           <h1 className="text-xl font-semibold text-fg">Sign in to MeetHint</h1>
           <p className="text-sm text-muted">
-            Use Google or X to create your account and access your Knowledge Spaces.
+            {googleDirect
+              ? "Use Google to create your account and access your Knowledge Spaces."
+              : "Use Google or X to create your account and access your Knowledge Spaces."}
           </p>
         </div>
 
         <div className="space-y-2">
-          {GROK_PROVIDERS.map((provider) => (
+          {googleDirect ? (
             <button
-              key={provider.providerId}
               type="button"
-              data-testid={`login-oauth-${provider.providerId}`}
-              disabled={busy}
+              data-testid="login-oauth-google"
+              disabled={busy || !oauthReady}
               onClick={() => {
                 setBusy(true);
-                void signIn(provider.providerId, { callbackURL: "/home" }).catch((err) => {
+                void signInWithGoogle({ callbackURL: "/home" }).catch((err) => {
                   setError(err instanceof Error ? err.message : String(err));
                   setBusy(false);
                 });
               }}
               className="w-full cursor-pointer rounded-md border border-line bg-surface px-4 py-2.5 text-sm font-medium text-fg hover:bg-surface-2 disabled:cursor-wait disabled:opacity-60"
             >
-              Continue with {provider.label}
+              Continue with Google
             </button>
-          ))}
+          ) : (
+            GROK_PROVIDERS.map((provider) => (
+              <button
+                key={provider.providerId}
+                type="button"
+                data-testid={`login-oauth-${provider.providerId}`}
+                disabled={busy || !oauthReady}
+                onClick={() => {
+                  setBusy(true);
+                  void signIn(provider.providerId, { callbackURL: "/home" }).catch((err) => {
+                    setError(err instanceof Error ? err.message : String(err));
+                    setBusy(false);
+                  });
+                }}
+                className="w-full cursor-pointer rounded-md border border-line bg-surface px-4 py-2.5 text-sm font-medium text-fg hover:bg-surface-2 disabled:cursor-wait disabled:opacity-60"
+              >
+                Continue with {provider.label}
+              </button>
+            ))
+          )}
         </div>
 
         {E2E_EMAIL_AUTH ? (
