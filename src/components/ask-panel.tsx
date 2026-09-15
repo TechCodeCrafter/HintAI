@@ -1,11 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { AnswerFeedback } from "@/components/answer-feedback";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
+import { BetaPrivacyNotice } from "@/components/beta-privacy-notice";
+import { BetaSearchScopeNote } from "@/components/beta-onboarding";
 import { ContextShell } from "@/components/context-shell";
+import { ProductStateAlert } from "@/components/product-state-alert";
 import { VerifiedCitations } from "@/components/verified-citations";
-import { cardUsedEvidence } from "@/lib/search/answer-mode";
+import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
+import { inferProductStateFromReason, productState } from "@/lib/product-states";
+import { cardUsedEvidence } from "@/lib/search/answer-mode";
+import { telemetryFromCard } from "@/lib/search/answer-history";
+import { recordBetaEventOnce } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
 
 export function AskPanel({ spaceId }: { spaceId: string }) {
@@ -26,17 +34,30 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
   }, [spaceId, vaultReady]);
 
   const ready = contextStatus === "ready" && activeSpaceId === spaceId;
+  const sourceCount = useMeetHint((s) => s.sources.length);
+
+  useEffect(() => {
+    if (!ready) return;
+    recordBetaEventOnce("FIRST_ASK", {
+      workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(),
+      spaceId,
+    });
+  }, [ready, spaceId]);
+
+  const indexing = contextStatus === "hydrating" || contextStatus === "booting";
+  const noSources = ready && sourceCount === 0;
 
   return (
     <ContextShell>
       <main className="mh-rise mx-auto max-w-2xl space-y-8 pb-16 pt-8">
+        <BetaPrivacyNotice />
         <div className="space-y-2">
           <p className="mh-eyebrow">Ask</p>
           <h1 className="mh-display text-4xl sm:text-5xl">{pack.name}</h1>
-          <p className="text-sm text-muted">
-            Questions search every authorized source in this Knowledge Space.
-          </p>
+          <BetaSearchScopeNote spaceName={pack.name} sourceCount={sourceCount} ready={ready} />
         </div>
+        {indexing ? <ProductStateAlert state={productState("indexing")} /> : null}
+        {noSources ? <ProductStateAlert state={productState("no-knowledge")} /> : null}
 
         <form
           className="space-y-3"
@@ -85,9 +106,31 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
           <article className="mh-panel space-y-4 p-5" data-testid="ask-card">
             <p className="text-xs text-muted">{card.query}</p>
             {card.say ? (
-              <AnswerSay text={card.say} />
+              <>
+                <div className="flex items-center justify-end">
+                  {card.answerId && card.flightTier != null && card.flightLatencyMs != null ? (
+                    <AnswerFeedback
+                      traceId={card.answerId}
+                      answerId={card.answerId}
+                      tier={card.flightTier}
+                      latencyMs={card.flightLatencyMs}
+                      workspaceId={currentWorkspaceId() ?? defaultWorkspaceId()}
+                      spaceId={spaceId}
+                      sourceIds={telemetryFromCard(card).sourceIds}
+                    />
+                  ) : null}
+                </div>
+                <AnswerSay text={card.say} />
+              </>
             ) : (
-              <p className="text-sm text-muted">{card.reason ?? "No cited answer."}</p>
+              <>
+                {card.reason ? (
+                  <ProductStateAlert
+                    state={inferProductStateFromReason(card.reason) ?? productState("unsupported-answer")}
+                  />
+                ) : null}
+                <p className="text-sm text-muted">{card.reason ?? "No cited answer."}</p>
+              </>
             )}
             {card.answerMode ? (
               <AnswerModeBadge mode={card.answerMode} usedEvidence={cardUsedEvidence(card)} />

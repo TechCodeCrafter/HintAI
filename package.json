@@ -48,6 +48,8 @@
     "flight:analyze": "node scripts/flight-analyze.mjs",
     "flight:capture": "node --env-file=.env --experimental-strip-types scripts/capture-flight-session.mjs",
     "flight:validate": "node scripts/flight-analyze.mjs -- --compare fixtures/flight-sessions/real-session-latest.json",
+    "beta:quality-report": "node --experimental-strip-types scripts/beta-quality-report.mjs",
+    "beta:gates": "node --experimental-strip-types scripts/beta-gates.mjs",
     "latency:benchmark": "node scripts/latency-benchmark.mjs",
     "redteam:smoke": "node --experimental-strip-types --test src/lib/security/__tests__/redteam-harness.test.ts",
     "redteam:harness": "node scripts/redteam-harness.mjs"

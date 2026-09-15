@@ -49,6 +49,18 @@ function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
+        <h2 className="text-lg font-semibold">Closed beta telemetry</h2>
+        <p>
+          During the closed beta, MeetHint may record privacy-safe product telemetry locally on your
+          device: onboarding funnel timestamps, answer tiers, latency timings, source IDs, trace IDs, and
+          optional thumbs-up/down feedback with a reason category. This telemetry does not include raw
+          file contents, evidence bodies, API keys, or full meeting transcripts. You can export a
+          diagnostic bundle from Live sessions to share with support; exports follow the same privacy
+          rules.
+        </p>
+      </section>
+
+      <section className="space-y-3">
         <h2 className="text-lg font-semibold">Optional model providers</h2>
         <p>
           If you choose to add API keys for OpenAI, Anthropic, or xAI, those keys are kept in your
