@@ -1,0 +1,15 @@
+---
+description: Git commits must not include Cursor attribution trailers
+alwaysApply: true
+---
+
+# Git commits — no Cursor attribution
+
+Never append any of these to commit messages (including inside HEREDOC bodies):
+
+- `Co-authored-by: Cursor <cursoragent@cursor.com>`
+- `Co-authored-by: Cursor Agent <...>`
+- `Made-with: Cursor`
+- `Authored-by: Cursor <...>`
+
+Commits are authored by the repository user only. This repo strips stray trailers via `.githooks/commit-msg` when `core.hooksPath` is `.githooks`.

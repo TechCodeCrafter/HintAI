@@ -15,11 +15,16 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
-const TRAILER = /^Co-authored-by:\s*Cursor\s*<cursoragent@cursor\.com>\s*$/i;
+/** Cursor IDE, CLI, and cloud agents use several trailer shapes. */
+const TRAILERS = [
+  /^Co-authored-by:\s*Cursor(\s+Agent)?\s*<[^>]+>\s*$/i,
+  /^Authored-by:\s*Cursor(\s+Agent)?\s*<[^>]+>\s*$/i,
+  /^Made-with:\s*Cursor\s*$/i,
+];
 
 /** Drops the trailer, then any blank lines it left dangling at the end. */
 function strip(message) {
-  const kept = message.split("\n").filter((line) => !TRAILER.test(line));
+  const kept = message.split("\n").filter((line) => !TRAILERS.some((re) => re.test(line)));
   return kept.join("\n").replace(/\n+$/, "") + "\n";
 }
 
