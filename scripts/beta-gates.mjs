@@ -84,6 +84,8 @@ assertLoginRoute();
 assertRouteProtection();
 assertNoDevUserFallbackInTelemetry();
 
+run("production auth build invariant", process.execPath, ["scripts/check-production-auth-build.mjs"]);
+
 run("unit + src tests", process.execPath, ["scripts/run-tests.mjs"]);
 run("typecheck", "npm", ["run", "typecheck"]);
 
@@ -108,6 +110,8 @@ const e2eArgs = (spec) => [
   "--workers=1",
   "--retries=2",
 ];
+
+run("auth configuration E2E", "npx", e2eArgs("e2e/auth-config.spec.ts"));
 
 run("private workspace isolation E2E", "npx", e2eArgs("e2e/private-workspace.spec.ts"));
 

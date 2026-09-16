@@ -87,6 +87,7 @@ const GROUPS = [
       "src/lib/context/__tests__/migration.test.ts",
       "src/lib/context/__tests__/isolation.test.ts",
       "src/lib/auth/__tests__/account-boundary.test.ts",
+      "src/lib/auth/__tests__/production-config.server.test.ts",
       "src/lib/auth/__tests__/tenant-isolation.test.ts",
       "src/lib/security/__tests__/redteam-harness.test.ts",
       "src/lib/context/__tests__/indexing.test.ts",

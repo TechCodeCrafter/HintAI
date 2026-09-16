@@ -313,17 +313,17 @@ Copy must not imply that signing in uploads repos/PDFs to Hint servers.
 - logout/login or refresh (events are once per account; telemetry keys persist across sign-out)
 
 ### #113 Production Auth Configuration Verification
-**Status:** 🧪 VALIDATE IN BETA
+**Status:** ✅ COMPLETE
 
-Confirm deployed environment:
+Verified 2026-09-16. Report: [PRODUCTION-AUTH-VERIFICATION.md](./PRODUCTION-AUTH-VERIFICATION.md)
 
-- auth enabled
-- no dev-user production fallback
-- callbacks correct
-- allowed origins correct
-- secrets present
-- database/auth storage configured
-- protected routes fail closed
+- auth enabled on production (`oauthReady`, Google direct)
+- no dev-user production fallback (fail-closed server + build regression)
+- protected routes redirect unauthenticated users (E2E + client gate)
+- session login / refresh / logout (E2E)
+- workspace binding `meethint.<userId>` (E2E)
+- live probe: `scripts/verify-production-auth.mjs`
+- regression: `scripts/check-production-auth-build.mjs`, `e2e/auth-config.spec.ts`
 
 ### #114 Beta Release Gate Finalization
 **Status:** ✅ COMPLETE
@@ -983,8 +983,7 @@ Do not build until beta users show need.
 
 Do these next:
 
-1. **#113** Verify production auth configuration
-2. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
+1. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
 3. **#115** Invite Beta Wave 1: 5 users
 4. Stop feature development temporarily
 5. Observe real use for 3–5 days

@@ -15,13 +15,13 @@ Closed Beta Launch
 - **#109** Delete Knowledge Space UX — `e2e/delete-space.spec.ts`
 - **#112** Authenticated Signup Telemetry — `e2e/signup-telemetry.spec.ts`
 - **#114** Beta Release Gate Finalization — `npm run beta:gates`
+- **#113** Production Auth Configuration Verification — [PRODUCTION-AUTH-VERIFICATION.md](./PRODUCTION-AUTH-VERIFICATION.md)
 
 ## Next
 
-1. Verify production auth configuration (#113)
-2. Fresh-account production smoke (#110)
-3. Invite first 5 testers (#115)
-4. Stop building and observe
+1. Fresh-account production smoke (#110)
+2. Invite first 5 testers (#115)
+3. Stop building and observe
 
 ## Do Not Build Yet
 
