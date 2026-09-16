@@ -14,6 +14,7 @@ import {
   publicAppHost,
   renderWebManifest,
   resolveOgCardAsset,
+  shouldStreamInjectHead,
   snapshotOgIdentity,
   stripInstallParams,
 } from "./grok-pwa-shared.mjs";
@@ -530,6 +531,14 @@ test("vite plugin bakes og identity as a virtual module", () => {
   const plugin = readFileSync(join(TEMPLATE_ROOT, "scripts/grok-pwa-plugin.mjs"), "utf8");
   assert.match(plugin, /virtual:grok-og-identity/);
   assert.match(plugin, /snapshotOgIdentity/);
+});
+
+test("shouldStreamInjectHead skips meethint and local dev (SSR hydration safe)", () => {
+  assert.equal(shouldStreamInjectHead("www.meethint.ai"), false);
+  assert.equal(shouldStreamInjectHead("meethint.ai"), false);
+  assert.equal(shouldStreamInjectHead("localhost:8080"), false);
+  assert.equal(shouldStreamInjectHead("127.0.0.1:8080"), false);
+  assert.equal(shouldStreamInjectHead(GROK_PREVIEW_HOST), true);
 });
 
 test("production meethint.ai hosts omit grok.com executable scripts", () => {

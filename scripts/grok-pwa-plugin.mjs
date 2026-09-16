@@ -15,6 +15,7 @@ import {
   isInstallQuery,
   renderInstallPageHtml,
   renderWebManifest,
+  shouldStreamInjectHead,
   snapshotOgIdentity,
 } from "./grok-pwa-shared.mjs";
 
@@ -112,7 +113,7 @@ function wrapHtmlResponses(middlewares, cwd) {
       if (mode) return mode;
       const isHtml = String(res.getHeader("content-type") ?? "").includes("text/html");
       const encoded = Boolean(res.getHeader("content-encoding"));
-      mode = isHtml && !encoded ? "inject" : "passthrough";
+      mode = isHtml && !encoded && shouldStreamInjectHead(host) ? "inject" : "passthrough";
       // Streaming SSR flushes headers before the first body chunk, so the
       // header may no longer be removable — chunked responses don't carry one.
       if (mode === "inject" && !res.headersSent) res.removeHeader("content-length");
@@ -165,9 +166,11 @@ export function grokPwaPlugin() {
       if (id !== `\0${GROK_OG_IDENTITY_ID}`) return;
       return `export const grokOgIdentity = ${JSON.stringify(snapshotOgIdentity(root))};`;
     },
-    transformIndexHtml(html) {
+    transformIndexHtml(html, ctx) {
+      const host = process.env.VITE_PUBLIC_HOSTNAME ?? ctx?.server?.httpServer?.address?.()?.host ?? "";
+      if (!shouldStreamInjectHead(host)) return html;
       return injectGrokPwaHead(html, {
-        host: process.env.VITE_PUBLIC_HOSTNAME ?? "",
+        host,
         cwd: root,
       });
     },

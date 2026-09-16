@@ -39,6 +39,8 @@ export const Route = createRootRoute({
       { title: MEETHINT_NAME },
       { name: "theme-color", content: "#0b0d12" },
       { name: "description", content: MEETHINT_DESCRIPTION },
+      { name: "apple-mobile-web-app-title", content: MEETHINT_NAME },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },

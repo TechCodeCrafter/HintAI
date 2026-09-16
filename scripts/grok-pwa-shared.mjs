@@ -125,6 +125,22 @@ export function isInstallQuery(url) {
   return (install === "1" || install === "true") && platform === "ios";
 }
 
+/**
+ * Post-render head injection breaks React SSR hydration on meethint.ai (React #418).
+ * MeetHint owns share/PWA meta via TanStack `head()`; keep streaming injection for
+ * Grok platform hosts only.
+ */
+export function shouldStreamInjectHead(hostHeader) {
+  const host = String(hostHeader ?? "")
+    .split(",")[0]
+    .trim()
+    .split(":")[0]
+    .toLowerCase();
+  if (host === "meethint.ai" || host === "www.meethint.ai") return false;
+  if (host === "localhost" || host === "127.0.0.1" || host === "[::1]") return false;
+  return true;
+}
+
 /** Paths that can carry an app document (vs assets / API / internals). */
 export function isDocumentPath(pathname) {
   const path = String(pathname ?? "");
