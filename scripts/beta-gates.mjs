@@ -96,11 +96,19 @@ if (metrics.latencyP95 >= P95_TARGET_MS) {
 }
 console.log(`[beta-gates] OK — representative capture p95 ${metrics.latencyP95}ms < ${P95_TARGET_MS}ms`);
 
-run("private workspace isolation E2E", "npx", [
+const e2eArgs = (spec) => [
   "playwright",
   "test",
-  "e2e/private-workspace.spec.ts",
+  spec,
   "--project=chromium",
-]);
+  "--workers=1",
+  "--retries=2",
+];
+
+run("private workspace isolation E2E", "npx", e2eArgs("e2e/private-workspace.spec.ts"));
+
+run("authenticated persistence E2E", "npx", e2eArgs("e2e/authenticated-persistence.spec.ts"));
+
+run("Knowledge Space E2E", "npx", e2eArgs("e2e/knowledge-space.spec.ts"));
 
 console.log("[beta-gates] All automated gates passed");

@@ -156,10 +156,19 @@ function deleteDatabase(name: string): Promise<void> {
   });
 }
 
-/** Remove every local repo vault and sensitive preference on this origin. */
-export async function wipeBrowserAccountData(): Promise<void> {
+/**
+ * Sign-out / account switch: drop in-memory state and session preferences.
+ * Per-account IndexedDB vaults stay on disk so the same user can sign back in
+ * without re-uploading sources (tenant isolation is enforced by bindAccountId).
+ */
+export function clearSessionOnLeave(): void {
   for (const hook of unbindHooks) hook();
   wipeSensitiveLocalStorage();
+}
+
+/** Remove every local repo vault and sensitive preference on this origin. */
+export async function wipeBrowserAccountData(): Promise<void> {
+  clearSessionOnLeave();
   if (typeof indexedDB === "undefined") return;
   const names = await listedAccountDatabases();
   await Promise.all(names.map((name) => deleteDatabase(name)));

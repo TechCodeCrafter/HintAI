@@ -93,23 +93,37 @@ test("API keys stay in the bound account's key slot", () => {
   assert.equal(readAccountStorage("meethint.providerKeys"), JSON.stringify({ openai: "sk-a" }));
 });
 
-test("logout wipes the vault so the next account starts empty", async () => {
+test("logout clears session but preserves per-account vaults for re-login", async () => {
   installStorage();
   bindAccountId("user-a");
-  await persistPackAsContext(PACK_A);
+  const saved = await persistPackAsContext(PACK_A);
   writeAccountStorage("meethint.providerKeys", JSON.stringify({ openai: "sk-a" }));
-  assert.equal(readAccountStorage("meethint.providerKeys"), JSON.stringify({ openai: "sk-a" }));
 
-  await wipeBrowserAccountData();
+  const { clearSessionOnLeave } = await import("../account-boundary.ts");
+  clearSessionOnLeave();
   bindAccountId(null);
   assert.equal(currentAccountId(), null);
   assert.equal(readAccountStorage("meethint.providerKeys"), null);
 
   bindAccountId("user-b");
   assert.equal((await listStoredContexts()).length, 0);
-  assert.equal(readAccountStorage("meethint.providerKeys"), null);
+  await assert.rejects(() => loadPersistedPack(saved.context.id));
+
+  bindAccountId("user-a");
+  assert.equal((await listStoredContexts()).length, 1);
+  const again = await loadPersistedPack(saved.context.id);
+  assert.ok(again.files.some((file) => file.content.includes(MARKER)));
   assert.equal(contextDatabaseName("user-a"), "meethint.user-a");
   assert.equal(contextDatabaseName("dev-user"), "meethint");
+});
+
+test("wipeBrowserAccountData deletes every vault on this origin", async () => {
+  installStorage();
+  bindAccountId("user-a");
+  await persistPackAsContext(PACK_A);
+  await wipeBrowserAccountData();
+  bindAccountId("user-a");
+  assert.equal((await listStoredContexts()).length, 0);
 });
 
 test("account change cancels in-flight search and drops session memory", () => {

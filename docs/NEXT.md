@@ -10,15 +10,12 @@ Closed Beta Launch
 
 ## Next
 
-1. Authenticated persistence E2E (#106)
-2. Browser restart persistence (#107)
-3. Fix Knowledge Space delete UI (#109)
-4. Verify authenticated signup telemetry (#112)
-5. Verify production auth configuration (#113)
-6. Fresh-account production smoke (#110)
-7. Run full beta gates (#114)
-8. Invite first 5 testers (#115)
-9. Stop building and observe
+1. Fix Knowledge Space delete UI (#109)
+2. Verify authenticated signup telemetry (#112)
+3. Verify production auth configuration (#113)
+4. Fresh-account production smoke (#110)
+5. Invite first 5 testers (#115)
+6. Stop building and observe
 
 ## Do Not Build Yet
 
