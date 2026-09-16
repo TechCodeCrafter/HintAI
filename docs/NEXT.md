@@ -8,6 +8,12 @@ Canonical backlog: [PRODUCT-BACKLOG.md](./PRODUCT-BACKLOG.md)
 
 Closed Beta Launch
 
+## Recently completed
+
+- **#106** Authenticated Persistence E2E — `e2e/authenticated-persistence.spec.ts`
+- **#107** Browser Restart Persistence — Scenarios C/D in the same spec (no duplicate work)
+- **#114** Beta Release Gate Finalization — `npm run beta:gates`
+
 ## Next
 
 1. Fix Knowledge Space delete UI (#109)
@@ -30,6 +36,7 @@ Closed Beta Launch
 - anticipatory retrieval
 - intelligent routing
 - team sharing
+- duplicate persistence / browser-restart E2E (#106 covers #107)
 
 ## Core Rule
 

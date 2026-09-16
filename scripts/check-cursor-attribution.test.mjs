@@ -46,6 +46,13 @@ EOF
     failed = true;
   }
   assert.equal(failed, true, "CI check should fail when Cursor attribution is present");
+
+  // Cherry-picked PR: base.sha exists on main but is not an ancestor of HEAD.
+  execSync("git commit --allow-empty -m 'main-only'", { cwd: dir, stdio: "ignore" });
+  const mainTip = execSync("git rev-parse HEAD", { cwd: dir, encoding: "utf8" }).trim();
+  execSync(`git checkout -b feature ${base}`, { cwd: dir, stdio: "ignore" });
+  execSync("git commit --allow-empty -m 'feature-only'", { cwd: dir, stdio: "ignore" });
+  execSync(`node ${check} --base ${mainTip}`, { cwd: dir, stdio: "ignore" });
 } finally {
   rmSync(dir, { recursive: true, force: true });
 }
