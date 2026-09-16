@@ -81,9 +81,17 @@ const grokIssuer = env("GROK_AUTH_ISSUER") ?? GROK_ISSUER_DEFAULT;
 const grokClientId = env("GROK_AUTH_CLIENT_ID") ?? PREVIEW_CLIENT_ID;
 const grokClientSecret = env("GROK_AUTH_CLIENT_SECRET") ?? PREVIEW_CLIENT_SECRET;
 
+/** Direct Google OAuth (beta production) — skips the Grok auth broker. */
+const googleClientId = env("GOOGLE_CLIENT_ID");
+const googleClientSecret = env("GOOGLE_CLIENT_SECRET");
+export const googleDirectConfigured = Boolean(googleClientId && googleClientSecret);
+
+/** Grok broker federation — live preview and deploys without `GOOGLE_*`. */
+const useGrokBroker =
+  !authDisabled && !googleDirectConfigured && Boolean(grokClientId && grokClientSecret);
+
 /** True when federated sign-in is active (real auth is enforced). */
-export const authConfigured =
-  !authDisabled && Boolean(grokClientId && grokClientSecret);
+export const authConfigured = !authDisabled && (googleDirectConfigured || useGrokBroker);
 
 // This app's own Better Auth origin. When deployed the deployer injects the
 // public URL. In the sandbox live preview there's no fixed URL (each preview gets
@@ -103,10 +111,12 @@ const LOCAL_DEV_ORIGINS: string[] = [
   "http://127.0.0.1:8080",
   "http://[::1]:8080",
 ];
+/** Production marketing/app hosts — OAuth callbacks must use a per-app broker client. */
+const PRODUCTION_ALLOWED_HOSTS: string[] = ["meethint.ai", "www.meethint.ai"];
 const baseURL = explicitBaseURL ?? {
   // Include loopback hosts so dynamic baseURL resolves for local email/password
   // (not only the preview wildcard).
-  allowedHosts: [...previewAllowedHosts, "localhost", "127.0.0.1", "[::1]"],
+  allowedHosts: [...previewAllowedHosts, ...PRODUCTION_ALLOWED_HOSTS, "localhost", "127.0.0.1", "[::1]"],
   // `auto` → trust both http:// and https:// expansions of allowedHosts
   // (preview is https; local dev is http).
   protocol: "auto" as const,
@@ -120,10 +130,25 @@ const trustedOrigins: string[] = explicitBaseURL
   : [
       // Host wildcards (matched against Origin's host)
       ...previewAllowedHosts,
+      ...PRODUCTION_ALLOWED_HOSTS,
       // Full-origin wildcards (matched against Origin)
       ...previewAllowedHosts.flatMap((host) => [`https://${host}`, `http://${host}`]),
+      ...PRODUCTION_ALLOWED_HOSTS.flatMap((host) => [`https://${host}`, `http://${host}`]),
       ...LOCAL_DEV_ORIGINS,
     ];
+
+if (
+  authConfigured &&
+  !googleDirectConfigured &&
+  grokClientId === PREVIEW_CLIENT_ID &&
+  env("VERCEL") === "1"
+) {
+  console.error(
+    "[auth] Production deploy is using the preview OAuth client (grok_preview). " +
+      "Set GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET (recommended for beta), or GROK_AUTH_CLIENT_ID + GROK_AUTH_CLIENT_SECRET, " +
+      "plus BETTER_AUTH_URL, BETTER_AUTH_SECRET, and DATABASE_URL in Vercel.",
+  );
+}
 
 const databaseUrl = env("DATABASE_URL");
 
@@ -150,7 +175,7 @@ export const SESSION_TOKEN_COOKIE = "__Host-grok-auth.session_token";
 
 // Built separately so the `betterAuth({...})` call stays easy to edit without
 // breaking brackets (models often trip on the conditional plugin spread).
-const grokOAuthPlugin = authConfigured
+const grokOAuthPlugin = useGrokBroker
   ? genericOAuth({
       config: GROK_PROVIDERS.map(({ providerId, idp }) => ({
         providerId,
@@ -195,6 +220,7 @@ export const auth = betterAuth({
     accountLinking: {
       enabled: true,
       trustedProviders: [
+        ...(googleDirectConfigured ? (["google"] as const) : []),
         ...GROK_PROVIDERS.map((p) => p.providerId),
         GATE_PROVIDER_ID,
       ],
@@ -212,6 +238,19 @@ export const auth = betterAuth({
 
   // Local email/password — toggled only via `./email-password` (not a plugin).
   ...(emailAndPasswordEnabled ? { emailAndPassword: { enabled: true } } : {}),
+
+  // Direct Google OAuth when `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` are set
+  // (beta production on meethint.ai). Callback: `/api/auth/callback/google`.
+  ...(googleDirectConfigured
+    ? {
+        socialProviders: {
+          google: {
+            clientId: googleClientId as string,
+            clientSecret: googleClientSecret as string,
+          },
+        },
+      }
+    : {}),
 
   // `__Host-` prefixed cookies: the browser REFUSES any same-named cookie that
   // carries a `Domain` attribute, so a sibling `*.grok.me` app cannot "toss" a

@@ -43,7 +43,10 @@ function assertLoginRoute() {
     process.exit(1);
   }
   const source = readFileSync(loginPage, "utf8");
-  if (!source.includes("signIn") || !source.includes("GROK_PROVIDERS")) {
+  const hasOAuthSignIn =
+    source.includes("signIn") &&
+    (source.includes("GROK_PROVIDERS") || source.includes("signInWithGoogle"));
+  if (!hasOAuthSignIn) {
     console.error("[beta-gates] FAIL — login page must wire OAuth sign-in");
     process.exit(1);
   }
