@@ -19,21 +19,52 @@ function parseBaseArg() {
   return "origin/main";
 }
 
+function shellQuote(ref) {
+  return `'${String(ref).replace(/'/g, "'\\''")}'`;
+}
+
 function gitRevExists(ref) {
   try {
-    execSync(`git rev-parse --verify ${ref}`, { stdio: "ignore" });
+    execSync(`git rev-parse --verify ${shellQuote(ref)}`, { stdio: "ignore" });
     return true;
   } catch {
     return false;
   }
 }
 
+/** Commits on HEAD since the branch diverged from base (handles cherry-picked PRs). */
+function logRangeSince(base) {
+  if (!gitRevExists(base)) return "HEAD";
+  try {
+    const mergeBase = execSync(`git merge-base ${shellQuote(base)} HEAD`, {
+      encoding: "utf8",
+    }).trim();
+    if (mergeBase) return `${mergeBase}..HEAD`;
+  } catch {
+    /* unrelated histories — fall through */
+  }
+  try {
+    execSync(`git merge-base --is-ancestor ${shellQuote(base)} HEAD`, { stdio: "ignore" });
+    return `${base}..HEAD`;
+  } catch {
+    return "HEAD";
+  }
+}
+
 function commitsSince(base) {
-  const range = gitRevExists(base) ? `${base}..HEAD` : "HEAD";
-  const shas = execSync(`git log ${range} --format=%H`, { encoding: "utf8" })
-    .trim()
-    .split("\n")
-    .filter(Boolean);
+  const range = logRangeSince(base);
+  let shas;
+  try {
+    shas = execSync(`git log ${range} --format=%H`, { encoding: "utf8" })
+      .trim()
+      .split("\n")
+      .filter(Boolean);
+  } catch {
+    shas = execSync("git log HEAD --format=%H", { encoding: "utf8" })
+      .trim()
+      .split("\n")
+      .filter(Boolean);
+  }
   return shas.map((sha) => ({
     sha,
     body: execSync(`git log -1 --format=%B ${sha}`, { encoding: "utf8" }),
