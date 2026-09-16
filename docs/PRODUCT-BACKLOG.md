@@ -1,6 +1,6 @@
 # Hint / MeetHint — Product Backlog
 
-**Last Updated:** 2026-09-16 (tickets #106–#107, #109, #114)
+**Last Updated:** 2026-09-16 (tickets #106–#107, #109, #112, #114)
 
 This document is the **source of truth** for Hint / MeetHint engineering, beta, product, security, enterprise, growth, and future work.
 
@@ -299,17 +299,18 @@ Copy must not imply that signing in uploads repos/PDFs to Hint servers.
 - telemetry excludes raw source bodies/full transcripts
 
 ### #112 Authenticated Signup Telemetry
-**Status:** 🧪 VALIDATE IN BETA
+**Status:** ✅ COMPLETE
 
-Ensure `USER_CREATED` / `SIGNUP` only represent a verified authenticated account.
+**Canonical tests:** `e2e/signup-telemetry.spec.ts`, `src/lib/instrumentation/__tests__/authenticated-signup-gate.test.ts`, `src/lib/instrumentation/__tests__/beta-telemetry.test.ts`
 
-**Never count:**
+`BetaTelemetryBoot` records `USER_CREATED` / `SIGNUP` only when `shouldRecordAuthenticatedSignup()` passes (verified user + authenticated workspace id). TTFA funnel starts at that timestamp — not browser boot.
 
-- `dev-user`
+**Never counts:**
+
+- `dev-user` (when auth enabled)
 - `ws_anon_*`
-- browser vault initialization
-
-as real signup.
+- IndexedDB / vault initialization without verified session
+- logout/login or refresh (events are once per account; telemetry keys persist across sign-out)
 
 ### #113 Production Auth Configuration Verification
 **Status:** 🧪 VALIDATE IN BETA
@@ -339,6 +340,7 @@ Confirm deployed environment:
 - authenticated persistence E2E
 - Knowledge Space E2E
 - delete Knowledge Space UX E2E
+- authenticated signup telemetry E2E
 
 ### #115 Beta Wave 1
 **Status:** ⬜ TODO
@@ -981,14 +983,13 @@ Do not build until beta users show need.
 
 Do these next:
 
-1. **#112** Verify authenticated signup telemetry
-2. **#113** Verify production auth configuration
-3. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
-4. **#115** Invite Beta Wave 1: 5 users
-5. Stop feature development temporarily
-6. Observe real use for 3–5 days
-7. Fix only beta-breaking defects
-8. Expand to **#116** Beta Wave 2 if stable
+1. **#113** Verify production auth configuration
+2. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
+3. **#115** Invite Beta Wave 1: 5 users
+4. Stop feature development temporarily
+5. Observe real use for 3–5 days
+6. Fix only beta-breaking defects
+7. Expand to **#116** Beta Wave 2 if stable
 
 After Beta Wave 1, the roadmap **must** be reprioritized using observed evidence.
 

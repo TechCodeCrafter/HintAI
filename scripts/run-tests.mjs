@@ -76,6 +76,7 @@ const GROUPS = [
       "src/lib/instrumentation/__tests__/progressive-agreement.test.ts",
       "src/lib/instrumentation/__tests__/fast-path-quality.test.ts",
       "src/lib/instrumentation/__tests__/beta-telemetry.test.ts",
+      "src/lib/instrumentation/__tests__/authenticated-signup-gate.test.ts",
       "src/lib/__tests__/product-states.test.ts",
       "src/lib/listen/__tests__/utterance-admission.test.ts",
       "src/lib/__tests__/demo-media.test.ts",

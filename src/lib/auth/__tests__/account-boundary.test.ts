@@ -93,6 +93,23 @@ test("API keys stay in the bound account's key slot", () => {
   assert.equal(readAccountStorage("meethint.providerKeys"), JSON.stringify({ openai: "sk-a" }));
 });
 
+test("logout preserves per-account beta telemetry for signup-once semantics", async () => {
+  installStorage();
+  bindAccountId("user-a");
+  writeAccountStorage("meethint.betaTelemetry", '{"kind":"event"}');
+  bindAccountId("user-b");
+  writeAccountStorage("meethint.betaTelemetry", '{"kind":"event","event":"SIGNUP"}');
+
+  const { clearSessionOnLeave } = await import("../account-boundary.ts");
+  clearSessionOnLeave();
+  bindAccountId(null);
+
+  bindAccountId("user-a");
+  assert.equal(readAccountStorage("meethint.betaTelemetry"), '{"kind":"event"}');
+  bindAccountId("user-b");
+  assert.equal(readAccountStorage("meethint.betaTelemetry"), '{"kind":"event","event":"SIGNUP"}');
+});
+
 test("logout clears session but preserves per-account vaults for re-login", async () => {
   installStorage();
   bindAccountId("user-a");

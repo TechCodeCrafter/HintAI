@@ -340,7 +340,6 @@ export function noteBetaUserCreated(): void {
   if (!isBetaTelemetryEnabled()) return;
   recordBetaEventOnce("USER_CREATED");
   recordBetaEventOnce("SIGNUP");
-  recordBetaEvent("USER_CREATED");
 }
 
 export function exportBetaTelemetry(): { exportedAt: number; records: BetaTelemetryRecord[] } {

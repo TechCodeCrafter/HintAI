@@ -52,9 +52,13 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
               {step.label}
             </span>
           );
+          const stepAttrs = {
+            "data-testid": `beta-onboarding-${step.key}`,
+            "data-complete": complete ? "true" : "false",
+          } as const;
           if (step.key === "ask" && askHref && indexReady) {
             return (
-              <li key={step.key}>
+              <li key={step.key} {...stepAttrs}>
                 <Link to={askHref} className="text-fg hover:text-accent">
                   {content}
                 </Link>
@@ -63,7 +67,7 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
           }
           if (step.key === "live" && liveHref && indexReady) {
             return (
-              <li key={step.key}>
+              <li key={step.key} {...stepAttrs}>
                 <Link to={liveHref} data-testid="beta-onboarding-live" className="text-fg hover:text-accent">
                   {content}
                 </Link>
@@ -72,14 +76,18 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
           }
           if (step.href && !complete) {
             return (
-              <li key={step.key}>
+              <li key={step.key} {...stepAttrs}>
                 <Link to={step.href} className="text-fg hover:text-accent">
                   {content}
                 </Link>
               </li>
             );
           }
-          return <li key={step.key}>{content}</li>;
+          return (
+            <li key={step.key} data-testid={`beta-onboarding-${step.key}`} data-complete={complete ? "true" : "false"}>
+              {content}
+            </li>
+          );
         })}
       </ol>
       {spaceId && indexReady ? (
