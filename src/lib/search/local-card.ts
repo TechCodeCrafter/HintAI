@@ -705,6 +705,7 @@ function citationsFor(
 }
 
 export function questionChips(pack: RepoPack): string[] {
+  if (!pack.files.length) return [];
   if (pack.id === "northstar-payments") {
     return [
       "What is the architecture of this application?",

@@ -49,14 +49,13 @@ export function ContextHome() {
   return (
     <ContextShell
       aside={
-        <a href="/app" className="mh-chip hover:text-fg">
-          Demo session
+        <Link to="/app" className="mh-chip whitespace-nowrap hover:text-fg">
+          Start Live
           <ArrowRight aria-hidden className="size-3.5 text-accent" />
-        </a>
+        </Link>
       }
     >
       <main className="mh-rise space-y-10 pb-16 pt-6 sm:pt-10">
-        <BetaPrivacyNotice />
         <BetaOnboardingChecklist spaceId={spaces?.[0]?.space.id} />
         <div className="space-y-5">
           <HomeProof />
@@ -143,6 +142,8 @@ export function ContextHome() {
         ) : spaces ? (
           <p className="text-sm text-muted">No Knowledge Spaces yet. Create one to add repos and documents.</p>
         ) : null}
+
+        <BetaPrivacyNotice />
       </main>
     </ContextShell>
   );

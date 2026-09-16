@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Check, Circle } from "lucide-react";
 import { authEnabled } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { summarizeBetaFunnel } from "@/lib/instrumentation/beta-telemetry";
+import { summarizeBetaFunnel, summarizeBetaLifecycle } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
 
 const STEPS = [
@@ -24,17 +24,13 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
   const hasSources = funnel.steps.some((row) => row.step === "SOURCE_CONNECTED" && row.timestamp != null);
   const indexReady = contextStatus === "ready" && sources > 0;
   const asked = funnel.steps.some((row) => row.step === "FIRST_QUESTION" && row.timestamp != null);
+  const liveStarted = summarizeBetaLifecycle().firstLiveSession > 0;
   const liveHref = spaceId ? `/context/${spaceId}/live` : null;
   const askHref = spaceId ? `/context/${spaceId}/ask` : null;
 
-  const done = [
-    signedIn,
-    hasSpace,
-    hasSources,
-    indexReady,
-    asked,
-    false,
-  ];
+  const done = [signedIn, hasSpace, hasSources, indexReady, asked, liveStarted];
+
+  if (done.every(Boolean)) return null;
 
   return (
     <section className="mh-panel space-y-4 p-5" data-testid="beta-onboarding">
@@ -42,7 +38,8 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
         <p className="mh-eyebrow">Beta onboarding</p>
         <h2 className="text-lg font-semibold text-fg">Get ready for your first meeting</h2>
         <p className="text-sm text-muted">
-          Hint searches only what you connect. Follow these steps before going Live.
+          Live is the core experience — it listens during your call and cites your files. Use Ask to test search
+          first, then go Live.
         </p>
       </div>
       <ol className="space-y-2">

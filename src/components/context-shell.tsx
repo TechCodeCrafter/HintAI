@@ -18,7 +18,7 @@ export function ContextShell({
             <MeetHintMark className="size-11" />
             <span className="brand-word">Hint</span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-3">
             {aside}
             <AuthChrome />
             <ThemeToggle />

@@ -54,7 +54,6 @@ import type { Citation } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
-import { BetaPrivacyNotice } from "@/components/beta-privacy-notice";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
 import { ProductStateAlert } from "@/components/product-state-alert";
 import { isFlightRecorder } from "@/lib/debug";
@@ -1558,7 +1557,10 @@ function CardPane({
   const sources = useMeetHint((s) => s.sources);
   const heardQuestion = useMeetHint((s) => s.heardQuestion);
   const theySaid = card?.query || heardQuestion;
-  const chips = useMemo(() => questionChips(pack), [pack]);
+  const chips = useMemo(
+    () => (searchReady && sources.length > 0 ? questionChips(pack) : []),
+    [pack, searchReady, sources.length],
+  );
   const [copied, setCopied] = useState(false);
   const [sayOpen, setSayOpen] = useState(true);
   // The inline excerpt can only be shown for evidence that is in a file.
@@ -1711,22 +1713,25 @@ function CardPane({
         </div>
         <div className="shrink-0 space-y-3 px-5 py-4">
           <BetaSearchScopeNote spaceName={pack.name} sourceCount={sources.length} ready={searchReady} />
-          <BetaPrivacyNotice />
-          <p className="ground-hint">Try another question</p>
-          <div className="card-chips">
-            {chips.map((q) => (
-              <button
-                key={q}
-                type="button"
-                disabled={!searchReady}
-                data-current={theySaid && q.toLowerCase() === theySaid.toLowerCase() ? "true" : undefined}
-                onClick={() => void search(q)}
-                className="ground-chip text-xs disabled:opacity-40"
-              >
-                {q}
-              </button>
-            ))}
-          </div>
+          {chips.length > 0 ? (
+            <>
+              <p className="ground-hint">Try another question</p>
+              <div className="card-chips">
+                {chips.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    disabled={!searchReady}
+                    data-current={theySaid && q.toLowerCase() === theySaid.toLowerCase() ? "true" : undefined}
+                    onClick={() => void search(q)}
+                    className="ground-chip text-xs disabled:opacity-40"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : null}
           <ProofLine />
         </div>
       </div>

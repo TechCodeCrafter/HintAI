@@ -58,6 +58,7 @@ export function HomeProof() {
         </Button>
       </form>
 
+      {ready ? (
       <div className="flex flex-wrap gap-2" data-testid="home-proof-chips">
         {HOME_PROOF_CHIPS.map((question) => (
           <button
@@ -72,6 +73,7 @@ export function HomeProof() {
           </button>
         ))}
       </div>
+      ) : null}
 
       <p className="text-sm text-muted" data-testid="home-proof-hint">
         <Link to="/app" className="text-body underline-offset-4 hover:text-fg hover:underline">

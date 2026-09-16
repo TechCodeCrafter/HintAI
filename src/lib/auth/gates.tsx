@@ -55,21 +55,25 @@ export function UserButton() {
   // shows it is working and cannot be fired twice.
   const [signingOut, setSigningOut] = useState(false);
   if (isPending || !user) return null;
-  const label = user.displayName ?? user.primaryEmail ?? "Account";
+  const fullLabel = user.displayName ?? user.primaryEmail ?? "Account";
+  const shortLabel =
+    user.displayName?.trim().split(/\s+/)[0] ?? user.primaryEmail?.split("@")[0] ?? fullLabel;
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex shrink-0 items-center gap-2">
       {user.profileImageUrl ? (
         <img
           src={user.profileImageUrl}
           alt=""
-          className="h-8 w-8 rounded-full object-cover"
+          className="h-8 w-8 shrink-0 rounded-full object-cover"
         />
       ) : (
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-black/10 text-sm font-medium dark:bg-white/20">
-          {label.charAt(0).toUpperCase()}
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-black/10 text-sm font-medium dark:bg-white/20">
+          {fullLabel.charAt(0).toUpperCase()}
         </span>
       )}
-      <span className="text-sm font-medium">{label}</span>
+      <span className="whitespace-nowrap text-sm font-medium" title={fullLabel}>
+        {shortLabel}
+      </span>
       {authEnabled && (
         <button
           type="button"
