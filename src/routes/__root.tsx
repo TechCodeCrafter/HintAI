@@ -9,8 +9,23 @@ import { MEETHINT_DESCRIPTION, MEETHINT_NAME } from "@/lib/brand";
 import "../fonts.css";
 import appCss from "../styles.css?url";
 
+function applyDocumentTheme() {
+  try {
+    const stored = localStorage.getItem("meethint-theme");
+    let theme = stored;
+    if (theme !== "light" && theme !== "dark") {
+      theme = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  } catch {
+    /* private mode */
+  }
+}
+
 function ClientPrefs() {
   useEffect(() => {
+    applyDocumentTheme();
     hydrateClientPrefs();
   }, []);
   return null;
@@ -33,12 +48,11 @@ export const Route = createRootRoute({
     ],
   }),
   component: () => (
-    <html lang="en" className="antialiased" data-theme="dark" suppressHydrationWarning>
-      <head>
-        <script src="/theme-boot.js" />
+    <html lang="en" className="antialiased" suppressHydrationWarning>
+      <head suppressHydrationWarning>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ClientPrefs />
         <PreviewHostBridge />
         <AuthProvider>
