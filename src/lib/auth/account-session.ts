@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import {
   ACCOUNT_EPOCH_KEY,
   bindAccountId,
+  clearSessionOnLeave,
   currentAccountId,
   publishAccountEpoch,
-  wipeBrowserAccountData,
 } from "./account-boundary";
 import { authEnabled } from "./client";
 import { useCurrentUserState, DEV_USER } from "./use-current-user";
@@ -20,12 +20,12 @@ async function bindDevUser(): Promise<void> {
 }
 
 /**
- * Cancel in-flight work, drop in-memory workspace state, and delete local
- * copies of repos, indexes, answers, meetings, and API keys.
+ * Cancel in-flight work, clear session preferences, and unbind the vault.
+ * Per-account IndexedDB corpora persist on this device for re-login.
  */
 export async function leaveAccount(): Promise<void> {
   await resetWorkspaceMemory();
-  await wipeBrowserAccountData();
+  clearSessionOnLeave();
   bindAccountId(null);
   publishAccountEpoch(null);
   if (!authEnabled) {

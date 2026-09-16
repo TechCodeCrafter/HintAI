@@ -15,6 +15,10 @@ export function expectProtectedRedirect(page: Page) {
 /** Email sign-in via the E2E login form (MEETHINT_E2E=1 enables email/password on server). */
 export async function e2eSignIn(page: Page, user: E2eUser) {
   await page.goto("/login");
+  if (await page.getByTitle(user.name).isVisible().catch(() => false)) {
+    await page.goto("/home");
+    return;
+  }
   await expect(page.getByTestId("login-page")).toBeVisible();
   const form = page.getByTestId("login-email-form");
   await expect(form).toBeVisible();
@@ -34,7 +38,7 @@ export async function e2eSignIn(page: Page, user: E2eUser) {
     await page.waitForURL(/\/home/, { timeout: 15000 });
   }
 
-  await expect(page.getByText(user.name)).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTitle(user.name)).toBeVisible({ timeout: 15000 });
 }
 
 export async function e2eSignOut(page: Page) {

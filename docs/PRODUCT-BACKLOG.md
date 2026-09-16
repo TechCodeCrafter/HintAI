@@ -1,6 +1,6 @@
 # Hint / MeetHint — Product Backlog
 
-**Last Updated:** 2026-09-16
+**Last Updated:** 2026-09-16 (ticket #106)
 
 This document is the **source of truth** for Hint / MeetHint engineering, beta, product, security, enterprise, growth, and future work.
 
@@ -195,7 +195,9 @@ CLI report exists. Do not build major customer-facing dashboard before beta evid
 This test must remain part of: `npm run beta:gates`
 
 ### #106 Authenticated Persistence E2E
-**Status:** ⬜ TODO
+**Status:** ✅ COMPLETE
+
+**Canonical test:** `e2e/authenticated-persistence.spec.ts`
 
 Verify same authenticated user does **not** need to re-upload knowledge.
 
@@ -309,15 +311,16 @@ Confirm deployed environment:
 - protected routes fail closed
 
 ### #114 Beta Release Gate Finalization
-**Status:** 🧪 VALIDATE IN BETA
+**Status:** ✅ COMPLETE
 
-`npm run beta:gates` must require:
+`npm run beta:gates` requires:
 
 - unit tests
 - typecheck
 - latency gate
 - real auth
 - private workspace isolation E2E
+- authenticated persistence E2E
 - Knowledge Space E2E
 
 ### #115 Beta Wave 1
@@ -961,14 +964,12 @@ Do not build until beta users show need.
 
 Do these next:
 
-1. **#106** Authenticated Persistence E2E
-2. **#107** Browser Restart Persistence
-3. **#109** Delete Knowledge Space UX
-4. **#112** Verify authenticated signup telemetry
-5. **#113** Verify production auth configuration
-6. **#110** Fresh Account Production Smoke
-7. **#114** Final Beta Gate
-8. **#115** Invite Beta Wave 1: 5 users
+1. **#107** Browser Restart Persistence (manual spot-check; covered in #106 E2E Scenario C)
+2. **#109** Delete Knowledge Space UX
+3. **#112** Verify authenticated signup telemetry
+4. **#113** Verify production auth configuration
+5. **#110** Fresh Account Production Smoke
+6. **#115** Invite Beta Wave 1: 5 users
 9. Stop feature development temporarily
 10. Observe real use for 3–5 days
 11. Fix only beta-breaking defects
