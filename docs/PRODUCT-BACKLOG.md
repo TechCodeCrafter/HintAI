@@ -1,6 +1,6 @@
 # Hint / MeetHint — Product Backlog
 
-**Last Updated:** 2026-09-16 (tickets #106–#107, #109, #112, #114)
+**Last Updated:** 2026-09-16 (tickets #106–#107, #109, #112, #113, #114)
 
 This document is the **source of truth** for Hint / MeetHint engineering, beta, product, security, enterprise, growth, and future work.
 
@@ -984,11 +984,11 @@ Do not build until beta users show need.
 Do these next:
 
 1. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
-3. **#115** Invite Beta Wave 1: 5 users
-4. Stop feature development temporarily
-5. Observe real use for 3–5 days
-6. Fix only beta-breaking defects
-7. Expand to **#116** Beta Wave 2 if stable
+2. **#115** Invite Beta Wave 1: 5 users
+3. Stop feature development temporarily
+4. Observe real use for 3–5 days
+5. Fix only beta-breaking defects
+6. Expand to **#116** Beta Wave 2 if stable
 
 After Beta Wave 1, the roadmap **must** be reprioritized using observed evidence.
 
