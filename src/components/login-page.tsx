@@ -3,13 +3,16 @@
 import { Navigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
+import { AuthLoading } from "@/components/require-auth";
 import { authClient, authEnabled, signIn, signInWithGoogle } from "@/lib/auth/client";
 import { GROK_PROVIDERS } from "@/lib/auth/providers";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { useClientMounted } from "@/lib/use-client-mounted";
 
 const E2E_EMAIL_AUTH = import.meta.env.VITE_E2E === "true";
 
 export function LoginPage() {
+  const mounted = useClientMounted();
   const { user, isPending } = useCurrentUserState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,10 +54,10 @@ export function LoginPage() {
     );
   }
 
-  if (isPending) {
+  if (!mounted || isPending) {
     return (
-      <main className="grid min-h-dvh place-items-center p-6" data-testid="auth-loading">
-        <div className="h-8 w-8 animate-pulse rounded-full bg-black/10 dark:bg-white/15" aria-hidden />
+      <main className="grid min-h-dvh place-items-center p-6">
+        <AuthLoading />
       </main>
     );
   }
