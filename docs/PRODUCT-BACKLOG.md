@@ -1,6 +1,6 @@
 # Hint / MeetHint — Product Backlog
 
-**Last Updated:** 2026-09-16 (ticket #106)
+**Last Updated:** 2026-09-16 (tickets #106–#107, #114)
 
 This document is the **source of truth** for Hint / MeetHint engineering, beta, product, security, enterprise, growth, and future work.
 
@@ -197,11 +197,20 @@ This test must remain part of: `npm run beta:gates`
 ### #106 Authenticated Persistence E2E
 **Status:** ✅ COMPLETE
 
-**Canonical test:** `e2e/authenticated-persistence.spec.ts`
+**Canonical test:** `e2e/authenticated-persistence.spec.ts` (helpers: `e2e/fixtures/persistence.ts`)
+
+**Do not duplicate** — #107 and manual smoke steps 15–16 in #110 defer here.
 
 Verify same authenticated user does **not** need to re-upload knowledge.
 
-**Scenario:**
+| Scenario | Test | Covers |
+|----------|------|--------|
+| A | Same user logout → login | Steps 1–10 below; sign-out/sign-in without re-upload |
+| B | Account switch A → B → A | Tenant isolation + A's vault returns after B |
+| C | Browser restart (persistent profile) | #107 browser restart |
+| D | Refresh on `/home`, Ask, Live | #107 refresh recovery |
+
+**Scenario A steps:**
 
 1. User A signs in
 2. Creates Knowledge Space
@@ -209,22 +218,25 @@ Verify same authenticated user does **not** need to re-upload knowledge.
 4. Indexes it
 5. Searches successfully
 6. Signs out
-7. Reload/restart browser
-8. Signs back in as User A
-9. Same Knowledge Space exists
-10. Same source/index is usable without upload
+7. Signs back in as User A
+8. Same Knowledge Space exists
+9. Same source/index is usable without upload
 
 **Also test:** A → logout → B → logout → A. A's knowledge must return only for A.
 
 ### #107 Browser Restart Persistence
-**Status:** ⬜ TODO
+**Status:** ✅ COMPLETE
 
-Confirm IndexedDB survives:
+**Covered by #106** — do not open a separate ticket or E2E.
 
-- refresh
-- tab close
-- browser restart
-- same-account sign-out/sign-in
+| Acceptance criterion | Covered by |
+|---------------------|------------|
+| refresh | Scenario D in `e2e/authenticated-persistence.spec.ts` |
+| browser restart | Scenario C in `e2e/authenticated-persistence.spec.ts` |
+| same-account sign-out/sign-in | Scenario A in `e2e/authenticated-persistence.spec.ts` |
+| tab close | Same persistent profile as Scenario C (Playwright `launchPersistentContext`) |
+
+Confirm IndexedDB survives the above without re-upload.
 
 ### #108 Local Data Missing State
 **Status:** ⬜ TODO
@@ -268,9 +280,9 @@ Run manually before beta invite:
 13. Export diagnostics
 14. Sign out
 15. Sign back in
-16. Verify persistence
+16. Verify persistence (automated: `e2e/authenticated-persistence.spec.ts` Scenario A/C)
 17. Sign in as second user
-18. Verify isolation
+18. Verify isolation (automated: `e2e/private-workspace.spec.ts` + Scenario B)
 
 ### #111 Beta Privacy Copy Cleanup
 **Status:** ✅ COMPLETE
@@ -312,6 +324,8 @@ Confirm deployed environment:
 
 ### #114 Beta Release Gate Finalization
 **Status:** ✅ COMPLETE
+
+**Gate script:** `scripts/beta-gates.mjs` — E2E specs run serially with retries.
 
 `npm run beta:gates` requires:
 
@@ -964,16 +978,15 @@ Do not build until beta users show need.
 
 Do these next:
 
-1. **#107** Browser Restart Persistence (manual spot-check; covered in #106 E2E Scenario C)
-2. **#109** Delete Knowledge Space UX
-3. **#112** Verify authenticated signup telemetry
-4. **#113** Verify production auth configuration
-5. **#110** Fresh Account Production Smoke
-6. **#115** Invite Beta Wave 1: 5 users
-9. Stop feature development temporarily
-10. Observe real use for 3–5 days
-11. Fix only beta-breaking defects
-12. Expand to **#116** Beta Wave 2 if stable
+1. **#109** Delete Knowledge Space UX
+2. **#112** Verify authenticated signup telemetry
+3. **#113** Verify production auth configuration
+4. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
+5. **#115** Invite Beta Wave 1: 5 users
+6. Stop feature development temporarily
+7. Observe real use for 3–5 days
+8. Fix only beta-breaking defects
+9. Expand to **#116** Beta Wave 2 if stable
 
 After Beta Wave 1, the roadmap **must** be reprioritized using observed evidence.
 
