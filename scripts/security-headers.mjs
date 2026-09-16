@@ -91,7 +91,7 @@ export function buildAppCsp() {
     "frame-ancestors 'none'",
     "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    "img-src 'self' data: blob: https://lh3.googleusercontent.com",
     "font-src 'self' data:",
     `connect-src ${connect.join(" ")}`,
     "media-src 'self' blob:",
