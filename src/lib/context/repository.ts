@@ -38,6 +38,8 @@ export type ContextRepository = {
   listSources(contextId: string): Promise<StoredSource[]>;
   countSources(contextId: string): Promise<number>;
   deleteContext(id: string): Promise<void>;
+  /** Remove a Knowledge Space and all member contexts on this device. */
+  deleteSpace(spaceId: string): Promise<void>;
   listIndexed(contextId: string): Promise<IndexedSourceRecord[]>;
   readIndexedChunks(contextId: string, sourceId: string, contentHash?: string): Promise<IndexedChunk[] | null>;
   writeIndexed(record: IndexedSourceRecord, chunks: IndexedChunk[]): Promise<void>;

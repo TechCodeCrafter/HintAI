@@ -39,6 +39,37 @@ export function createMemoryRepository(): MemoryRepository {
   const chunkRows = new Map<string, IndexedChunk[]>();
   const blobs = new Map<string, { contextId: string; sourceId: string; contentHash: string; blob: Blob }>();
   const documents = new Map<string, { contextId: string; document: NormalizedDocument }>();
+
+  function purgeContext(id: string) {
+    dropIndexed(id);
+    for (const [sourceId, row] of sources) {
+      if (row.contextId === id) sources.delete(sourceId);
+    }
+    for (const [key, row] of blobs) {
+      if (row.contextId === id) blobs.delete(key);
+    }
+    for (const [key, row] of documents) {
+      if (row.contextId === id) documents.delete(key);
+    }
+    contexts.delete(id);
+  }
+
+  function detachContextFromSpaces(id: string) {
+    const space = spaces.get(id);
+    if (space && space.memberContextIds.length === 1 && space.memberContextIds[0] === id) {
+      spaces.delete(id);
+      return;
+    }
+    for (const [spaceId, row] of spaces) {
+      if (!row.memberContextIds.includes(id)) continue;
+      spaces.set(spaceId, {
+        ...row,
+        memberContextIds: row.memberContextIds.filter((member) => member !== id),
+        updatedAt: Date.now(),
+      });
+    }
+  }
+
   const repo: MemoryRepository = {
     blobLoadCount: 0,
     normalizedLoadCount: 0,
@@ -157,30 +188,21 @@ export function createMemoryRepository(): MemoryRepository {
     },
 
     async deleteContext(id) {
-      dropIndexed(id);
-      for (const [sourceId, row] of sources) {
-        if (row.contextId === id) sources.delete(sourceId);
+      purgeContext(id);
+      detachContextFromSpaces(id);
+    },
+
+    async deleteSpace(spaceId) {
+      const space = spaces.get(spaceId);
+      if (!space) {
+        purgeContext(spaceId);
+        detachContextFromSpaces(spaceId);
+        return;
       }
-      for (const [key, row] of blobs) {
-        if (row.contextId === id) blobs.delete(key);
+      for (const contextId of [...space.memberContextIds]) {
+        purgeContext(contextId);
       }
-      for (const [key, row] of documents) {
-        if (row.contextId === id) documents.delete(key);
-      }
-      contexts.delete(id);
-      const space = spaces.get(id);
-      if (space && space.memberContextIds.length === 1 && space.memberContextIds[0] === id) {
-        spaces.delete(id);
-      } else {
-        for (const [spaceId, row] of spaces) {
-          if (!row.memberContextIds.includes(id)) continue;
-          spaces.set(spaceId, {
-            ...row,
-            memberContextIds: row.memberContextIds.filter((member) => member !== id),
-            updatedAt: Date.now(),
-          });
-        }
-      }
+      spaces.delete(spaceId);
     },
 
     async listIndexed(contextId) {

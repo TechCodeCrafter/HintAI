@@ -5,11 +5,13 @@ import { computeBetaQualityMetrics, formatBetaQualityReport } from "../beta-qual
 import {
   betaTelemetryRecords,
   isBetaTelemetryEnabled,
+  noteBetaUserCreated,
   recordBetaAnswer,
   recordBetaEventOnce,
   recordBetaFeedback,
   resetBetaTelemetry,
   summarizeBetaFunnel,
+  summarizeBetaLifecycle,
 } from "../beta-telemetry.ts";
 import { bindAccountId } from "../../auth/account-boundary.ts";
 
@@ -67,6 +69,15 @@ test("feedback records useful and negative with privacy-safe fields", () => {
     assert.deepEqual(useful.sourceIds, ["src-a"]);
     assert.equal(useful.failureCategory, undefined);
   }
+});
+
+test("noteBetaUserCreated records signup events once per account", () => {
+  noteBetaUserCreated();
+  noteBetaUserCreated();
+  const events = betaTelemetryRecords().filter((row) => row.kind === "event");
+  assert.equal(events.filter((row) => row.event === "USER_CREATED").length, 1);
+  assert.equal(events.filter((row) => row.event === "SIGNUP").length, 1);
+  assert.equal(summarizeBetaLifecycle().signup, 2);
 });
 
 test("funnel computes time to first useful answer", () => {

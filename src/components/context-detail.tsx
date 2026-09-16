@@ -233,7 +233,7 @@ export function ContextDetail({ id }: { id: string }) {
                 className="mh-cta"
                 data-testid="confirm-delete"
                 onClick={async () => {
-                  await deleteStoredContext(primaryContextId);
+                  await deleteStoredContext(space.id);
                   void navigate({ to: "/home" });
                 }}
               >

@@ -26,7 +26,7 @@ import {
 } from "@/lib/context/migration";
 import { dropExcludedEvidence, normalizeExcludePatterns, pathExcluded, toggleExcludePath } from "@/lib/context/exclusions";
 import { getVectorStore } from "@/lib/search/vector-access";
-import { getContextRepository, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
+import { getContextRepository, listSpaceSummaries, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
 import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
@@ -180,6 +180,8 @@ type MeetHintState = {
   pack: RepoPack;
   chunks: IndexedChunk[];
   contexts: ContextRecord[];
+  /** Bumps when the Knowledge Space catalog changes (create/delete). */
+  spaceCatalogEpoch: number;
   /** Active Knowledge Space — production search corpus boundary. */
   activeSpaceId: string | null;
   /** Legacy route/UI alias — primary member context id. */
@@ -498,6 +500,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   pack: NORTHSTAR,
   chunks: NORTHSTAR_CHUNKS,
   contexts: [],
+  spaceCatalogEpoch: 0,
   activeSpaceId: null,
   activeContextId: null,
   memberContextIds: [],
@@ -817,20 +820,39 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   },
   deleteStoredContext: async (id) => {
     const repo = getContextRepository();
-    await repo.deleteContext(id);
-    const contexts = await listStoredContexts();
-    if (get().activeContextId === id || get().activeSpaceId === id) {
+    const spaces = await repo.listSpaces();
+    const space =
+      spaces.find((row) => row.id === id) ?? spaces.find((row) => row.memberContextIds.includes(id));
+    const deletedSpaceId = space?.id ?? id;
+
+    if (space) await repo.deleteSpace(space.id);
+    else await repo.deleteContext(id);
+
+    const bumpCatalog = async () => {
+      set({
+        contexts: await listStoredContexts(),
+        spaceCatalogEpoch: get().spaceCatalogEpoch + 1,
+      });
+    };
+
+    const wasActive =
+      get().activeSpaceId === deletedSpaceId ||
+      (space ? space.memberContextIds.includes(get().activeContextId ?? "") : get().activeContextId === id);
+
+    if (wasActive) {
       persistActiveSpaceId(null);
-      const next = contexts[0];
+      const remaining = await listSpaceSummaries();
+      const next = remaining[0];
       if (next) {
-        await get().activateContext(next.id);
+        await get().activateSpace(next.space.id);
+        await bumpCatalog();
         return;
       }
       get().resetPack();
-      set({ contexts });
+      await bumpCatalog();
       return;
     }
-    set({ contexts });
+    await bumpCatalog();
   },
   refreshContexts: async () => {
     set({ contexts: await listStoredContexts() });

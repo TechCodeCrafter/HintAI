@@ -591,6 +591,7 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
   const loadingFolder = useMeetHint((s) => s.loadingFolder);
   const activateSpace = useMeetHint((s) => s.activateSpace);
   const deleteStoredContext = useMeetHint((s) => s.deleteStoredContext);
+  const spaceCatalogEpoch = useMeetHint((s) => s.spaceCatalogEpoch);
   const resetPack = useMeetHint((s) => s.resetPack);
   const [open, setOpen] = useState(false);
   const [spaces, setSpaces] = useState<Array<{ id: string; name: string; primaryContextId: string }>>([]);
@@ -628,7 +629,7 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
       window.removeEventListener("pointerdown", onPointer);
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, removeId]);
+  }, [open, removeId, spaceCatalogEpoch]);
 
   return (
     <div ref={rootRef} className="relative">
@@ -673,7 +674,7 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
                     type="button"
                     className="context-option context-option-danger"
                     onClick={() => {
-                      void deleteStoredContext(space.primaryContextId);
+                      void deleteStoredContext(space.id);
                       setRemoveId(null);
                       setOpen(false);
                     }}

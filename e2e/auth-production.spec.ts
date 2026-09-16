@@ -28,10 +28,10 @@ test("login succeeds and refresh preserves session", async ({ page }) => {
   await page.goto("/home");
   await expect(page).toHaveURL(/\/home$/);
   await expect(page.getByText("Signing out…")).toHaveCount(0);
-  await expect(page.getByText(USER_A.name)).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTitle(USER_A.name)).toBeVisible({ timeout: 15000 });
   await page.reload();
   await expect(page).toHaveURL(/\/home$/);
-  await expect(page.getByText(USER_A.name)).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTitle(USER_A.name)).toBeVisible({ timeout: 15000 });
 });
 
 test("protected Ask and Live routes require auth", async ({ page }) => {
@@ -84,7 +84,7 @@ test("signup telemetry fires only after verified account creation", async ({ pag
     name: "Telemetry User",
   });
   await page.goto("/home");
-  await expect(page.getByText("Telemetry User")).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTitle("Telemetry User")).toBeVisible({ timeout: 15000 });
 
   await expect
     .poll(async () => {

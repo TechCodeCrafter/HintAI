@@ -68,7 +68,11 @@ function assertRouteProtection() {
 
 function assertNoDevUserFallbackInTelemetry() {
   const boot = readFileSync(join(root, "src/components/beta-telemetry-boot.tsx"), "utf8");
-  if (!boot.includes("isVerifiedAccountId") && !boot.includes("isAuthenticatedWorkspaceId")) {
+  const gate = readFileSync(join(root, "src/lib/instrumentation/authenticated-signup-gate.ts"), "utf8");
+  const gated =
+    boot.includes("shouldRecordAuthenticatedSignup") &&
+    gate.includes("isAuthenticatedWorkspaceId");
+  if (!gated) {
     console.error("[beta-gates] FAIL — beta telemetry must gate on authenticated workspace ids");
     process.exit(1);
   }
@@ -79,6 +83,8 @@ assertAuthEnabled();
 assertLoginRoute();
 assertRouteProtection();
 assertNoDevUserFallbackInTelemetry();
+
+run("production auth build invariant", process.execPath, ["scripts/check-production-auth-build.mjs"]);
 
 run("unit + src tests", process.execPath, ["scripts/run-tests.mjs"]);
 run("typecheck", "npm", ["run", "typecheck"]);
@@ -105,10 +111,16 @@ const e2eArgs = (spec) => [
   "--retries=2",
 ];
 
+run("auth configuration E2E", "npx", e2eArgs("e2e/auth-config.spec.ts"));
+
 run("private workspace isolation E2E", "npx", e2eArgs("e2e/private-workspace.spec.ts"));
 
 run("authenticated persistence E2E", "npx", e2eArgs("e2e/authenticated-persistence.spec.ts"));
 
 run("Knowledge Space E2E", "npx", e2eArgs("e2e/knowledge-space.spec.ts"));
+
+run("delete Knowledge Space UX E2E", "npx", e2eArgs("e2e/delete-space.spec.ts"));
+
+run("authenticated signup telemetry E2E", "npx", e2eArgs("e2e/signup-telemetry.spec.ts"));
 
 console.log("[beta-gates] All automated gates passed");

@@ -27,6 +27,12 @@ export const SENSITIVE_LOCAL_KEYS = [
   "meethint.betaLastActive",
 ] as const;
 
+/** Survives logout — signup / TTFA funnel must not reset on sign-out. */
+export const PERSISTENT_ACCOUNT_LOCAL_KEYS = [
+  "meethint.betaTelemetry",
+  "meethint.betaLastActive",
+] as const;
+
 const unbindHooks: Array<() => void> = [];
 
 let boundAccountId: string | null = null;
@@ -103,6 +109,14 @@ function isSensitiveLocalKey(key: string): boolean {
   return SENSITIVE_LOCAL_KEYS.some((base) => key === base || key.startsWith(`${base}.`));
 }
 
+function isPersistentAccountLocalKey(key: string): boolean {
+  return PERSISTENT_ACCOUNT_LOCAL_KEYS.some((base) => key === base || key.startsWith(`${base}.`));
+}
+
+function isSessionLocalKey(key: string): boolean {
+  return isSensitiveLocalKey(key) && !isPersistentAccountLocalKey(key);
+}
+
 function isAccountDatabaseName(name: string): boolean {
   return (
     name === "meethint" ||
@@ -112,18 +126,27 @@ function isAccountDatabaseName(name: string): boolean {
   );
 }
 
-export function wipeSensitiveLocalStorage(): void {
+function wipeLocalStorageKeys(match: (key: string) => boolean): void {
   if (typeof localStorage === "undefined") return;
   try {
     const remove: string[] = [];
     for (let i = 0; i < localStorage.length; i += 1) {
       const key = localStorage.key(i);
-      if (key && isSensitiveLocalKey(key)) remove.push(key);
+      if (key && match(key)) remove.push(key);
     }
     for (const key of remove) localStorage.removeItem(key);
   } catch {
     /* private mode */
   }
+}
+
+/** Session-only wipe on sign-out — per-account beta telemetry persists. */
+export function wipeSessionLocalStorage(): void {
+  wipeLocalStorageKeys(isSessionLocalKey);
+}
+
+export function wipeSensitiveLocalStorage(): void {
+  wipeLocalStorageKeys(isSensitiveLocalKey);
 }
 
 async function listedAccountDatabases(): Promise<string[]> {
@@ -163,12 +186,13 @@ function deleteDatabase(name: string): Promise<void> {
  */
 export function clearSessionOnLeave(): void {
   for (const hook of unbindHooks) hook();
-  wipeSensitiveLocalStorage();
+  wipeSessionLocalStorage();
 }
 
 /** Remove every local repo vault and sensitive preference on this origin. */
 export async function wipeBrowserAccountData(): Promise<void> {
-  clearSessionOnLeave();
+  for (const hook of unbindHooks) hook();
+  wipeSensitiveLocalStorage();
   if (typeof indexedDB === "undefined") return;
   const names = await listedAccountDatabases();
   await Promise.all(names.map((name) => deleteDatabase(name)));
