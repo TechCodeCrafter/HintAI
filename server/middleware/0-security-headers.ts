@@ -20,9 +20,11 @@ export default async function securityHeadersMiddleware(
   if (!(result instanceof Response)) return result;
 
   const headers = new Headers(result.headers);
+  const contentType = String(result.headers.get("content-type") ?? "");
   applySecurityHeaders(headers, {
     host: event.req.headers.get("x-forwarded-host") ?? event.req.headers.get("host") ?? parseHost(event.url.host),
     pathname: event.url.pathname,
+    isHtmlDocument: contentType.includes("text/html"),
   });
   return new Response(result.body, {
     status: result.status,

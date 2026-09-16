@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Navigate } from "@tanstack/react-router";
 import { authEnabled, signOut } from "./client";
-import { useCurrentUser, useCurrentUserState } from "./use-current-user";
+import { useCurrentUserState } from "./use-current-user";
 
 /**
  * Auth state components — plain wrappers around `useCurrentUserState()`.
@@ -50,11 +50,11 @@ export function RedirectToSignIn({ to = SIGN_IN_PATH }: { to?: string }) {
  * disabled-auth dev user has nothing to sign out of).
  */
 export function UserButton() {
-  const user = useCurrentUser();
+  const { user, isPending } = useCurrentUserState();
   // Sign-out can take a moment (and can fail when deployed), so the control
   // shows it is working and cannot be fired twice.
   const [signingOut, setSigningOut] = useState(false);
-  if (!user) return null;
+  if (isPending || !user) return null;
   const label = user.displayName ?? user.primaryEmail ?? "Account";
   return (
     <div className="flex items-center gap-2">

@@ -37,6 +37,17 @@ export function isTrustSurfacePath(pathname) {
   return TRUST_PATHS.has(path);
 }
 
+/** Document paths (SPA routes) vs static assets — for Cache-Control on HTML shells. */
+export function isLikelyHtmlDocumentPath(pathname) {
+  const path = String(pathname ?? "").split("?", 1)[0] || "/";
+  return (
+    !path.startsWith("/__grok/") &&
+    !path.startsWith("/api/") &&
+    !path.startsWith("/assets/") &&
+    !/\.[a-z0-9]+$/i.test(path)
+  );
+}
+
 /**
  * Marketing / legal surfaces: strict first-party CSP (no third-party executables).
  * script-src keeps 'unsafe-inline' for TanStack Start `$tsr-stream-barrier` only
@@ -52,7 +63,7 @@ export function buildMarketingCsp() {
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self'",
     "img-src 'self' data:",
-    "font-src 'self'",
+    "font-src 'self' data:",
     "connect-src 'self'",
     "media-src 'self' blob:",
     "worker-src 'self' blob:",
@@ -81,7 +92,7 @@ export function buildAppCsp() {
     "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
-    "font-src 'self'",
+    "font-src 'self' data:",
     `connect-src ${connect.join(" ")}`,
     "media-src 'self' blob:",
     "worker-src 'self' blob:",
@@ -125,12 +136,26 @@ export function assertCspNotPermissive(csp) {
   }
 }
 
+/** HTML documents carry hashed asset refs — revalidate so deploys don't stale-hydrate. */
+export function htmlDocumentCacheControl() {
+  return "no-cache";
+}
+
 export function applySecurityHeaders(responseHeaders, options = {}) {
+  const { isHtmlDocument = false } = options;
   for (const [key, value] of Object.entries(buildSecurityHeaders(options))) {
     if (typeof responseHeaders.set === "function") {
       responseHeaders.set(key, value);
     } else if (typeof responseHeaders.setHeader === "function") {
       responseHeaders.setHeader(key, value);
+    }
+  }
+  if (isHtmlDocument) {
+    const cacheControl = htmlDocumentCacheControl();
+    if (typeof responseHeaders.set === "function") {
+      responseHeaders.set("Cache-Control", cacheControl);
+    } else if (typeof responseHeaders.setHeader === "function") {
+      responseHeaders.setHeader("Cache-Control", cacheControl);
     }
   }
 }

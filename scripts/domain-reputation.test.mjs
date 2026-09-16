@@ -93,6 +93,7 @@ test("baseline security headers are defined for production hosts", () => {
 
 test("marketing CSP stays first-party on meethint.ai landing", () => {
   const csp = buildMarketingCsp();
+  assert.match(csp, /font-src 'self' data:/);
   assert.match(csp, /script-src 'self'/);
   assert.match(csp, /style-src 'self'/);
   assert.doesNotMatch(csp, /style-src[^;]*'unsafe-inline'/);
@@ -103,15 +104,16 @@ test("marketing CSP stays first-party on meethint.ai landing", () => {
   assertCspNotPermissive(csp);
 });
 
-test("theme boot is external, not inline in root document", () => {
+test("theme applies after mount in root document (no sync pre-hydrate script)", () => {
   const root = read("src/routes/__root.tsx");
-  assert.match(root, /src="\/theme-boot\.js"/);
+  assert.match(root, /applyDocumentTheme/);
+  assert.doesNotMatch(root, /src="\/theme-boot\.js"/);
   assert.doesNotMatch(root, /dangerouslySetInnerHTML/);
-  assert.ok(existsSync(join(ROOT, "public/theme-boot.js")));
 });
 
 test("app CSP allows only documented third-party connect targets", () => {
   const csp = buildAppCsp();
+  assert.match(csp, /font-src 'self' data:/);
   assert.match(csp, /connect-src[^;]*https:\/\/api\.openai\.com/);
   assert.doesNotMatch(csp, /jsdelivr/);
   assert.doesNotMatch(csp, /script-src[^;]*\*/);
