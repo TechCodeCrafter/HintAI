@@ -276,6 +276,44 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
     }
   }
 
+  const contextStoreNames = [
+    db.contexts,
+    db.sources,
+    db.indexedSources,
+    db.storedChunks,
+    db.sourceBlobs,
+    db.normalizedDocuments,
+    db.spaces,
+  ] as const;
+
+  async function purgeContextData(contextId: string) {
+    await deleteIndexed(contextId);
+    await db.sourceBlobs.where("contextId").equals(contextId).delete();
+    await db.normalizedDocuments.where("contextId").equals(contextId).delete();
+    await db.sources.where("contextId").equals(contextId).delete();
+    await db.contexts.delete(contextId);
+  }
+
+  async function detachContextFromSpaces(contextId: string) {
+    const owned = await db.spaces.get(contextId);
+    if (owned) {
+      const space = normalizeSpace(owned);
+      if (space.memberContextIds.length === 1 && space.memberContextIds[0] === contextId) {
+        await db.spaces.delete(contextId);
+        return;
+      }
+    }
+    for (const row of await db.spaces.toArray()) {
+      if (!row.memberContextIds.includes(contextId)) continue;
+      const space = normalizeSpace(row);
+      await db.spaces.put({
+        ...space,
+        memberContextIds: space.memberContextIds.filter((member) => member !== contextId),
+        updatedAt: Date.now(),
+      });
+    }
+  }
+
   return {
     async listContexts() {
       return sortContexts((await db.contexts.toArray()).map(normalizeContext));
@@ -401,24 +439,28 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
     },
 
     async deleteContext(id) {
-      await db.transaction(
-        "rw",
-        [
-          db.contexts,
-          db.sources,
-          db.indexedSources,
-          db.storedChunks,
-          db.sourceBlobs,
-          db.normalizedDocuments,
-        ],
-        async () => {
-          await deleteIndexed(id);
-          await db.sourceBlobs.where("contextId").equals(id).delete();
-          await db.normalizedDocuments.where("contextId").equals(id).delete();
-          await db.sources.where("contextId").equals(id).delete();
-          await db.contexts.delete(id);
-        },
-      );
+      await db.transaction("rw", contextStoreNames, async () => {
+        await purgeContextData(id);
+        await detachContextFromSpaces(id);
+      });
+    },
+
+    async deleteSpace(spaceId) {
+      const row = await db.spaces.get(spaceId);
+      if (!row) {
+        await db.transaction("rw", contextStoreNames, async () => {
+          await purgeContextData(spaceId);
+          await detachContextFromSpaces(spaceId);
+        });
+        return;
+      }
+      const space = normalizeSpace(row);
+      await db.transaction("rw", contextStoreNames, async () => {
+        for (const contextId of space.memberContextIds) {
+          await purgeContextData(contextId);
+        }
+        await db.spaces.delete(spaceId);
+      });
     },
 
     async listIndexed(contextId) {

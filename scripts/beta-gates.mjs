@@ -111,4 +111,6 @@ run("authenticated persistence E2E", "npx", e2eArgs("e2e/authenticated-persisten
 
 run("Knowledge Space E2E", "npx", e2eArgs("e2e/knowledge-space.spec.ts"));
 
+run("delete Knowledge Space UX E2E", "npx", e2eArgs("e2e/delete-space.spec.ts"));
+
 console.log("[beta-gates] All automated gates passed");

@@ -9,9 +9,11 @@ import { formatSpaceCounts, spaceHasSources, spaceStatusLabel } from "@/lib/cont
 import { migrateLegacyPack, readSavedPack } from "@/lib/context/migration";
 import { listSpaceSummaries, type SpaceSummary } from "@/lib/context/service";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
+import { useMeetHint } from "@/lib/store";
 
 export function ContextHome() {
   const { ready: vaultReady, accountId } = useAccountVaultReady();
+  const spaceCatalogEpoch = useMeetHint((s) => s.spaceCatalogEpoch);
   const [spaces, setSpaces] = useState<SpaceSummary[] | null>(null);
   const [legacy, setLegacy] = useState(false);
   const [migrating, setMigrating] = useState(false);
@@ -30,7 +32,7 @@ export function ContextHome() {
   useEffect(() => {
     if (!vaultReady) return;
     void reload();
-  }, [vaultReady, accountId]);
+  }, [vaultReady, accountId, spaceCatalogEpoch]);
 
   async function convertLegacy() {
     setMigrating(true);

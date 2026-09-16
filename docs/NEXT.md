@@ -12,16 +12,16 @@ Closed Beta Launch
 
 - **#106** Authenticated Persistence E2E — `e2e/authenticated-persistence.spec.ts`
 - **#107** Browser Restart Persistence — Scenarios C/D in the same spec (no duplicate work)
+- **#109** Delete Knowledge Space UX — `e2e/delete-space.spec.ts`
 - **#114** Beta Release Gate Finalization — `npm run beta:gates`
 
 ## Next
 
-1. Fix Knowledge Space delete UI (#109)
-2. Verify authenticated signup telemetry (#112)
-3. Verify production auth configuration (#113)
-4. Fresh-account production smoke (#110)
-5. Invite first 5 testers (#115)
-6. Stop building and observe
+1. Verify authenticated signup telemetry (#112)
+2. Verify production auth configuration (#113)
+3. Fresh-account production smoke (#110)
+4. Invite first 5 testers (#115)
+5. Stop building and observe
 
 ## Do Not Build Yet
 

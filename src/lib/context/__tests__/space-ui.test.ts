@@ -39,6 +39,24 @@ test("listSpaceSummaries returns migrated legacy space with repo counts", async 
   assert.ok(spaceHasSources(rows[0]!));
 });
 
+test("deleteSpace removes one Knowledge Space without affecting another", async () => {
+  bindAccountId("user-a");
+  const repo = createMemoryRepository();
+  setContextRepository(repo);
+  const keep = await persistPackAsContext(pack("Keep Space", "keep"), repo);
+  const drop = await persistPackAsContext(pack("Drop Space", "drop"), repo);
+  const before = await listSpaceSummaries(repo);
+  assert.equal(before.length, 2);
+
+  await repo.deleteSpace(drop.context.id);
+
+  const after = await listSpaceSummaries(repo);
+  assert.equal(after.length, 1);
+  assert.equal(after[0]!.space.name, "Keep Space");
+  assert.equal(await repo.getSpace(drop.context.id), null);
+  assert.ok(await repo.getContext(keep.context.id));
+});
+
 test("listSpaceSummaries counts two repos in one Knowledge Space", async () => {
   bindAccountId("user-a");
   const repo = createMemoryRepository();

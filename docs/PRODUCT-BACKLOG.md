@@ -1,6 +1,6 @@
 # Hint / MeetHint — Product Backlog
 
-**Last Updated:** 2026-09-16 (tickets #106–#107, #114)
+**Last Updated:** 2026-09-16 (tickets #106–#107, #109, #114)
 
 This document is the **source of truth** for Hint / MeetHint engineering, beta, product, security, enterprise, growth, and future work.
 
@@ -248,17 +248,19 @@ If account metadata references knowledge indexed on another browser/device, show
 Do not show a broken/empty state.
 
 ### #109 Delete Knowledge Space UX
-**Status:** ⬜ TODO
+**Status:** ✅ COMPLETE
 
-**Known issue:** Deleted Knowledge Space can remain as an empty shell until refresh/list reload.
+**Canonical test:** `e2e/delete-space.spec.ts`
 
-**Required:**
+Deleted Knowledge Space:
 
-- immediate UI removal
-- active space cleared safely
-- cannot reopen deleted ID
-- another space remains unaffected
-- regression E2E
+- disappears from home immediately (store `spaceCatalogEpoch` → home reload)
+- clears active state; falls back to another space when one remains
+- shows clean empty state when none remain
+- `/context/{deletedId}` → `space-missing`
+- does not affect other spaces or accounts
+
+**Implementation:** `deleteSpace` on repository + `deleteStoredContext` in store.
 
 ### #110 Fresh Account Production Smoke
 **Status:** ⬜ TODO
@@ -336,6 +338,7 @@ Confirm deployed environment:
 - private workspace isolation E2E
 - authenticated persistence E2E
 - Knowledge Space E2E
+- delete Knowledge Space UX E2E
 
 ### #115 Beta Wave 1
 **Status:** ⬜ TODO
@@ -978,15 +981,14 @@ Do not build until beta users show need.
 
 Do these next:
 
-1. **#109** Delete Knowledge Space UX
-2. **#112** Verify authenticated signup telemetry
-3. **#113** Verify production auth configuration
-4. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
-5. **#115** Invite Beta Wave 1: 5 users
-6. Stop feature development temporarily
-7. Observe real use for 3–5 days
-8. Fix only beta-breaking defects
-9. Expand to **#116** Beta Wave 2 if stable
+1. **#112** Verify authenticated signup telemetry
+2. **#113** Verify production auth configuration
+3. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
+4. **#115** Invite Beta Wave 1: 5 users
+5. Stop feature development temporarily
+6. Observe real use for 3–5 days
+7. Fix only beta-breaking defects
+8. Expand to **#116** Beta Wave 2 if stable
 
 After Beta Wave 1, the roadmap **must** be reprioritized using observed evidence.
 
