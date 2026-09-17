@@ -1470,13 +1470,13 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
             ) : live ? (
               <p className="text-[15px] leading-relaxed text-body">Hearing you. The next line lands here.</p>
             ) : (
-              <div className="empty-listen">
-                <Mic className="size-4 text-muted" aria-hidden="true" />
+              <div className="empty-listen items-center text-center sm:items-start sm:text-left">
+                <div className="ds-listen-ring" data-active="false">
+                  <Mic className="size-6" aria-hidden="true" />
+                </div>
                 <p className="text-[15px] font-medium text-fg">Start listening</p>
-                <p className="text-[13px] leading-relaxed text-muted">
-                  Share the call or meeting tab with audio.
-                  <br />
-                  Hint will pick up questions as they are asked.
+                <p className="max-w-sm text-[13px] leading-relaxed text-muted">
+                  Share the call or meeting tab with audio. MeetHint will pick up questions as they are asked.
                 </p>
               </div>
             )}
