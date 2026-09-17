@@ -59,6 +59,11 @@ test("an explicit process-env override wins over the file", () => {
   assert.equal(merged.PATH, "/usr/bin");
 });
 
+test("mergeAppEnv injects VITE_APP_VERSION when unset", () => {
+  const merged = mergeAppEnv({}, { PATH: "/usr/bin" });
+  assert.match(merged.VITE_APP_VERSION, /^[0-9a-f]{7,40}$/i);
+});
+
 test("the template ships auth on for beta", () => {
   assert.deepEqual(readAppEnv(projectRoot()), { VITE_AUTH_ENABLED: "true" });
 });

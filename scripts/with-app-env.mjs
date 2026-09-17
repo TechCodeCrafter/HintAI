@@ -24,6 +24,7 @@ import { readFileSync, realpathSync } from "node:fs";
 import { constants as osConstants } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveAppVersion } from "./resolve-app-version.mjs";
 
 export const APP_ENV_REL_PATH = ".grok/app-env.json";
 
@@ -62,7 +63,11 @@ export function readAppEnv(root) {
 
 /** File values under the process environment: an explicit override wins. */
 export function mergeAppEnv(appEnv, processEnv) {
-  return { ...appEnv, ...processEnv };
+  const merged = { ...appEnv, ...processEnv };
+  if (!merged.VITE_APP_VERSION?.trim()) {
+    merged.VITE_APP_VERSION = resolveAppVersion(merged);
+  }
+  return merged;
 }
 
 /**
