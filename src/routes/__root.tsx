@@ -7,6 +7,7 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { hydrateClientPrefs } from "@/lib/store";
 import { MEETHINT_DESCRIPTION, MEETHINT_NAME } from "@/lib/brand";
 import "../fonts.css";
+import "../styles/design-system.css";
 import appCss from "../styles.css?url";
 
 function applyDocumentTheme() {
