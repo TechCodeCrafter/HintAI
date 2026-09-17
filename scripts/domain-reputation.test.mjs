@@ -91,6 +91,19 @@ test("baseline security headers are defined for production hosts", () => {
   assertCspNotPermissive(headers["Content-Security-Policy"]);
 });
 
+test("landing uses app CSP because it boots the shared SPA shell", () => {
+  const csp = buildSecurityHeaders({ host: "www.meethint.ai", pathname: "/" })["Content-Security-Policy"];
+  assert.match(csp, /wasm-unsafe-eval/);
+});
+
+test("trust legal pages keep strict marketing CSP", () => {
+  for (const path of TRUST_ROUTES) {
+    const csp = buildSecurityHeaders({ host: "www.meethint.ai", pathname: path })["Content-Security-Policy"];
+    assert.doesNotMatch(csp, /wasm-unsafe-eval/);
+    assert.match(csp, /style-src 'self'/);
+  }
+});
+
 test("marketing CSP stays first-party on meethint.ai landing", () => {
   const csp = buildMarketingCsp();
   assert.match(csp, /font-src 'self' data:/);

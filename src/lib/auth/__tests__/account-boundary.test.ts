@@ -7,10 +7,14 @@ import { afterEach, test } from "node:test";
 import "fake-indexeddb/auto";
 
 import {
+  ACCOUNT_EPOCH_KEY,
   bindAccountId,
   contextDatabaseName,
   currentAccountId,
+  publishAccountEpoch,
+  readAccountEpoch,
   readAccountStorage,
+  shouldSyncCrossTabSignOut,
   wipeBrowserAccountData,
   writeAccountStorage,
 } from "../account-boundary.ts";
@@ -141,6 +145,25 @@ test("wipeBrowserAccountData deletes every vault on this origin", async () => {
   await wipeBrowserAccountData();
   bindAccountId("user-a");
   assert.equal((await listStoredContexts()).length, 0);
+});
+
+test("publishAccountEpoch skips writes when the account id is unchanged", () => {
+  installStorage();
+  publishAccountEpoch("user-a");
+  const first = readAccountEpoch();
+  publishAccountEpoch("user-a");
+  const second = readAccountEpoch();
+  assert.equal(first?.accountId, "user-a");
+  assert.equal(second?.at, first?.at);
+  assert.equal(localStorage.getItem(ACCOUNT_EPOCH_KEY), JSON.stringify(first));
+});
+
+test("shouldSyncCrossTabSignOut only fires when another tab cleared a bound account", () => {
+  assert.equal(shouldSyncCrossTabSignOut(null, "user-a"), true);
+  assert.equal(shouldSyncCrossTabSignOut(null, null), false);
+  assert.equal(shouldSyncCrossTabSignOut("user-a", null), false);
+  assert.equal(shouldSyncCrossTabSignOut("user-a", "user-a"), false);
+  assert.equal(shouldSyncCrossTabSignOut("user-b", "user-a"), false);
 });
 
 test("account change cancels in-flight search and drops session memory", () => {

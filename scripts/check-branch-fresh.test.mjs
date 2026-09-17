@@ -4,7 +4,8 @@ import { test } from "node:test";
 import { assessBranchFreshness } from "./check-branch-fresh.mjs";
 
 test("assessBranchFreshness ok when base is ancestor of HEAD", () => {
-  const result = assessBranchFreshness("HEAD~1");
+  // HEAD~1 is missing in shallow CI checkouts (depth 1); HEAD is always its own ancestor.
+  const result = assessBranchFreshness("HEAD");
   assert.equal(result.ok, true);
 });
 

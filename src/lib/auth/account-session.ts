@@ -5,9 +5,12 @@ import {
   clearSessionOnLeave,
   currentAccountId,
   publishAccountEpoch,
+  shouldSyncCrossTabSignOut,
 } from "./account-boundary";
 import { authEnabled } from "./client";
-import { useCurrentUserState, DEV_USER } from "./use-current-user";
+import { DEV_USER, useCurrentUserState } from "./use-current-user";
+
+const PROTECTED_PREFIXES = ["/home", "/app", "/create", "/context"] as const;
 
 async function resetWorkspaceMemory(): Promise<void> {
   const { useMeetHint } = await import("../store");
@@ -17,6 +20,41 @@ async function resetWorkspaceMemory(): Promise<void> {
 async function bindDevUser(): Promise<void> {
   bindAccountId(DEV_USER.id);
   publishAccountEpoch(DEV_USER.id);
+}
+
+function isProtectedPath(path: string): boolean {
+  return PROTECTED_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+}
+
+function parseEpochAccountId(raw: string | null): string | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { accountId?: string | null };
+    return parsed.accountId ?? null;
+  } catch {
+    return null;
+  }
+}
+
+let crossTabSignOutInFlight = false;
+
+/** Drop local vault state after another tab signed out — no reload, no epoch echo. */
+export async function syncCrossTabSignOut(): Promise<void> {
+  if (crossTabSignOutInFlight) return;
+  crossTabSignOutInFlight = true;
+  try {
+    await resetWorkspaceMemory();
+    clearSessionOnLeave();
+    bindAccountId(null);
+    if (!authEnabled) {
+      bindAccountId(DEV_USER.id);
+    }
+    if (authEnabled && isProtectedPath(window.location.pathname)) {
+      window.location.assign("/login");
+    }
+  } finally {
+    crossTabSignOutInFlight = false;
+  }
 }
 
 /**
@@ -107,23 +145,14 @@ export function useAccountVaultReady(): { ready: boolean; accountId: string | nu
   return { ready: verifiedId === currentAccountId(), accountId: verifiedId, tierError: null };
 }
 
-function otherTabLeft(): void {
-  void resetWorkspaceMemory().then(async () => {
-    bindAccountId(null);
-    publishAccountEpoch(null);
-    if (!authEnabled) {
-      await bindDevUser();
-    }
-    if (typeof window !== "undefined") window.location.reload();
-  });
-}
-
 /** Keep other tabs /relay in lockstep when this profile signs out. */
 export function AccountWorkspaceSync() {
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
       if (event.key !== ACCOUNT_EPOCH_KEY) return;
-      otherTabLeft();
+      const nextId = parseEpochAccountId(event.newValue);
+      if (!shouldSyncCrossTabSignOut(nextId, currentAccountId())) return;
+      void syncCrossTabSignOut();
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);

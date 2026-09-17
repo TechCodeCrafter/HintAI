@@ -6,7 +6,8 @@
 
 export const PRODUCTION_TRUST_HOSTS = new Set(["meethint.ai", "www.meethint.ai"]);
 
-const TRUST_PATHS = new Set(["/", "/privacy", "/terms", "/security", "/contact"]);
+/** Legal/marketing document paths — strict CSP (no wasm). Landing `/` is excluded: it runs the full SPA shell. */
+const TRUST_PATHS = new Set(["/privacy", "/terms", "/security", "/contact"]);
 
 /** Hostnames where Grok App Builder chrome (extensions.js) may load. */
 export function shouldInjectGrokBuilderChrome(hostHeader) {
