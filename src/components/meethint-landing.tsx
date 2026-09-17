@@ -4,6 +4,7 @@ import { highlightAnswer } from "@/components/answer-say";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { MEETHINT_DOMAIN, MEETHINT_MARK, MEETHINT_NAME } from "@/lib/brand";
 import { demoMediaUrl } from "@/lib/demo-media";
+import { useClientMounted } from "@/lib/use-client-mounted";
 import { joinWaitlist } from "@/lib/waitlist";
 import "@/styles/hint-landing-a11y.css";
 
@@ -371,6 +372,7 @@ function DemoVideo() {
 type FormState = "idle" | "sending" | "done" | "error";
 
 function WaitlistForm({ id }: { id: string }) {
+  const mounted = useClientMounted();
   const [email, setEmail] = useState("");
   const [state, setState] = useState<FormState>("idle");
 
@@ -379,6 +381,20 @@ function WaitlistForm({ id }: { id: string }) {
   }, []);
 
   const valid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()), [email]);
+
+  // Email inputs are SSR bait for autofill extensions (JobRight, "shark", etc.)
+  // that mutate the DOM before hydrate → React #418. Skeleton until mount.
+  if (!mounted) {
+    return (
+      <div className="space-y-3 text-center" aria-hidden="true">
+        <div className="hint-waitlist-row">
+          <div className="hint-waitlist-input min-w-0 flex-1 rounded-[10px] border border-[var(--hint-border)] bg-white px-3.5 py-2.5" />
+          <div className="hint-btn hint-btn-primary hint-waitlist-submit shrink-0 opacity-80">Join the private beta</div>
+        </div>
+        <p className="text-sm text-[var(--hint-muted)]">No spam, no sharing. One note when the beta opens.</p>
+      </div>
+    );
+  }
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -413,7 +429,9 @@ function WaitlistForm({ id }: { id: string }) {
           id={id}
           type="email"
           inputMode="email"
-          autoComplete="email"
+          autoComplete="off"
+          data-1p-ignore=""
+          data-lpignore="true"
           data-testid={`${id}-input`}
           className="hint-waitlist-input min-w-0 flex-1 rounded-[10px] border border-[var(--hint-border)] bg-white px-3.5 text-[var(--hint-text)] outline-none placeholder:text-[var(--hint-muted)] focus:border-[var(--hint-accent)]"
           placeholder="Enter your email"
