@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -16,9 +18,28 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
+      - name: Auth invariant
+        run: |
+          npm run dev > /tmp/meethint-dev.log 2>&1 &
+          DEV_PID=$!
+          trap 'kill $DEV_PID 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/__app-env >/dev/null; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat /tmp/meethint-dev.log
+            exit 1
+          fi
+          npm run check:auth
+      - run: npm run redteam:smoke
       - name: Branch contains latest main (PRs only)
         if: github.event_name == 'pull_request'
-        run: git fetch origin ${{ github.base_ref }} && npm run check:branch-fresh -- --base origin/${{ github.base_ref }}
+        run: npm run check:branch-fresh -- --base origin/${{ github.base_ref }}
       - name: Reject Cursor commit attribution on branch
         env:
           CURSOR_ATTRIBUTION_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
@@ -28,6 +49,9 @@ jobs:
           else
             npm run check:cursor-attribution -- --base "$CURSOR_ATTRIBUTION_BASE"
           fi
+      - name: Lint report
+        continue-on-error: true
+        run: npm run lint
 
   e2e:
     runs-on: ubuntu-latest

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { FileText, FolderOpen, Trash2 } from "lucide-react";
+import { Activity, CheckCircle2, Database, FileStack, FileText, FolderOpen, MessageSquareText, Mic2, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
@@ -121,11 +121,15 @@ export function ContextDetail({ id }: { id: string }) {
   if (missing) {
     return (
       <ContextShell>
-        <main className="space-y-4 py-10" data-testid="space-missing">
-          <h1 className="mh-display text-3xl">That Knowledge Space is gone.</h1>
-          <Link to="/home" className="text-accent hover:underline">
-            Back to Knowledge Spaces
-          </Link>
+        <main className="enterprise-page" data-testid="space-missing">
+          <div className="enterprise-card mx-auto max-w-xl p-8 text-center">
+            <FileStack className="mx-auto size-9 text-accent" aria-hidden="true" />
+            <h1 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-fg">That Knowledge Space is gone.</h1>
+            <p className="mt-2 text-sm text-muted">The local space could not be found for this account.</p>
+            <Link to="/home" className="enterprise-primary mt-6">
+              Back to Knowledge Spaces
+            </Link>
+          </div>
         </main>
       </ContextShell>
     );
@@ -134,114 +138,166 @@ export function ContextDetail({ id }: { id: string }) {
   if (!space) {
     return (
       <ContextShell>
-        <p className="py-10 text-sm text-muted">Opening Knowledge Space…</p>
+        <main className="enterprise-page">
+          <div className="enterprise-card p-6 text-sm text-muted">Opening Knowledge Space…</div>
+        </main>
       </ContextShell>
     );
   }
 
   return (
     <ContextShell>
-      <main className="mh-rise space-y-8 pb-16 pt-4" data-testid="space-detail">
-        <div className="space-y-2">
-          <p className="mh-eyebrow">Knowledge Space</p>
-          <h1 className="mh-display text-4xl sm:text-5xl">{space.name}</h1>
-          <p className="text-sm text-muted">
-            {formatSpaceCounts(counts)} · {spaceStatusLabel(status)}
-          </p>
-        </div>
+      <main className="enterprise-page mh-rise space-y-7 pb-16" data-testid="space-detail">
+        <section className="enterprise-space-header">
+          <div className="relative z-10 flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
+            <div className="min-w-0 space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="enterprise-overline">Knowledge Space</p>
+                <span className="mh-chip gap-1.5 text-xs">
+                  <span
+                    className={`size-1.5 rounded-full ${status === "ready" ? "bg-ok" : status === "error" ? "bg-bad" : "bg-warn"}`}
+                    aria-hidden="true"
+                  />
+                  {spaceStatusLabel(status)}
+                </span>
+              </div>
+              <h1 className="truncate text-4xl font-semibold tracking-[-0.055em] text-fg sm:text-5xl lg:text-6xl">
+                {space.name}
+              </h1>
+              <p className="text-sm text-muted">
+                {formatSpaceCounts(counts)}. Ask questions, add more material, or take this space into a live conversation.
+              </p>
+            </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Link
-            to="/context/$id/ask"
-            params={{ id: space.id }}
-            className="inline-flex h-11 items-center justify-center rounded-sm border border-line px-4 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
-          >
-            Ask
-          </Link>
-          {sources.length > 0 ? (
-            <Link
-              to="/context/$id/live"
-              params={{ id: space.id }}
-              data-testid="start-live"
-              className="mh-cta inline-flex items-center justify-center"
-            >
-              Start live session
-            </Link>
-          ) : (
-            <span className="mh-cta inline-flex items-center justify-center opacity-55">Start live session</span>
-          )}
-        </div>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/context/$id/ask" params={{ id: space.id }} className="enterprise-secondary">
+                <MessageSquareText className="size-4 text-accent" aria-hidden="true" />
+                Ask
+              </Link>
+              {sources.length > 0 ? (
+                <Link
+                  to="/context/$id/live"
+                  params={{ id: space.id }}
+                  data-testid="start-live"
+                  className="enterprise-primary"
+                >
+                  <Mic2 className="size-4" aria-hidden="true" />
+                  Start live session
+                </Link>
+              ) : (
+                <span className="enterprise-primary pointer-events-none opacity-50">
+                  <Mic2 className="size-4" aria-hidden="true" />
+                  Start live session
+                </span>
+              )}
+            </div>
+          </div>
+        </section>
 
-        <section className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="mh-eyebrow">Sources</p>
+        <section className="enterprise-stat-grid" aria-label="Knowledge Space summary">
+          <SummaryCard icon={<FileStack className="size-5" />} value={sources.length} label="Indexed files" />
+          <SummaryCard icon={<Database className="size-5" />} value={sourceRows.length} label="Source bundles" />
+          <SummaryCard
+            icon={<CheckCircle2 className="size-5" />}
+            value={spaceStatusLabel(status)}
+            label="Space status"
+            positive={status === "ready"}
+          />
+          <SummaryCard icon={<Activity className="size-5" />} value={counts.repoCount + counts.docCount} label="Repos + PDFs" />
+        </section>
+
+        <section className="enterprise-card p-4 sm:p-6">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="enterprise-overline">Sources</p>
+              <h2 className="mt-1 enterprise-section-title">Material powering this space</h2>
+              <p className="mt-1 text-xs leading-relaxed text-muted">
+                Add new material without replacing the sources already indexed here.
+              </p>
+            </div>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 data-testid="add-repo-folder"
-                className="inline-flex h-11 items-center gap-2 rounded-sm border border-line px-3 text-xs text-secondary hover:border-accent hover:text-fg"
+                className="enterprise-secondary"
                 disabled={folderPicker.reading}
                 onClick={() => void folderPicker.offerFolder()}
               >
-                <FolderOpen className="size-3.5" />
+                <FolderOpen className="size-4" />
                 {folderPicker.reading ? "Reading…" : "Add repo / folder"}
               </button>
-              <button
-                type="button"
-                className="inline-flex h-11 items-center gap-2 rounded-sm border border-line px-3 text-xs text-secondary hover:border-accent hover:text-fg"
-                onClick={() => filesRef.current?.click()}
-              >
+              <button type="button" className="enterprise-secondary" onClick={() => filesRef.current?.click()}>
+                <Plus className="size-4" />
                 Add files
               </button>
               <button
                 type="button"
                 data-testid="add-pdf"
-                className="inline-flex h-11 items-center gap-2 rounded-sm border border-line px-3 text-xs text-secondary hover:border-accent hover:text-fg"
+                className="enterprise-secondary"
                 onClick={() => pdfRef.current?.click()}
               >
-                <FileText className="size-3.5" />
+                <FileText className="size-4" />
                 Add PDF
               </button>
             </div>
           </div>
-          {sourceRows.length === 0 ? (
-            <p className="text-sm text-muted">No sources yet. Add repos, folders, or PDFs — existing sources stay intact.</p>
-          ) : (
-            <ul className="mh-panel divide-y divide-line overflow-hidden" data-testid="space-source-list">
-              {sourceRows.map((row) => (
-                <li key={row.key} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-fg">{row.displayName}</p>
-                    <p className="truncate text-xs text-muted">{row.path}</p>
-                  </div>
-                  <div className="shrink-0 text-right text-xs text-faint">
-                    <p>{row.sourceType === "pdf" ? "PDF" : "Repo"}</p>
-                    <p>{row.status}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+
+          <div className="mt-5">
+            {sourceRows.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-line px-6 py-12 text-center">
+                <FolderOpen className="mx-auto size-8 text-accent" aria-hidden="true" />
+                <h3 className="mt-4 font-semibold text-fg">Add the first source.</h3>
+                <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">
+                  MeetHint needs material in this space before it can search for evidence or start a live session.
+                </p>
+              </div>
+            ) : (
+              <ul className="enterprise-source-table" data-testid="space-source-list">
+                {sourceRows.map((row) => (
+                  <li key={row.key} className="enterprise-source-row">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="enterprise-icon-tile size-9 rounded-lg" aria-hidden="true">
+                        {row.sourceType === "pdf" ? <FileText className="size-4" /> : <FolderOpen className="size-4" />}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-fg">{row.displayName}</p>
+                        <p className="mt-0.5 truncate text-xs text-muted">{row.path}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 text-right">
+                      <span className="hidden text-xs text-faint sm:inline">{row.sourceType === "pdf" ? "PDF" : "Repo"}</span>
+                      <span className="mh-chip text-xs">{row.status}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </section>
 
         <div className="border-t border-line pt-6" data-testid="space-menu">
           {confirmDelete ? (
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="text-sm text-body">Delete this Knowledge Space and its sources on this device?</p>
-              <button
-                type="button"
-                className="mh-cta"
-                data-testid="confirm-delete"
-                onClick={async () => {
-                  await deleteStoredContext(space.id);
-                  void navigate({ to: "/home" });
-                }}
-              >
-                Delete
-              </button>
-              <button type="button" className="text-xs text-muted hover:text-fg" onClick={() => setConfirmDelete(false)}>
-                Cancel
-              </button>
+            <div className="enterprise-card flex flex-col gap-4 border-bad/20 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold text-fg">Delete this Knowledge Space?</p>
+                <p className="mt-1 text-sm text-muted">Its sources stored on this device will also be deleted.</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl bg-bad px-4 text-sm font-semibold text-white"
+                  data-testid="confirm-delete"
+                  onClick={async () => {
+                    await deleteStoredContext(space.id);
+                    void navigate({ to: "/home" });
+                  }}
+                >
+                  Delete
+                </button>
+                <button type="button" className="enterprise-secondary" onClick={() => setConfirmDelete(false)}>
+                  Cancel
+                </button>
+              </div>
             </div>
           ) : (
             <button
@@ -294,5 +350,30 @@ export function ContextDetail({ id }: { id: string }) {
         />
       </main>
     </ContextShell>
+  );
+}
+
+function SummaryCard({
+  icon,
+  value,
+  label,
+  positive,
+}: {
+  icon: React.ReactNode;
+  value: number | string;
+  label: string;
+  positive?: boolean;
+}) {
+  return (
+    <div className="enterprise-card enterprise-stat-card">
+      <div className="flex items-center justify-between gap-3">
+        <span className="enterprise-icon-tile size-9 rounded-lg" aria-hidden="true">
+          {icon}
+        </span>
+        {positive ? <span className="size-2 rounded-full bg-ok" aria-hidden="true" /> : null}
+      </div>
+      <p className="mt-4 truncate text-2xl font-semibold tracking-[-0.04em] text-fg tabular-nums">{value}</p>
+      <p className="mt-1 text-xs text-muted">{label}</p>
+    </div>
   );
 }
