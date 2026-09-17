@@ -11,13 +11,35 @@ export function ContextShell({
   aside?: React.ReactNode;
 }) {
   return (
-    <div className="mh-page min-h-dvh text-fg">
-      <header className="cockpit-glass-bar">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          <Link to="/home" className="flex items-center gap-3 text-fg">
-            <MeetHintMark className="size-11" />
-            <span className="brand-word">Hint</span>
-          </Link>
+    <div className="enterprise-shell mh-page min-h-dvh text-fg">
+      <header className="cockpit-glass-bar sticky top-0 z-30">
+        <div className="enterprise-header-inner flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-5 sm:gap-7">
+            <Link to="/home" className="enterprise-brand shrink-0 text-fg" aria-label="MeetHint home">
+              <MeetHintMark className="size-9 sm:size-10" />
+              <span className="brand-word">Hint</span>
+            </Link>
+            <nav className="hidden items-center gap-1 text-sm sm:flex" aria-label="Workspace navigation">
+              <Link
+                to="/home"
+                className="rounded-lg px-3 py-2 text-secondary transition-colors hover:bg-hover hover:text-fg"
+              >
+                Home
+              </Link>
+              <Link
+                to="/home"
+                className="rounded-lg px-3 py-2 text-secondary transition-colors hover:bg-hover hover:text-fg"
+              >
+                Knowledge Spaces
+              </Link>
+              <Link
+                to="/create"
+                className="rounded-lg px-3 py-2 text-secondary transition-colors hover:bg-hover hover:text-fg"
+              >
+                New Space
+              </Link>
+            </nav>
+          </div>
           <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-3">
             {aside}
             <AuthChrome />
@@ -25,7 +47,7 @@ export function ContextShell({
           </div>
         </div>
       </header>
-      <div className="mx-auto w-full max-w-3xl px-5 sm:px-8">{children}</div>
+      <div className="enterprise-content">{children}</div>
     </div>
   );
 }
