@@ -1,6 +1,8 @@
 import { useEffect, useId } from "react";
-import type { FolderLoadOptions, FolderPreview } from "@/lib/repo/folder";
+import { createPortal } from "react-dom";
 import type { FolderPickerState } from "@/components/use-folder-picker";
+import { useClientMounted } from "@/lib/use-client-mounted";
+import type { FolderLoadOptions, FolderPreview } from "@/lib/repo/folder";
 
 export function ReviewPackDialog({
   preview,
@@ -16,6 +18,7 @@ export function ReviewPackDialog({
   onIndex: () => void;
 }) {
   const titleId = useId();
+  const mounted = useClientMounted();
 
   useEffect(() => {
     if (!preview) return;
@@ -29,18 +32,27 @@ export function ReviewPackDialog({
     return () => window.removeEventListener("keydown", onKey, true);
   }, [preview, onCancel]);
 
-  if (!preview) return null;
+  useEffect(() => {
+    if (!preview) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [preview]);
+
+  if (!preview || !mounted) return null;
 
   const empty = preview.keep === 0;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-bg/70 p-5 backdrop-blur-[2px]"
+      className="cockpit-modal fixed inset-0 z-[100] flex items-center justify-center bg-bg/80 p-5 backdrop-blur-sm"
       role="presentation"
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-lg rounded-[14px] border border-line bg-surface p-6 text-body shadow-lg"
+        className="relative z-[1] w-full max-w-lg rounded-[14px] border border-line bg-surface p-6 text-body shadow-lg"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -108,7 +120,8 @@ export function ReviewPackDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
