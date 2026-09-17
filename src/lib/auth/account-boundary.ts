@@ -201,10 +201,20 @@ export async function wipeBrowserAccountData(): Promise<void> {
 export function publishAccountEpoch(accountId: string | null): void {
   if (typeof localStorage === "undefined") return;
   try {
+    const existing = readAccountEpoch();
+    if ((existing?.accountId ?? null) === accountId) return;
     localStorage.setItem(ACCOUNT_EPOCH_KEY, JSON.stringify({ accountId, at: Date.now() }));
   } catch {
     /* ignore */
   }
+}
+
+/** True when another tab cleared the account and this tab should drop its vault binding. */
+export function shouldSyncCrossTabSignOut(
+  nextAccountId: string | null,
+  localAccountId: string | null,
+): boolean {
+  return nextAccountId === null && localAccountId !== null;
 }
 
 export function readAccountEpoch(): { accountId: string | null; at: number } | null {
