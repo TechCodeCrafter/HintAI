@@ -17,7 +17,7 @@ async function loadPrivateRepo(page: Page, user = USER_A) {
   await installE2eMocks(page);
   await e2eSignIn(page, user);
   await page.goto("/create");
-  await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create a knowledge space." })).toBeVisible();
   await fillCreateContextIdentity(page, CONTEXT_NAME);
 
   const [fileChooser] = await Promise.all([

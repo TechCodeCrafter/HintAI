@@ -47,7 +47,7 @@ export async function expectSpacePersisted(page: Page, spaceId: string) {
 
   await page.goto(`/context/${spaceId}`);
   await expect(page.getByTestId("space-detail")).toBeVisible();
-  await expect(page.getByTestId("space-source-list").locator("li")).toHaveCount(1, { timeout: 30000 });
+  await expect(page.getByTestId("space-source-list").locator("tr")).toHaveCount(1, { timeout: 30000 });
 
   await page.getByRole("link", { name: "Ask" }).click();
   await expect(page.getByTestId("ask-query")).toBeEnabled({ timeout: 30000 });

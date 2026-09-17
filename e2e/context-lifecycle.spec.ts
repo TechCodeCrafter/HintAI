@@ -14,7 +14,7 @@ test("Create Knowledge Space, add files, search, delete", async ({ page }) => {
   await installE2eMocks(page);
   await e2eSignIn(page, USER_A);
   await page.goto("/create");
-  await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create a knowledge space." })).toBeVisible();
   await fillCreateContextIdentity(page, "Test Project");
 
   const [fileChooser] = await Promise.all([
@@ -39,7 +39,7 @@ export const MAX_ATTEMPTS = 3;
 
   await waitForIndexing(page);
   await expect(page.getByTestId("index-stats")).toContainText("1");
-  await expect(page.getByTestId("index-stats")).toContainText("source");
+  await expect(page.getByTestId("index-stats")).toContainText("Sources");
 
   await page.getByTestId("indexing-done").click();
   await page.getByTestId("start-live").click();
@@ -55,6 +55,6 @@ export const MAX_ATTEMPTS = 3;
   await page.getByRole("link", { name: "Test Project" }).click();
   await page.getByTestId("delete-space").click();
   await page.getByTestId("confirm-delete").click();
-  await expect(page.getByTestId("create-space-button")).toBeVisible();
+  await expect(page.getByTestId("create-space-button").or(page.getByTestId("create-space-empty"))).toBeVisible();
   await expect(page.locator("body")).not.toContainText("Test Project");
 });

@@ -9,7 +9,7 @@ test("folder upload reviews the pack before indexing", async ({ page }) => {
   await installE2eMocks(page);
   await e2eSignIn(page, USER_A);
   await page.goto("/create");
-  await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create a knowledge space." })).toBeVisible();
   await fillCreateContextIdentity(page, "Review Pack");
   const folder = join(tmpdir(), `hint-review-pack-${Date.now()}`);
   mkdirSync(folder);
