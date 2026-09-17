@@ -20,8 +20,8 @@ Closed Beta Launch
 
 ## Next
 
-1. **#115 Beta Wave 1** — invite first 5 testers
-2. Stop building and observe
+1. **#115 Beta Wave 1** — ops docs ready ([BETA-WAVE-1.md](./BETA-WAVE-1.md)); invite first 5 testers
+2. Stop building and observe (3–5 days)
 
 ## Do Not Build Yet
 
