@@ -263,28 +263,15 @@ Deleted Knowledge Space:
 **Implementation:** `deleteSpace` on repository + `deleteStoredContext` in store.
 
 ### #110 Fresh Account Production Smoke
-**Status:** ⬜ TODO
+**Status:** ✅ COMPLETE
 
-Run manually before beta invite:
+**Harness:** `node scripts/run-production-smoke.mjs` — report: [FRESH-ACCOUNT-PRODUCTION-SMOKE.md](./FRESH-ACCOUNT-PRODUCTION-SMOKE.md)
 
-1. New clean browser profile
-2. Sign up/sign in
-3. Create Knowledge Space
-4. Add repo/PDF
-5. Index
-6. Ask supported question
-7. Open citation
-8. Ask unsupported question
-9. Start Live
-10. Receive live supported answer
-11. Give 👍 feedback
-12. Give 👎 feedback on another answer
-13. Export diagnostics
-14. Sign out
-15. Sign back in
-16. Verify persistence (automated: `e2e/authenticated-persistence.spec.ts` Scenario A/C)
-17. Sign in as second user
-18. Verify isolation (automated: `e2e/private-workspace.spec.ts` + Scenario B)
+**OAuth setup (required once):** `node scripts/capture-smoke-auth.mjs a|b` (Chrome persistent profiles at `.grok/smoke-profile-{a|b}`)
+
+Production URL: `https://www.meethint.ai`. Marker: `SMOKE_GATE_91626`.
+
+Full gate (2026-09-16, run `9861c9a1-7843-4fdd-8979-67e7fb492d8a`): auth session, Knowledge Space create/index, supported Ask + citation, unsupported silence, Live, 👍/👎 feedback, diagnostics privacy (in-page harness collection), refresh + same-user persistence, **production A/B isolation** — **PASS** on production (`prajva.dev@gmail.com` vs `prajva8@gmail.com`).
 
 ### #111 Beta Privacy Copy Cleanup
 **Status:** ✅ COMPLETE
@@ -343,7 +330,7 @@ Verified 2026-09-16. Report: [PRODUCTION-AUTH-VERIFICATION.md](./PRODUCTION-AUTH
 - authenticated signup telemetry E2E
 
 ### #115 Beta Wave 1
-**Status:** ⬜ TODO
+**Status:** 🟢 NEXT
 
 Invite **5** real technical users first.
 
@@ -983,8 +970,7 @@ Do not build until beta users show need.
 
 Do these next:
 
-1. **#110** Fresh Account Production Smoke (persistence/isolation: defer to `e2e/authenticated-persistence.spec.ts` + `e2e/private-workspace.spec.ts`)
-2. **#115** Invite Beta Wave 1: 5 users
+1. **#115** Invite Beta Wave 1: 5 users
 3. Stop feature development temporarily
 4. Observe real use for 3–5 days
 5. Fix only beta-breaking defects
