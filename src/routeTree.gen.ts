@@ -24,6 +24,7 @@ import { Route as ContextIdRouteImport } from './routes/context.$id'
 import { Route as EvalViewerRouteImport } from './routes/eval.viewer'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiAuthStatusRouteImport } from './routes/api/auth/status'
+import { Route as ApiDeployStatusRouteImport } from './routes/api/deploy/status'
 import { Route as ContextIdIndexRouteImport } from './routes/context.$id.index'
 import { Route as ContextIdAskRouteImport } from './routes/context.$id.ask'
 import { Route as ContextIdLiveRouteImport } from './routes/context.$id.live'
@@ -103,6 +104,11 @@ const ApiAuthStatusRoute = ApiAuthStatusRouteImport.update({
   path: '/api/auth/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDeployStatusRoute = ApiDeployStatusRouteImport.update({
+  id: '/api/deploy/status',
+  path: '/api/deploy/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContextIdIndexRoute = ContextIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/eval/viewer': typeof EvalViewerRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/status': typeof ApiAuthStatusRoute
+  '/api/deploy/status': typeof ApiDeployStatusRoute
   '/context/$id/ask': typeof ContextIdAskRoute
   '/context/$id/live': typeof ContextIdLiveRoute
   '/context/$id/': typeof ContextIdIndexRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/eval/viewer': typeof EvalViewerRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/status': typeof ApiAuthStatusRoute
+  '/api/deploy/status': typeof ApiDeployStatusRoute
   '/context/$id/ask': typeof ContextIdAskRoute
   '/context/$id/live': typeof ContextIdLiveRoute
   '/context/$id': typeof ContextIdIndexRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/eval/viewer': typeof EvalViewerRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/status': typeof ApiAuthStatusRoute
+  '/api/deploy/status': typeof ApiDeployStatusRoute
   '/context/$id/ask': typeof ContextIdAskRoute
   '/context/$id/live': typeof ContextIdLiveRoute
   '/context/$id/': typeof ContextIdIndexRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/eval/viewer'
     | '/api/auth/$'
     | '/api/auth/status'
+    | '/api/deploy/status'
     | '/context/$id/ask'
     | '/context/$id/live'
     | '/context/$id/'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/eval/viewer'
     | '/api/auth/$'
     | '/api/auth/status'
+    | '/api/deploy/status'
     | '/context/$id/ask'
     | '/context/$id/live'
     | '/context/$id'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/eval/viewer'
     | '/api/auth/$'
     | '/api/auth/status'
+    | '/api/deploy/status'
     | '/context/$id/ask'
     | '/context/$id/live'
     | '/context/$id/'
@@ -257,6 +269,7 @@ export interface RootRouteChildren {
   EvalViewerRoute: typeof EvalViewerRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiAuthStatusRoute: typeof ApiAuthStatusRoute
+  ApiDeployStatusRoute: typeof ApiDeployStatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -366,6 +379,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/deploy/status': {
+      id: '/api/deploy/status'
+      path: '/api/deploy/status'
+      fullPath: '/api/deploy/status'
+      preLoaderRoute: typeof ApiDeployStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/context/$id/': {
       id: '/context/$id/'
       path: '/'
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   EvalViewerRoute: EvalViewerRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiAuthStatusRoute: ApiAuthStatusRoute,
+  ApiDeployStatusRoute: ApiDeployStatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

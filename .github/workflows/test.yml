@@ -16,6 +16,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
+      - name: Branch contains latest main (PRs only)
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.base_ref }} && npm run check:branch-fresh -- --base origin/${{ github.base_ref }}
       - name: Reject Cursor commit attribution on branch
         env:
           CURSOR_ATTRIBUTION_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

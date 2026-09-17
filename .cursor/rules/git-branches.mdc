@@ -1,0 +1,19 @@
+---
+description: Branch from fresh main before feature work or PRs — prevents duplicate cherry-pick PRs (#58/#59/#60).
+alwaysApply: true
+---
+
+# Git branches — fresh base required
+
+Before creating a branch or opening a PR:
+
+1. `git fetch origin`
+2. `git checkout main && git pull --ff-only origin main`
+3. `git checkout -b feat/<short-name>` from updated `main`
+4. Run `npm run check:branch-fresh` before `gh pr create`
+
+Do **not** open a second PR for the same work if one already exists — update the existing branch instead.
+
+If CI fails with a stale merge base, merge `origin/main` into the branch (do not blindly cherry-pick and re-open).
+
+Never append Cursor attribution trailers to commits (see git-commits rule).
