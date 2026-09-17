@@ -18,7 +18,24 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
-      - run: npm run check:auth
+      - name: Auth invariant
+        run: |
+          npm run dev > /tmp/meethint-dev.log 2>&1 &
+          DEV_PID=$!
+          trap 'kill $DEV_PID 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/__app-env >/dev/null; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat /tmp/meethint-dev.log
+            exit 1
+          fi
+          npm run check:auth
       - run: npm run redteam:smoke
       - name: Branch contains latest main (PRs only)
         if: github.event_name == 'pull_request'
