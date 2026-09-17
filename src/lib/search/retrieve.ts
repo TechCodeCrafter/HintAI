@@ -292,11 +292,14 @@ export function packVocabulary(chunks: IndexedChunk[]): Set<string> {
  * term "chunks" while "route" no longer matches the term "out".
  */
 function toWords(source: string): string[] {
-  return source
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter(Boolean);
+  const lowered = source.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();
+  const split = lowered.split(/[^a-z0-9]+/).filter(Boolean);
+  const out = [...split];
+  // Keep snake_case identifiers whole so query tokens like smoke_gate_91626 match code.
+  for (const match of lowered.match(/[a-z0-9]+(?:_[a-z0-9]+)+/g) ?? []) {
+    if (match.length > 2) out.push(match);
+  }
+  return out;
 }
 
 /**

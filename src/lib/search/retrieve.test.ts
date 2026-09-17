@@ -247,6 +247,24 @@ test("excluded files yield zero chunks", () => {
   assert.ok(chunks.some((chunk) => chunk.path === "api/main.py"));
 });
 
+test("snake_case identifiers in material match underscore query tokens", () => {
+  const pack: RepoPack = {
+    id: "smoke",
+    name: "smoke",
+    description: "",
+    files: [
+      file(
+        "smoke-gate.ts",
+        '/** Beta production smoke gate — unique marker SMOKE_GATE_91626. */\nexport const token = "SMOKE_GATE_91626";\n',
+      ),
+    ],
+    commits: [],
+  };
+  const hits = retrieve("What is the SMOKE_GATE_91626 token value?", buildChunks(pack));
+  assert.ok(hits.length > 0, "underscore constant in a question should retrieve the defining chunk");
+  assert.match(hits[0]!.text, /SMOKE_GATE_91626/);
+});
+
 test("numeral aliasing is one-way today — a spoken digit is lost", () => {
   // Word to digit works.
   assert.ok(tokenize("retry three times").includes("3"));
