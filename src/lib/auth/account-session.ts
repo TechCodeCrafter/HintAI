@@ -107,10 +107,20 @@ export function useAccountVaultReady(): { ready: boolean; accountId: string | nu
   return { ready: verifiedId === currentAccountId(), accountId: verifiedId, tierError: null };
 }
 
+function parseEpochAccountId(raw: string | null): string | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { accountId?: string | null };
+    return parsed.accountId ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function otherTabLeft(): void {
   void resetWorkspaceMemory().then(async () => {
     bindAccountId(null);
-    publishAccountEpoch(null);
+    clearSessionOnLeave();
     if (!authEnabled) {
       await bindDevUser();
     }
@@ -123,6 +133,8 @@ export function AccountWorkspaceSync() {
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
       if (event.key !== ACCOUNT_EPOCH_KEY) return;
+      const nextId = parseEpochAccountId(event.newValue);
+      if (nextId === currentAccountId()) return;
       otherTabLeft();
     };
     window.addEventListener("storage", onStorage);
