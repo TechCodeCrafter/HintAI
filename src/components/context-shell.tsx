@@ -1,31 +1,17 @@
-import { Link } from "@tanstack/react-router";
-import { AuthChrome } from "@/components/auth-chrome";
-import { MeetHintMark } from "@/components/meethint-mark";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AppShell, AppTopSearch } from "@/components/app-shell";
 
 export function ContextShell({
   children,
   aside,
+  wide,
 }: {
   children: React.ReactNode;
   aside?: React.ReactNode;
+  wide?: boolean;
 }) {
   return (
-    <div className="mh-page min-h-dvh text-fg">
-      <header className="cockpit-glass-bar">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          <Link to="/home" className="flex items-center gap-3 text-fg">
-            <MeetHintMark className="size-11" />
-            <span className="brand-word">Hint</span>
-          </Link>
-          <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-3">
-            {aside}
-            <AuthChrome />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-      <div className="mx-auto w-full max-w-3xl px-5 sm:px-8">{children}</div>
-    </div>
+    <AppShell aside={aside} wide={wide} topbar={<AppTopSearch />}>
+      {children}
+    </AppShell>
   );
 }
