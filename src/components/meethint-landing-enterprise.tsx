@@ -12,8 +12,7 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
-  UploadCloud,
-  Users,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
@@ -58,7 +57,11 @@ const PROFESSIONALS = [
   },
 ] as const;
 
-const MATERIALS = [
+const MATERIALS: ReadonlyArray<{
+  label: string;
+  icon: LucideIcon;
+  note?: string;
+}> = [
   { label: "Repositories", icon: Code2 },
   { label: "Folders", icon: FolderOpen },
   { label: "PDF", icon: FileText, note: "limits" },
@@ -68,7 +71,7 @@ const MATERIALS = [
   { label: "Markdown", icon: FileText },
   { label: "Code", icon: Code2 },
   { label: "PPTX", icon: FileText, note: "soon" },
-] as const;
+];
 
 function WaitlistForm() {
   const mounted = useClientMounted();
