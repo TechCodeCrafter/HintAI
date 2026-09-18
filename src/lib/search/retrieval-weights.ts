@@ -22,6 +22,22 @@ export const RETRIEVAL_WEIGHTS = {
   exactPhrase: 3.0,
   apiShapePath: 3.4,
   fileHead: 1.6,
+  /**
+   * Test/fixture files describe what the suite *covers*, not what the system
+   * *does*. When a real source file is absent or under-documented, a test
+   * docstring that mentions the subject otherwise becomes the top hit and is
+   * spoken as a confident wrong answer ("What does the session service do?"
+   * answered by `test_shared_bda_service.py`). Demote hard enough that a test
+   * file only wins when nothing else matches at all.
+   */
+  testPathPenalty: 9,
+  /**
+   * Behavior questions ("what does X do", "how does X work", "what happens
+   * after X") are answered by the component that performs the behavior, not by
+   * the HTTP route that triggers it. Route handlers describe the API surface;
+   * services/workers/lambdas describe the system. Boost the behavior files.
+   */
+  behaviorPath: 2.6,
   semanticFloor: 0.3,
   semanticScale: 10,
 };

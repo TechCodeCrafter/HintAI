@@ -165,6 +165,38 @@ export function isEvidencePath(path: string): boolean {
   return !JUNK_PATH.test(path) && !GENERATED_PATH.test(path) && !TOOLING_PATH.test(path);
 }
 
+/**
+ * Test and fixture files. They stay searchable — a question about the tests
+ * should find them — but they are demoted at rank time so a test docstring
+ * describing what the suite *covers* cannot outrank the component it tests.
+ */
+const TEST_PATH =
+  /(^|\/)(__tests__|tests?|testdata|fixtures?|mocks?|stories|e2e)(\/|$)|\.(spec|test|e2e)\.[a-z]+$/i;
+
+export function isTestEvidencePath(path: string): boolean {
+  return TEST_PATH.test(path);
+}
+
+/**
+ * Files that perform behavior rather than describe an endpoint. Behavior
+ * questions ("what does X do", "how does X work", "what happens after X") are
+ * answered here; route handlers only describe the HTTP surface that triggers
+ * the behavior, so they are a weaker source for those shapes.
+ */
+const BEHAVIOR_PATH =
+  /(^|\/)(services?|workers?|container-lambdas|lambdas|handlers|usecases?|domain|core|pipeline|processing|ingest|extraction|indexing)(\/|$)/i;
+
+export function isBehaviorPath(path: string): boolean {
+  return BEHAVIOR_PATH.test(path);
+}
+
+/** A route/controller file — the API surface, not the behavior behind it. */
+const ROUTE_PATH = /(^|\/)(routes?|controllers?|endpoints?|api)(\/|$)|(?:^|\/)(router|routes)\.[a-z]+$/i;
+
+export function isRoutePath(path: string): boolean {
+  return ROUTE_PATH.test(path) && !isBehaviorPath(path);
+}
+
 const REGEX_PARSER = createRegexParser();
 
 export type { BuildChunksOptions } from "../context/source-identity.ts";
@@ -411,6 +443,13 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     /\b(?:\d+|two|three|four|five|six|seven|eight|nine|ten) lambdas?\b|\bwhy (?:are |do )?(?:there |you doing |we (?:have |use )?)?\w* ?lambdas\b/.test(
       q,
     );
+  // Behavior questions are answered by the component that does the work, not
+  // the route that triggers it. Used to boost services/workers/lambdas and to
+  // avoid letting a router docstring stand in for the pipeline behind it.
+  const wantsBehavior =
+    /\bwhat does\b|\bwhat's\b|\bhow does\b|\bhow do\b|\bhow is\b|\bwhat happens\b|\bwhat is .* (?:for|doing)\b|\bhow are\b/.test(
+      q,
+    ) && !wantsApi;
   const idf = idfMap(terms, chunks);
 
   const scored: Hit[] = [];
@@ -440,6 +479,19 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     }
     if ((named.length > 0 || wantsShape || wantsLambdaFleet) && chunk.kind === "code" && chunk.startLine <= 8) {
       score += RETRIEVAL_WEIGHTS.fileHead;
+    }
+    // Behavior questions prefer the file that performs the work over the route
+    // that triggers it. A router docstring is the API surface, not the answer.
+    if (wantsBehavior && isBehaviorPath(idx.path)) {
+      score += RETRIEVAL_WEIGHTS.behaviorPath;
+    }
+    // Test/fixture files describe what the suite covers, not what the system
+    // does. Demote so a test docstring cannot outrank the component it tests
+    // and be spoken as a confident wrong answer. Applied last so it cannot be
+    // fully cancelled by the behavior boost on a test living under a behavior
+    // directory.
+    if (isTestEvidencePath(idx.path)) {
+      score -= RETRIEVAL_WEIGHTS.testPathPenalty;
     }
     if (score > 0) scored.push({ ...chunk, score });
   }

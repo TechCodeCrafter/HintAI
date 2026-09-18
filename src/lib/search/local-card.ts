@@ -23,6 +23,7 @@ import {
 import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
 import { isArchitectureQuery } from "./question.ts";
+import { isTestEvidencePath } from "./retrieve.ts";
 import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
 import { admissible, explain, mentions, provenanceOf, subjectTerms } from "./subject.ts";
 import { type Prose, type ProseSpan, capabilityList, plain, proseOf } from "./prose.ts";
@@ -196,7 +197,14 @@ function bestClaim(
       const relevance = overlap(path, terms) * 3 + overlap(claim.say, terms);
       // A module docstring describes the whole thing; a docstring buried
       // mid-file describes one function. Prefer purpose when they tie.
-      const score = relevance - (claim.generic ? 2 : 0) + (claim.head ? 1 : 0);
+      let score = relevance - (claim.generic ? 2 : 0) + (claim.head ? 1 : 0);
+      // Defense in depth for the test-file bias: even when retrieval ranked a
+      // test file first, its claim describes what the suite *covers*, not what
+      // the system *does*. A test claim may only win when it is the sole source
+      // of evidence — never over a real source file.
+      if (isTestEvidencePath(path)) {
+        score -= 6;
+      }
       // Ranking may use every signal, path included. Admission may not: a claim
       // whose only tie to the question is a low-information word is evidence
       // that sits somewhere relevant and says nothing relevant.
@@ -356,6 +364,36 @@ function genericLocalCard(
   const picked = bestClaim(ordered, pack, query, canonical, material);
   const claim = picked?.claim ?? null;
   const code = picked?.hit ?? ordered[0];
+
+  // A test file is never the answer to what a component *does*. When the only
+  // admissible claim comes from a test/fixture, the honest output is silence:
+  // the suite describes what it covers, and speaking it tells the room what the
+  // tests assert rather than what the system is. Behavior questions only — a
+  // question explicitly about the tests still resolves through the normal path.
+  const behaviorShape = ["what", "how", "where"].includes(shapeOf(canonical));
+  if (behaviorShape && claim && isTestEvidencePath(claim.span.path ?? code?.path ?? "")) {
+    // The winning claim came from a test/fixture. A test docstring asserts what
+    // the suite covers; it never states what the component does. Speaking it is
+    // the confident-wrong-answer defect, so prefer silence. A question that is
+    // genuinely about the tests ("how do we test X?") is the "absence"/"how"
+    // shape against a test subject and resolves through the normal path.
+    noteAttempt({
+      query, path: claim.span.path, line: claim.span.startLine,
+      origin: claim.head ? "head" : "span",
+      candidate: claim.say, generic: claim.generic, relevance: 0, score: 0,
+      accepted: false, reject: "WRONG_SHAPE",
+    });
+    overrideDecision(query, "WRONG_SHAPE");
+    closeDecision(query, false);
+    return {
+      say: null,
+      reason: "Only the tests describe that — nothing loaded says what it does.",
+      citations: [citationOfHit(code, material)],
+      query,
+      latencyMs,
+      source: "local",
+    };
+  }
 
   let say = claim ? sayable(twoSentences(claim.say) ?? "") : "";
   let evidence: Evidence[] = claim && say ? [claim.span] : [];
