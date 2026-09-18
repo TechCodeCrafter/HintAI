@@ -75,6 +75,30 @@ test("the scripted demo answer stays silent without a supporting hit", () => {
   assert.equal(card.say, null);
 });
 
+test("a behavior question answered only by a test file stays silent", () => {
+  // The beta wrong-source defect: when the only admissible claim comes from a
+  // test docstring, speaking it tells the room what the suite *covers*, not
+  // what the component *does*. The honest output is cited silence.
+  const pack: RepoPack = {
+    id: "testonly",
+    name: "testonly",
+    description: "",
+    commits: [],
+    files: [
+      {
+        path: "tests/unit/test_bda_service.py",
+        language: "py",
+        content:
+          '"""Shared BDA service tests. Covers cache reuse across sessions and force_reprocess on re-upload."""\ndef test_cache():\n    assert True\n',
+      },
+    ],
+  };
+  const hits = retrieve("What does the shared BDA service do?", buildChunks(pack));
+  const card = localCard("What does the shared BDA service do?", hits, pack, 0, null);
+  assert.equal(card.say, null, "a test file must not answer what a component does");
+  assert.ok(card.reason, "silence must carry a reason");
+});
+
 test("the architecture answer is read out of the material, not authored about it", () => {
   const query = "What is the architecture of this application?";
   const grounded = arch(NORTHSTAR, query);

@@ -274,3 +274,54 @@ test("numeral aliasing is one-way today — a spoken digit is lost", () => {
   // current behaviour rather than silently expected to work.
   assert.deepEqual(tokenize("retry 3 times"), ["retry", "times"]);
 });
+
+test("a test file never outranks the component it tests", () => {
+  // The beta wrong-source defect: "What does the session service do?" cited
+  // test_shared_bda_service.py — what the suite *covers*, not what the service
+  // *does*. A test docstring must demote below the real source file.
+  const pack: RepoPack = {
+    id: "testbias",
+    name: "testbias",
+    description: "",
+    commits: [],
+    files: [
+      file(
+        "services/session_service.py",
+        `"""Session service. Creates, resumes, and expires meeting sessions."""\ndef resume(id):\n    return load(id)\n`,
+      ),
+      file(
+        "tests/unit/test_session_service.py",
+        `"""Session service tests. Covers cache reuse and force_reprocess on re-upload."""\ndef test_cache():\n    assert True\n`,
+      ),
+    ],
+  };
+  const ranked = retrieve("What does the session service do?", buildChunks(pack)).map((h) => h.path);
+  assert.equal(ranked[0], "services/session_service.py", "the real service must outrank its test");
+});
+
+test("a behavior question prefers the worker over the route that triggers it", () => {
+  // "What happens after upload?" must reach the ingest worker, not stop at the
+  // upload router's docstring about presigned URLs.
+  const pack: RepoPack = {
+    id: "behavior",
+    name: "behavior",
+    description: "",
+    commits: [],
+    files: [
+      file(
+        "api/routes/uploads.py",
+        `"""Document upload routes. Issues presigned S3 URLs and triggers the ingest Lambda."""\ndef upload():\n    return presign()\n`,
+      ),
+      file(
+        "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+        `"""BDA ingest worker. After a document is uploaded, runs Bedrock Data Automation and writes rows to the RAG index."""\ndef handler(e, c):\n    return run(e)\n`,
+      ),
+    ],
+  };
+  const ranked = retrieve("What happens after a document is uploaded?", buildChunks(pack)).map((h) => h.path);
+  assert.equal(
+    ranked[0],
+    "container-lambdas/bda-ingest-worker/app/lambda_function.py",
+    "the worker that performs the behavior must outrank the route that triggers it",
+  );
+});
