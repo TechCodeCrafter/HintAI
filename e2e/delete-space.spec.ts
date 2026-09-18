@@ -58,7 +58,7 @@ test("beta gate: deleted Knowledge Space disappears immediately and cannot reope
 
   await page.getByRole("link", { name: KEEP_SPACE }).click();
   await expect(page.getByTestId("space-detail")).toBeVisible();
-  await expect(page.getByTestId("space-source-list").locator("li")).toHaveCount(1);
+  await expect(page.getByTestId("space-source-list").locator("tr")).toHaveCount(1);
   await page.getByRole("link", { name: "Ask" }).click();
   await page.getByTestId("ask-query").fill(KEEP_MARKER);
   await page.getByTestId("ask-submit").click();

@@ -1,9 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Activity, CheckCircle2, Database, FileStack, FileText, FolderOpen, MessageSquareText, Mic2, Plus, Trash2 } from "lucide-react";
+import { FileText, FolderGit2, FolderOpen, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
+import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { MetricCard } from "@/components/ui/metric-card";
+import { PageHeader } from "@/components/ui/page-header";
 import { formatSpaceCounts, spaceStatusLabel } from "@/lib/context/kinds";
 import { persistActiveSpaceId } from "@/lib/context/migration";
 import { getContextRepository } from "@/lib/context/service";
@@ -18,6 +22,7 @@ type SourceRow = {
   displayName: string;
   sourceType: "repo" | "pdf" | "file";
   path: string;
+  fileCount: number;
   status: string;
   updatedAt: number;
 };
@@ -38,6 +43,7 @@ function rowsFromSources(sources: StoredSource[]): SourceRow[] {
         displayName: head.displayName,
         sourceType: "pdf",
         path: head.path,
+        fileCount: 1,
         status: head.readiness === "ready" ? "Ready" : head.readiness,
         updatedAt: head.updatedAt,
       });
@@ -47,12 +53,24 @@ function rowsFromSources(sources: StoredSource[]): SourceRow[] {
       key: sourceId,
       displayName: head.displayName,
       sourceType: "repo",
-      path: `${bundle.length} file${bundle.length === 1 ? "" : "s"}`,
+      path: head.path,
+      fileCount: bundle.length,
       status: "Ready",
       updatedAt: Math.max(...bundle.map((row) => row.updatedAt)),
     });
   }
   return rows.sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+function formatRelativeTime(ts: number): string {
+  const delta = Date.now() - ts;
+  const minutes = Math.round(delta / 60_000);
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes} min ago`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 48) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  const days = Math.round(hours / 24);
+  return `${days} day${days === 1 ? "" : "s"} ago`;
 }
 
 export function ContextDetail({ id }: { id: string }) {
@@ -74,6 +92,14 @@ export function ContextDetail({ id }: { id: string }) {
 
   const primaryContextId = space?.primaryContextId ?? id;
   const sourceRows = useMemo(() => rowsFromSources(sources), [sources]);
+  const totalFiles = useMemo(
+    () => sourceRows.reduce((sum, row) => sum + row.fileCount, 0),
+    [sourceRows],
+  );
+  const lastUpdated = useMemo(
+    () => (sourceRows.length > 0 ? Math.max(...sourceRows.map((row) => row.updatedAt)) : null),
+    [sourceRows],
+  );
   const counts = useMemo(() => {
     const repoIds = new Set(sources.filter(isTextSource).map((row) => row.sourceId));
     return { repoCount: repoIds.size, docCount: sources.filter(isPdfSource).length };
@@ -121,15 +147,11 @@ export function ContextDetail({ id }: { id: string }) {
   if (missing) {
     return (
       <ContextShell>
-        <main className="enterprise-page" data-testid="space-missing">
-          <div className="enterprise-card mx-auto max-w-xl p-8 text-center">
-            <FileStack className="mx-auto size-9 text-accent" aria-hidden="true" />
-            <h1 className="mt-5 text-3xl font-semibold tracking-[-0.045em] text-fg">That Knowledge Space is gone.</h1>
-            <p className="mt-2 text-sm text-muted">The local space could not be found for this account.</p>
-            <Link to="/home" className="enterprise-primary mt-6">
-              Back to Knowledge Spaces
-            </Link>
-          </div>
+        <main className="space-y-4 py-10" data-testid="space-missing">
+          <h1 className="ds-display">That Knowledge Space is gone.</h1>
+          <Link to="/home" className="text-accent hover:underline">
+            Back to Knowledge Spaces
+          </Link>
         </main>
       </ContextShell>
     );
@@ -138,166 +160,174 @@ export function ContextDetail({ id }: { id: string }) {
   if (!space) {
     return (
       <ContextShell>
-        <main className="enterprise-page">
-          <div className="enterprise-card p-6 text-sm text-muted">Opening Knowledge Space…</div>
-        </main>
+        <p className="py-10 text-sm text-muted">Opening Knowledge Space…</p>
       </ContextShell>
     );
   }
 
+  const statusVariant =
+    status === "ready" ? "ready" : status === "indexing" ? "indexing" : "error";
+
   return (
-    <ContextShell>
-      <main className="enterprise-page mh-rise space-y-7 pb-16" data-testid="space-detail">
-        <section className="enterprise-space-header">
-          <div className="relative z-10 flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
-            <div className="min-w-0 space-y-3">
-              <div className="flex flex-wrap items-center gap-3">
-                <p className="enterprise-overline">Knowledge Space</p>
-                <span className="mh-chip gap-1.5 text-xs">
-                  <span
-                    className={`size-1.5 rounded-full ${status === "ready" ? "bg-ok" : status === "error" ? "bg-bad" : "bg-warn"}`}
-                    aria-hidden="true"
-                  />
-                  {spaceStatusLabel(status)}
-                </span>
-              </div>
-              <h1 className="truncate text-4xl font-semibold tracking-[-0.055em] text-fg sm:text-5xl lg:text-6xl">
-                {space.name}
-              </h1>
-              <p className="text-sm text-muted">
-                {formatSpaceCounts(counts)}. Ask questions, add more material, or take this space into a live conversation.
-              </p>
-            </div>
+    <ContextShell wide>
+      <main className="mh-rise space-y-8" data-testid="space-detail">
+        <PageHeader
+          overline="Knowledge Space"
+          title={space.name}
+          description="Manage the material MeetHint uses for answers in this space."
+          breadcrumb={
+            <Link to="/home" className="text-sm text-muted hover:text-fg">
+              ← Knowledge Spaces
+            </Link>
+          }
+          actions={
+            <Badge variant={statusVariant} dot>
+              {spaceStatusLabel(status)}
+            </Badge>
+          }
+        />
 
-            <div className="flex flex-wrap gap-2">
-              <Link to="/context/$id/ask" params={{ id: space.id }} className="enterprise-secondary">
-                <MessageSquareText className="size-4 text-accent" aria-hidden="true" />
-                Ask
-              </Link>
-              {sources.length > 0 ? (
-                <Link
-                  to="/context/$id/live"
-                  params={{ id: space.id }}
-                  data-testid="start-live"
-                  className="enterprise-primary"
-                >
-                  <Mic2 className="size-4" aria-hidden="true" />
-                  Start live session
-                </Link>
-              ) : (
-                <span className="enterprise-primary pointer-events-none opacity-50">
-                  <Mic2 className="size-4" aria-hidden="true" />
-                  Start live session
-                </span>
-              )}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Link
+            to="/context/$id/ask"
+            params={{ id: space.id }}
+            className="ds-surface-elevated flex min-h-[5.5rem] flex-col justify-between bg-accent p-4 text-on-accent transition-opacity hover:opacity-95"
+          >
+            <p className="text-sm font-semibold">Ask</p>
+            <p className="text-xs opacity-90">Get an answer now</p>
+          </Link>
+          {sources.length > 0 ? (
+            <Link
+              to="/context/$id/live"
+              params={{ id: space.id }}
+              data-testid="start-live"
+              className="ds-surface-elevated flex min-h-[5.5rem] flex-col justify-between p-4 transition-colors hover:border-accent"
+            >
+              <p className="text-sm font-semibold text-fg">Start live session</p>
+              <p className="text-xs text-muted">Talk with your knowledge</p>
+            </Link>
+          ) : (
+            <div className="ds-surface flex min-h-[5.5rem] flex-col justify-between p-4 opacity-55">
+              <p className="text-sm font-semibold text-fg">Start live session</p>
+              <p className="text-xs text-muted">Add a source first</p>
             </div>
+          )}
+          <button
+            type="button"
+            data-testid="add-repo-folder"
+            className="ds-surface-elevated flex min-h-[5.5rem] flex-col justify-between p-4 text-left transition-colors hover:border-accent"
+            disabled={folderPicker.reading}
+            onClick={() => void folderPicker.offerFolder()}
+          >
+            <FolderOpen aria-hidden className="size-4 text-accent" />
+            <p className="text-sm font-medium text-fg">{folderPicker.reading ? "Reading…" : "Add repo / folder"}</p>
+          </button>
+          <div className="grid grid-cols-2 gap-3 sm:col-span-2 lg:col-span-1">
+            <button
+              type="button"
+              className="ds-surface-elevated flex flex-col justify-between p-4 text-left transition-colors hover:border-accent"
+              onClick={() => filesRef.current?.click()}
+            >
+              <p className="text-sm font-medium text-fg">Add files</p>
+            </button>
+            <button
+              type="button"
+              data-testid="add-pdf"
+              className="ds-surface-elevated flex flex-col justify-between p-4 text-left transition-colors hover:border-accent"
+              onClick={() => pdfRef.current?.click()}
+            >
+              <FileText aria-hidden className="size-4 text-accent" />
+              <p className="text-sm font-medium text-fg">Add PDF</p>
+            </button>
           </div>
-        </section>
+        </div>
 
-        <section className="enterprise-stat-grid" aria-label="Knowledge Space summary">
-          <SummaryCard icon={<FileStack className="size-5" />} value={sources.length} label="Indexed files" />
-          <SummaryCard icon={<Database className="size-5" />} value={sourceRows.length} label="Source bundles" />
-          <SummaryCard
-            icon={<CheckCircle2 className="size-5" />}
+        <div className="ds-metric-grid">
+          <MetricCard label="Total files" value={totalFiles} detail="Indexed on this device" />
+          <MetricCard label="Data sources" value={sourceRows.length} detail={formatSpaceCounts(counts)} />
+          <MetricCard
+            label="Status"
             value={spaceStatusLabel(status)}
-            label="Space status"
-            positive={status === "ready"}
+            detail={status === "ready" ? "All sources indexed" : "Indexing in progress"}
           />
-          <SummaryCard icon={<Activity className="size-5" />} value={counts.repoCount + counts.docCount} label="Repos + PDFs" />
-        </section>
+          <MetricCard
+            label="Last updated"
+            value={lastUpdated ? formatRelativeTime(lastUpdated) : "—"}
+            detail={lastUpdated ? "Most recent source change" : "No sources yet"}
+          />
+        </div>
 
-        <section className="enterprise-card p-4 sm:p-6">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <section className="space-y-4">
+          <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="enterprise-overline">Sources</p>
-              <h2 className="mt-1 enterprise-section-title">Material powering this space</h2>
-              <p className="mt-1 text-xs leading-relaxed text-muted">
-                Add new material without replacing the sources already indexed here.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                data-testid="add-repo-folder"
-                className="enterprise-secondary"
-                disabled={folderPicker.reading}
-                onClick={() => void folderPicker.offerFolder()}
-              >
-                <FolderOpen className="size-4" />
-                {folderPicker.reading ? "Reading…" : "Add repo / folder"}
-              </button>
-              <button type="button" className="enterprise-secondary" onClick={() => filesRef.current?.click()}>
-                <Plus className="size-4" />
-                Add files
-              </button>
-              <button
-                type="button"
-                data-testid="add-pdf"
-                className="enterprise-secondary"
-                onClick={() => pdfRef.current?.click()}
-              >
-                <FileText className="size-4" />
-                Add PDF
-              </button>
+              <h2 className="ds-section-title">Sources</h2>
+              <p className="ds-caption">Manage the content that powers this Knowledge Space.</p>
             </div>
           </div>
 
-          <div className="mt-5">
-            {sourceRows.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-line px-6 py-12 text-center">
-                <FolderOpen className="mx-auto size-8 text-accent" aria-hidden="true" />
-                <h3 className="mt-4 font-semibold text-fg">Add the first source.</h3>
-                <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">
-                  MeetHint needs material in this space before it can search for evidence or start a live session.
-                </p>
-              </div>
-            ) : (
-              <ul className="enterprise-source-table" data-testid="space-source-list">
-                {sourceRows.map((row) => (
-                  <li key={row.key} className="enterprise-source-row">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span className="enterprise-icon-tile size-9 rounded-lg" aria-hidden="true">
-                        {row.sourceType === "pdf" ? <FileText className="size-4" /> : <FolderOpen className="size-4" />}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-fg">{row.displayName}</p>
-                        <p className="mt-0.5 truncate text-xs text-muted">{row.path}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 text-right">
-                      <span className="hidden text-xs text-faint sm:inline">{row.sourceType === "pdf" ? "PDF" : "Repo"}</span>
-                      <span className="mh-chip text-xs">{row.status}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {sourceRows.length === 0 ? (
+            <EmptyState
+              icon={<FolderGit2 aria-hidden />}
+              title="No sources yet"
+              description="Add repos, folders, files, or PDFs. MeetHint indexes them locally for cited answers."
+            />
+          ) : (
+            <div className="ds-surface-elevated overflow-hidden">
+              <table className="ds-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Files</th>
+                    <th>Status</th>
+                    <th>Last synced</th>
+                  </tr>
+                </thead>
+                <tbody data-testid="space-source-list">
+                  {sourceRows.map((row) => (
+                    <tr key={row.key}>
+                      <td>
+                        <div className="min-w-0">
+                          <p className="truncate font-medium text-fg">{row.displayName}</p>
+                          <p className="truncate text-xs text-muted">{row.path}</p>
+                        </div>
+                      </td>
+                      <td>
+                        <Badge variant="local">{row.sourceType === "pdf" ? "PDF" : "Repository"}</Badge>
+                      </td>
+                      <td className="tabular-nums text-fg">{row.fileCount}</td>
+                      <td>
+                        <Badge variant={row.status === "Ready" ? "ready" : "indexing"} dot>
+                          {row.status}
+                        </Badge>
+                      </td>
+                      <td className="text-muted">{formatRelativeTime(row.updatedAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
 
         <div className="border-t border-line pt-6" data-testid="space-menu">
           {confirmDelete ? (
-            <div className="enterprise-card flex flex-col gap-4 border-bad/20 p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-semibold text-fg">Delete this Knowledge Space?</p>
-                <p className="mt-1 text-sm text-muted">Its sources stored on this device will also be deleted.</p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl bg-bad px-4 text-sm font-semibold text-white"
-                  data-testid="confirm-delete"
-                  onClick={async () => {
-                    await deleteStoredContext(space.id);
-                    void navigate({ to: "/home" });
-                  }}
-                >
-                  Delete
-                </button>
-                <button type="button" className="enterprise-secondary" onClick={() => setConfirmDelete(false)}>
-                  Cancel
-                </button>
-              </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="text-sm text-body">Delete this Knowledge Space and its sources on this device?</p>
+              <button
+                type="button"
+                className="mh-cta bg-bad border-bad"
+                data-testid="confirm-delete"
+                onClick={async () => {
+                  await deleteStoredContext(space.id);
+                  void navigate({ to: "/home" });
+                }}
+              >
+                Delete
+              </button>
+              <button type="button" className="text-xs text-muted hover:text-fg" onClick={() => setConfirmDelete(false)}>
+                Cancel
+              </button>
             </div>
           ) : (
             <button
@@ -324,7 +354,7 @@ export function ContextDetail({ id }: { id: string }) {
           multiple
           accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
           className="sr-only"
-          aria-hidden="true"
+          aria-hidden
           tabIndex={-1}
           onChange={(event) => {
             const files = event.target.files;
@@ -338,7 +368,7 @@ export function ContextDetail({ id }: { id: string }) {
           multiple
           accept=".pdf,application/pdf"
           className="sr-only"
-          aria-hidden="true"
+          aria-hidden
           tabIndex={-1}
           onChange={(event) => {
             const files = event.target.files;
@@ -350,30 +380,5 @@ export function ContextDetail({ id }: { id: string }) {
         />
       </main>
     </ContextShell>
-  );
-}
-
-function SummaryCard({
-  icon,
-  value,
-  label,
-  positive,
-}: {
-  icon: React.ReactNode;
-  value: number | string;
-  label: string;
-  positive?: boolean;
-}) {
-  return (
-    <div className="enterprise-card enterprise-stat-card">
-      <div className="flex items-center justify-between gap-3">
-        <span className="enterprise-icon-tile size-9 rounded-lg" aria-hidden="true">
-          {icon}
-        </span>
-        {positive ? <span className="size-2 rounded-full bg-ok" aria-hidden="true" /> : null}
-      </div>
-      <p className="mt-4 truncate text-2xl font-semibold tracking-[-0.04em] text-fg tabular-nums">{value}</p>
-      <p className="mt-1 text-xs text-muted">{label}</p>
-    </div>
   );
 }

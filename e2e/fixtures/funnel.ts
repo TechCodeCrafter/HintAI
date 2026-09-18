@@ -1,5 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 
+import { e2eSignIn, USER_A } from "./auth";
 import { installE2eMocks, openCockpit, typeQuestion, waitForCard } from "./helpers";
 
 const AUTH_ROUTES = /\/(login|sign-in|auth\/)/;
@@ -12,6 +13,7 @@ export async function assertNoAuthRedirect(page: Page, path: string) {
 
 export async function runHomeFirstProof(page: Page) {
   await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
   const started = Date.now();
   await assertNoAuthRedirect(page, "/home");
   await expect(page.getByText("Looking for saved contexts")).toHaveCount(0);

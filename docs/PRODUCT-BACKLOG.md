@@ -635,6 +635,56 @@ When local files are unavailable:
 ### #77 General Document Workspace
 **Status:** 🟡 PARTIAL
 
+### Truth Assessment Layer (post-beta moat)
+
+Architecture note: [TRUTH-ASSESSMENT-LAYER.md](./TRUTH-ASSESSMENT-LAYER.md)
+
+**Do not start during Beta Wave 1.** Reprioritize after #115/#116 using observed unsupported-confident-answer rate, citation trust, and contradiction reports.
+
+Pipeline position: after Literal Verification, before Card. Output is a structured **Truth State** — not another free-form LLM opinion layer. Prefer structured source metadata (authority, effective/expires, customer, region, product version) over model judgment.
+
+Truth states: `VERIFIED` · `POSSIBLE` · `CONFLICTING` · `STALE` · `NO VERIFIED ANSWER`
+
+#### #166 Truth Assessment Layer (Epic)
+**Status:** ⬜ TODO (P2 — post-beta)
+
+Orchestrates the layer between literal verification and answer card. Sub-tickets: #167–#173. Supersedes ad-hoc expansion of #59/#60/#67 into a single coherent pipeline.
+
+#### #167 Truth Assessment Engine
+**Status:** ⬜ TODO
+
+Core orchestrator: accepts admitted evidence + workspace context, runs authority/freshness/applicability/contradiction/supersession checks, emits Truth State + rationale trace.
+
+#### #168 Source Authority Model
+**Status:** ⬜ TODO
+
+Structured authority tiers (e.g. signed contract, policy, runbook, repo, wiki, chat). Related: #60.
+
+#### #169 Freshness / Effective-Date Model
+**Status:** ⬜ TODO
+
+Effective date, expiry, and recency rules; drives **STALE** state separately from **POSSIBLE**. Related: #60, #61.
+
+#### #170 Applicability Rules
+**Status:** ⬜ TODO
+
+Customer, geography, and product/version scoping — “true for whom, where, and which SKU?”
+
+#### #171 Truth Contradiction Detection
+**Status:** ⬜ TODO
+
+Cross-source conflict when multiple applicable sources disagree (e.g. repo vs contract). Extends #59.
+
+#### #172 Superseded Source Detection
+**Status:** ⬜ TODO
+
+Detect when a source is explicitly replaced or deprecated; link supersession chains.
+
+#### #173 Truth State UI
+**Status:** ⬜ TODO
+
+Card and Live surfaces show Truth State clearly; CONFLICTING and STALE get distinct treatment from silence.
+
 ---
 
 ## P3 — Enterprise
@@ -980,6 +1030,7 @@ After Beta Wave 1, the roadmap **must** be reprioritized using observed evidence
 
 **Do not automatically start** until beta evidence justifies them:
 
+- Truth Assessment Layer (#166–#173) — see [TRUTH-ASSESSMENT-LAYER.md](./TRUTH-ASSESSMENT-LAYER.md)
 - Slack
 - Jira
 - Confluence

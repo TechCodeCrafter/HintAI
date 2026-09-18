@@ -1,9 +1,25 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { BookOpenCheck, CheckCircle2, FileCode2, FileText, FolderOpen, LockKeyhole, Sparkles, Upload } from "lucide-react";
+import {
+  BookOpen,
+  Briefcase,
+  FileText,
+  FolderOpen,
+  GraduationCap,
+  Lightbulb,
+  Lock,
+  Presentation,
+  Sparkles,
+  Upload,
+  Zap,
+} from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
+import { DropzoneCard } from "@/components/ui/dropzone-card";
+import { Input } from "@/components/ui/input";
+import { MetricCard } from "@/components/ui/metric-card";
+import { PageHeader } from "@/components/ui/page-header";
 import { CONTEXT_KINDS } from "@/lib/context/kinds";
 import type { ContextKind } from "@/lib/context/types";
 import { cn } from "@/lib/cn";
@@ -13,6 +29,15 @@ import { useMeetHint } from "@/lib/store";
 type Step = "identity" | "material" | "indexing";
 
 const COMING_SOON = ["PPTX"] as const;
+
+const KIND_ICONS: Record<ContextKind, typeof Briefcase> = {
+  work: Briefcase,
+  course: GraduationCap,
+  client: Briefcase,
+  presentation: Presentation,
+  research: Lightbulb,
+  other: Sparkles,
+};
 
 export function CreateContextFlow() {
   const navigate = useNavigate();
@@ -88,62 +113,49 @@ export function CreateContextFlow() {
   const indexingDone = step === "indexing" && contextStatus === "ready" && !loadingFolder;
 
   return (
-    <ContextShell>
-      <main className="enterprise-page mh-rise pb-16">
-        {step === "identity" ? (
-          <div className="enterprise-create-grid">
-            <section className="space-y-8">
-              <header className="enterprise-page-heading">
-                <p className="enterprise-overline">New Knowledge Space</p>
-                <h1 className="enterprise-title">Create a knowledge space.</h1>
-                <p className="enterprise-subtitle">
-                  Group the material MeetHint should use for one project, customer, course, presentation, or research topic.
-                </p>
-              </header>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-4">
-                  <h2 className="enterprise-section-title">1. What are you working with?</h2>
-                  <span className="hidden text-xs text-muted sm:block">Choose the closest fit.</span>
+    <ContextShell wide>
+      <main className="mh-rise pb-16">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start">
+          <div className="space-y-8">
+            {step === "identity" ? (
+              <section className="space-y-6">
+                <PageHeader
+                  overline="New context"
+                  title="Create a knowledge space."
+                  description="Give MeetHint a focused context so you get better, more relevant answers. You can always add or change details later."
+                />
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-fg">What are you working with?</p>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {CONTEXT_KINDS.map((item) => {
+                      const Icon = KIND_ICONS[item.id];
+                      const selected = kind === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          data-testid={`context-type-${item.id}`}
+                          data-selected={selected ? "true" : "false"}
+                          onClick={() => setKind(item.id)}
+                          className={cn(
+                            "ds-card-interactive relative min-h-[5.5rem] p-3 text-left",
+                            selected && "border-accent bg-accent-soft",
+                          )}
+                        >
+                          {selected ? (
+                            <span className="absolute top-2.5 right-2.5 size-4 rounded-full border-2 border-accent bg-accent" aria-hidden />
+                          ) : null}
+                          <Icon aria-hidden className="mb-2 size-4 text-accent" />
+                          <p className="text-sm font-medium text-fg">{item.label}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="enterprise-kind-grid">
-                  {CONTEXT_KINDS.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      data-testid={`context-type-${item.id}`}
-                      data-selected={kind === item.id ? "true" : undefined}
-                      onClick={() => setKind(item.id)}
-                      className="enterprise-card enterprise-card-interactive enterprise-kind-card"
-                    >
-                      <span className="enterprise-icon-tile mb-5" aria-hidden="true">
-                        <Sparkles className="size-5" />
-                      </span>
-                      <span className="block pr-6 text-[15px] font-semibold text-fg">{item.label}</span>
-                      <span className="mt-2 block text-xs leading-relaxed text-muted">
-                        Keep the material and answers for this work together.
-                      </span>
-                      <span
-                        className={cn(
-                          "absolute right-4 top-4 grid size-5 place-items-center rounded-full border",
-                          kind === item.id ? "border-accent bg-accent text-white" : "border-line bg-surface",
-                        )}
-                        aria-hidden="true"
-                      >
-                        {kind === item.id ? <CheckCircle2 className="size-3.5" /> : null}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h2 className="enterprise-section-title">2. Add the details</h2>
-                <div className="enterprise-card space-y-5 p-5 sm:p-6">
+                <div className="space-y-4">
                   <label className="block space-y-2">
-                    <span className="text-xs font-medium text-secondary">Name</span>
-                    <input
-                      className="mh-field w-full px-4"
+                    <span className="text-xs font-medium text-muted">Name</span>
+                    <Input
                       data-testid="context-name"
                       value={name}
                       onChange={(event) => setName(event.target.value)}
@@ -152,209 +164,135 @@ export function CreateContextFlow() {
                     />
                   </label>
                   <label className="block space-y-2">
-                    <span className="text-xs font-medium text-secondary">Description (optional)</span>
-                    <input
-                      className="mh-field w-full px-4"
+                    <span className="text-xs font-medium text-muted">Description (optional)</span>
+                    <Input
                       value={description}
                       onChange={(event) => setDescription(event.target.value)}
                       placeholder="Checkout recovery, exporter retries"
                       autoComplete="off"
                     />
-                    <span className="block text-xs leading-relaxed text-faint">
-                      A short description helps you recognize the space later. It does not replace the material you add.
-                    </span>
                   </label>
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <button
-                      type="button"
-                      className="enterprise-primary"
-                      data-testid="create-context-submit"
-                      disabled={!kind || !name.trim() || creating}
-                      onClick={() => void continueToMaterial()}
-                    >
-                      {creating ? "Creating…" : "Create space"}
-                    </button>
-                    <Link to="/home" className="enterprise-secondary">
-                      Cancel
-                    </Link>
-                  </div>
                 </div>
-              </div>
-            </section>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    className="mh-cta"
+                    data-testid="create-context-submit"
+                    disabled={!kind || !name.trim() || creating}
+                    onClick={() => void continueToMaterial()}
+                  >
+                    {creating ? "Creating…" : "Create space →"}
+                  </button>
+                  <Link to="/home" className="inline-flex h-11 items-center px-2 text-sm text-muted hover:text-fg">
+                    Cancel
+                  </Link>
+                </div>
+              </section>
+            ) : null}
 
-            <aside className="enterprise-card enterprise-helper-panel space-y-7">
-              <div className="space-y-3">
-                <span className="enterprise-icon-tile" aria-hidden="true">
-                  <BookOpenCheck className="size-5" />
-                </span>
-                <h2 className="text-xl font-semibold tracking-[-0.035em] text-fg">Your material, one clear scope.</h2>
-                <p className="text-sm leading-relaxed text-muted">
-                  A Knowledge Space defines the material MeetHint can search for this conversation or task.
-                </p>
-              </div>
-              <HelperPoint
-                icon={<FileCode2 className="size-4" />}
-                title="Keep related sources together"
-                body="Add code, documents, notes, spreadsheets, or PDFs that belong to the same body of work."
-              />
-              <HelperPoint
-                icon={<LockKeyhole className="size-4" />}
-                title="Stay grounded in the space"
-                body="Answers should come from material available to this space, with evidence attached when supported."
-              />
-              <div className="rounded-xl border border-accent/15 bg-accent-soft p-4 text-xs leading-relaxed text-body">
-                You can add more sources after the space is created.
-              </div>
-            </aside>
-          </div>
-        ) : null}
+            {step === "material" ? (
+              <section className="space-y-6">
+                <PageHeader
+                  overline={name.trim() || "New context"}
+                  title="Add material"
+                  description="Add content to this Knowledge Space. MeetHint indexes it so it can answer from it."
+                />
+                <div className="grid gap-3 md:grid-cols-3">
+                  <DropzoneCard
+                    icon={<FolderOpen aria-hidden />}
+                    title="Upload repo or folder"
+                    description="Paste a Git URL or drag & drop a folder"
+                    footer="GitHub repos or local folders"
+                    disabled={folderPicker.reading}
+                    testId="upload-folder-button"
+                    onClick={() => void folderPicker.offerFolder()}
+                  />
+                  <DropzoneCard
+                    icon={<Upload aria-hidden />}
+                    title="Upload files"
+                    description="Drag & drop files or click to browse"
+                    footer="Markdown, text, code, DOCX, XLSX, CSV"
+                    testId="upload-files-button"
+                    onClick={() => filesRef.current?.click()}
+                  />
+                  <DropzoneCard
+                    icon={<FileText aria-hidden />}
+                    title="Add PDFs"
+                    description="Drag & drop PDFs or click to browse"
+                    footer="Text or scanned PDFs (limits apply)"
+                    onClick={() => pdfRef.current?.click()}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {COMING_SOON.map((label) => (
+                    <span key={label} className="mh-chip border-dashed">
+                      {label}
+                      <span className="text-faint">Coming soon</span>
+                    </span>
+                  ))}
+                </div>
+                <input
+                  ref={filesRef}
+                  type="file"
+                  multiple
+                  accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
+                  className="sr-only"
+                  aria-hidden
+                  tabIndex={-1}
+                  onChange={(event) => {
+                    const files = event.target.files;
+                    if (files && files.length > 0) void addFolder(files);
+                    event.target.value = "";
+                  }}
+                />
+                <input
+                  ref={pdfRef}
+                  type="file"
+                  multiple
+                  accept=".pdf,application/pdf"
+                  className="sr-only"
+                  aria-hidden
+                  tabIndex={-1}
+                  onChange={(event) => {
+                    const files = event.target.files;
+                    if (files && files.length > 0) void addPdfs(files);
+                    event.target.value = "";
+                  }}
+                />
+              </section>
+            ) : null}
 
-        {step === "material" ? (
-          <div className="space-y-8">
-            <header className="enterprise-page-heading">
-              <p className="enterprise-overline">{name.trim() || "New Knowledge Space"}</p>
-              <h1 className="enterprise-title">Add material.</h1>
-              <p className="enterprise-subtitle">
-                Add the files MeetHint is allowed to use for answers in this space. Indexing begins after you choose material.
-              </p>
-            </header>
-
-            <section className="enterprise-material-grid" aria-label="Add material options">
-              <button
-                type="button"
-                data-testid="upload-folder-button"
-                className="enterprise-card enterprise-card-interactive enterprise-material-card flex flex-col items-start text-left"
-                disabled={folderPicker.reading}
-                onClick={() => void folderPicker.offerFolder()}
+            {step === "indexing" ? (
+              <section
+                className="space-y-6"
+                data-testid={indexingDone ? "indexing-complete" : "indexing"}
               >
-                <span className="enterprise-icon-tile" aria-hidden="true">
-                  <FolderOpen className="size-5" />
-                </span>
-                <span className="mt-7 text-lg font-semibold tracking-[-0.025em] text-fg">
-                  {folderPicker.reading ? "Reading folder…" : "Upload repo or folder"}
-                </span>
-                <span className="mt-2 text-sm leading-relaxed text-muted">
-                  Bring a local project or folder of supported text and code files into this space.
-                </span>
-                <span className="mt-auto pt-6 text-xs font-medium text-accent">Choose a folder</span>
-              </button>
-
-              <button
-                type="button"
-                data-testid="upload-files-button"
-                className="enterprise-card enterprise-card-interactive enterprise-material-card flex flex-col items-start text-left"
-                onClick={() => filesRef.current?.click()}
-              >
-                <span className="enterprise-icon-tile" aria-hidden="true">
-                  <Upload className="size-5" />
-                </span>
-                <span className="mt-7 text-lg font-semibold tracking-[-0.025em] text-fg">Upload files</span>
-                <span className="mt-2 text-sm leading-relaxed text-muted">
-                  Markdown, text, source code, DOCX, XLSX, CSV, JSON, CSS, YAML, and more supported source files.
-                </span>
-                <span className="mt-auto pt-6 text-xs font-medium text-accent">Choose files</span>
-              </button>
-
-              <button
-                type="button"
-                className="enterprise-card enterprise-card-interactive enterprise-material-card flex flex-col items-start text-left"
-                onClick={() => pdfRef.current?.click()}
-              >
-                <span className="enterprise-icon-tile" aria-hidden="true">
-                  <FileText className="size-5" />
-                </span>
-                <span className="mt-7 text-lg font-semibold tracking-[-0.025em] text-fg">Add PDFs</span>
-                <span className="mt-2 text-sm leading-relaxed text-muted">
-                  Add PDF documents separately so MeetHint can index document evidence and page references.
-                </span>
-                <span className="mt-auto pt-6 text-xs font-medium text-accent">Choose PDFs</span>
-              </button>
-            </section>
-
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-surface px-5 py-4">
-              <p className="text-sm text-muted">PPTX is not supported yet.</p>
-              <div className="flex flex-wrap gap-2">
-                {COMING_SOON.map((label) => (
-                  <span key={label} className="mh-chip border-dashed text-xs">
-                    {label}
-                    <span className="text-faint">Coming soon</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <input
-              ref={filesRef}
-              type="file"
-              multiple
-              accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              onChange={(event) => {
-                const files = event.target.files;
-                if (files && files.length > 0) void addFolder(files);
-                event.target.value = "";
-              }}
-            />
-            <input
-              ref={pdfRef}
-              type="file"
-              multiple
-              accept=".pdf,application/pdf"
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-              onChange={(event) => {
-                const files = event.target.files;
-                if (files && files.length > 0) void addPdfs(files);
-                event.target.value = "";
-              }}
-            />
-          </div>
-        ) : null}
-
-        {step === "indexing" ? (
-          <section
-            className="mx-auto max-w-3xl space-y-7"
-            data-testid={indexingDone ? "indexing-complete" : "indexing"}
-          >
-            <div className="enterprise-card p-6 sm:p-8">
-              <div className="flex flex-col items-center text-center">
-                <span className="enterprise-icon-tile size-12" aria-hidden="true">
-                  {indexingDone ? <CheckCircle2 className="size-6" /> : <Sparkles className="size-6" />}
-                </span>
-                <p className="enterprise-overline mt-6">{name.trim() || "Knowledge Space"}</p>
-                <h1 className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-fg sm:text-5xl">
-                  {indexingDone ? "Ready to ask." : "Indexing your material…"}
-                </h1>
-                <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted">
-                  {indexingDone
-                    ? "Your material is indexed and ready for cited search."
-                    : "MeetHint is preparing the material so answers can point back to supporting evidence."}
-                </p>
-              </div>
-
-              <div className="mh-progress mt-8" aria-hidden="true">
-                <span style={{ width: `${progress}%` }} />
-              </div>
-
-              <dl className="enterprise-stat-grid mt-7" data-testid="index-stats">
-                <Stat label="sources" value={sourceCount} />
-                <Stat label="evidence spans" value={chunks.length} />
-                <Stat label="code symbols" value={symbolCount} />
-              </dl>
-
-              {folderError ? (
-                <p className="mt-5 rounded-xl border border-warn/20 bg-warn/5 px-4 py-3 text-sm text-warn" role="status">
-                  {folderError}
-                </p>
-              ) : null}
-
-              <div className="mt-7 flex justify-center">
+                <PageHeader
+                  overline={name.trim() || "Context"}
+                  title={indexingDone ? "Ready" : "Indexing…"}
+                  description={
+                    indexingDone
+                      ? "Your material is indexed. Open the Knowledge Space or start a live session."
+                      : "MeetHint is reading and indexing your material on this device."
+                  }
+                />
+                <div className="mh-progress" aria-hidden="true">
+                  <span style={{ width: `${progress}%` }} />
+                </div>
+                <div className="ds-metric-grid" data-testid="index-stats">
+                  <MetricCard label="Sources" value={sourceCount} />
+                  <MetricCard label="Evidence spans" value={chunks.length} />
+                  <MetricCard label="Code symbols" value={symbolCount} />
+                  <MetricCard label="Progress" value={`${progress}%`} />
+                </div>
+                {folderError ? (
+                  <p className="text-sm text-warn" role="status">
+                    {folderError}
+                  </p>
+                ) : null}
                 <button
                   type="button"
-                  className="enterprise-primary"
+                  className="mh-cta"
                   data-testid="indexing-done"
                   disabled={!indexingDone || !workingId || busy}
                   onClick={() => {
@@ -362,48 +300,67 @@ export function CreateContextFlow() {
                     void navigate({ to: "/context/$id", params: { id: workingId } });
                   }}
                 >
-                  Open Knowledge Space
+                  Done
                 </button>
-              </div>
-            </div>
-          </section>
-        ) : null}
+              </section>
+            ) : null}
 
-        <FolderPickerFields
-          picker={folderPicker}
-          onIndex={(files, options) => {
-            void addFolder(files, options);
-          }}
-        />
-        <p className="mt-8 text-xs text-faint">
-          <Link to="/home" className="hover:text-fg">
-            Back to Knowledge Spaces
-          </Link>
-        </p>
+            <FolderPickerFields
+              picker={folderPicker}
+              onIndex={(files, options) => {
+                void addFolder(files, options);
+              }}
+            />
+            <p className="text-xs text-faint">
+              <Link to="/home" className="hover:text-fg">
+                ← Back to Knowledge Spaces
+              </Link>
+            </p>
+          </div>
+
+          <aside className="ds-surface-elevated hidden space-y-6 p-6 lg:block">
+            <div className="ds-surface-subtle space-y-2 p-4">
+              <p className="text-sm font-medium text-fg">Your knowledge, always in context.</p>
+              <p className="ds-caption">Turn your materials into better answers during live conversations.</p>
+            </div>
+            <ul className="space-y-4">
+              <li className="flex gap-3">
+                <span className="trust-feature-icon">
+                  <BookOpen aria-hidden className="size-4" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-fg">Keep everything in one place</p>
+                  <p className="ds-caption">Add repos, folders, files, and PDFs to a Knowledge Space.</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="trust-feature-icon">
+                  <Zap aria-hidden className="size-4" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-fg">Get answers that understand your context</p>
+                  <p className="ds-caption">Search and live sessions stay scoped to this space.</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="trust-feature-icon">
+                  <Lock aria-hidden className="size-4" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-fg">Private and local</p>
+                  <p className="ds-caption">Your data stays on device — not used for training.</p>
+                </div>
+              </li>
+            </ul>
+            <div className="rounded-lg bg-accent-soft p-4">
+              <p className="text-sm text-fg">
+                <Sparkles aria-hidden className="mr-1 inline size-3.5 text-accent" />
+                Be specific with the name and description — it helps you find the right space later.
+              </p>
+            </div>
+          </aside>
+        </div>
       </main>
     </ContextShell>
-  );
-}
-
-function HelperPoint({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
-  return (
-    <div className="flex gap-3">
-      <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent" aria-hidden="true">
-        {icon}
-      </span>
-      <div className="space-y-1">
-        <p className="text-sm font-semibold text-fg">{title}</p>
-        <p className="text-xs leading-relaxed text-muted">{body}</p>
-      </div>
-    </div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="enterprise-stat-card rounded-xl border border-line bg-subtle/55">
-      <p className="text-2xl font-semibold tracking-[-0.04em] text-fg tabular-nums">{value.toLocaleString()}</p>
-      <p className="mt-1 text-xs text-muted">{label}</p>
-    </div>
   );
 }

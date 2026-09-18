@@ -69,37 +69,60 @@ const MATERIAL: MaterialChip[] = [
 
 const USE_CASES = [
   {
-    title: "Class & office hours",
-    asked: "What did lecture four actually cover?",
-    found: "lecture-04.pdf + notes",
+    title: "Sales",
+    asked: "Does the contract allow automatic renewal?",
+    found: "MSA.pdf · §8.2",
+    body: "Answer prospect questions using the material your team loaded.",
   },
   {
-    title: "Incident review",
+    title: "Solutions Engineering",
+    asked: "What is the architecture of this application?",
+    found: "architecture.md + src/",
+    body: "Find technical answers while the customer is still asking.",
+  },
+  {
+    title: "Customer Success",
+    asked: "What does the SLA say about uptime?",
+    found: "sla.pdf · Page 4",
+    body: "Resolve customer questions with cited passages from your docs.",
+  },
+  {
+    title: "Implementation",
+    asked: "Which environment variables are required?",
+    found: "README.md + config/",
+    body: "Onboard faster with answers tied to your runbooks.",
+  },
+  {
+    title: "Security",
+    asked: "Where is customer data stored?",
+    found: "security-overview.md",
+    body: "Find the source behind security and compliance answers.",
+  },
+  {
+    title: "Engineering",
     asked: "Why did authentication fail?",
     found: "incident-582.md + runbook",
+    body: "Search code, documentation, and architecture notes.",
   },
   {
-    title: "Client & contract",
+    title: "Legal",
     asked: "Does the agreement auto-renew?",
     found: "MSA.pdf · §8.2",
+    body: "Cite contract language during live review.",
   },
   {
-    title: "Sales call",
-    asked: "Does the enterprise plan include SSO?",
-    found: "pricing.pdf + product overview",
-  },
-  {
-    title: "Presentation",
-    asked: "Which source supports this claim?",
-    found: "deck appendix + research",
+    title: "Research",
+    asked: "What did lecture four actually cover?",
+    found: "lecture-04.pdf + notes",
+    body: "Pull answers from papers, notes, and reference material.",
   },
 ] as const;
 
 const STEPS = [
-  { id: "01", title: "Listening", body: `${MEETHINT_NAME} picks up the question that is actually being asked.` },
-  { id: "02", title: "Searching your files", body: "It searches the notes, docs, slides, or folder you loaded." },
-  { id: "03", title: "Finding the match", body: `${MEETHINT_NAME} pulls the passage that answers the question.` },
-  { id: "04", title: "Cited answer ready", body: "You get the answer with the file and line that support it." },
+  { id: "01", title: "Hear the question", body: `${MEETHINT_NAME} picks up the question that is actually being asked.` },
+  { id: "02", title: "Search your material", body: "It searches the notes, docs, slides, or folder you loaded." },
+  { id: "03", title: "Find the match", body: `${MEETHINT_NAME} pulls the passage that answers the question.` },
+  { id: "04", title: "Cite the answer", body: "You get the answer with the file and line that support it." },
 ] as const;
 
 function useReducedMotion(): boolean {
@@ -535,9 +558,14 @@ export function MeetHintLanding() {
                 Docs
               </a>
             </nav>
-            <a href="/home" className="hint-btn hint-btn-primary !text-white">
-              Try {MEETHINT_MARK}
-            </a>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <a href="/login" className="hidden text-[15px] text-[var(--hint-muted)] hover:text-[var(--hint-text)] sm:inline">
+                Sign in
+              </a>
+              <a href="/home" className="hint-btn hint-btn-primary !text-white">
+                Try {MEETHINT_MARK}
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -545,14 +573,17 @@ export function MeetHintLanding() {
       <main>
         <section className="hint-wrap grid items-center gap-12 py-16 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-16 lg:py-24">
           <div className="space-y-7">
-            <p className="hint-kicker">Live answers from your own material</p>
+            <p className="hint-kicker">Your knowledge. In the conversation.</p>
             <h1 className="hint-display text-[2.6rem] sm:text-5xl lg:text-[3.4rem]">
               Know the answer
               <span className="block">while they're still asking.</span>
             </h1>
             <p className="hint-lede max-w-md">
-              {MEETHINT_MARK} listens to the conversation, searches the material you trust, and surfaces a cited
-              answer in seconds.
+              {MEETHINT_NAME} listens to the conversation, checks the material you loaded, and returns a cited answer
+              in seconds.
+            </p>
+            <p className="max-w-md text-[14px] text-[var(--hint-muted)]">
+              If your material doesn&apos;t support the answer, {MEETHINT_MARK} stays silent.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row">
               <a href="/home" className="hint-btn hint-btn-primary !text-white [&_svg]:text-white">
@@ -670,25 +701,50 @@ export function MeetHintLanding() {
 
         <section id="use-cases" className="hint-wrap space-y-10 py-16">
           <h2 className="hint-display max-w-2xl text-3xl sm:text-4xl">Any room. Their question. Your source.</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {USE_CASES.map((item) => (
-              <article key={item.title} className="hint-card space-y-5 p-5">
-                <p className="text-[13px] text-[var(--hint-muted)]">{item.title}</p>
-                <p className="text-[1.15rem] leading-snug font-medium">“{item.asked}”</p>
+              <article key={item.title} className="hint-card space-y-4 p-5">
+                <p className="text-[13px] font-medium text-[var(--hint-accent)]">{item.title}</p>
+                <p className="text-[14px] leading-relaxed text-[var(--hint-muted)]">{item.body}</p>
+                <p className="text-[1.05rem] leading-snug font-medium">“{item.asked}”</p>
                 <p className="flex flex-wrap items-center gap-2 text-[13px]">
-                  <span className="size-1.5 rounded-full bg-[var(--hint-accent)]" />
+                  <span className="size-1.5 rounded-full bg-[var(--hint-ok)]" />
                   <span className="text-[var(--hint-muted)]">Found in</span>
                   <span>{item.found}</span>
                 </p>
               </article>
             ))}
-            <article className="hint-card flex flex-col justify-between gap-6 p-5">
-              <p className="text-[13px] text-[var(--hint-muted)]">Your files</p>
-              <div className="space-y-2">
-                <p className="text-[1.15rem] font-medium">Their question.</p>
-                <p className="text-[1.15rem] font-medium text-[var(--hint-accent)]">Your cited answer.</p>
-              </div>
-            </article>
+          </div>
+        </section>
+
+        <section className="hint-wrap py-16">
+          <div className="hint-card grid gap-8 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center">
+            <div className="space-y-4">
+              <h2 className="hint-display text-3xl sm:text-4xl">
+                If your material doesn&apos;t support the answer,
+                <span className="block">{MEETHINT_MARK} stays quiet.</span>
+              </h2>
+              <p className="text-[17px] leading-relaxed text-[var(--hint-muted)]">
+                No invented answers. No general-knowledge fallback. When your files cannot support a response, the
+                card stays empty with a specific reason.
+              </p>
+            </div>
+            <ProductFrame
+              tone="light"
+              phase="answered"
+              question="Do we have a data processing agreement with them?"
+              beat={BEATS[2]!}
+            />
+          </div>
+        </section>
+
+        <section className="hint-wrap py-8">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {["Local-first", "Cited answers", "Quiet when unsupported", "Your material only"].map((label) => (
+              <span key={label} className="hint-chip">
+                {label}
+              </span>
+            ))}
           </div>
         </section>
 

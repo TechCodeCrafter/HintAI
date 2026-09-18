@@ -7,13 +7,18 @@
  * we fetch it or fall back to GitHub raw.
  */
 import { execSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+/** Canonical landing demo clip (served at /demo/meethint-demo-cutaway.mp4). */
+const DEMO_CLIP = "meethint-demo-cutaway.mp4";
+/** Preferred source — brag export used for the landing product cut. */
+const LOCAL_SOURCE = join("assets", "brag", "ad.mp4");
+
 /** Last commit on main lineage that still tracked the mp4 in git. */
 const PINNED_COMMITS = ["54057ff", "ba30b35"];
-const FILES = ["meethint-demo-cutaway.mp4"];
+const FILES = [DEMO_CLIP];
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const destDir = join(root, "public/demo");
@@ -64,8 +69,19 @@ async function downloadFromGitHub(commit, name) {
   return bytes;
 }
 
+function copyFromAssets(name) {
+  const source = join(root, LOCAL_SOURCE);
+  const dest = join(destDir, name);
+  if (!existsSync(source)) return false;
+  copyFileSync(source, dest);
+  console.log(`[copy-demo-media] Copied ${LOCAL_SOURCE} → public/demo/${name}.`);
+  return true;
+}
+
 async function restoreFile(name) {
   const dest = join(destDir, name);
+  if (name === DEMO_CLIP && copyFromAssets(name)) return;
+
   if (existsSync(dest) && statSync(dest).size > 1024) {
     console.log(`[copy-demo-media] ${name} already present — skipping.`);
     return;

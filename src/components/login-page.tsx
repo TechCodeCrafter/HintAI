@@ -1,16 +1,35 @@
 "use client";
 
-import { Navigate } from "@tanstack/react-router";
-import { BookOpenCheck, LockKeyhole, ShieldCheck } from "lucide-react";
+import { Link, Navigate } from "@tanstack/react-router";
+import { FileText, Lock, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { AuthLoading } from "@/components/require-auth";
+import { Button } from "@/components/ui/button";
 import { authClient, authEnabled, signIn, signInWithGoogle } from "@/lib/auth/client";
 import { GROK_PROVIDERS } from "@/lib/auth/providers";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useClientMounted } from "@/lib/use-client-mounted";
 
 const E2E_EMAIL_AUTH = import.meta.env.VITE_E2E === "true";
+
+const TRUST_FEATURES = [
+  {
+    icon: Lock,
+    title: "Secure by default",
+    body: "Your account and Knowledge Spaces stay tied to you — no shared workspaces.",
+  },
+  {
+    icon: FileText,
+    title: "Local-first",
+    body: "Material is read on your device and indexed locally. Nothing is uploaded.",
+  },
+  {
+    icon: Shield,
+    title: "Cited answers",
+    body: "MeetHint speaks only when it can point to evidence in your material.",
+  },
+] as const;
 
 export function LoginPage() {
   const mounted = useClientMounted();
@@ -91,176 +110,147 @@ export function LoginPage() {
   }
 
   return (
-    <main className="enterprise-login text-fg" data-testid="login-page">
-      <nav className="enterprise-login-nav" aria-label="Sign in navigation">
-        <a href="/" className="enterprise-brand text-fg" aria-label="MeetHint home">
-          <MeetHintMark className="size-9" />
-          <span className="brand-word">Hint</span>
-        </a>
-        <a href="/" className="enterprise-secondary hidden sm:inline-flex">
-          Back to MeetHint
-        </a>
-      </nav>
+    <main className="login-layout" data-testid="login-page">
+      <section className="login-trust-panel">
+        <div className="space-y-4">
+          <p className="ds-overline">Your knowledge. In the conversation.</p>
+          <h1 className="ds-display max-w-md">Sign in to MeetHint</h1>
+          <p className="ds-body max-w-lg">
+            Access your Knowledge Spaces, ask questions against your material, and get cited answers you can trust —
+            securely and instantly.
+          </p>
+        </div>
+        <ul className="space-y-5">
+          {TRUST_FEATURES.map(({ icon: Icon, title, body }) => (
+            <li key={title} className="trust-feature">
+              <span className="trust-feature-icon">
+                <Icon aria-hidden className="size-4" />
+              </span>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-fg">{title}</p>
+                <p className="ds-caption">{body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      <div className="enterprise-login-grid">
-        <section className="enterprise-login-copy space-y-7">
-          <p className="enterprise-overline">Your knowledge. In the conversation.</p>
-          <div className="space-y-5">
-            <h1>Sign in to MeetHint</h1>
-            <p className="max-w-xl text-[17px] leading-relaxed text-body sm:text-lg">
-              Access your Knowledge Spaces, ask your material, and get answers that point back to the source.
+      <section className="login-card-panel">
+        <div className="login-card space-y-6">
+          <div className="space-y-3 text-center">
+            <MeetHintMark className="mx-auto size-12" />
+            <h2 className="text-lg font-semibold text-fg">Welcome back</h2>
+            <p className="text-sm text-muted">
+              Sign in to access your MeetHint Knowledge Spaces.
             </p>
           </div>
 
-          <div className="enterprise-trust-list space-y-5 pt-3">
-            <TrustItem
-              icon={<ShieldCheck className="size-5" />}
-              title="Your material stays scoped"
-              body="MeetHint searches the material available to your workspace and Knowledge Space."
-            />
-            <TrustItem
-              icon={<BookOpenCheck className="size-5" />}
-              title="Answers come with receipts"
-              body="Supported answers show the file, section, line, or page used as evidence."
-            />
-            <TrustItem
-              icon={<LockKeyhole className="size-5" />}
-              title="Quiet when unsupported"
-              body="If your material does not support an answer, MeetHint does not invent one."
-            />
-          </div>
-        </section>
-
-        <section className="enterprise-login-card" aria-labelledby="login-title">
-          <div className="mx-auto max-w-md space-y-7">
-            <div className="space-y-3 text-center">
-              <MeetHintMark className="mx-auto size-12" />
-              <div className="space-y-2">
-                <h2 id="login-title" className="text-2xl font-semibold tracking-[-0.035em] text-fg">
-                  Welcome back
-                </h2>
-                <p className="text-sm leading-relaxed text-muted">
-                  {googleDirect
-                    ? "Continue with Google to access your MeetHint workspace."
-                    : "Continue with your configured provider to access your MeetHint workspace."}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              {googleDirect ? (
-                <button
+          <div className="space-y-2">
+            {googleDirect ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                data-testid="login-oauth-google"
+                disabled={busy || !oauthReady}
+                onClick={() => {
+                  setBusy(true);
+                  void signInWithGoogle({ callbackURL: "/home" }).catch((err) => {
+                    setError(err instanceof Error ? err.message : String(err));
+                    setBusy(false);
+                  });
+                }}
+              >
+                Continue with Google
+              </Button>
+            ) : (
+              GROK_PROVIDERS.map((provider) => (
+                <Button
+                  key={provider.providerId}
                   type="button"
-                  data-testid="login-oauth-google"
+                  variant="outline"
+                  size="lg"
+                  className="w-full"
+                  data-testid={`login-oauth-${provider.providerId}`}
                   disabled={busy || !oauthReady}
                   onClick={() => {
                     setBusy(true);
-                    void signInWithGoogle({ callbackURL: "/home" }).catch((err) => {
+                    void signIn(provider.providerId, { callbackURL: "/home" }).catch((err) => {
                       setError(err instanceof Error ? err.message : String(err));
                       setBusy(false);
                     });
                   }}
-                  className="enterprise-login-provider w-full cursor-pointer border border-line bg-surface px-4 text-sm font-semibold text-fg hover:bg-subtle disabled:cursor-wait disabled:opacity-60"
                 >
-                  Continue with Google
-                </button>
-              ) : (
-                GROK_PROVIDERS.map((provider) => (
-                  <button
-                    key={provider.providerId}
-                    type="button"
-                    data-testid={`login-oauth-${provider.providerId}`}
-                    disabled={busy || !oauthReady}
-                    onClick={() => {
-                      setBusy(true);
-                      void signIn(provider.providerId, { callbackURL: "/home" }).catch((err) => {
-                        setError(err instanceof Error ? err.message : String(err));
-                        setBusy(false);
-                      });
-                    }}
-                    className="enterprise-login-provider w-full cursor-pointer border border-line bg-surface px-4 text-sm font-semibold text-fg hover:bg-subtle disabled:cursor-wait disabled:opacity-60"
-                  >
-                    Continue with {provider.label}
-                  </button>
-                ))
-              )}
-            </div>
-
-            {E2E_EMAIL_AUTH ? (
-              <form className="space-y-3 border-t border-line pt-5" onSubmit={submitEmail} data-testid="login-email-form">
-                <p className="text-xs text-muted">Email sign-in (E2E builds only)</p>
-                {mode === "sign-up" ? (
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="mh-field w-full px-3 text-sm"
-                    data-testid="login-name"
-                  />
-                ) : null}
-                <input
-                  type="email"
-                  required
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mh-field w-full px-3 text-sm"
-                  data-testid="login-email"
-                />
-                <input
-                  type="password"
-                  required
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mh-field w-full px-3 text-sm"
-                  data-testid="login-password"
-                />
-                <button
-                  type="submit"
-                  disabled={busy}
-                  className="enterprise-primary w-full disabled:opacity-60"
-                  data-testid="login-email-submit"
-                >
-                  {mode === "sign-up" ? "Create account" : "Sign in with email"}
-                </button>
-                <button
-                  type="button"
-                  className="text-xs text-muted underline-offset-2 hover:text-fg hover:underline"
-                  onClick={() => setMode(mode === "sign-in" ? "sign-up" : "sign-in")}
-                >
-                  {mode === "sign-in" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-                </button>
-              </form>
-            ) : null}
-
-            {error ? (
-              <p className="rounded-xl border border-bad/20 bg-bad/5 px-4 py-3 text-sm text-bad" role="alert" data-testid="login-error">
-                {error}
-              </p>
-            ) : null}
-
-            <p className="text-center text-xs leading-relaxed text-faint">
-              Sign in only grants access to the material and Knowledge Spaces associated with your account.
-            </p>
+                  Continue with {provider.label}
+                </Button>
+              ))
+            )}
           </div>
-        </section>
-      </div>
-    </main>
-  );
-}
 
-function TrustItem({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
-  return (
-    <div className="enterprise-trust-item">
-      <span className="enterprise-trust-icon" aria-hidden="true">
-        {icon}
-      </span>
-      <div className="space-y-0.5">
-        <p className="font-semibold text-fg">{title}</p>
-        <p className="max-w-lg text-sm leading-relaxed text-muted">{body}</p>
-      </div>
-    </div>
+          {E2E_EMAIL_AUTH ? (
+            <form className="space-y-3 border-t border-line pt-4" onSubmit={submitEmail} data-testid="login-email-form">
+              <p className="text-xs text-muted">Email sign-in (E2E builds only)</p>
+              {mode === "sign-up" ? (
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mh-field"
+                  data-testid="login-name"
+                />
+              ) : null}
+              <input
+                type="email"
+                required
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mh-field"
+                data-testid="login-email"
+              />
+              <input
+                type="password"
+                required
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mh-field"
+                data-testid="login-password"
+              />
+              <Button type="submit" className="w-full" disabled={busy} data-testid="login-email-submit">
+                {mode === "sign-up" ? "Create account" : "Sign in with email"}
+              </Button>
+              <button
+                type="button"
+                className="text-xs text-muted underline-offset-2 hover:underline"
+                onClick={() => setMode(mode === "sign-in" ? "sign-up" : "sign-in")}
+              >
+                {mode === "sign-in" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+              </button>
+            </form>
+          ) : null}
+
+          {error ? (
+            <p className="text-sm text-bad" role="alert" data-testid="login-error">
+              {error}
+            </p>
+          ) : null}
+
+          <p className="text-center text-xs text-muted">
+            By signing in, you agree to our{" "}
+            <Link to="/terms" className="text-accent hover:underline">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link to="/privacy" className="text-accent hover:underline">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+    </main>
   );
 }

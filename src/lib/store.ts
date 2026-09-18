@@ -698,15 +698,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         return;
       }
       if (!targetSpaceId) {
-        persistActiveSpaceId(null);
-        set({
-          activeSpaceId: null,
-          activeContextId: null,
-          memberContextIds: [],
-          authorizedSourceIds: [],
-          contextStatus: "ready",
-          contextError: null,
-        });
+        get().resetPack();
         const history = await loadMeetings().catch(() => []);
         if (epoch !== hydrationEpoch) return;
         set({ meetingHistory: history, currentMeeting: latestOpenMeeting(history) });
@@ -1451,9 +1443,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       chunks: NORTHSTAR_CHUNKS,
       vocab: packVocabulary(NORTHSTAR_CHUNKS),
       sources: [],
-      activeSpaceId: null,
-      activeContextId: null,
-      memberContextIds: [],
+      activeSpaceId: NORTHSTAR.id,
+      activeContextId: NORTHSTAR.id,
+      memberContextIds: [NORTHSTAR.id],
       authorizedSourceIds: [],
       contextStatus: "ready",
       contextUpdating: false,

@@ -33,10 +33,10 @@ export function BetaOnboardingChecklist({ spaceId }: { spaceId?: string }) {
   if (done.every(Boolean)) return null;
 
   return (
-    <section className="mh-panel space-y-4 p-5" data-testid="beta-onboarding">
+    <section className="ds-surface-elevated space-y-4 p-5" data-testid="beta-onboarding">
       <div className="space-y-1">
-        <p className="mh-eyebrow">Beta onboarding</p>
-        <h2 className="text-lg font-semibold text-fg">Get ready for your first meeting</h2>
+        <p className="ds-overline">Onboarding</p>
+        <h2 className="ds-section-title">Get ready for your first meeting</h2>
         <p className="text-sm text-muted">
           Live is the core experience — it listens during your call and cites your files. Use Ask to test search
           first, then go Live.

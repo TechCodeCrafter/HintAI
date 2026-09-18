@@ -11,7 +11,7 @@ test("Knowledge Space: two repos, live session, multi-source answer with source-
   await installE2eMocks(page);
   await e2eSignIn(page, USER_A);
   await page.goto("/create");
-  await expect(page.getByRole("heading", { name: "What are you working with?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create a knowledge space." })).toBeVisible();
   await fillCreateContextIdentity(page, "Platform Space");
 
   const uploadFirst = page.getByTestId("upload-files-button");
@@ -48,7 +48,7 @@ test("Knowledge Space: two repos, live session, multi-source answer with source-
       ),
     },
   ]);
-  await expect(page.getByTestId("space-source-list").locator("li")).toHaveCount(2, { timeout: 30000 });
+  await expect(page.getByTestId("space-source-list").locator("tr")).toHaveCount(2, { timeout: 30000 });
 
   await mockLLM(
     page,

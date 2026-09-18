@@ -1,10 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpenCheck, FolderPlus, Mic2, Plus, SearchCheck, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  FolderPlus,
+  Plus,
+  Radio,
+  Search,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { QuickActionTile } from "@/components/app-shell";
 import { BetaOnboardingChecklist } from "@/components/beta-onboarding";
 import { BetaPrivacyNotice } from "@/components/beta-privacy-notice";
-import { HomeProof } from "@/components/home-proof";
 import { ContextShell } from "@/components/context-shell";
+import { HomeProof } from "@/components/home-proof";
+import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { formatSpaceCounts, spaceHasSources, spaceStatusLabel } from "@/lib/context/kinds";
 import { migrateLegacyPack, readSavedPack } from "@/lib/context/migration";
 import { listSpaceSummaries, type SpaceSummary } from "@/lib/context/service";
@@ -48,193 +59,174 @@ export function ContextHome() {
     }
   }
 
-  const firstSpace = spaces?.[0];
-  const firstSpaceCanGoLive = Boolean(firstSpace && spaceHasSources(firstSpace));
+  const firstSpaceId = spaces?.[0]?.space.id;
 
   return (
-    <ContextShell
-      aside={
-        firstSpaceCanGoLive && firstSpace ? (
-          <Link
-            to="/context/$id/live"
-            params={{ id: firstSpace.space.id }}
-            className="enterprise-secondary whitespace-nowrap"
-          >
-            <Mic2 aria-hidden className="size-4 text-accent" />
-            <span className="hidden md:inline">Start Live</span>
-          </Link>
-        ) : (
-          <Link to="/create" className="enterprise-secondary whitespace-nowrap">
-            <Plus aria-hidden className="size-4 text-accent" />
-            <span className="hidden md:inline">New Space</span>
-          </Link>
-        )
-      }
-    >
-      <main className="enterprise-page mh-rise space-y-8 pb-16">
-        <section className="enterprise-home-grid">
-          <div className="enterprise-hero-card">
-            <div className="relative z-10 space-y-7">
-              <div className="space-y-4">
-                <p className="enterprise-overline">MeetHint workspace</p>
-                <h1>Know what to say. Know why it is true.</h1>
-                <p className="max-w-2xl text-[16px] leading-relaxed text-body sm:text-[17px]">
-                  Bring the material you trust. MeetHint can listen during a conversation, search that material, and show the evidence behind a supported answer.
-                </p>
+    <ContextShell>
+      <main className="mh-rise space-y-10">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start">
+          <div className="space-y-6">
+            <PageHeader
+              overline="Welcome to MeetHint"
+              title="Get ready for your first meeting."
+              description="MeetHint listens during your call, searches the material you loaded, and shows a cited answer — or stays silent when your files don't support one."
+            />
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="ds-surface-subtle space-y-1 p-4">
+                <p className="ds-card-title">Answers in real time</p>
+                <p className="ds-caption">Search and live paths cite your sources.</p>
               </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Link to="/create" data-testid="create-space-button" className="enterprise-primary">
-                  <Plus aria-hidden className="size-4" />
-                  Create a Knowledge Space
-                </Link>
-                {firstSpace ? (
-                  <Link to="/context/$id" params={{ id: firstSpace.space.id }} className="enterprise-secondary">
-                    Open latest space
-                    <ArrowRight aria-hidden className="size-4 text-accent" />
-                  </Link>
-                ) : null}
+              <div className="ds-surface-subtle space-y-1 p-4">
+                <p className="ds-card-title">Your data stays local</p>
+                <p className="ds-caption">Indexed on device — not uploaded.</p>
               </div>
-
-              <div className="grid gap-4 pt-2 sm:grid-cols-3">
-                <MiniProof icon={<SearchCheck className="size-4" />} title="Answers from your material" />
-                <MiniProof icon={<BookOpenCheck className="size-4" />} title="Evidence stays attached" />
-                <MiniProof icon={<ShieldCheck className="size-4" />} title="Quiet when unsupported" />
+              <div className="ds-surface-subtle space-y-1 p-4">
+                <p className="ds-card-title">Built for teams</p>
+                <p className="ds-caption">Organize material into Knowledge Spaces.</p>
               </div>
             </div>
           </div>
+          <BetaOnboardingChecklist spaceId={firstSpaceId} />
+        </div>
 
-          <div className="enterprise-card p-5 sm:p-6">
-            <BetaOnboardingChecklist spaceId={firstSpace?.space.id} />
-          </div>
-        </section>
-
-        <section className="enterprise-card p-5 sm:p-7" aria-labelledby="ask-hint-title">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-            <div className="space-y-1">
-              <p className="enterprise-overline">Ask Hint</p>
-              <h2 id="ask-hint-title" className="enterprise-section-title">
-                Search a cited example
-              </h2>
-            </div>
-            <p className="max-w-md text-xs leading-relaxed text-muted">
-              The answer card is only useful when MeetHint can point back to supporting material.
-            </p>
+        <section className="space-y-4">
+          <div className="space-y-1">
+            <p className="ds-overline">Ask Hint</p>
+            <h2 className="ds-section-title">What would you like to know?</h2>
           </div>
           <HomeProof />
         </section>
 
-        <section className="enterprise-quick-grid" aria-label="Quick actions">
-          <Link to="/create" className="enterprise-card enterprise-card-interactive enterprise-quick-action">
-            <span className="enterprise-icon-tile" aria-hidden="true">
-              <FolderPlus className="size-5" />
-            </span>
-            <span className="min-w-0">
-              <span className="block font-semibold text-fg">Create a Knowledge Space</span>
-              <span className="mt-1 block text-xs text-muted">Organize material for a project, customer, course, or topic.</span>
-            </span>
-          </Link>
-          {firstSpace ? (
-            <Link
-              to="/context/$id/ask"
-              params={{ id: firstSpace.space.id }}
-              className="enterprise-card enterprise-card-interactive enterprise-quick-action"
-            >
-              <span className="enterprise-icon-tile" aria-hidden="true">
-                <SearchCheck className="size-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block font-semibold text-fg">Ask your material</span>
-                <span className="mt-1 block text-xs text-muted">Search the selected space and inspect the supporting source.</span>
-              </span>
-            </Link>
-          ) : (
-            <Link to="/create" className="enterprise-card enterprise-card-interactive enterprise-quick-action">
-              <span className="enterprise-icon-tile" aria-hidden="true">
-                <SearchCheck className="size-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block font-semibold text-fg">Ask your material</span>
-                <span className="mt-1 block text-xs text-muted">Create a space first, then search the material you add.</span>
-              </span>
-            </Link>
-          )}
-          {firstSpaceCanGoLive && firstSpace ? (
-            <Link
-              to="/context/$id/live"
-              params={{ id: firstSpace.space.id }}
-              className="enterprise-card enterprise-card-interactive enterprise-quick-action"
-            >
-              <span className="enterprise-icon-tile" aria-hidden="true">
-                <Mic2 className="size-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block font-semibold text-fg">Start a live session</span>
-                <span className="mt-1 block text-xs text-muted">Listen for questions and surface supported answers in real time.</span>
-              </span>
-            </Link>
-          ) : (
-            <Link to="/create" className="enterprise-card enterprise-card-interactive enterprise-quick-action">
-              <span className="enterprise-icon-tile" aria-hidden="true">
-                <Mic2 className="size-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block font-semibold text-fg">Start a live session</span>
-                <span className="mt-1 block text-xs text-muted">Add material to a Knowledge Space before going live.</span>
-              </span>
-            </Link>
-          )}
+        <section className="space-y-3">
+          <h2 className="ds-section-title">Quick actions</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <QuickActionTile
+              to="/create"
+              title="Create Knowledge Space"
+              description="Organize material for a project or meeting."
+              icon={<BookOpen aria-hidden />}
+              testId="create-space-button"
+            />
+            {firstSpaceId ? (
+              <Link
+                to="/context/$id"
+                params={{ id: firstSpaceId }}
+                className="ds-action-tile group"
+              >
+                <div className="space-y-1.5">
+                  <FolderPlus aria-hidden className="size-4 text-accent" />
+                  <p className="ds-card-title">Add material</p>
+                  <p className="ds-caption">Upload repos, folders, files, or PDFs.</p>
+                </div>
+                <ArrowRight
+                  aria-hidden
+                  className="size-4 shrink-0 text-faint transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+                />
+              </Link>
+            ) : (
+              <QuickActionTile
+                to="/create"
+                title="Add material"
+                description="Create a space, then upload sources."
+                icon={<FolderPlus aria-hidden />}
+              />
+            )}
+            {firstSpaceId ? (
+              <Link
+                to="/context/$id/live"
+                params={{ id: firstSpaceId }}
+                className="ds-action-tile group"
+              >
+                <div className="space-y-1.5">
+                  <Radio aria-hidden className="size-4 text-accent" />
+                  <p className="ds-card-title">Start live session</p>
+                  <p className="ds-caption">Listen during a call and cite answers.</p>
+                </div>
+                <ArrowRight
+                  aria-hidden
+                  className="size-4 shrink-0 text-faint transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+                />
+              </Link>
+            ) : (
+              <QuickActionTile
+                to="/app"
+                title="Start live session"
+                description="Open the live workspace."
+                icon={<Radio aria-hidden />}
+              />
+            )}
+            <QuickActionTile
+              to="/app"
+              title="Open cockpit"
+              description="Three-pane workspace for live calls."
+              icon={<Search aria-hidden />}
+            />
+          </div>
         </section>
 
         {legacy ? (
-          <div className="enterprise-card space-y-3 p-5">
-            <p className="text-sm text-body">
-              A folder from a previous visit is still on this device. Convert it to a Knowledge Space to keep using it.
+          <div className="ds-surface-elevated space-y-3 p-5">
+            <p className="ds-body">
+              A folder from a previous visit is still on this device. Convert it to a Knowledge Space to keep using
+              it.
             </p>
-            <button type="button" className="enterprise-primary" disabled={migrating} onClick={() => void convertLegacy()}>
+            <button type="button" className="mh-cta" disabled={migrating} onClick={() => void convertLegacy()}>
               {migrating ? "Converting…" : "Convert saved folder"}
             </button>
           </div>
         ) : null}
 
         {error ? (
-          <p className="rounded-xl border border-bad/20 bg-bad/5 px-4 py-3 text-sm text-bad" role="alert">
+          <p className="text-sm text-bad" role="alert">
             {error}
           </p>
         ) : null}
 
-        <section className="space-y-4" aria-labelledby="spaces-heading">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="enterprise-overline">Workspace</p>
-              <h2 id="spaces-heading" className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-fg">
-                Knowledge Spaces
-              </h2>
-            </div>
-            <Link to="/create" className="text-sm font-medium text-accent hover:underline">
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="ds-section-title">Recent Knowledge Spaces</h2>
+            <Link to="/create" className="inline-flex items-center gap-1 text-sm text-accent hover:text-fg">
+              <Plus aria-hidden className="size-3.5" />
               New space
             </Link>
           </div>
 
           {spaces && spaces.length > 0 ? (
-            <ul className="grid gap-3 md:grid-cols-2" data-testid="space-list">
+            <ul className="space-y-2" data-testid="space-list">
               {spaces.map((item) => (
                 <li key={item.space.id}>
-                  <article className="enterprise-card enterprise-card-interactive flex h-full flex-col justify-between gap-5 p-5 sm:p-6">
-                    <Link to="/context/$id" params={{ id: item.space.id }} className="min-w-0 space-y-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                          <p className="truncate text-lg font-semibold tracking-[-0.025em] text-fg">{item.space.name}</p>
-                          <p className="mt-1 text-xs text-muted">{formatSpaceCounts(item)}</p>
-                        </div>
-                        <span className="mh-chip shrink-0 text-xs">{spaceStatusLabel(item.status)}</span>
+                  <article className="ds-surface-elevated flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+                    <Link to="/context/$id" params={{ id: item.space.id }} className="min-w-0 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate font-medium text-fg">{item.space.name}</p>
+                        <Badge
+                          variant={
+                            item.status === "ready"
+                              ? "ready"
+                              : item.status === "indexing"
+                                ? "indexing"
+                                : "error"
+                          }
+                          dot
+                        >
+                          {spaceStatusLabel(item.status)}
+                        </Badge>
                       </div>
+                      <p className="text-xs text-muted">{formatSpaceCounts(item)}</p>
                     </Link>
                     <div className="flex flex-wrap gap-2">
-                      <Link to="/context/$id" params={{ id: item.space.id }} className="enterprise-secondary">
+                      <Link
+                        to="/context/$id"
+                        params={{ id: item.space.id }}
+                        className="inline-flex h-10 items-center justify-center rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
+                      >
                         Open
                       </Link>
-                      <Link to="/context/$id/ask" params={{ id: item.space.id }} className="enterprise-secondary">
+                      <Link
+                        to="/context/$id/ask"
+                        params={{ id: item.space.id }}
+                        className="inline-flex h-10 items-center justify-center rounded-sm border border-line px-3 text-xs font-medium text-secondary hover:border-accent hover:text-fg"
+                      >
                         Ask
                       </Link>
                       {spaceHasSources(item) ? (
@@ -242,12 +234,16 @@ export function ContextHome() {
                           to="/context/$id/live"
                           params={{ id: item.space.id }}
                           data-testid="start-live"
-                          className="enterprise-primary"
+                          className="mh-cta inline-flex h-10 items-center justify-center px-3 text-xs"
                         >
                           Start live
                         </Link>
                       ) : (
-                        <Link to="/context/$id" params={{ id: item.space.id }} className="enterprise-secondary text-faint">
+                        <Link
+                          to="/context/$id"
+                          params={{ id: item.space.id }}
+                          className="inline-flex h-10 items-center justify-center rounded-sm border border-dashed border-line px-3 text-xs text-muted"
+                        >
                           Add source
                         </Link>
                       )}
@@ -257,33 +253,20 @@ export function ContextHome() {
               ))}
             </ul>
           ) : spaces ? (
-            <div className="enterprise-card px-6 py-12 text-center">
-              <BookOpenCheck className="mx-auto size-9 text-accent" aria-hidden="true" />
-              <h3 className="mt-4 text-lg font-semibold text-fg">Your first answer starts with a source.</h3>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">
-                Create a Knowledge Space, add a repo, folder, file, or PDF, then ask MeetHint to find the evidence.
-              </p>
-              <Link to="/create" className="enterprise-primary mt-5">
-                <Plus className="size-4" aria-hidden="true" />
-                Create a Knowledge Space
-              </Link>
-            </div>
-          ) : null}
+            <EmptyState
+              icon={<BookOpen aria-hidden />}
+              title="No Knowledge Spaces yet"
+              description="Create a Knowledge Space to add repos, folders, files, or PDFs."
+              action={{ label: "+ Create a Knowledge Space", href: "/create", testId: "create-space-empty" }}
+              testId="space-list-empty"
+            />
+          ) : (
+            <p className="text-sm text-muted">Loading Knowledge Spaces…</p>
+          )}
         </section>
 
         <BetaPrivacyNotice />
       </main>
     </ContextShell>
-  );
-}
-
-function MiniProof({ icon, title }: { icon: React.ReactNode; title: string }) {
-  return (
-    <div className="flex items-center gap-2.5 text-sm text-body">
-      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent" aria-hidden="true">
-        {icon}
-      </span>
-      <span>{title}</span>
-    </div>
   );
 }

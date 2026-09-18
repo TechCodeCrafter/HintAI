@@ -1,6 +1,6 @@
 # Hint: What We Are Doing Now
 
-**Last Updated:** 2026-09-16
+**Last Updated:** 2026-09-17
 
 Canonical backlog: [PRODUCT-BACKLOG.md](./PRODUCT-BACKLOG.md)
 
@@ -25,6 +25,7 @@ Closed Beta Launch
 
 ## Do Not Build Yet
 
+- Truth Assessment Layer (#166–#173) — [TRUTH-ASSESSMENT-LAYER.md](./TRUTH-ASSESSMENT-LAYER.md); post-beta moat, not Wave 1
 - Slack
 - Jira
 - Confluence
