@@ -26,6 +26,28 @@ export function silentCardReason(hitCount: number, errorMessage?: string): strin
   return hitCount === 0 ? "No matching material" : "Your material doesn't cover this";
 }
 
+/**
+ * Reasons the composer produces that are no more specific than the routing
+ * default — surfacing them would just reword "your material doesn't cover
+ * this", so the routing default is kept for these.
+ */
+const GENERIC_LOCAL_REASONS = new Set([
+  "Nothing in this pack cites that.",
+  "Found the file, but nothing in it I would say out loud.",
+  "No evidence I could point at for that.",
+]);
+
+/**
+ * The silence reason the room should read. A shape-specific explanation ("The
+ * material says what this does, not why it was chosen") is the feature — it
+ * tells the room exactly what was checked. A generic local reason is not an
+ * improvement over the routing default, so those fall through to it.
+ */
+function specificLocalReason(localReason?: string): string | undefined {
+  if (!localReason) return undefined;
+  return GENERIC_LOCAL_REASONS.has(localReason) ? undefined : localReason;
+}
+
 export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
 
 /** Backward-compatible latency object; extended stages are optional on older records. */
@@ -169,6 +191,7 @@ function failedCard(
   firstError: string | undefined,
   stages?: Partial<AnswerStageTimings>,
   progressive?: ProgressiveTiming,
+  localReason?: string,
 ): RoutedSearchAnswer {
   return {
     consumeQuota: false,
@@ -177,7 +200,10 @@ function failedCard(
     progressive,
     card: {
       say: null,
-      reason: silentCardReason(hitCount, firstError),
+      // Prefer the composer's shape-specific reason ("The material says what
+      // this does, not why it was chosen") over the generic routing string — a
+      // precise silence is what makes restraint legible as a feature.
+      reason: specificLocalReason(localReason) ?? silentCardReason(hitCount, firstError),
       citations: [],
       query,
       latencyMs: Math.round(performance.now() - t0),
@@ -333,5 +359,9 @@ export async function routeSearchAnswer(
   }
 
   const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-  return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
+  // The composer already decided why it cannot speak — surface that reason
+  // rather than the generic routing string, so the room reads a precise
+  // silence ("The material says what this does, not why it was chosen").
+  const localReason = localAttempt && !localAttempt.card.say ? localAttempt.card.reason : undefined;
+  return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null), localReason);
 }
