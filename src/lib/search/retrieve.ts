@@ -450,7 +450,9 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     /\bwhat does\b|\bwhat's\b|\bhow does\b|\bhow do\b|\bhow is\b|\bwhat happens\b|\bwhat is .* (?:for|doing)\b|\bhow are\b/.test(
       q,
     ) && !wantsApi;
+  const wantsDefinition = /\b(?:what is|what's|define|explain|describe)\b/i.test(q);
   const idf = idfMap(terms, chunks);
+  const phrase = terms.join(" ");
 
   const scored: Hit[] = [];
   for (const chunk of chunks) {
@@ -484,6 +486,17 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     // that triggers it. A router docstring is the API surface, not the answer.
     if (wantsBehavior && isBehaviorPath(idx.path)) {
       score += RETRIEVAL_WEIGHTS.behaviorPath;
+    }
+    const isDocumentPath = /\.(docx|pptx|ppt|xlsx|csv|md|mdx|txt|rst|adoc)$/i.test(idx.path);
+    if (isDocumentPath) {
+      score += RETRIEVAL_WEIGHTS.documentPath;
+    }
+    if (wantsDefinition && isDocumentPath) {
+      score += RETRIEVAL_WEIGHTS.documentDefinition;
+    }
+    if (phrase.length > 4) {
+      const body = chunk.text?.toLowerCase() ?? "";
+      if (body.includes(phrase)) score += RETRIEVAL_WEIGHTS.exactPhrase;
     }
     // Test/fixture files describe what the suite covers, not what the system
     // does. Demote so a test docstring cannot outrank the component it tests

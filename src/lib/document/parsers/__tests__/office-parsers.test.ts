@@ -308,3 +308,45 @@ test("parsed office files persist and index through the existing pipeline", asyn
   assert.ok(hydrated.chunks.some((chunk) => "text" in chunk && /Thursday/.test(chunk.text)));
   assert.ok(hydrated.chunks.some((chunk) => "text" in chunk && /Alice/.test(chunk.text)));
 });
+
+test("docx indexes and retrieves definition content", async () => {
+  const { buildChunks, retrieve } = await import("../../../search/retrieve.ts");
+  const { localCard } = await import("../../../search/local-card.ts");
+  const body =
+    "Bernoulli's principle states that an increase in the speed of a fluid occurs simultaneously with a decrease in pressure.";
+  const loaded = await packFromFiles([new File([minimalDocx(body)], "fluids.docx")]);
+  assert.equal(loaded.failed.length, 0);
+  const repo = createMemoryRepository();
+  const { context } = await persistPackAsContext(loaded.pack, repo);
+  const hydrated = await indexContext(repo, context.id);
+  assert.ok(
+    hydrated.chunks.some((chunk) => "text" in chunk && /Bernoulli/.test(chunk.text)),
+    "expected Bernoulli text in indexed chunks",
+  );
+  const hits = retrieve("What is Bernoulli's principle?", buildChunks(hydrated.pack));
+  assert.ok(hits.length > 0, "expected retrieval hits for Bernoulli's principle");
+  const card = localCard("What is Bernoulli's principle?", hits, hydrated.pack, 0, null);
+  assert.ok(card.say, `expected a spoken answer, got reason: ${card.reason ?? "none"}`);
+  assert.match(card.say ?? "", /Bernoulli/i);
+});
+
+test("pptx indexes and retrieves engineering slide content", async () => {
+  const { buildChunks, retrieve } = await import("../../../search/retrieve.ts");
+  const { localCard } = await import("../../../search/local-card.ts");
+  const slide =
+    "Pascal's law states that pressure applied to a confined fluid is transmitted equally in all directions throughout the fluid.";
+  const loaded = await packFromFiles([new File([minimalPptx(slide)], "fluids.pptx")]);
+  assert.equal(loaded.failed.length, 0);
+  const repo = createMemoryRepository();
+  const { context } = await persistPackAsContext(loaded.pack, repo);
+  const hydrated = await indexContext(repo, context.id);
+  assert.ok(
+    hydrated.chunks.some((chunk) => "text" in chunk && /Pascal/.test(chunk.text)),
+    "expected Pascal text in indexed chunks",
+  );
+  const hits = retrieve("What is Pascal's law?", buildChunks(hydrated.pack));
+  assert.ok(hits.length > 0, "expected retrieval hits for Pascal's law");
+  const card = localCard("What is Pascal's law?", hits, hydrated.pack, 0, null);
+  assert.ok(card.say, `expected a spoken answer, got reason: ${card.reason ?? "none"}`);
+  assert.match(card.say ?? "", /Pascal/i);
+});

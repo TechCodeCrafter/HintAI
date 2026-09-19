@@ -147,10 +147,13 @@ function paragraphs(block: Mapped): Mapped[] {
 
 type Source = { path: string; content: string };
 
+/** Uploaded office and plain-text files — no docstring wrapper to hunt for. */
+const PLAIN_DOCUMENT = /\.(md|mdx|rst|txt|docx|pptx|ppt|xlsx|csv|adoc)$/i;
+
 /** The prose a file carries about itself: docstring, block comment, or markdown. */
 function docBlock(source: Source): Mapped {
   const content = source.content;
-  if (/\.(md|mdx|rst|txt)$/i.test(source.path)) return mappedSlice(content, 0, 4000);
+  if (PLAIN_DOCUMENT.test(source.path)) return mappedSlice(content, 0, 8000);
 
   const py = /(?:"""|''')([\s\S]*?)(?:"""|''')/.exec(content);
   if (py?.[1]) {

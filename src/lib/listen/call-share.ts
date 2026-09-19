@@ -1,3 +1,9 @@
+import {
+  asrFinalTimeoutMs,
+  asrPreviewTimeoutMs,
+  isMobileTouch,
+  tabAudioShareLikely,
+} from "@/lib/listen/browser-capability";
 import { transcribeAvailable, transcribeClip } from "@/lib/ai/transcribe";
 import {
   type WorkletStat,
@@ -132,6 +138,10 @@ export function markSpeechLive() {
 
 function speechHeardRecently(ms = 1200): boolean {
   return speechLiveAt > 0 && Date.now() - speechLiveAt < ms;
+}
+
+function skipMicLaneForCaptions(): boolean {
+  return speechHeardRecently();
 }
 
 /** Remove the lane's live "…" / preview line when an utterance never reaches ASR. */
@@ -364,7 +374,12 @@ async function captionAccurate(
     }
   }
   mark("whisper-start", probe?.lane ?? "?", { path: "local" });
-  const raw = await transcribeLocal(pcm16kFromFrames(frames, sampleRate), 9000, undefined, true);
+  const raw = await transcribeLocal(
+    pcm16kFromFrames(frames, sampleRate),
+    asrFinalTimeoutMs(),
+    undefined,
+    true,
+  );
   mark("whisper-done", probe?.lane ?? "?", { raw });
   const cleaned = cleanCaption(raw);
   mark("clean-caption", probe?.lane ?? "?", { raw, cleaned });
@@ -395,7 +410,9 @@ async function pump() {
     const seq = (pumpSeq += 1);
     try {
       if (!clipHasSpeech(job.frames, job.vad)) continue;
-      const text = cleanCaption(await transcribeLocal(pcm16kFromFrames(job.frames, sampleRate), 7000));
+      const text = cleanCaption(
+        await transcribeLocal(pcm16kFromFrames(job.frames, sampleRate), asrPreviewTimeoutMs()),
+      );
       if (!running || seq !== pumpSeq) continue;
       if (!text || speechHeardRecently()) continue;
       draftFrom = job.lane;
@@ -763,7 +780,7 @@ async function startGraph(mic: MediaStream | null, computer: MediaStream | null)
   })();
   audioCtx = ctx;
   sampleRate = ctx.sampleRate;
-  void ctx.resume();
+  if (ctx.state === "suspended") await ctx.resume();
 
   // Each lane owns its own ring buffer and its own state. Nothing is shared, so
   // the call can never contribute audio to a microphone utterance.
@@ -787,11 +804,12 @@ async function startGraph(mic: MediaStream | null, computer: MediaStream | null)
   }
 
   if (mic) {
+    const speech = await import("@/lib/listen/speech");
     await listenTo(mic, {
       name: "mic",
       vad: 0.013,
-      // Browser captions already cover the mic; skip until they go quiet.
-      skip: () => speechHeardRecently(),
+      // Desktop browser captions cover the mic; mobile/tablet always runs Whisper on mic.
+      skip: () => speech.captionsSkipWhisperMic() && skipMicLaneForCaptions(),
       ...blank(),
     });
   }
@@ -811,7 +829,7 @@ export async function startHear(): Promise<void> {
   const speech = await import("@/lib/listen/speech");
   if (speech.liveCaptionsOk()) speech.startCaptions();
   const mic = await openMic();
-  const computer = await openComputer();
+  const computer = tabAudioShareLikely() ? await openComputer() : null;
   const streams = [mic, computer].filter((s): s is MediaStream => Boolean(s));
   if (streams.length === 0) {
     speech.stopListeningAndMic();
@@ -845,7 +863,9 @@ export async function startHear(): Promise<void> {
       ? "Call and mic are separate lanes. Questions from the shared tab become Cards."
       : computer
         ? "Hearing the call tab. Questions from it become Cards."
-        : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
+        : isMobileTouch()
+          ? "Mic only on this device — speak your question clearly, or type it below. Tab audio share works best on Chrome desktop."
+          : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
   useMeetHint.getState().setAsrNote(what);
 
   void transcribeAvailable()

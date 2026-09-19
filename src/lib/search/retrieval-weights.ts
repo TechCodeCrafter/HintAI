@@ -38,6 +38,10 @@ export const RETRIEVAL_WEIGHTS = {
    * services/workers/lambdas describe the system. Boost the behavior files.
    */
   behaviorPath: 2.6,
+  /** Uploaded docs/slides — not code paths, but primary evidence for definition questions. */
+  documentPath: 2.4,
+  /** "What is X?" against slide/deck/doc filenames and bodies. */
+  documentDefinition: 2.8,
   semanticFloor: 0.3,
   semanticScale: 10,
 };

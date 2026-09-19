@@ -116,7 +116,7 @@ export function ContextHome() {
                 <div className="space-y-1.5">
                   <FolderPlus aria-hidden className="size-4 text-accent" />
                   <p className="ds-card-title">Add material</p>
-                  <p className="ds-caption">Upload repos, folders, files, or PDFs.</p>
+                  <p className="ds-caption">Upload repos, PDFs, PowerPoint, Word, or spreadsheets.</p>
                 </div>
                 <ArrowRight
                   aria-hidden
