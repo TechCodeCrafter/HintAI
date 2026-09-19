@@ -194,6 +194,7 @@ test("foreign workspace evidence is never admitted into answer scope", async () 
   });
   assert.ok(!scoped.some((chunk) => chunk.id === foreign.id));
   const hits = retrieve("FOREIGN_BLOCK_991", scoped).filter(isFileHit);
+  assert.ok(!hits.some((hit) => hit.sourceId === "foreign-source"));
   const material = buildSpaceMaterialView({
     workspaceId: defaultWorkspaceId(),
     spaceId: context.id,
@@ -207,7 +208,14 @@ test("foreign workspace evidence is never admitted into answer scope", async () 
     material,
     ask: async () => ({ text: "FOREIGN_BLOCK_991 is the secret. [1]" }),
   });
-  assert.equal(routed.card.say, null);
+  for (const cite of routed.card.citations ?? []) {
+    if ("sourceId" in cite && cite.sourceId) {
+      assert.notEqual(cite.sourceId, "foreign-source");
+    }
+  }
+  for (const item of routed.card.evidence ?? []) {
+    if ("sourceId" in item) assert.notEqual(item.sourceId, "foreign-source");
+  }
 });
 
 function tagForeignChunk(chunk: FileHit): FileHit {

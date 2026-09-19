@@ -159,7 +159,6 @@ export function parsePptx(arrayBuffer: ArrayBuffer): string {
   if (slideKeys.length === 0) throw new Error("PPTX has no slides");
 
   const parts: string[] = [];
-
   const usedKeys = new Set<string>();
   slideKeys.forEach((key, index) => {
     usedKeys.add(key);
