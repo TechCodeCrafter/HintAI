@@ -31,6 +31,7 @@ import { AnswerFeedback } from "@/components/answer-feedback";
 import { ApiKeySettings } from "@/components/api-key-settings";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerHistory } from "@/components/answer-history";
+import { SessionReceiptPanel } from "@/components/session-receipt-panel";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
 import { ModelPicker } from "@/components/ModelPicker";
@@ -109,6 +110,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const upgradeFeature = useMeetHint((s) => s.upgradeFeature);
   const auditOpen = useMeetHint((s) => s.auditOpen);
   const openAudit = useMeetHint((s) => s.openAudit);
+  const answerHistory = useMeetHint((s) => s.answerHistory);
   const { ready: vaultReady } = useAccountVaultReady();
   const folderPicker = useFolderPicker();
   const filesRef = useRef<HTMLInputElement>(null);
@@ -116,6 +118,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const lastQuery = useRef<string | null>(null);
   const [citeReveal, setCiteReveal] = useState(0);
   const [keysOpen, setKeysOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
   const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
@@ -313,6 +316,18 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             >
               <ClipboardList className="size-4" />
               <span className="hidden lg:inline">Audit</span>
+            </Button>
+            <Button
+              variant="quiet"
+              size="sm"
+              data-testid="session-receipt-open"
+              aria-label="Session receipt"
+              title="Questions, cited answers, and unsupported items from this session"
+              disabled={answerHistory.length === 0}
+              onClick={() => setReceiptOpen(true)}
+            >
+              <ClipboardList className="size-4" />
+              <span className="hidden lg:inline">Receipt</span>
             </Button>
             <Button
               variant="quiet"
@@ -517,6 +532,12 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
       </div>
       </main>
       {keysOpen ? <ApiKeySettings onClose={() => setKeysOpen(false)} /> : null}
+      <SessionReceiptPanel
+        open={receiptOpen}
+        onClose={() => setReceiptOpen(false)}
+        spaceName={pack.name}
+        history={answerHistory}
+      />
       <UpgradeModal
         open={upgradeFeature !== null}
         feature={upgradeFeature}
@@ -737,20 +758,24 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
               </div>
             ),
           )}
-          {spaces.length > 0 ? <div className="context-menu-rule" /> : null}
-          <button
-            type="button"
-            role="option"
-            aria-selected={pack.id === "northstar-payments"}
-            className="context-option text-muted"
-            data-active={pack.id === "northstar-payments" ? "true" : undefined}
-            onClick={() => {
-              resetPack();
-              setOpen(false);
-            }}
-          >
-            Demo pack (sample only)
-          </button>
+          {spaces.length === 0 ? (
+            <>
+              <div className="context-menu-rule" />
+              <button
+                type="button"
+                role="option"
+                aria-selected={pack.id === "northstar-payments"}
+                className="context-option text-muted"
+                data-active={pack.id === "northstar-payments" ? "true" : undefined}
+                onClick={() => {
+                  resetPack();
+                  setOpen(false);
+                }}
+              >
+                Demo pack (sample only)
+              </button>
+            </>
+          ) : null}
           <div className="context-menu-rule" />
           {activeSpaceId && pack.id !== "northstar-payments" ? (
             <Link

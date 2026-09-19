@@ -487,11 +487,12 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     if (wantsBehavior && isBehaviorPath(idx.path)) {
       score += RETRIEVAL_WEIGHTS.behaviorPath;
     }
-    const isDocumentPath = /\.(docx|pptx|ppt|xlsx|csv|md|mdx|txt|rst|adoc)$/i.test(idx.path);
-    if (isDocumentPath) {
+    // Office uploads only — do not boost README/ADR markdown inside code repos.
+    const isUploadedOffice = /\.(docx|pptx|ppt|xlsx|csv)$/i.test(idx.path);
+    if (isUploadedOffice) {
       score += RETRIEVAL_WEIGHTS.documentPath;
     }
-    if (wantsDefinition && isDocumentPath) {
+    if (wantsDefinition && isUploadedOffice) {
       score += RETRIEVAL_WEIGHTS.documentDefinition;
     }
     if (phrase.length > 4) {

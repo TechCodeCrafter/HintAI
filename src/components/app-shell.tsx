@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { LiveNavLink } from "@/components/live-nav-link";
 import {
   ArrowRight,
   BookOpen,
@@ -14,7 +15,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/cn";
 
 type NavItem = {
-  to: string;
+  to?: string;
+  live?: boolean;
   label: string;
   icon: typeof Home;
   match: (path: string) => boolean;
@@ -34,7 +36,7 @@ const NAV: NavItem[] = [
     match: (path) => path.startsWith("/context/") && !path.endsWith("/live"),
   },
   {
-    to: "/app",
+    live: true,
     label: "Live session",
     icon: Radio,
     match: (path) => path === "/app" || path.endsWith("/live"),
@@ -49,14 +51,22 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       {NAV.map((item) => {
         const Icon = item.icon;
         const active = item.match(pathname);
+        const className = "app-nav-link";
+        const attrs = {
+          onClick: onNavigate,
+          "data-active": active ? "true" : "false",
+          className,
+        } as const;
+        if (item.live) {
+          return (
+            <LiveNavLink key={item.label} {...attrs}>
+              <Icon aria-hidden className="size-4 shrink-0" />
+              {item.label}
+            </LiveNavLink>
+          );
+        }
         return (
-          <Link
-            key={item.label}
-            to={item.to}
-            onClick={onNavigate}
-            data-active={active ? "true" : "false"}
-            className="app-nav-link"
-          >
+          <Link key={item.label} to={item.to!} {...attrs}>
             <Icon aria-hidden className="size-4 shrink-0" />
             {item.label}
           </Link>
@@ -112,10 +122,10 @@ export function AppShell({
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {aside ?? (
-              <Link to="/app" className="hidden items-center gap-1.5 text-sm font-medium text-accent hover:text-fg sm:inline-flex">
+              <LiveNavLink className="hidden items-center gap-1.5 text-sm font-medium text-accent hover:text-fg sm:inline-flex">
                 Start Live
                 <ArrowRight aria-hidden className="size-3.5" />
-              </Link>
+              </LiveNavLink>
             )}
             <AuthChrome />
             <ThemeToggle />

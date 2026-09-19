@@ -149,18 +149,29 @@ export function ContextHome() {
               </Link>
             ) : (
               <QuickActionTile
-                to="/app"
+                to="/create"
                 title="Start live session"
-                description="Open the live workspace."
+                description="Create a Knowledge Space first."
                 icon={<Radio aria-hidden />}
               />
             )}
-            <QuickActionTile
-              to="/app"
-              title="Open cockpit"
-              description="Three-pane workspace for live calls."
-              icon={<Search aria-hidden />}
-            />
+            {firstSpaceId ? (
+              <Link
+                to="/context/$id/ask"
+                params={{ id: firstSpaceId }}
+                className="ds-action-tile group"
+              >
+                <div className="space-y-1.5">
+                  <Search aria-hidden className="size-4 text-accent" />
+                  <p className="ds-card-title">Ask a question</p>
+                  <p className="ds-caption">Test retrieval before your call.</p>
+                </div>
+                <ArrowRight
+                  aria-hidden
+                  className="size-4 shrink-0 text-faint transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+                />
+              </Link>
+            ) : null}
           </div>
         </section>
 
