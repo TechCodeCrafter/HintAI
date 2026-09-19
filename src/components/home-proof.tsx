@@ -13,16 +13,49 @@ export function HomeProof() {
   const setTypedQuery = useMeetHint((s) => s.setTypedQuery);
   const search = useMeetHint((s) => s.search);
   const searching = useMeetHint((s) => s.searching);
-  const ready = useMeetHint((s) => s.contextStatus === "ready" && s.pack.id === "northstar-payments");
+  const contexts = useMeetHint((s) => s.contexts);
+  const contextStatus = useMeetHint((s) => s.contextStatus);
+  const packId = useMeetHint((s) => s.pack.id);
+  const hasUserSpace = contexts.length > 0;
+  const firstSpaceId = contexts[0]?.id;
+  const ready = !hasUserSpace && contextStatus === "ready" && packId === "northstar-payments";
   const card = useMeetHint((s) => s.card);
   const speaking = Boolean(card?.say);
   const firstChip = HOME_PROOF_CHIPS[0];
 
   useLayoutEffect(() => {
+    if (hasUserSpace) return;
     const store = useMeetHint.getState();
     store.resetPack();
     store.setTypedQuery(firstChip);
-  }, [firstChip]);
+  }, [firstChip, hasUserSpace]);
+
+  if (hasUserSpace && firstSpaceId) {
+    return (
+      <section className="space-y-4" data-testid="home-proof-user-space">
+        <p className="text-sm text-body">
+          Your material is loaded. Search before a call, or start Live to answer during the conversation.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            to="/context/$id/ask"
+            params={{ id: firstSpaceId }}
+            className="inline-flex h-10 items-center gap-2 rounded-sm border border-line px-4 text-sm font-medium text-fg hover:bg-hover"
+          >
+            <Search className="size-3.5" />
+            Ask a question
+          </Link>
+          <Link
+            to="/context/$id/live"
+            params={{ id: firstSpaceId }}
+            className="inline-flex h-10 items-center gap-2 rounded-sm bg-accent px-4 text-sm font-medium text-accent-fg hover:opacity-90"
+          >
+            Start Live
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   function ask(question: string) {
     setTypedQuery(question);
@@ -76,8 +109,8 @@ export function HomeProof() {
       ) : null}
 
       <p className="text-sm text-muted" data-testid="home-proof-hint">
-        <Link to="/app" className="text-body underline-offset-4 hover:text-fg hover:underline">
-          Load your own folder from the repo pane →
+        <Link to="/create" className="text-body underline-offset-4 hover:text-fg hover:underline">
+          Create a Knowledge Space with your company material →
         </Link>
       </p>
 

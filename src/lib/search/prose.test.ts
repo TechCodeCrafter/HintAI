@@ -51,6 +51,17 @@ test("links are spoken as their text", () => {
   assert.equal(plain("See [the runbook](docs/ops.md) first."), "See the runbook first.");
 });
 
+test("pptx slide prose is readable for spoken claims", () => {
+  const content = [
+    "--- Slide 1 ---",
+    "Pascal's law states that pressure applied to a confined fluid is transmitted equally in all directions throughout the fluid.",
+  ].join("\n");
+  const prose = proseOf({ path: "lectures/fluids.pptx", content });
+  assert.ok(prose?.description);
+  assert.match(prose.description.text, /Pascal/i);
+  assert.ok(proseSpanInSource(content, prose.description));
+});
+
 test("markdown prose spans address the raw file, not stripped text", () => {
   const content = [
     "# Exporter retries",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Check,
   ChevronDown,
@@ -15,6 +16,7 @@ import {
   FileText,
   FolderGit2,
   FolderOpen,
+  Home,
   KeyRound,
   Mic,
   MoreHorizontal,
@@ -29,6 +31,7 @@ import { AnswerFeedback } from "@/components/answer-feedback";
 import { ApiKeySettings } from "@/components/api-key-settings";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerHistory } from "@/components/answer-history";
+import { SessionReceiptPanel } from "@/components/session-receipt-panel";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
 import { ModelPicker } from "@/components/ModelPicker";
@@ -107,6 +110,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const upgradeFeature = useMeetHint((s) => s.upgradeFeature);
   const auditOpen = useMeetHint((s) => s.auditOpen);
   const openAudit = useMeetHint((s) => s.openAudit);
+  const answerHistory = useMeetHint((s) => s.answerHistory);
   const { ready: vaultReady } = useAccountVaultReady();
   const folderPicker = useFolderPicker();
   const filesRef = useRef<HTMLInputElement>(null);
@@ -114,10 +118,12 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const lastQuery = useRef<string | null>(null);
   const [citeReveal, setCiteReveal] = useState(0);
   const [keysOpen, setKeysOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
   const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
   const demo = pack.id === "northstar-payments";
+  const onDemoPack = demo;
   const listenLabel = live ? "Stop listen" : "Listen";
   const statusLabel = live ? "Listening" : "Idle";
   const searchReady = contextStatus === "ready";
@@ -192,10 +198,11 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   }, [search, overlay, setOverlay]);
 
   useEffect(() => {
-    if (!card?.query || card.query === lastQuery.current) return;
-    lastQuery.current = card.query;
+    const key = card?.say ? `${card.query ?? ""}|${card.say}` : card?.query;
+    if (!key || key === lastQuery.current) return;
+    lastQuery.current = key;
     setMobilePane("card");
-  }, [card?.query]);
+  }, [card?.query, card?.say]);
 
   useEffect(() => {
     if (playing) setMobilePane("room");
@@ -233,8 +240,15 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
       <header className="cockpit-glass-bar shrink-0 px-5 md:px-8">
         <div className="cockpit-header">
           <div className="cockpit-brand">
-            <MeetHintMark className="cockpit-mark" />
-            <span className="brand-word">Hint</span>
+            <Link
+              to="/home"
+              data-testid="cockpit-home-link"
+              title="Knowledge Spaces home"
+              className="flex min-w-0 items-center gap-3 rounded-sm text-fg hover:bg-hover/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              <MeetHintMark className="cockpit-mark" />
+              <span className="brand-word">Hint</span>
+            </Link>
             <StatusDot on={live} down={false} label={statusLabel} live={live} />
             {statusNote ? (
               <span
@@ -302,6 +316,18 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             >
               <ClipboardList className="size-4" />
               <span className="hidden lg:inline">Audit</span>
+            </Button>
+            <Button
+              variant="quiet"
+              size="sm"
+              data-testid="session-receipt-open"
+              aria-label="Session receipt"
+              title="Questions, cited answers, and unsupported items from this session"
+              disabled={answerHistory.length === 0}
+              onClick={() => setReceiptOpen(true)}
+            >
+              <ClipboardList className="size-4" />
+              <span className="hidden lg:inline">Receipt</span>
             </Button>
             <Button
               variant="quiet"
@@ -413,6 +439,17 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
         </div>
       ) : null}
 
+      {onDemoPack ? (
+        <div
+          role="status"
+          data-testid="demo-pack-banner"
+          className="border-b border-line bg-warn-soft px-4 py-3 text-sm text-fg md:px-8"
+        >
+          You are on the <strong>demo pack</strong>, not your uploads. Open the folder menu above and select your
+          Knowledge Space, then ask again.
+        </div>
+      ) : null}
+
       <nav
         className={cn(
           "grid w-full shrink-0 grid-cols-3 gap-1 border-b border-hairline bg-nav px-3 py-1.5 lg:hidden",
@@ -421,11 +458,21 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
         aria-label="Cockpit panes"
       >
         <PaneTab active={mobilePane === "room"} onClick={() => setMobilePane("room")} label="Room" />
-        <PaneTab active={mobilePane === "card"} onClick={() => setMobilePane("card")} label="Answer" mark={Boolean(card?.say)} />
+        <PaneTab
+          active={mobilePane === "card"}
+          onClick={() => setMobilePane("card")}
+          label="Answer"
+          mark={Boolean(card?.say)}
+          pulse={Boolean(card?.say) && mobilePane !== "card"}
+        />
         {overlay ? null : (
           <PaneTab active={mobilePane === "repo"} onClick={() => setMobilePane("repo")} label="Files" />
         )}
       </nav>
+
+      {card?.say && mobilePane === "room" ? (
+        <MobileAnswerPeek say={card.say} onOpen={() => setMobilePane("card")} />
+      ) : null}
 
       <main
         className="cockpit-workspace"
@@ -485,6 +532,12 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
       </div>
       </main>
       {keysOpen ? <ApiKeySettings onClose={() => setKeysOpen(false)} /> : null}
+      <SessionReceiptPanel
+        open={receiptOpen}
+        onClose={() => setReceiptOpen(false)}
+        spaceName={pack.name}
+        history={answerHistory}
+      />
       <UpgradeModal
         open={upgradeFeature !== null}
         feature={upgradeFeature}
@@ -650,19 +703,6 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
       </Button>
       {open ? (
         <div className="context-menu" role="listbox" aria-label="Knowledge Spaces">
-          <button
-            type="button"
-            role="option"
-            aria-selected={pack.id === "northstar-payments"}
-            className="context-option"
-            data-active={pack.id === "northstar-payments" ? "true" : undefined}
-            onClick={() => {
-              resetPack();
-              setOpen(false);
-            }}
-          >
-            northstar-payments
-          </button>
           {spaces.map((space) =>
             removeId === space.id ? (
               <div key={space.id} className="context-remove-confirm" data-testid="confirm-remove-space">
@@ -718,14 +758,44 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
               </div>
             ),
           )}
+          {spaces.length === 0 ? (
+            <>
+              <div className="context-menu-rule" />
+              <button
+                type="button"
+                role="option"
+                aria-selected={pack.id === "northstar-payments"}
+                className="context-option text-muted"
+                data-active={pack.id === "northstar-payments" ? "true" : undefined}
+                onClick={() => {
+                  resetPack();
+                  setOpen(false);
+                }}
+              >
+                Demo pack (sample only)
+              </button>
+            </>
+          ) : null}
           <div className="context-menu-rule" />
-          <a href="/home" className="context-option" onClick={() => setOpen(false)}>
-            Knowledge Spaces
-          </a>
-          <a href="/create" className="context-option" onClick={() => setOpen(false)}>
+          {activeSpaceId && pack.id !== "northstar-payments" ? (
+            <Link
+              to="/context/$id"
+              params={{ id: activeSpaceId }}
+              className="context-option"
+              onClick={() => setOpen(false)}
+            >
+              <FileText className="size-3.5 shrink-0" />
+              Manage documents
+            </Link>
+          ) : null}
+          <Link to="/home" className="context-option" onClick={() => setOpen(false)}>
+            <Home className="size-3.5 shrink-0" />
+            Knowledge Spaces home
+          </Link>
+          <Link to="/create" className="context-option" onClick={() => setOpen(false)}>
             <Plus className="size-3.5 shrink-0" />
-            Create context
-          </a>
+            New Knowledge Space
+          </Link>
           <button
             type="button"
             className="context-option"
@@ -760,6 +830,15 @@ function UtilityLinks({
 }) {
   return (
     <>
+      <Link
+        to="/home"
+        className="cockpit-icon"
+        aria-label="Knowledge Spaces home"
+        title="Knowledge Spaces home"
+        data-testid="cockpit-nav-home"
+      >
+        <Home className="size-4" />
+      </Link>
       <button
         type="button"
         className="cockpit-icon"
@@ -857,6 +936,15 @@ function UtilityMenu({
       </Button>
       {open ? (
         <div className="context-menu" role="menu" aria-label="More">
+          <Link
+            to="/home"
+            role="menuitem"
+            className="context-option"
+            onClick={() => setOpen(false)}
+          >
+            <Home className="size-3.5 shrink-0" />
+            Knowledge Spaces home
+          </Link>
           <a
             href="/app?overlay=1"
             target="_blank"
@@ -928,16 +1016,34 @@ function UtilityMenu({
   );
 }
 
+function MobileAnswerPeek({ say, onOpen }: { say: string; onOpen: () => void }) {
+  const preview = say.length > 120 ? `${say.slice(0, 117).trim()}…` : say;
+  return (
+    <button
+      type="button"
+      data-testid="mobile-answer-peek"
+      onClick={onOpen}
+      className="flex w-full items-center gap-2.5 border-b border-line bg-accent-soft px-3.5 py-2.5 text-left text-fg lg:hidden"
+    >
+      <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-accent">Answer ready</span>
+      <span className="min-w-0 flex-1 truncate text-sm leading-snug">{preview}</span>
+      <span className="shrink-0 text-sm font-semibold text-accent">View</span>
+    </button>
+  );
+}
+
 function PaneTab({
   active,
   onClick,
   label,
   mark,
+  pulse,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   mark?: boolean;
+  pulse?: boolean;
 }) {
   return (
     <button
@@ -947,10 +1053,16 @@ function PaneTab({
       className={cn(
         "flex h-11 items-center justify-center rounded-sm text-sm font-medium",
         active ? "bg-subtle text-fg" : "text-muted hover:bg-subtle hover:text-fg",
+        pulse && "ring-1 ring-accent/60",
       )}
     >
       {label}
-      {mark ? <span className="ml-1 size-1.5 rounded-full bg-ok" aria-hidden="true" /> : null}
+      {mark ? (
+        <span
+          className={cn("ml-1 size-1.5 rounded-full bg-ok", pulse && "animate-pulse")}
+          aria-hidden="true"
+        />
+      ) : null}
     </button>
   );
 }
@@ -1476,7 +1588,8 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
                 </div>
                 <p className="text-[15px] font-medium text-fg">Start listening</p>
                 <p className="max-w-sm text-[13px] leading-relaxed text-muted">
-                  Share the call or meeting tab with audio. MeetHint will pick up questions as they are asked.
+                  Tap Listen and allow the mic. On phone or tablet, speak your question or type it below. On desktop
+                  Chrome, you can also share the meeting tab with audio.
                 </p>
               </div>
             )}

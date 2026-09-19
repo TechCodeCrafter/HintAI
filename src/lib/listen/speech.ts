@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { isBrave, isIOS, isSafari } from "@/lib/listen/browser-capability";
 import { markSpeechLive, roleForLane, stopCallShare } from "@/lib/listen/call-share";
 import { cleanCaption } from "@/lib/search/question";
 import { useMeetHint } from "@/lib/store";
@@ -36,14 +37,26 @@ export function speechSupported(): boolean {
   return recognitionCtor() !== null;
 }
 
-/** Chrome/Edge only. Brave exposes the API then fails with network. */
+/**
+ * Browser speech captions alongside Whisper. Desktop Chrome/Edge/Safari;
+ * iOS uses on-device Whisper only (webkit STT is too flaky in continuous mode).
+ * Brave exposes the API then fails with network — excluded.
+ */
 export function liveCaptionsOk(): boolean {
   if (typeof navigator === "undefined") return false;
   if (!recognitionCtor()) return false;
   if (isFramed()) return false;
-  const brave = (navigator as Navigator & { brave?: unknown }).brave;
-  if (brave) return false;
-  return /Chrome|Chromium|Edg\//.test(navigator.userAgent) && !/OPR|Opera/.test(navigator.userAgent);
+  if (isBrave()) return false;
+  if (isIOS()) return false;
+  const ua = navigator.userAgent;
+  if (/OPR|Opera/.test(ua)) return false;
+  if (/Chrome|Chromium|Edg\//.test(ua)) return true;
+  return isSafari();
+}
+
+/** When true, the mic lane VAD can defer to browser captions (desktop only). */
+export function captionsSkipWhisperMic(): boolean {
+  return liveCaptionsOk();
 }
 
 export function isFramed(): boolean {
@@ -164,7 +177,8 @@ async function ensureMic(): Promise<ListenBlock | null> {
 }
 
 function wire(instance: Recognition) {
-  instance.continuous = true;
+  // iOS webkit STT stops after each utterance; desktop Safari tolerates continuous.
+  instance.continuous = !isIOS();
   instance.interimResults = true;
   instance.maxAlternatives = 1;
   instance.lang = typeof navigator !== "undefined" ? navigator.language || "en-US" : "en-US";
@@ -254,8 +268,8 @@ export function startListening() {
 }
 
 export function retryListening() {
-  if (!liveCaptionsOk()) {
-    failSoft(isFramed() ? "iframe" : "speech");
+  if (!speechSupported()) {
+    failSoft(isFramed() ? "iframe" : "missing");
     return;
   }
   stopListeningAndMic();

@@ -66,12 +66,26 @@ function decodeXmlText(value: string): string {
     .replace(/&apos;/g, "'");
 }
 
-/** Pull visible text runs from Office Open XML (Word/PowerPoint). */
+/** Pull visible text runs from Office Open XML (DrawingML + WordprocessingML). */
 function extractXmlTextRuns(xml: string): string {
-  const runs = [...xml.matchAll(/<a:t(?:\s[^>]*)?>([\s\S]*?)<\/a:t>/g)]
+  const runs = [
+    ...xml.matchAll(/<(?:a|w):t(?:\s[^>]*)?>([\s\S]*?)<\/(?:a|w):t>/g),
+  ]
     .map((match) => decodeXmlText(match[1] ?? "").trim())
     .filter(Boolean);
   return runs.join(" ").replace(/\s+/g, " ").trim();
+}
+
+/** Sweep layout/master/notes parts when slide bodies are empty placeholders. */
+function extractSupplementalPptxText(files: Record<string, Uint8Array>, skip: Set<string>): string {
+  const parts: string[] = [];
+  for (const [name, bytes] of Object.entries(files)) {
+    if (skip.has(name)) continue;
+    if (!/^ppt\/(slideLayouts|slideMasters|notesSlides|diagrams\/data)\/.+\.xml$/i.test(name)) continue;
+    const text = extractXmlTextRuns(strFromU8(bytes));
+    if (text) parts.push(text);
+  }
+  return parts.join("\n").trim();
 }
 
 function sortedSlideXml(files: Record<string, Uint8Array>): string[] {
@@ -145,17 +159,25 @@ export function parsePptx(arrayBuffer: ArrayBuffer): string {
   if (slideKeys.length === 0) throw new Error("PPTX has no slides");
 
   const parts: string[] = [];
-
+  const usedKeys = new Set<string>();
   slideKeys.forEach((key, index) => {
+    usedKeys.add(key);
     const slideText = extractXmlTextRuns(strFromU8(files[key]!));
     if (!slideText) return;
     const slideNum = key.match(/slide(\d+)/i)?.[1] ?? String(index + 1);
     parts.push(`--- Slide ${slideNum} ---`, slideText);
     const noteText = noteTextForSlide(files, slideNum);
-    if (noteText && noteText !== slideText) parts.push(`Notes: ${noteText}`);
+    if (noteText && noteText !== slideText) {
+      parts.push(`Notes: ${noteText}`);
+      usedKeys.add(`ppt/notesSlides/notesSlide${slideNum}.xml`);
+    }
   });
 
-  const body = parts.join("\n").trim();
+  let body = parts.join("\n").trim();
+  if (!body) {
+    const supplemental = extractSupplementalPptxText(files, usedKeys);
+    if (supplemental) body = supplemental;
+  }
   if (!body) throw new Error("PPTX slides contain no extractable text");
   return body;
 }

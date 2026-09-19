@@ -262,7 +262,7 @@ export function CreateContextFlow() {
                   title={indexingDone ? "Ready" : "Indexing…"}
                   description={
                     indexingDone
-                      ? "Your material is indexed. Open the Knowledge Space or start a live session."
+                      ? "Your material is indexed. Start Live to answer during your next call."
                       : "MeetHint is reading and indexing your material on this device."
                   }
                 />
@@ -287,7 +287,7 @@ export function CreateContextFlow() {
                   disabled={!indexingDone || !workingId || busy}
                   onClick={() => {
                     if (!workingId) return;
-                    void navigate({ to: "/context/$id", params: { id: workingId } });
+                    void navigate({ to: "/context/$id/live", params: { id: workingId } });
                   }}
                 >
                   Done

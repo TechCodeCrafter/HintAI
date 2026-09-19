@@ -23,6 +23,7 @@ import {
 import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
 import { isArchitectureQuery } from "./question.ts";
+import { FAST_PATH_MIN_SCORE } from "./answer-fast-path.ts";
 import { isTestEvidencePath } from "./retrieve.ts";
 import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
 import { admissible, explain, mentions, provenanceOf, subjectTerms } from "./subject.ts";
@@ -311,6 +312,17 @@ function twoSentences(text: string): string | null {
   return null;
 }
 
+function isDocumentPackFile(path: string): boolean {
+  return /\.(docx|pptx|ppt|xlsx|csv|md|mdx|txt|rst|adoc)$/i.test(path);
+}
+
+function minEvidenceScore(pack: RepoPack): number {
+  if (pack.files.length > 0 && pack.files.every((file) => isDocumentPackFile(file.path))) {
+    return 2;
+  }
+  return FAST_PATH_MIN_SCORE;
+}
+
 function genericLocalCard(
   query: string,
   canonical: string,
@@ -325,7 +337,8 @@ function genericLocalCard(
   const usable = hits.filter((h) => !/(site-packages|dist-packages|\.venv|\/venv\/)/i.test(h.path));
   const seeded = usable.length === 0 && named ? [hitFromFile(named)] : usable;
   const top = seeded[0];
-  if (seeded.length === 0 || (!named && (top?.score ?? 0) < 4)) {
+  const minScore = minEvidenceScore(pack);
+  if (seeded.length === 0 || (!named && (top?.score ?? 0) < minScore)) {
     noteAttempt({
       query,
       path: top?.path ?? "",

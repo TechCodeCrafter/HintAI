@@ -14,6 +14,7 @@ import { getContextRepository } from "@/lib/context/service";
 import type { SpaceRecord } from "@/lib/context/space-types";
 import type { StoredSource } from "@/lib/context/types";
 import { isPdfSource, isTextSource } from "@/lib/context/types";
+import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { useMeetHint } from "@/lib/store";
 
@@ -24,6 +25,7 @@ type SourceRow = {
   path: string;
   fileCount: number;
   status: string;
+  statusDetail?: string;
   updatedAt: number;
 };
 
@@ -38,13 +40,15 @@ function rowsFromSources(sources: StoredSource[]): SourceRow[] {
   for (const [sourceId, bundle] of byBundle) {
     const head = bundle[0]!;
     if (isPdfSource(head)) {
+      const pdfStatus = pdfSourceStatus(head);
       rows.push({
         key: sourceId,
         displayName: head.displayName,
         sourceType: "pdf",
         path: head.path,
         fileCount: 1,
-        status: head.readiness === "ready" ? "Ready" : head.readiness,
+        status: pdfStatus.short,
+        statusDetail: pdfStatus.detail,
         updatedAt: head.updatedAt,
       });
       continue;
@@ -297,7 +301,17 @@ export function ContextDetail({ id }: { id: string }) {
                       </td>
                       <td className="tabular-nums text-fg">{row.fileCount}</td>
                       <td>
-                        <Badge variant={row.status === "Ready" ? "ready" : "indexing"} dot>
+                        <Badge
+                          variant={
+                            row.status === "Ready"
+                              ? "ready"
+                              : row.status === "Waiting" || row.status === "Reading…" || row.status === "Indexing…"
+                                ? "indexing"
+                                : "error"
+                          }
+                          dot
+                          title={row.statusDetail}
+                        >
                           {row.status}
                         </Badge>
                       </td>
