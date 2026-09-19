@@ -103,7 +103,7 @@ Manual before external beta: `npm run test:e2e` (account-isolation, knowledge-sp
 
 ## Remaining launch blockers
 
-- Run E2E account-isolation + knowledge-space on CI before inviting external users.
+- ~~Run E2E account-isolation + knowledge-space on CI before inviting external users.~~ **Cleared 2026-09-18** — `account-isolation`, `knowledge-space`, and `private-workspace` specs all pass (4/4) against `main` @ `2cbf2d8` (truth-layer retrieval merged).
 - Collect real beta telemetry from 10–20 users (local export aggregation process TBD).
 - Optional: server-side aggregation endpoint (out of scope — local-first only shipped).
 
