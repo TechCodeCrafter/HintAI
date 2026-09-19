@@ -7,7 +7,7 @@ import { persistPackAsContext } from "../../../context/service.ts";
 import { createMemoryRepository } from "../../../context/memory.ts";
 import { indexContext } from "../../../context/chunk-index.ts";
 import { packFromFiles, prunePack } from "../../../repo/folder.ts";
-import { officeReadError, parseDocx, parseXlsx } from "../office-parsers.ts";
+import { officeReadError, parseDocx, parsePpt, parsePptx, parseXlsx } from "../office-parsers.ts";
 
 function crc32(data: Uint8Array): number {
   let crc = ~0;
@@ -117,6 +117,28 @@ function bytesToBuffer(bytes: Uint8Array): ArrayBuffer {
   return copy.buffer;
 }
 
+function minimalPptx(slideText: string, noteText?: string): ArrayBuffer {
+  const files: Record<string, string> = {
+    "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>
+</Types>`,
+    "ppt/slides/slide1.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld><p:spTree><p:sp><p:txBody><a:p><a:r><a:t>${slideText}</a:t></a:r></a:p></p:txBody></p:sp></p:spTree></p:cSld>
+</p:sld>`,
+  };
+  if (noteText) {
+    files["ppt/notesSlides/notesSlide1.xml"] = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld><p:spTree><p:sp><p:txBody><a:p><a:r><a:t>${noteText}</a:t></a:r></a:p></p:txBody></p:sp></p:spTree></p:cSld>
+</p:notes>`;
+  }
+  return zipFiles(files);
+}
+
 function minimalDocx(text: string): ArrayBuffer {
   return zipFiles({
     "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -161,6 +183,37 @@ test("parseXlsx extracts sheet text", () => {
   const result = parseXlsx(xlsxBuffer());
   assert.match(result, /Name \| Role/);
   assert.match(result, /Alice \| Engineer/);
+});
+
+test("parsePptx extracts slide text", () => {
+  const result = parsePptx(minimalPptx("Quarterly roadmap review"));
+  assert.match(result, /--- Slide 1 ---/);
+  assert.match(result, /Quarterly roadmap review/);
+});
+
+test("parsePptx extracts speaker notes when present", () => {
+  const result = parsePptx(minimalPptx("Quarterly roadmap review", "Mention the launch date"));
+  assert.match(result, /Notes: Mention the launch date/);
+});
+
+test("parsePptx rejects an empty buffer", () => {
+  assert.throws(() => parsePptx(new ArrayBuffer(0)));
+});
+
+test("parsePpt rejects non-OLE buffers", async () => {
+  await assert.rejects(() => parsePpt(new TextEncoder().encode("hello").buffer));
+});
+
+test("parsePpt accepts PPTX bytes when a deck was saved with a .ppt extension", async () => {
+  const result = await parsePpt(minimalPptx("Misnamed deck"));
+  assert.match(result, /Misnamed deck/);
+});
+
+test("packFromFiles indexes a pptx", async () => {
+  const loaded = await packFromFiles([new File([minimalPptx("Beta kickoff deck")], "kickoff.pptx")]);
+  assert.equal(loaded.failed.length, 0);
+  assert.equal(loaded.pack.files.length, 1);
+  assert.match(loaded.pack.files[0]?.content ?? "", /Beta kickoff deck/);
 });
 
 test("parseXlsx extracts CSV text", () => {

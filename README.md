@@ -163,9 +163,8 @@ Load a **service folder** (`src/`, not the repo root) for best recall.
 | Source | How to load | Notes |
 |---|---|---|
 | Code, markdown, text | Folder or file upload | Primary path; line citations |
-| DOCX, XLSX, CSV | Folder or file upload | Extracted to plain text; file + line cite |
+| DOCX, XLSX, CSV, PPT, PPTX | Folder or file upload | Extracted to plain text; file + line cite |
 | PDF | **Add PDFs** (separate from folder pick) | Page citations; size/page limits; scanned PDFs fail |
-| PPTX | — | Not supported yet |
 
 **Git history** (who touched a file, rationale from a PR) works on the built-in **`northstar-payments`** demo pack only. Folders you load in the browser have no commit metadata — don't expect authorship answers from your own corpus until history ingestion ships.
 

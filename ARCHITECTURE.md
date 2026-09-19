@@ -423,7 +423,7 @@ that file alone. Vocabulary is always rebuilt from the assembled active set.
 The search engine still never sees Dexie.
 
 Folder loading accepts source, markdown, text, DOCX, XLSX, and CSV (office
-files parsed to plain text via `office-parsers.ts`). PPTX is not supported.
+files parsed to plain text via `office-parsers.ts`, including legacy `.ppt` and `.pptx` slide and notes text).
 Caps and skips are enforced in `folder.ts` (build output, lockfiles, vendored
 paths, binaries). `prunePack` scores paths and warns when fewer than three
 code files survive.
@@ -590,8 +590,8 @@ Stated plainly, because the product's whole claim is about not overstating.
 7. **Corpus honesty on the landing page.** Folder upload cites code, markdown,
    text, DOCX, XLSX, and CSV (office files become plain text). PDFs use a
    separate Add PDFs path with page-indexed citations and hard limits (size,
-   pages, no scanned). PPTX is not supported. Marketing badges must match these
-   paths — PDF carries a *limits* badge, PPTX *soon*. Commit/ADR evidence exists
+   pages, no scanned). PPTX is extracted via `office-parsers.ts`. Marketing badges must match these
+   paths — PDF carries a *limits* badge. Commit/ADR evidence exists
    only on the built-in `northstar-payments` demo; browser-loaded folders have
    `commits: []`.
 

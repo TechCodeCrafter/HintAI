@@ -64,7 +64,8 @@ const MATERIAL: MaterialChip[] = [
   { label: "Markdown" },
   { label: "Code" },
   { label: "Repositories" },
-  { label: "PPTX", note: "soon" },
+  { label: "PPT" },
+  { label: "PPTX" },
 ];
 
 const USE_CASES = [

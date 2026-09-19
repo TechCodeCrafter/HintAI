@@ -61,6 +61,8 @@ const ALLOW_EXT = new Set([
   "docx",
   "xlsx",
   "csv",
+  "ppt",
+  "pptx",
 ]);
 
 const MAX_FILES = 500;
@@ -172,7 +174,7 @@ function scorePath(path: string): number {
     score += 10;
   }
   if (/\.(ts|tsx|go|py|java|rs|kt)$/.test(p)) score += 6;
-  if (/\.(docx|xlsx|csv)$/.test(p)) score += 8;
+  if (/\.(docx|xlsx|csv|ppt|pptx)$/.test(p)) score += 8;
   if (/\.(js|jsx|rb|cs)$/.test(p)) score += 3;
   if (/(adr|architecture|rfc|design-doc)/.test(p)) score += 7;
   if (/(^|\/)docs\//.test(p) && /\.md$/.test(p)) score += 4;
@@ -206,7 +208,7 @@ export function prunePack(pack: RepoPack): { pack: RepoPack; weak: boolean; drop
     .sort((a, b) => scorePath(b.path) - scorePath(a.path) || a.path.localeCompare(b.path));
   const dropped = pack.files.length - kept.length;
   const code = kept.filter((f) => /\.(ts|tsx|js|jsx|go|py|java|rs|kt)$/i.test(f.path)).length;
-  const office = kept.filter((f) => /\.(docx|xlsx|csv)$/i.test(f.path)).length;
+  const office = kept.filter((f) => /\.(docx|xlsx|csv|ppt|pptx)$/i.test(f.path)).length;
   const next = kept.length > 0 ? { ...pack, files: kept, description: `Local folder · ${kept.length} files` } : pack;
   return { pack: next, dropped, weak: code < 3 && office === 0 };
 }

@@ -70,7 +70,8 @@ const MATERIALS: ReadonlyArray<{
   { label: "CSV", icon: FileText },
   { label: "Markdown", icon: FileText },
   { label: "Code", icon: Code2 },
-  { label: "PPTX", icon: FileText, note: "soon" },
+  { label: "PPT", icon: FileText },
+  { label: "PPTX", icon: FileText },
 ];
 
 function WaitlistForm() {

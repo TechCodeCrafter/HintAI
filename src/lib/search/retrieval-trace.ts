@@ -46,7 +46,7 @@ export function closeRetrieval(tracesForQuery: RetrievalTrace[]): void {
 export function evidenceTypeOf(hit: { kind: string; path: string }): RetrievalEvidenceType {
   if (hit.kind === "why") return "commit";
   if (hit.kind === "document") return "doc";
-  if (/\.(md|mdx|txt|docx|xlsx|csv|rst|adoc)$/i.test(hit.path)) return "doc";
+  if (/\.(md|mdx|txt|docx|xlsx|csv|ppt|pptx|rst|adoc)$/i.test(hit.path)) return "doc";
   return "code";
 }
 

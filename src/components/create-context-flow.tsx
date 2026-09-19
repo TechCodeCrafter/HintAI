@@ -28,8 +28,6 @@ import { useMeetHint } from "@/lib/store";
 
 type Step = "identity" | "material" | "indexing";
 
-const COMING_SOON = ["PPTX"] as const;
-
 const KIND_ICONS: Record<ContextKind, typeof Briefcase> = {
   work: Briefcase,
   course: GraduationCap,
@@ -211,7 +209,7 @@ export function CreateContextFlow() {
                     icon={<Upload aria-hidden />}
                     title="Upload files"
                     description="Drag & drop files or click to browse"
-                    footer="Markdown, text, code, DOCX, XLSX, CSV"
+                    footer="Markdown, text, code, DOCX, XLSX, CSV, PPT, PPTX"
                     testId="upload-files-button"
                     onClick={() => filesRef.current?.click()}
                   />
@@ -223,19 +221,11 @@ export function CreateContextFlow() {
                     onClick={() => pdfRef.current?.click()}
                   />
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {COMING_SOON.map((label) => (
-                    <span key={label} className="mh-chip border-dashed">
-                      {label}
-                      <span className="text-faint">Coming soon</span>
-                    </span>
-                  ))}
-                </div>
                 <input
                   ref={filesRef}
                   type="file"
                   multiple
-                  accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv"
+                  accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv,.ppt,.pptx"
                   className="sr-only"
                   aria-hidden
                   tabIndex={-1}
