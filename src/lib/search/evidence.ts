@@ -1,5 +1,6 @@
 import { reconstructSourceText } from "../document/source-text.ts";
 import type { DocumentItemRange, NormalizedDocument } from "../document/types.ts";
+import { verifyClaimSemantics } from "./claim-verify.ts";
 import {
   type EvidenceSpan,
   countLines,
@@ -369,8 +370,25 @@ export function verifyClaim(
   evidence: Array<Evidence | EvidenceSpan>,
   structural: string[] = [],
 ): SupportCheck {
-  const corpus = [...evidence.map(verifiableText), ...structural].join("\n").toLowerCase();
+  const evidenceTexts = evidence.map(verifiableText);
+  const evidenceCorpus = evidenceTexts.join("\n").toLowerCase();
+  const fullCorpus = [...evidenceTexts, ...structural].join("\n").toLowerCase();
   const checked = contentTokens(say);
-  const missing = checked.filter((word) => !corpus.includes(word));
-  return { ok: missing.length === 0, missing, checked: checked.length };
+  const missing = checked.filter((word) => !fullCorpus.includes(word));
+  if (missing.length > 0) return { ok: false, missing, checked: checked.length };
+
+  const proseTokens = checked.filter((word) => evidenceCorpus.includes(word));
+  if (proseTokens.length >= 2) {
+    const blocks = evidenceTexts.flatMap((text) =>
+      text
+        .split(/\n+/)
+        .map((line) => line.toLowerCase())
+        .filter((line) => line.length > 0),
+    );
+    const semantic = verifyClaimSemantics(say, evidenceCorpus, proseTokens, blocks);
+    if (!semantic.ok) {
+      return { ok: false, missing: semantic.reasons, checked: checked.length };
+    }
+  }
+  return { ok: true, missing: [], checked: checked.length };
 }
