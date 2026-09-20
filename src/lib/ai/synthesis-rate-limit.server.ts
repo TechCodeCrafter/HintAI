@@ -2,6 +2,7 @@ import { SynthesisGuardError } from "./synthesis-guard.server.ts";
 
 type Window = { count: number; resetAt: number };
 
+/** In-memory per warm instance — not a global cap on serverless (see PRODUCT-BACKLOG). */
 const buckets = new Map<string, Window>();
 
 function limitPerHour(): number {

@@ -1,6 +1,6 @@
 import { reconstructSourceText } from "../document/source-text.ts";
 import type { DocumentItemRange, NormalizedDocument } from "../document/types.ts";
-import { verifyClaimSemantics } from "./claim-verify.ts";
+import { splitEvidenceBlocks, verifyClaimSemantics } from "./claim-verify.ts";
 import {
   type EvidenceSpan,
   countLines,
@@ -349,7 +349,7 @@ function contentTokens(say: string): string[] {
         .toLowerCase()
         .split(/\s+/)
         .map((w) => w.replace(/^[^a-z0-9_]+/, "").replace(/[^a-z0-9_]+$/, ""))
-        .filter((w) => w.length > 4 && !GLUE.has(w)),
+        .filter((w) => w.length >= 4 && !GLUE.has(w)),
     ),
   ];
 }
@@ -379,12 +379,7 @@ export function verifyClaim(
 
   const proseTokens = checked.filter((word) => evidenceCorpus.includes(word));
   if (proseTokens.length >= 2) {
-    const blocks = evidenceTexts.flatMap((text) =>
-      text
-        .split(/\n+/)
-        .map((line) => line.toLowerCase())
-        .filter((line) => line.length > 0),
-    );
+    const blocks = evidenceTexts.flatMap((text) => splitEvidenceBlocks(text));
     const semantic = verifyClaimSemantics(say, evidenceCorpus, proseTokens, blocks);
     if (!semantic.ok) {
       return { ok: false, missing: semantic.reasons, checked: checked.length };

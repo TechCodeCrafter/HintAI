@@ -84,6 +84,45 @@ assertLoginRoute();
 assertRouteProtection();
 assertNoDevUserFallbackInTelemetry();
 
+async function assertProductionSynthesisNeverDevUser() {
+  const guardPath = join(root, "src/lib/ai/synthesis-guard.server.ts");
+  const { synthesisAuthRequired, requireSynthesisUserId } = await import(guardPath);
+  const saved = { ...process.env };
+  try {
+    process.env.NODE_ENV = "production";
+    delete process.env.DATABASE_URL;
+    delete process.env.SYNTHESIS_DEV_BYPASS;
+    delete process.env.SYNTHESIS_REQUIRE_AUTH;
+    delete process.env.VITE_AUTH_ENABLED;
+    delete process.env.GOOGLE_CLIENT_ID;
+    delete process.env.GOOGLE_CLIENT_SECRET;
+    delete process.env.GROK_AUTH_CLIENT_SECRET;
+    if (!synthesisAuthRequired()) {
+      console.error("[beta-gates] FAIL — synthesis auth must be required in production");
+      process.exit(1);
+    }
+    let devUserFallback = false;
+    try {
+      const id = requireSynthesisUserId(undefined);
+      devUserFallback = id === "dev-user";
+    } catch {
+      /* expected — anonymous synthesis rejected */
+    }
+    if (devUserFallback) {
+      console.error("[beta-gates] FAIL — production synthesis must not resolve dev-user");
+      process.exit(1);
+    }
+  } finally {
+    for (const key of Object.keys(process.env)) {
+      if (!(key in saved)) delete process.env[key];
+    }
+    Object.assign(process.env, saved);
+  }
+  console.log("[beta-gates] OK — production synthesis rejects anonymous callers");
+}
+
+await assertProductionSynthesisNeverDevUser();
+
 run("production auth build invariant", process.execPath, ["scripts/check-production-auth-build.mjs"]);
 
 run("unit + src tests", process.execPath, ["scripts/run-tests.mjs"]);
