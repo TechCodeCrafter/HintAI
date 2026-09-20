@@ -48,6 +48,9 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="12" stdDeviation="24" flood-color="#000" flood-opacity="0.55"/>
     </filter>
+    <clipPath id="cardClip">
+      <rect x="592" y="96" width="560" height="438" rx="20"/>
+    </clipPath>
   </defs>
 
   <rect width="1200" height="630" fill="url(#bg)"/>
@@ -68,45 +71,59 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   </g>
   <text x="118" y="108" fill="#eef2ff" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="-0.02em">MeetHint</text>
 
-  <!-- Left copy -->
-  <text x="72" y="210" fill="#f8fafc" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-0.03em">Know before you answer.</text>
-  <text x="72" y="268" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" font-weight="500">Real-time answers for technical conversations.</text>
-  <text x="72" y="312" fill="#94a3b8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="400">Grounded in your repos, docs, and company knowledge.</text>
-  <text x="72" y="368" fill="#64748b" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" letter-spacing="0.08em">SUPPORTED · CITED · OR SILENT</text>
+  <!-- Left copy — keep within ~540px so the card never overlaps headline -->
+  <text x="56" y="200" fill="#f8fafc" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="46" font-weight="700" letter-spacing="-0.03em">
+    <tspan x="56" dy="0">Know before</tspan>
+    <tspan x="56" dy="54">you answer.</tspan>
+  </text>
+  <text x="56" y="330" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="500">
+    <tspan x="56" dy="0">Real-time answers for</tspan>
+    <tspan x="56" dy="30">technical conversations.</tspan>
+  </text>
+  <text x="56" y="404" fill="#94a3b8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400">
+    <tspan x="56" dy="0">Grounded in your repos, docs,</tspan>
+    <tspan x="56" dy="26">and company knowledge.</tspan>
+  </text>
+  <text x="56" y="468" fill="#64748b" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="500" letter-spacing="0.08em">SUPPORTED · CITED · OR SILENT</text>
 
-  <!-- Product card -->
+  <!-- Product card — 48px safe margin on right (592 + 560 = 1152) -->
   <g filter="url(#cardShadow)">
-    <rect x="640" y="88" width="488" height="454" rx="20" fill="#0f1422" stroke="url(#cardEdge)" stroke-width="1.5"/>
-    <rect x="640" y="88" width="488" height="454" rx="20" fill="none" stroke="url(#glow)" stroke-width="1" opacity="0.35"/>
+    <rect x="592" y="96" width="560" height="438" rx="20" fill="#0f1422" stroke="url(#cardEdge)" stroke-width="1.5"/>
+    <rect x="592" y="96" width="560" height="438" rx="20" fill="none" stroke="url(#glow)" stroke-width="1" opacity="0.35"/>
   </g>
 
-  <text x="672" y="132" fill="#64748b" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.14em">QUESTION</text>
-  <text x="672" y="178" fill="#e2e8f0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="500">Does SSO support SCIM group provisioning?</text>
+  <g clip-path="url(#cardClip)">
+    <text x="624" y="136" fill="#64748b" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.14em">QUESTION</text>
+    <text x="624" y="172" fill="#e2e8f0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="500">
+      <tspan x="624" dy="0">Does SSO support SCIM group</tspan>
+      <tspan x="624" dy="28">provisioning?</tspan>
+    </text>
 
-  <line x1="672" y1="204" x2="1096" y2="204" stroke="#1e293b" stroke-width="1"/>
+    <line x1="624" y1="214" x2="1120" y2="214" stroke="#1e293b" stroke-width="1"/>
 
-  <text x="672" y="244" fill="#64748b" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.14em">ANSWER</text>
-  <circle cx="688" cy="276" r="10" fill="#22c55e" opacity="0.2"/>
-  <path d="M683 276 L686.5 279.5 L693 272" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="708" y="284" fill="#f1f5f9" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" font-weight="600">Yes — supported with SCIM group provisioning.</text>
+    <text x="624" y="248" fill="#64748b" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.14em">ANSWER</text>
+    <circle cx="636" cy="282" r="10" fill="#22c55e" opacity="0.2"/>
+    <path d="M631 282 L634.5 285.5 L641 278" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="656" y="290" fill="#f1f5f9" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="600">
+      <tspan x="656" dy="0">Yes — supported with SCIM group</tspan>
+      <tspan x="656" dy="28">provisioning.</tspan>
+    </text>
 
-  <rect x="672" y="420" width="456" height="88" rx="12" fill="#111827" stroke="#1f2937" stroke-width="1"/>
-  <text x="692" y="452" fill="#94a3b8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="600">3 sources</text>
+    <rect x="624" y="368" width="496" height="88" rx="12" fill="#111827" stroke="#1f2937" stroke-width="1"/>
+    <text x="644" y="400" fill="#94a3b8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="600">3 sources</text>
 
-  <!-- GitHub pill -->
-  <rect x="692" y="468" width="88" height="28" rx="14" fill="#1e293b"/>
-  <circle cx="708" cy="482" r="7" fill="#94a3b8"/>
-  <text x="722" y="487" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="500">GitHub</text>
+    <rect x="644" y="416" width="88" height="28" rx="14" fill="#1e293b"/>
+    <circle cx="660" cy="430" r="7" fill="#94a3b8"/>
+    <text x="674" y="435" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="500">GitHub</text>
 
-  <!-- Docs pill -->
-  <rect x="790" y="468" width="72" height="28" rx="14" fill="#1e293b"/>
-  <rect x="804" y="476" width="10" height="12" rx="1" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
-  <text x="822" y="487" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="500">Docs</text>
+    <rect x="742" y="416" width="72" height="28" rx="14" fill="#1e293b"/>
+    <rect x="756" y="424" width="10" height="12" rx="1" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+    <text x="774" y="435" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="500">Docs</text>
 
-  <!-- PDF pill -->
-  <rect x="872" y="468" width="68" height="28" rx="14" fill="#1e293b"/>
-  <rect x="886" y="476" width="10" height="12" rx="1" fill="#94a3b8" opacity="0.35"/>
-  <text x="904" y="487" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="500">PDF</text>
+    <rect x="824" y="416" width="68" height="28" rx="14" fill="#1e293b"/>
+    <rect x="838" y="424" width="10" height="12" rx="1" fill="#94a3b8" opacity="0.35"/>
+    <text x="856" y="435" fill="#cbd5e1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="500">PDF</text>
+  </g>
 </svg>`;
 
 writeFileSync(svgPath, svg);
