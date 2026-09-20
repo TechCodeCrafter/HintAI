@@ -2,17 +2,22 @@
   "redirects": [
     {
       "source": "/og.jpg",
-      "destination": "/og/meethint-og-v3.png",
+      "destination": "/og/meethint-og-v4.png",
       "permanent": true
     },
     {
       "source": "/og/meethint-og.png",
-      "destination": "/og/meethint-og-v3.png",
+      "destination": "/og/meethint-og-v4.png",
       "permanent": true
     },
     {
       "source": "/og/meethint-og-v2.png",
-      "destination": "/og/meethint-og-v3.png",
+      "destination": "/og/meethint-og-v4.png",
+      "permanent": true
+    },
+    {
+      "source": "/og/meethint-og-v3.png",
+      "destination": "/og/meethint-og-v4.png",
       "permanent": true
     }
   ]

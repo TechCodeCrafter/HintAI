@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Regenerate public/og/meethint-og-v3.png — 1200×630 premium share card.
- * Embeds the official mark from public/favicon.svg (same geometry as MeetHintMark).
+ * Regenerate public/og/meethint-og-v4.png — 1200×630 premium share card.
+ * Composites public/meethint-mark.svg (transparent official mark, same as MeetHintMark).
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -13,7 +13,8 @@ const tmpDir = join(root, ".grok");
 const svgPath = join(tmpDir, "meethint-og.svg");
 const pngTmp = join(tmpDir, "meethint-og.png");
 const outDir = join(root, "public/og");
-const outPath = join(outDir, "meethint-og-v3.png");
+const outPath = join(outDir, "meethint-og-v4.png");
+const markSvg = join(root, "public/meethint-mark.svg");
 
 const BRAND = {
   blue: "#2f6bf7",
@@ -71,8 +72,8 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect width="1200" height="630" fill="url(#heroGlow)"/>
 
-  <!-- Official mark composited from public/favicon.svg after rasterize -->
-  <text x="136" y="92" fill="${BRAND.text}" font-family="${sans}" font-size="32" font-weight="600" letter-spacing="-0.02em">MeetHint</text>
+  <!-- Official mark composited from public/meethint-mark.svg (transparent, no icon plate) -->
+  <text x="128" y="92" fill="${BRAND.text}" font-family="${sans}" font-size="32" font-weight="600" letter-spacing="-0.02em">MeetHint</text>
 
   <text x="56" y="188" fill="${BRAND.text}" font-family="${sans}" font-size="44" font-weight="700" letter-spacing="-0.03em">Know before</text>
   <text x="56" y="242" fill="${BRAND.violet}" font-family="${sans}" font-size="44" font-weight="700" letter-spacing="-0.03em">you answer.</text>
@@ -93,7 +94,7 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
     <rect x="588" y="92" width="564" height="446" rx="22" fill="${BRAND.card}" stroke="url(#cardEdge)" stroke-width="1.5"/>
   </g>
   <g clip-path="url(#cardClip)">
-    <text x="664" y="130" fill="${BRAND.muted}" font-family="${sans}" font-size="14" font-weight="600">MeetHint</text>
+    <text x="656" y="130" fill="${BRAND.muted}" font-family="${sans}" font-size="14" font-weight="600">MeetHint</text>
     <circle cx="738" cy="124" r="5" fill="${BRAND.success}"/>
     <text x="750" y="129" fill="${BRAND.success}" font-family="${sans}" font-size="13" font-weight="600">Live</text>
 
@@ -143,16 +144,19 @@ if (convert.status !== 0) {
   process.exit(convert.status ?? 1);
 }
 
-/** Composite the official favicon.svg — raster paths ImageMagick renders reliably. */
+/** Composite the transparent official mark (not favicon.svg — that includes an app-icon plate). */
 function compositeOfficialMark(basePng, outPng) {
-  const favicon = join(root, "public/favicon.svg");
+  if (!existsSync(markSvg)) {
+    console.error("Missing public/meethint-mark.svg");
+    process.exit(1);
+  }
   const lockup = join(tmpDir, "mark-lockup.png");
   const card = join(tmpDir, "mark-card.png");
-  for (const [cmd, label] of [
-    [["magick", favicon, "-background", "none", "-density", "240", "-resize", "72x72", lockup], "lockup mark"],
-    [["magick", favicon, "-background", "none", "-density", "240", "-resize", "36x36", card], "card mark"],
+  for (const [args, label] of [
+    [[markSvg, "-background", "none", "-density", "320", "-resize", "56x56", lockup], "lockup mark"],
+    [[markSvg, "-background", "none", "-density", "320", "-resize", "28x28", card], "card mark"],
   ]) {
-    const step = spawnSync(cmd[0], cmd.slice(1), { encoding: "utf8" });
+    const step = spawnSync("magick", args, { encoding: "utf8" });
     if (step.status !== 0) {
       console.error(`Failed to rasterize ${label}:`, step.stderr || step.stdout);
       process.exit(step.status ?? 1);
@@ -164,11 +168,11 @@ function compositeOfficialMark(basePng, outPng) {
       basePng,
       lockup,
       "-geometry",
-      "+52+38",
+      "+56+44",
       "-composite",
       card,
       "-geometry",
-      "+618+104",
+      "+620+106",
       "-composite",
       outPng,
     ],

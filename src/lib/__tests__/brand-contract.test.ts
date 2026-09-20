@@ -78,7 +78,7 @@ test("brand constants are MeetHint everywhere public", () => {
   };
   assert.match(site.title, /MeetHint/);
   assert.ok(site.description);
-  assert.equal(site.image, "/og/meethint-og-v3.png");
+  assert.equal(site.image, "/og/meethint-og-v4.png");
   assert.doesNotMatch(site.description!, /general knowledge/i);
 });
 
@@ -115,7 +115,7 @@ test("landing, routes, and OG never promise a generate-from-knowledge path", () 
   assert.match(shareMeta, /og:type/);
   assert.match(shareMeta, /og:url/);
   assert.match(shareMeta, /MEETHINT_OG_IMAGE/);
-  assert.match(brandModule, /meethint-og-v3\.png/);
+  assert.match(brandModule, /meethint-og-v4\.png/);
   assert.doesNotMatch(brandModule, /\/og\.jpg/);
 });
 

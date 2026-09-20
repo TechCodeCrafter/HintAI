@@ -38,7 +38,7 @@ test("shareOgHeadMeta emits the canonical marketing metadata set", () => {
   assert.equal(meta.get("twitter:title"), MEETHINT_OG_TITLE);
   assert.equal(meta.get("twitter:description"), MEETHINT_TWITTER_DESCRIPTION);
   assert.equal(meta.get("twitter:image"), MEETHINT_OG_IMAGE);
-  assert.match(MEETHINT_OG_IMAGE, /meethint-og-v3\.png$/);
+  assert.match(MEETHINT_OG_IMAGE, /meethint-og-v4\.png$/);
   assert.doesNotMatch(MEETHINT_OG_IMAGE, /\/og\.jpg$/);
   assert.doesNotMatch(MEETHINT_TITLE, /Live meeting copilot/i);
   assert.doesNotMatch(MEETHINT_DESCRIPTION, /Live meeting copilot/i);
