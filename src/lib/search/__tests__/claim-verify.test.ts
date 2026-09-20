@@ -69,3 +69,31 @@ test("partial support and unsupported synthesis fail closed", () => {
   assertUnsupported("The billing service retries failed webhooks and also publishes audit events.");
   assertUnsupported("The billing service retries failed webhooks.");
 });
+
+test("cross-sentence numeric splice is rejected", () => {
+  const refunds =
+    "Refunds are processed within 5 days. Chargebacks are processed within 30 days.";
+  assertUnsupported("Refunds are processed within 30 days.");
+  assertUnsupported("Chargebacks are processed within 5 days.");
+});
+
+test("planned capability cannot be claimed as supported across sentences", () => {
+  const parser =
+    "The parser supports PDF and DOCX. XLSX support is planned.";
+  assertUnsupported("The parser supports XLSX.");
+});
+
+test("predicate transfer across adjacent sentences is rejected", () => {
+  const deploys =
+    "Deploys run nightly. Rollbacks require manual approval from the release manager.";
+  assertUnsupported("Deploys require manual approval from the release manager.");
+});
+
+test("light stemming gap: alerts vs alerting stays fail-closed", () => {
+  const alerting = "Billing retries failed webhooks three times before alerting.";
+  const s = span(alerting);
+  assert.equal(
+    verifyClaim("Billing retries failed webhooks three times, then alerts.", [s]).ok,
+    false,
+  );
+});

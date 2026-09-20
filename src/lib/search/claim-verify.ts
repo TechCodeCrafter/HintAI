@@ -108,13 +108,22 @@ const GLUE_ACTION = new Set([
   "would",
 ]);
 
+/** Split evidence into sentence-scoped blocks for phrase-order checks. */
+export function splitEvidenceBlocks(text: string): string[] {
+  return text
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((block) => block.toLowerCase())
+    .filter((block) => block.length > 0);
+}
+
 /** Numeric and unit tokens in the claim must appear in evidence. */
 export function numericsCompatible(claim: string, anchored: string, fullCorpus: string): boolean {
   const claimNums = extractNumbers(claim);
   const corpusNums = extractNumbers(fullCorpus);
   const anchoredNums = extractNumbers(anchored);
+  const numericPool = anchoredNums.length > 0 ? anchoredNums : corpusNums;
   for (const num of claimNums) {
-    if (!corpusNums.includes(num)) return false;
+    if (!numericPool.includes(num)) return false;
   }
   if (anchoredNums.length > 0 && claimNums.length === 0 && sharesActionStem(claim, anchored)) {
     return false;
@@ -177,14 +186,9 @@ export function anchorSentence(corpus: string, contentTokens: string[]): string 
 
 function blocksOrderCompatible(contentTokens: string[], blocks: string[]): boolean {
   if (contentTokens.length <= 1) return true;
-  const groups = blocks
-    .map((block) => contentTokens.filter((token) => block.includes(token)))
-    .filter((group) => group.length >= 2);
-  if (groups.length === 0) return true;
-  return groups.every((group) => {
-    const block = blocks.find((candidate) => group.every((token) => candidate.includes(token)));
-    return block ? orderedContentSubsequence(group, block) : false;
-  });
+  const hosting = blocks.find((block) => contentTokens.every((token) => block.includes(token)));
+  if (!hosting) return false;
+  return orderedContentSubsequence(contentTokens, hosting);
 }
 
 /**
