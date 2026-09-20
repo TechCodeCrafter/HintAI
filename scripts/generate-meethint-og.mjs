@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Regenerate public/og/meethint-og.png — 1200×630 premium share card.
+ * Regenerate public/og/meethint-og-v2.png — 1200×630 premium share card.
  * Code-drawn SVG → PNG so typography and layout stay deterministic.
  */
 import { spawnSync } from "node:child_process";
@@ -13,7 +13,7 @@ const tmpDir = join(root, ".grok");
 const svgPath = join(tmpDir, "meethint-og.svg");
 const pngTmp = join(tmpDir, "meethint-og.png");
 const outDir = join(root, "public/og");
-const outPath = join(outDir, "meethint-og.png");
+const outPath = join(outDir, "meethint-og-v2.png");
 
 mkdirSync(tmpDir, { recursive: true });
 mkdirSync(outDir, { recursive: true });

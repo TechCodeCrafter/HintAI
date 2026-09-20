@@ -6,14 +6,18 @@ Last updated: 2026-09-20
 
 | Field | Value |
 |-------|--------|
-| File | `public/og/meethint-og.png` |
+| File | `public/og/meethint-og-v2.png` |
 | Size | 1200 × 630 |
-| Public URL | `https://www.meethint.ai/og/meethint-og.png` |
+| Public URL | `https://www.meethint.ai/og/meethint-og-v2.png` |
 | Regenerate | `npm run generate:og` |
 
 Design: dark navy canvas, blue/violet gradient glow, MeetHint mark + wordmark, headline **Know before you answer.**, and a product-style answer card (SSO / SCIM example with GitHub · Docs · PDF sources).
 
+Legacy `/og.jpg` is removed from the repo; Vercel redirects `/og.jpg` → `/og/meethint-og-v2.png` so stale crawler cache on the old path still resolves.
+
 ## Metadata (SSR via `src/routes/__root.tsx`)
+
+Single authoritative source: `src/lib/brand.ts` (copy + image URL) and `src/lib/og/share-meta.ts` (tag list).
 
 | Tag | Value |
 |-----|--------|
@@ -25,17 +29,17 @@ Design: dark navy canvas, blue/violet gradient glow, MeetHint mark + wordmark, h
 | `og:type` | `website` |
 | `og:url` | `https://www.meethint.ai/` |
 | `og:site_name` | MeetHint |
-| `og:image` | `https://www.meethint.ai/og/meethint-og.png` |
+| `og:image` | `https://www.meethint.ai/og/meethint-og-v2.png` |
 | `og:image:width` / `height` | 1200 / 630 |
 | `og:image:alt` | MeetHint — real-time answers for technical conversations |
 | `twitter:card` | `summary_large_image` |
 | `twitter:title` | MeetHint — Know before you answer |
 | `twitter:description` | Real-time answers from your repos, docs, and company knowledge. |
-| `twitter:image` | `https://www.meethint.ai/og/meethint-og.png` |
+| `twitter:image` | `https://www.meethint.ai/og/meethint-og-v2.png` |
 
-Implementation: `src/lib/og/share-meta.ts` + `src/lib/brand.ts`.
+The marketing route (`/`) stays `ssr: false` for autofill hydration; OG tags are on the root route so crawlers receive them in the initial HTML without client JS.
 
-The marketing route (`/`) stays `ssr: false` for autofill hydration; OG tags are on the root route so crawlers receive them without client JS.
+MeetHint hosts skip Grok PWA stream head injection (`shouldStreamInjectHead`) so SSR tags are not overwritten.
 
 ## Platform behavior
 
@@ -47,15 +51,18 @@ The marketing route (`/`) stays `ssr: false` for autofill hydration; OG tags are
 
 ## Meta Sharing Debugger
 
-After deploy, open [Sharing Debugger](https://developers.facebook.com/tools/debug/) for `https://www.meethint.ai/` and click **Fetch new information**.
+After deploy:
+
+1. `npm run verify:social-meta` — curls production HTML as `facebookexternalhit` and checks every tag + PNG HEAD.
+2. Open [Sharing Debugger](https://developers.facebook.com/tools/debug/) for `https://www.meethint.ai/` and click **Scrape Again**.
 
 ### Remaining warning (safe to ignore)
 
 | Property | Status |
 |----------|--------|
-| `fb:app_id` | **Not set** — intentional. No Facebook Login / Social Plugins integration exists. Meta shows a warning; previews still render. Add only when a real Meta App ID is configured. |
+| `fb:app_id` | **Not set** — intentional. MeetHint does not currently use a Meta app integration. Meta may show a warning; previews still render. Add only when a real Meta App ID is configured. |
 
-`og:url` and `og:type` are now present — the previous missing-property warnings for those should clear after rescrape.
+`og:url` and `og:type` are required and present in SSR output.
 
 ## Validation checklist
 
@@ -64,12 +71,11 @@ npm run generate:og    # refresh PNG if copy/layout changes
 npm run typecheck
 npm test
 npm run build
-# Optional: grep built SSR output for og:image after deploy
+npm run verify:social-meta   # after deploy
 ```
 
-- [x] OG tags defined in SSR head (`__root__.tsx`)
+- [x] OG tags defined in SSR head (`__root__.tsx` → `shareOgHeadMeta()`)
 - [x] Canonical URL with trailing slash
-- [x] No duplicate `og:image` pointing at legacy `og.jpg` in app head
-- [x] PNG committed at `public/og/meethint-og.png`
-
-Legacy plain **Hint** card (`public/og.jpg`) is superseded for TanStack head tags; file may remain for Grok PWA bake until removed separately.
+- [x] Versioned PNG at `public/og/meethint-og-v2.png`
+- [x] No `public/og.jpg` in repo; redirect for legacy URL
+- [x] No duplicate share meta from Grok PWA injector on meethint.ai
