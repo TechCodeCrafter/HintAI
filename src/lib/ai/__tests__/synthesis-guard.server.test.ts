@@ -41,6 +41,16 @@ test("unauthenticated synthesis is rejected when auth is required", () => {
   );
 });
 
+test("production never falls back to dev-user for anonymous synthesis", () => {
+  process.env.NODE_ENV = "production";
+  delete process.env.DATABASE_URL;
+  delete process.env.SYNTHESIS_DEV_BYPASS;
+  delete process.env.SYNTHESIS_REQUIRE_AUTH;
+  delete process.env.VITE_AUTH_ENABLED;
+  assert.equal(synthesisAuthRequired(), true);
+  assert.throws(() => requireSynthesisUserId(undefined));
+});
+
 test("authenticated synthesis user id is accepted when auth is required", () => {
   process.env.NODE_ENV = "production";
   assert.equal(requireSynthesisUserId("user-a"), "user-a");
