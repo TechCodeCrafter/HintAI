@@ -8,6 +8,12 @@
  * all run; the exit code is non-zero if any of them failed.
  */
 import { spawnSync } from "node:child_process";
+import { globSync } from "node:fs";
+import { join } from "node:path";
+
+const root = join(import.meta.dirname, "..");
+
+const srcTests = globSync("src/**/*.test.ts", { cwd: root }).sort();
 
 const GROUPS = [
   {
@@ -16,105 +22,9 @@ const GROUPS = [
     args: ["--test", "scripts/**/*.test.mjs"],
   },
   {
-    name: "src (gate, transcript identity, cards)",
+    name: "src",
     command: process.execPath,
-    args: [
-      "--experimental-strip-types",
-      "--test",
-      "src/lib/app-data/app-data.test.ts",
-      "src/lib/auth/gate-identity.test.ts",
-      "src/lib/search/gate.test.ts",
-      "src/lib/search/retrieve.test.ts",
-      "src/lib/search/intent.test.ts",
-      "src/lib/search/subject.test.ts",
-      "src/lib/search/spoken.test.ts",
-      "src/lib/theme.test.ts",
-      "src/lib/search/thread.test.ts",
-      "src/lib/search/gate-newest.test.ts",
-      "src/lib/listen/transcript-events.test.ts",
-      "src/lib/listen/ring.test.ts",
-      "src/lib/listen/vad.test.ts",
-      "src/lib/search/prose.test.ts",
-      "src/lib/search/card.test.ts",
-      "src/lib/search/evidence.test.ts",
-      "src/lib/search/__tests__/evidence-span.test.ts",
-      "src/lib/repo/parsers/__tests__/regex-parser.test.ts",
-      "src/lib/search/__tests__/structured-chunks.test.ts",
-      "src/lib/search/__tests__/hybrid-retrieve.test.ts",
-      "src/lib/search/__tests__/embedding.test.ts",
-      "src/lib/search/__tests__/vector-store.test.ts",
-      "src/lib/search/text-map.test.ts",
-      "src/lib/search/__tests__/document-safety.test.ts",
-      "src/lib/search/__tests__/document-card.test.ts",
-      "src/lib/search/__tests__/question-contract.test.ts",
-      "src/lib/search/__tests__/answer-mode.test.ts",
-      "src/lib/search/__tests__/auto-route.test.ts",
-      "src/lib/search/__tests__/answer-fast-path.test.ts",
-      "src/lib/search/__tests__/prompt-profile.test.ts",
-      "src/lib/search/__tests__/answer-history.test.ts",
-      "src/lib/search/__tests__/cite-or-silence.test.ts",
-      "src/lib/search/__tests__/multi-source-answer.test.ts",
-      "src/lib/search/__tests__/retrieval-contract.test.ts",
-      "src/lib/search/__tests__/generate-answer.test.ts",
-      "src/lib/billing/__tests__/extract-quota.test.ts",
-      "src/lib/billing/__tests__/subscription.test.ts",
-      "src/lib/billing/__tests__/waitlist-local.test.ts",
-      "src/lib/audit/__tests__/claim-gate.test.ts",
-      "src/lib/audit/__tests__/admit.test.ts",
-      "src/lib/audit/__tests__/report.test.ts",
-      "src/lib/audit/__tests__/contradict.test.ts",
-      "src/lib/audit/__tests__/storage.test.ts",
-      "src/lib/ai/__tests__/models.test.ts",
-      "src/lib/ai/__tests__/client-keys.test.ts",
-      "src/lib/ai/__tests__/fn-input.test.ts",
-      "src/lib/ai/__tests__/synthesis-guard.server.test.ts",
-      "src/lib/search/__tests__/claim-verify.test.ts",
-      "src/lib/__tests__/brand-contract.test.ts",
-      "src/lib/__tests__/debug.test.ts",
-      "src/lib/instrumentation/__tests__/flight-recorder.test.ts",
-      "src/lib/instrumentation/__tests__/flight-summary.test.ts",
-      "src/lib/instrumentation/__tests__/answer-latency.test.ts",
-      "src/lib/instrumentation/__tests__/flight-analysis.test.ts",
-      "src/lib/instrumentation/__tests__/progressive-agreement.test.ts",
-      "src/lib/instrumentation/__tests__/fast-path-quality.test.ts",
-      "src/lib/instrumentation/__tests__/beta-telemetry.test.ts",
-      "src/lib/instrumentation/__tests__/authenticated-signup-gate.test.ts",
-      "src/lib/__tests__/product-states.test.ts",
-      "src/lib/listen/__tests__/utterance-admission.test.ts",
-      "src/lib/__tests__/demo-media.test.ts",
-      "src/lib/document/__tests__/evidence.test.ts",
-      "src/lib/context/__tests__/repository.test.ts",
-      "src/lib/context/__tests__/summaries.test.ts",
-      "src/lib/context/__tests__/hydration.test.ts",
-      "src/lib/context/__tests__/migration.test.ts",
-      "src/lib/context/__tests__/isolation.test.ts",
-      "src/lib/auth/__tests__/account-boundary.test.ts",
-      "src/lib/auth/__tests__/production-config.server.test.ts",
-      "src/lib/deploy/build-info.server.test.ts",
-      "src/lib/auth/__tests__/tenant-isolation.test.ts",
-      "src/lib/security/__tests__/redteam-harness.test.ts",
-      "src/lib/context/__tests__/indexing.test.ts",
-      "src/lib/context/__tests__/multi-source-ingest.test.ts",
-      "src/lib/context/__tests__/space-retrieval.test.ts",
-      "src/lib/context/__tests__/space-ui.test.ts",
-      "src/lib/context/__tests__/repository-parity.test.ts",
-      "src/lib/context/__tests__/documents.test.ts",
-      "src/lib/document/pdf/__tests__/normalize.test.ts",
-      "src/lib/document/pdf/__tests__/twocol.test.ts",
-      "src/lib/document/pdf/__tests__/layout-4a92.test.ts",
-      "src/lib/document/pdf/__tests__/parse.test.ts",
-      "src/lib/document/pdf/__tests__/snapshot.test.ts",
-      "src/lib/document/__tests__/chunk.test.ts",
-      "src/lib/document/__tests__/chunk-4a94.test.ts",
-      "src/lib/document/__tests__/structure.test.ts",
-      "src/lib/document/__tests__/blocks-4a93.test.ts",
-      "src/lib/context/__tests__/document-chunks.test.ts",
-      "src/lib/document/viewer/__tests__/viewer.test.ts",
-      "src/lib/document/pdf/__tests__/add-files.test.ts",
-      "src/lib/document/pdf/__tests__/store-ingest.test.ts",
-      "src/lib/document/parsers/__tests__/office-parsers.test.ts",
-      "src/lib/repo/__tests__/folder-preview.test.ts",
-    ],
+    args: ["--experimental-strip-types", "--test", ...srcTests],
   },
 ];
 
@@ -129,8 +39,8 @@ function tally(output) {
 
 const results = [];
 for (const group of GROUPS) {
-  console.log(`\n${"=".repeat(72)}\n${group.name}\n${"=".repeat(72)}`);
-  const run = spawnSync(group.command, group.args, { encoding: "utf8" });
+  console.log(`\n${"=".repeat(72)}\n${group.name} (${group.args.length - 2} files)\n${"=".repeat(72)}`);
+  const run = spawnSync(group.command, group.args, { cwd: root, encoding: "utf8" });
   const output = `${run.stdout ?? ""}${run.stderr ?? ""}`;
   process.stdout.write(output);
   results.push({ name: group.name, code: run.status ?? 1, ...tally(output) });

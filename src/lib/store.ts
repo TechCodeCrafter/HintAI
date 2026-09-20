@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import "@/lib/e2e-hooks";
-import { bindAccountId, LOCAL_DEV_ACCOUNT_ID, readAccountStorage, writeAccountStorage } from "@/lib/auth/account-boundary";
+import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "@/lib/auth/account-boundary";
 import { authEnabled } from "@/lib/auth/client";
 import type { ContextRecord, ContextRuntimeStatus, StoredSource } from "@/lib/context/types";
 import { isPdfSource } from "@/lib/context/types";
@@ -108,25 +108,14 @@ import { isClaimLine } from "@/lib/audit/claim-gate";
 import { getMeetingRepository } from "@/lib/audit/repository";
 import { finishMeeting, latestOpenMeeting, loadMeetings, meetingTitle, persistMeeting } from "@/lib/audit/session";
 import { newClaim, newMeetingRecord, type MeetingRecord } from "@/lib/audit/types";
+import {
+  persistSessionWire as persist,
+  readRelaySession,
+  SESSION_KEY,
+  type SessionWire,
+} from "@/lib/store/session-wire.ts";
 
-export { readSavedPack };
-
-export const SESSION_KEY = "meethint.session";
-const SESSION_KEY_LEGACY = "ground.session";
-
-function readSessionRaw(): string | null {
-  const next = readAccountStorage(SESSION_KEY);
-  if (next != null) return next;
-  try {
-    const legacy = localStorage.getItem(SESSION_KEY_LEGACY);
-    if (legacy == null) return null;
-    writeAccountStorage(SESSION_KEY, legacy);
-    localStorage.removeItem(SESSION_KEY_LEGACY);
-    return legacy;
-  } catch {
-    return null;
-  }
-}
+export { readSavedPack, readRelaySession, SESSION_KEY };
 const HERO_QUERY = "Why does that retry three times?";
 const WEAK_PACK = "This pack is mostly CI/config. Open the src folder, not the repo root.";
 
@@ -152,22 +141,6 @@ function noticesFromFolderLoad(args: {
           : null),
     packNotice: args.truncated ? truncationNotice(args.fileCount) : null,
   };
-}
-
-type SessionWire = {
-  card: Card | null;
-  armed: boolean;
-  listening: boolean;
-  searching: boolean;
-};
-
-function persist(partial: SessionWire) {
-  writeAccountStorage(SESSION_KEY, JSON.stringify(partial));
-  try {
-    localStorage.removeItem(SESSION_KEY_LEGACY);
-  } catch {
-    /* ignore quota */
-  }
 }
 
 if (typeof window !== "undefined" && !authEnabled) {
@@ -1852,12 +1825,3 @@ if (typeof window !== "undefined") {
   };
 }
 
-export function readRelaySession(): SessionWire | null {
-  try {
-    const raw = readSessionRaw();
-    if (!raw) return null;
-    return JSON.parse(raw) as SessionWire;
-  } catch {
-    return null;
-  }
-}

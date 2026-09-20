@@ -35,6 +35,11 @@ function SecurityPage() {
         <h2 className="text-lg font-semibold">Data handling</h2>
         <ul className="list-disc space-y-2 pl-5">
           <li>Your loaded repos and documents are indexed locally in the browser unless you explicitly use server-backed features that store data.</li>
+          <li>
+            When an answer requires model inference, MeetHint sends only the minimum retrieved excerpts (typically up to five chunks) to the
+            configured provider. If you supply your own API keys, they stay in your browser; shared model access on a signed-in deployment
+            uses server-configured credentials and requires authentication.
+          </li>
           <li>The product follows a cite-or-silence contract: it does not speak general knowledge when your material cannot support an answer.</li>
           <li>Workspace-scoped storage separates authenticated and anonymous tiers when sign-in is enabled.</li>
         </ul>

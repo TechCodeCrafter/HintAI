@@ -1,8 +1,19 @@
-# Archived cockpit notes
+# Archived docs
 
-Moved out of the README so the live path stays the source of truth.
+Point-in-time reports and superseded notes live under `docs/archive/`. Prefer **[NEXT.md](./NEXT.md)** and **[PRODUCT-BACKLOG.md](./PRODUCT-BACKLOG.md)** for current work.
 
-## Limits (still current)
+## Archived reports (September 2026)
+
+| File | Why archived |
+|------|----------------|
+| [archive/BETA-WAVE-1.md](./archive/BETA-WAVE-1.md) | Wave 1 ops snapshot — check backlog #115 for current status |
+| [archive/BETA-MILESTONE-REPORT.md](./archive/BETA-MILESTONE-REPORT.md) | Milestone report, not living spec |
+| [archive/PERFORMANCE-MILESTONE-2.md](./archive/PERFORMANCE-MILESTONE-2.md) | Performance milestone notes |
+| [archive/PERFORMANCE-CAPTURE.md](./archive/PERFORMANCE-CAPTURE.md) | Capture playbook snapshot |
+| [archive/GAP-ANALYSIS.md](./archive/GAP-ANALYSIS.md) | Pre-hardening gap analysis (test bias, retrieval) |
+| [archive/UI_REDESIGN_REPORT.md](./archive/UI_REDESIGN_REPORT.md) | Enterprise redesign report |
+
+## Cockpit notes (still current)
 
 - `MAX_FILES = 160`
 - `MAX_FILE_BYTES = 80_000`

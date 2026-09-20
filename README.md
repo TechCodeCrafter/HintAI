@@ -4,7 +4,7 @@ Browser meeting copilot for live calls. Load your material once. When someone as
 
 **Cite or silence.** Every spoken word is backed by a citation into your material, or the card stays empty with a specific reason. There is no general-knowledge tier and no “generate when the files can’t answer” path.
 
-This is not a thin RAG wrapper. The search layer alone is ~3,600 lines across 60+ modules under `src/lib/search/` — hybrid retrieval, an evidence model with byte-level coordinates, shape-aware admission, offline exact extraction, and LLM-assisted synthesis that must pass citation verification before it can speak.
+This is not a thin RAG wrapper. The search layer alone is ~8,300 lines of implementation (plus tests) across 80+ modules under `src/lib/search/` — hybrid retrieval, an evidence model with byte-level coordinates, shape-aware admission, offline exact extraction, and LLM-assisted synthesis that must pass **`verifyClaim`** (bag-of-words plus negation, numeric, and phrase-order checks) before it can speak.
 
 For the full design (listening, persistence, benchmarks, known gaps), see **[ARCHITECTURE.md](./ARCHITECTURE.md)**. For build order and vocabulary, see **[ROADMAP.md](./ROADMAP.md)**. For tenant isolation and RLS decisions, see **[docs/TENANT-ISOLATION.md](./docs/TENANT-ISOLATION.md)**. For adversarial red teaming, see **[docs/RED-TEAM.md](./docs/RED-TEAM.md)**.
 
@@ -75,7 +75,7 @@ Retrieval traces (`retrieval-trace.ts`, `retrieve-trace.ts`) record which channe
 Hybrid retrieval mixes **lexical IDF** (exact-term recall) with **embedding similarity** (semantic recall). They only change which chunks become candidates. They do **not** change what may speak:
 
 - Semantic search never writes a line (`embedding.ts`, `semantic-retrieve.ts`).
-- Every speak path calls **`verifyClaim`** — spoken words must appear literally in the evidence (`evidence.ts`).
+- Every speak path calls **`verifyClaim`** — content words must appear in the evidence, with negation/numeric/phrase-order checks so inverted or scrambled claims fail closed (`evidence.ts`, `claim-verify.ts`).
 - Subject, shape, and evidence gates run after retrieve, on every compose path.
 
 So semantic retrieve can fix recall (surface a chunk lexical missed) but cannot make the card say something the files only “kind of” contain. Paraphrases like “rotated” against evidence that says “rotate” still fail the support check and stay silent. If hybrid recall improves, keep the verifier brutal — do not soften it to match embeddings.
@@ -89,7 +89,7 @@ Before anything speaks, the composer runs a stack of gates (`local-card.ts`, `ev
 1. **Subject admission** — evidence must mention what was asked about, not just sit in a relevant file.
 2. **Shape** — `what` / `how` / `where` / `why` / `failure` / `who` / `absence`; wrong-shape evidence is withdrawn even if cited.
 3. **Evidence gate** — every claim carries `TextEvidence` or `CommitEvidence` with measured coordinates (`text-map.ts` preserves byte offsets through unwrap and sentence split).
-4. **Support check** — spoken words must appear literally in the evidence (auditable, not semantic fuzzy match).
+4. **Support check** — content words must be grounded in the evidence; negation flips, numeric drift, and subject/object reorder fail closed (`claim-verify.ts`).
 
 When composition rejects a candidate, **`claim-trace.ts`** records why (`SCORE_FLOOR`, `WRONG_SHAPE`, `NO_EVIDENCE`, …). Silence is typed, not a generic empty card.
 
