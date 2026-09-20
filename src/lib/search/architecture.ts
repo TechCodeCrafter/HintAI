@@ -185,7 +185,14 @@ export function architectureCard(pack: RepoPack, query: string, latencyMs: numbe
   // The rest of the sentence is drawn from the file tree, not from prose. Those
   // names are declared here so the support check can tell a directory this pack
   // actually contains from a word the composer invented.
-  const structural = [pack.name, kind, framework ?? "", main ? humanize(main.dir) : "", ...(main?.parts ?? [])];
+  const structural = [
+    pack.name,
+    kind,
+    framework ?? "",
+    main ? humanize(main.dir) : "",
+    ...(main ? [countWord(main.parts.length)] : []),
+    ...(main?.parts ?? []),
+  ];
   if (!verifyClaim(say, [span], structural).ok) {
     return silent(query, latencyMs, "Nothing in this material says what it does.");
   }
