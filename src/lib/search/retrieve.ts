@@ -171,10 +171,23 @@ export function isEvidencePath(path: string): boolean {
  * describing what the suite *covers* cannot outrank the component it tests.
  */
 const TEST_PATH =
-  /(^|\/)(__tests__|tests?|testdata|fixtures?|mocks?|stories|e2e)(\/|$)|\.(spec|test|e2e)\.[a-z]+$/i;
+  /(^|\/)(__tests__|tests?|testdata|fixtures?|mocks?|stories|e2e|examples?|snapshots?)(\/|$)|\.(spec|test|e2e)\.[a-z]+$/i;
 
 export function isTestEvidencePath(path: string): boolean {
   return TEST_PATH.test(path);
+}
+
+/** Contracts, architecture, and security docs outrank tests/examples by default. */
+const AUTHORITATIVE_PATH =
+  /(^|\/)(docs|contracts?|architecture|security)(\/|$)|(^|\/)README\.md$|(^|\/)AGENTS\.md$|(^|\/)CLAUDE\.md$/i;
+
+export function isAuthoritativePath(path: string): boolean {
+  return AUTHORITATIVE_PATH.test(path) && !isTestEvidencePath(path);
+}
+
+/** True when the question is explicitly about tests, fixtures, or examples. */
+export function queryAsksAboutTests(query: string): boolean {
+  return /\b(tests?|testing|specs?|fixtures?|mocks?|snapshots?|examples?|e2e|unit tests?)\b/i.test(query);
 }
 
 /**
@@ -504,8 +517,12 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     // and be spoken as a confident wrong answer. Applied last so it cannot be
     // fully cancelled by the behavior boost on a test living under a behavior
     // directory.
-    if (isTestEvidencePath(idx.path)) {
+    const asksAboutTests = queryAsksAboutTests(query);
+    if (isTestEvidencePath(idx.path) && !asksAboutTests) {
       score -= RETRIEVAL_WEIGHTS.testPathPenalty;
+    }
+    if (isAuthoritativePath(idx.path) && !asksAboutTests) {
+      score += RETRIEVAL_WEIGHTS.authoritativePath;
     }
     if (score > 0) scored.push({ ...chunk, score });
   }

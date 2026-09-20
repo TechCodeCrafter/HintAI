@@ -1,8 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { unwrapFnInput } from "@/lib/ai/fn-input";
 import { getDefaultModel, getModelById, type ProviderKeys } from "@/lib/ai/models";
-import { llmDebug } from "@/lib/debug";
-import type { Hit } from "@/lib/repo/types";
+import { authMiddleware } from "../auth/middleware.ts";
+import { llmDebug } from "../debug.ts";
+import type { Hit } from "../repo/types.ts";
+import { checkSynthesisRateLimit } from "./synthesis-rate-limit.server.ts";
+import {
+  redactSynthesisForLog,
+  requireSynthesisUserId,
+  validateSynthesisPayload,
+} from "./synthesis-guard.server.ts";
 import { completeSynthesisDirect, type SpeakPolicy, type SynthesisDirectInput } from "./synthesis-client.ts";
 
 type Payload = {
@@ -64,7 +71,7 @@ function speakInput(input: SpeakInput): {
   policy: SpeakPolicy;
   keys?: ProviderKeys;
 } {
-  llmDebug("[validator] keys:", Object.keys(input ?? {}), input?.data ? Object.keys(input.data) : "no data");
+  llmDebug("[validator] synthesis input:", redactSynthesisForLog(unwrapFnInput(input) as SynthesisDirectInput));
   const inner = unwrapFnInput(input);
   const policy = inner.policy;
   return {
@@ -82,6 +89,12 @@ export { completeSynthesisDirect } from "./synthesis-client.ts";
 
 /** Raw completion for grounded extract and weak synthesize prompts. */
 export const completeSynthesis = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((input: SpeakInput) => speakInput(input))
-  .handler(async ({ data }) => completeSynthesisDirect(data));
+  .handler(async ({ data, context }) => {
+    const userId = requireSynthesisUserId(context.userId);
+    validateSynthesisPayload(data);
+    checkSynthesisRateLimit(userId);
+    return completeSynthesisDirect(data);
+  });
 

@@ -16,7 +16,9 @@ export function shareOgHeadMeta() {
     { property: "og:title", content: title },
     ...(description ? [{ property: "og:description", content: description }] : []),
     { property: "og:image", content: MEETHINT_OG_IMAGE },
+    { property: "og:image:alt", content: "Hint — listen · cite · say" },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
+    { name: "twitter:title", content: title },
   ] as const;
 }

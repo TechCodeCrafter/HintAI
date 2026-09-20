@@ -275,6 +275,49 @@ test("numeral aliasing is one-way today — a spoken digit is lost", () => {
   assert.deepEqual(tokenize("retry 3 times"), ["retry", "times"]);
 });
 
+test("examples and snapshots demote like tests unless the query asks about them", () => {
+  const pack: RepoPack = {
+    id: "examples",
+    name: "examples",
+    description: "",
+    commits: [],
+    files: [
+      file(
+        "services/cache.py",
+        `"""Cache service. Stores session tokens in Redis with a one-hour TTL."""\ndef get(key):\n    return redis.get(key)\n`,
+      ),
+      file(
+        "examples/cache_demo.py",
+        `"""Example cache usage. Demonstrates get/set for onboarding."""\ndef demo():\n    pass\n`,
+      ),
+      file(
+        "snapshots/cache-output.txt",
+        `Cache service snapshot: get/set demo output for docs.`,
+      ),
+    ],
+  };
+  const ranked = retrieve("What does the cache service do?", buildChunks(pack)).map((h) => h.path);
+  assert.equal(ranked[0], "services/cache.py");
+});
+
+test("test files stay retrievable when the query explicitly asks about tests", () => {
+  const pack: RepoPack = {
+    id: "testquery",
+    name: "testquery",
+    description: "",
+    commits: [],
+    files: [
+      file("src/widget.py", `"""Widget implementation."""\ndef run():\n    return 1\n`),
+      file(
+        "tests/test_widget.py",
+        `"""Widget tests. Covers cache reuse and force_reprocess on re-upload."""\ndef test_cache():\n    assert True\n`,
+      ),
+    ],
+  };
+  const hits = retrieve("What do the widget unit tests cover?", buildChunks(pack));
+  assert.ok(hits.some((h) => h.path.includes("test_widget")));
+});
+
 test("a test file never outranks the component it tests", () => {
   // The beta wrong-source defect: "What does the session service do?" cited
   // test_shared_bda_service.py — what the suite *covers*, not what the service

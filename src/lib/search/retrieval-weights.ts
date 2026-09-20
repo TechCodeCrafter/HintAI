@@ -31,6 +31,8 @@ export const RETRIEVAL_WEIGHTS = {
    * file only wins when nothing else matches at all.
    */
   testPathPenalty: 9,
+  /** Docs, contracts, and architecture/security paths rank above tests/examples. */
+  authoritativePath: 3,
   /**
    * Behavior questions ("what does X do", "how does X work", "what happens
    * after X") are answered by the component that performs the behavior, not by
