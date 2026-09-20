@@ -1,6 +1,6 @@
 import { reconstructSourceText } from "../document/source-text.ts";
 import type { DocumentItemRange, NormalizedDocument } from "../document/types.ts";
-import { verifyClaimSemantics } from "./claim-verify.ts";
+import { splitEvidenceBlocks, verifyClaimSemantics } from "./claim-verify.ts";
 import {
   type EvidenceSpan,
   countLines,
@@ -290,6 +290,43 @@ export function establishesAuthorship(evidence: Evidence): boolean {
  * is derived or formatted — if a word is not in one of these fields, it is not
  * in the evidence.
  */
+/**
+ * Sentence-scoped blocks for semantic checks.
+ * Commit provenance joins message/author/pr on newlines — split those fields
+ * first so author tokens are not co-hosted with message tokens. File spans keep
+ * paragraph reflow across hard line breaks.
+ */
+function evidenceBlocksFor(item: Evidence | EvidenceSpan, text: string): string[] {
+  if ("kind" in item && item.kind === "commit") {
+    const fields = text.split(/\n+/).map((field) => field.trim()).filter(Boolean);
+    return fields.flatMap((field) => splitEvidenceBlocks(field));
+  }
+  return splitEvidenceBlocks(text);
+}
+
+function structuralOrderingExempt(
+  evidence: Array<Evidence | EvidenceSpan>,
+  structural: string[],
+): string[] {
+  const exempt = new Set(
+    structural
+      .flatMap((entry) => entry.toLowerCase().split(/[\s-]+/))
+      .map((word) => word.replace(/^[^a-z0-9_]+/, "").replace(/[^a-z0-9_]+$/, ""))
+      .filter((word) => word.length >= 4),
+  );
+  for (const item of evidence) {
+    if (!("kind" in item) || item.kind !== "commit") continue;
+    for (const field of [item.author, item.date, item.pr, item.shortSha]) {
+      if (!field) continue;
+      for (const word of field.toLowerCase().split(/\s+/)) {
+        const cleaned = word.replace(/^[^a-z0-9_]+/, "").replace(/[^a-z0-9_]+$/, "");
+        if (cleaned.length >= 4) exempt.add(cleaned);
+      }
+    }
+  }
+  return [...exempt];
+}
+
 function verifiableText(evidence: Evidence | EvidenceSpan): string {
   if ("kind" in evidence) {
     if (evidence.kind === "document") return evidence.supportText;
@@ -349,7 +386,7 @@ function contentTokens(say: string): string[] {
         .toLowerCase()
         .split(/\s+/)
         .map((w) => w.replace(/^[^a-z0-9_]+/, "").replace(/[^a-z0-9_]+$/, ""))
-        .filter((w) => w.length > 4 && !GLUE.has(w)),
+        .filter((w) => w.length >= 4 && !GLUE.has(w)),
     ),
   ];
 }
@@ -379,13 +416,18 @@ export function verifyClaim(
 
   const proseTokens = checked.filter((word) => evidenceCorpus.includes(word));
   if (proseTokens.length >= 2) {
-    const blocks = evidenceTexts.flatMap((text) =>
-      text
-        .split(/\n+/)
-        .map((line) => line.toLowerCase())
-        .filter((line) => line.length > 0),
+    const blocks = evidence.flatMap((item, index) =>
+      evidenceBlocksFor(item, evidenceTexts[index] ?? ""),
     );
-    const semantic = verifyClaimSemantics(say, evidenceCorpus, proseTokens, blocks);
+    const orderingExempt = structuralOrderingExempt(evidence, structural);
+    const semantic = verifyClaimSemantics(
+      say,
+      evidenceCorpus,
+      proseTokens,
+      blocks,
+      orderingExempt,
+      fullCorpus,
+    );
     if (!semantic.ok) {
       return { ok: false, missing: semantic.reasons, checked: checked.length };
     }
