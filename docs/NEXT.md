@@ -1,15 +1,18 @@
 # Hint: What We Are Doing Now
 
-**Last Updated:** 2026-09-17
+**Last Updated:** 2026-09-20
 
 Canonical backlog: [PRODUCT-BACKLOG.md](./PRODUCT-BACKLOG.md)
 
 ## Current Phase
 
-Closed Beta Launch
+Closed Beta Launch — trust/security hardening landed before Wave 1 invites.
 
 ## Recently completed
 
+- **#174** Secure server synthesis endpoint — auth middleware, rate limits, size caps on `completeSynthesis`
+- **#175** Deterministic claim verification — negation/numeric/phrase-order checks in `verifyClaim`
+- **#176** Source authority weighting — test/example/snapshot demotion + docs/contracts boost
 - **#106** Authenticated Persistence E2E — `e2e/authenticated-persistence.spec.ts`
 - **#107** Browser Restart Persistence — Scenarios C/D in the same spec (no duplicate work)
 - **#109** Delete Knowledge Space UX — `e2e/delete-space.spec.ts`

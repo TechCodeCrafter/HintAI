@@ -63,9 +63,11 @@ function PrivacyPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Optional model providers</h2>
         <p>
-          If you choose to add API keys for OpenAI, Anthropic, or xAI, those keys are kept in your
-          browser and requests go directly from your device to the provider you selected. We do not
-          operate a general-knowledge fallback when your material cannot support an answer.
+          Source files are indexed locally in your browser. When an answer requires model inference,
+          MeetHint sends only the minimum retrieved excerpts needed for that answer to the provider
+          you configure. If you add API keys for OpenAI, Anthropic, or xAI, those keys stay in your
+          browser unless the deployment you use provides shared model access for signed-in users. We
+          do not operate a general-knowledge fallback when your material cannot support an answer.
         </p>
       </section>
 

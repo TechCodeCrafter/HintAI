@@ -1,6 +1,6 @@
 # Hint / MeetHint — Product Backlog
 
-**Last Updated:** 2026-09-16 (tickets #106–#107, #109, #112, #113, #114)
+**Last Updated:** 2026-09-20 (tickets #174–#176 trust/security hardening)
 
 This document is the **source of truth** for Hint / MeetHint engineering, beta, product, security, enterprise, growth, and future work.
 
@@ -328,6 +328,21 @@ Verified 2026-09-16. Report: [PRODUCTION-AUTH-VERIFICATION.md](./PRODUCTION-AUTH
 - Knowledge Space E2E
 - delete Knowledge Space UX E2E
 - authenticated signup telemetry E2E
+
+### #174 Secure Server Synthesis Endpoint
+**Status:** ✅ COMPLETE
+
+`completeSynthesis` requires verified session auth in production, server-derived user id, per-user rate limits, and hard request size caps. Regression tests in `src/lib/ai/__tests__/synthesis-guard.server.test.ts`.
+
+### #175 Deterministic Claim Verification Hardening
+**Status:** ✅ COMPLETE
+
+`verifyClaim` now enforces negation parity, numeric/unit/version preservation, and ordered phrase grounding after the bag-of-words gate. Adversarial tests in `src/lib/search/__tests__/claim-verify.test.ts`.
+
+### #176 Source Authority / Test-Path Demotion
+**Status:** ✅ COMPLETE
+
+Retrieval demotes `tests/`, `fixtures/`, `mocks/`, `examples/`, and `snapshots/` by default while boosting docs/contracts/architecture paths. Test paths remain retrievable when the query explicitly asks about tests.
 
 ### #115 Beta Wave 1
 **Status:** 🟢 NEXT

@@ -67,6 +67,8 @@ const GROUPS = [
       "src/lib/ai/__tests__/models.test.ts",
       "src/lib/ai/__tests__/client-keys.test.ts",
       "src/lib/ai/__tests__/fn-input.test.ts",
+      "src/lib/ai/__tests__/synthesis-guard.server.test.ts",
+      "src/lib/search/__tests__/claim-verify.test.ts",
       "src/lib/__tests__/brand-contract.test.ts",
       "src/lib/__tests__/debug.test.ts",
       "src/lib/instrumentation/__tests__/flight-recorder.test.ts",
