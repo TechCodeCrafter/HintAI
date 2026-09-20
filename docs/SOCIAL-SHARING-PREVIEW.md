@@ -6,13 +6,13 @@ Last updated: 2026-09-20
 
 | Field | Value |
 |-------|--------|
-| File | `public/og/meethint-og-v3.png` |
+| File | `public/og/meethint-og-v4.png` |
 | Size | 1200 × 630 |
-| Public URL | `https://www.meethint.ai/og/meethint-og-v3.png` |
+| Public URL | `https://www.meethint.ai/og/meethint-og-v4.png` |
 | Regenerate | `npm run generate:og` |
-| Official mark | Composited from `public/favicon.svg` (same geometry as `MeetHintMark`) |
+| Official mark | Composited from `public/meethint-mark.svg` (transparent; same geometry as `MeetHintMark`) |
 
-Legacy paths (`/og.jpg`, `meethint-og.png`, `meethint-og-v2.png`) redirect to v3 via `vercel.json`.
+Do not use `favicon.svg` for OG — it includes the rounded app-icon plate. Legacy paths redirect to v4 via `vercel.json`.
 
 ## Metadata (SSR via `src/routes/__root.tsx`)
 
@@ -28,13 +28,13 @@ Single authoritative source: `src/lib/brand.ts` (copy + image URL) and `src/lib/
 | `og:type` | `website` |
 | `og:url` | `https://www.meethint.ai/` |
 | `og:site_name` | MeetHint |
-| `og:image` | `https://www.meethint.ai/og/meethint-og-v3.png` |
+| `og:image` | `https://www.meethint.ai/og/meethint-og-v4.png` |
 | `og:image:width` / `height` | 1200 / 630 |
 | `og:image:alt` | MeetHint social preview showing the official logo and a cited technical answer card |
 | `twitter:card` | `summary_large_image` |
 | `twitter:title` | MeetHint — Know before you answer |
 | `twitter:description` | Real-time answers from your repos, docs, and company knowledge. |
-| `twitter:image` | `https://www.meethint.ai/og/meethint-og-v3.png` |
+| `twitter:image` | `https://www.meethint.ai/og/meethint-og-v4.png` |
 
 ## Meta Sharing Debugger
 
