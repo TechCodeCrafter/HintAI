@@ -23,7 +23,7 @@ Closed Beta Launch — trust/security hardening landed before Wave 1 invites.
 
 ## Next
 
-1. **#115 Beta Wave 1** — ops docs ready ([BETA-WAVE-1.md](./BETA-WAVE-1.md)); invite first 5 testers
+1. **#115 Beta Wave 1** — ops docs in [archive/BETA-WAVE-1.md](./archive/BETA-WAVE-1.md); invite first 5 testers
 2. Stop building and observe (3–5 days)
 
 ## Do Not Build Yet

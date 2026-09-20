@@ -109,4 +109,4 @@ Reprioritize using beta scorecard data — especially unsupported confident answ
 ## Related
 
 - [PRODUCT-BACKLOG.md](./PRODUCT-BACKLOG.md) — P2 tickets #59, #60, #166–#173
-- [BETA-WAVE-1.md](./BETA-WAVE-1.md) — observation metrics that inform Truth Assessment priority
+- [archive/BETA-WAVE-1.md](./archive/BETA-WAVE-1.md) — observation metrics that inform Truth Assessment priority

@@ -13,7 +13,7 @@
 | Supported total p99 | ~1603 ms |
 | Fast-path semantic acceptance | 100% (0 conflicting, 0 incomplete) |
 
-See [PERFORMANCE-MILESTONE-2.md](./PERFORMANCE-MILESTONE-2.md) for deferred optimizations and validation commands.
+See [archive/PERFORMANCE-MILESTONE-2.md](./archive/PERFORMANCE-MILESTONE-2.md) for deferred optimizations and validation commands.
 
 This is a measurement baseline — not a CI gate and not a fake pass/fail test.
 

@@ -78,10 +78,10 @@ Polish, copy, minor visual issues.
 1. Reproduce or verify with tester diagnostic export.
 2. Assign severity using definitions above (when in doubt, round **up** for trust/data issues).
 3. BLOCKER/HIGH → link GitHub issue and notify wave owner.
-4. MEDIUM/LOW → add to backlog; reference in [BETA-WAVE-1.md](./BETA-WAVE-1.md) tester **Notes**.
+4. MEDIUM/LOW → add to backlog; reference in [archive/BETA-WAVE-1.md](./archive/BETA-WAVE-1.md) tester **Notes**.
 5. After 3–5 days, review open HIGH items before Wave 2 (#116).
 
 ## Related
 
-- [BETA-WAVE-1.md](./BETA-WAVE-1.md) — scorecard and go/no-go
+- [archive/BETA-WAVE-1.md](./archive/BETA-WAVE-1.md) — scorecard and go/no-go
 - [BETA-MILESTONE-REPORT.md](./BETA-MILESTONE-REPORT.md) — telemetry and diagnostics
