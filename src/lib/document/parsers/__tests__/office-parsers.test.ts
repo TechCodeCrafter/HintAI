@@ -1,8 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deflateRawSync } from "node:zlib";
-import * as XLSX from "xlsx";
-
 import { persistPackAsContext } from "../../../context/service.ts";
 import { createMemoryRepository } from "../../../context/memory.ts";
 import { indexContext } from "../../../context/chunk-index.ts";
@@ -159,14 +157,41 @@ function minimalDocx(text: string): ArrayBuffer {
 }
 
 function xlsxBuffer(): ArrayBuffer {
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet([
-    ["Name", "Role"],
-    ["Alice", "Engineer"],
-  ]);
-  XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-  const written = new Uint8Array(XLSX.write(wb, { type: "array", bookType: "xlsx" }) as Uint8Array);
-  return bytesToBuffer(written);
+  const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <sheetData>
+    <row r="1">
+      <c r="A1" t="inlineStr"><is><t>Name</t></is></c>
+      <c r="B1" t="inlineStr"><is><t>Role</t></is></c>
+    </row>
+    <row r="2">
+      <c r="A2" t="inlineStr"><is><t>Alice</t></is></c>
+      <c r="B2" t="inlineStr"><is><t>Engineer</t></is></c>
+    </row>
+  </sheetData>
+</worksheet>`;
+  return zipFiles({
+    "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+</Types>`,
+    "_rels/.rels": `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>`,
+    "xl/workbook.xml": `<?xml version="1.0" encoding="UTF-8"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets>
+</workbook>`,
+    "xl/_rels/workbook.xml.rels": `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+</Relationships>`,
+    "xl/worksheets/sheet1.xml": sheet,
+  });
 }
 
 test("parseDocx extracts text", async () => {
@@ -179,8 +204,8 @@ test("parseDocx rejects an empty buffer", async () => {
   await assert.rejects(() => parseDocx(new ArrayBuffer(0)));
 });
 
-test("parseXlsx extracts sheet text", () => {
-  const result = parseXlsx(xlsxBuffer());
+test("parseXlsx extracts sheet text", async () => {
+  const result = await parseXlsx(xlsxBuffer());
   assert.match(result, /Name \| Role/);
   assert.match(result, /Alice \| Engineer/);
 });
@@ -216,9 +241,9 @@ test("packFromFiles indexes a pptx", async () => {
   assert.match(loaded.pack.files[0]?.content ?? "", /Beta kickoff deck/);
 });
 
-test("parseXlsx extracts CSV text", () => {
+test("parseXlsx extracts CSV text", async () => {
   const csv = new TextEncoder().encode("Name,Role\nAlice,Engineer\n");
-  const result = parseXlsx(bytesToBuffer(csv));
+  const result = await parseXlsx(bytesToBuffer(csv));
   assert.match(result, /Name \| Role/);
   assert.match(result, /Alice \| Engineer/);
 });

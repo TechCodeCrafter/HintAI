@@ -1,7 +1,7 @@
 import { toMarkdown as pptToMarkdown } from "@mdgate/ppt";
 import { strFromU8, unzipSync } from "fflate";
 import mammoth from "mammoth";
-import * as XLSX from "xlsx";
+import readXlsxFile, { readSheetNames } from "read-excel-file";
 
 export const OFFICE_EXT = new Set(["docx", "xlsx", "csv", "ppt", "pptx"]);
 
@@ -33,26 +33,27 @@ export async function parseDocx(arrayBuffer: ArrayBuffer): Promise<string> {
   return result.value ?? "";
 }
 
-/** Parse XLSX or CSV to structured text. */
-export function parseXlsx(arrayBuffer: ArrayBuffer): string {
+function formatSpreadsheetRows(rows: unknown[][]): string {
+  const lines: string[] = [];
+  for (const row of rows) {
+    const line = row.map((cell) => (cell === undefined || cell === null ? "" : String(cell))).join(" | ");
+    if (line.trim()) lines.push(line);
+  }
+  return lines.join("\n");
+}
+
+/** Parse XLSX or CSV to structured text. Uses read-excel-file (not legacy xlsx). */
+export async function parseXlsx(arrayBuffer: ArrayBuffer): Promise<string> {
   const bytes = new Uint8Array(arrayBuffer);
-  const zip = bytes.length >= 2 && bytes[0] === 0x50 && bytes[1] === 0x4b;
-  const workbook = zip
-    ? XLSX.read(bytes, { type: "array" })
-    : XLSX.read(new TextDecoder().decode(bytes), { type: "string" });
+  const isZip = bytes.length >= 2 && bytes[0] === 0x50 && bytes[1] === 0x4b;
+  if (!isZip) {
+    return new TextDecoder().decode(bytes).trim();
+  }
   const parts: string[] = [];
-  for (const sheetName of workbook.SheetNames) {
-    const sheet = workbook.Sheets[sheetName];
-    if (!sheet) continue;
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as unknown[][];
+  for (const sheetName of await readSheetNames(arrayBuffer)) {
+    const rows = await readXlsxFile(arrayBuffer, { sheet: sheetName });
     if (rows.length === 0) continue;
-    parts.push(`--- Sheet: ${sheetName} ---`);
-    for (const row of rows) {
-      const line = row
-        .map((cell) => (cell === undefined || cell === null ? "" : String(cell)))
-        .join(" | ");
-      if (line.trim()) parts.push(line);
-    }
+    parts.push(`--- Sheet: ${sheetName} ---`, formatSpreadsheetRows(rows));
   }
   return parts.join("\n");
 }
@@ -191,7 +192,7 @@ export async function parsePowerPointBuffer(arrayBuffer: ArrayBuffer): Promise<s
 export async function parseOfficeBuffer(ext: string, arrayBuffer: ArrayBuffer): Promise<string> {
   const kind = ext.toLowerCase();
   if (kind === "docx") return parseDocx(arrayBuffer);
-  if (kind === "xlsx" || kind === "csv") return parseXlsx(arrayBuffer);
+  if (kind === "xlsx" || kind === "csv") return await parseXlsx(arrayBuffer);
   if (kind === "ppt" || kind === "pptx") return parsePowerPointBuffer(arrayBuffer);
   throw new Error(`Unsupported office type: .${kind}`);
 }
