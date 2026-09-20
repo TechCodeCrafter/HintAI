@@ -78,7 +78,7 @@ test("brand constants are MeetHint everywhere public", () => {
   };
   assert.match(site.title, /MeetHint/);
   assert.ok(site.description);
-  assert.equal(site.image, "/og/meethint-og.png");
+  assert.equal(site.image, "/og/meethint-og-v2.png");
   assert.doesNotMatch(site.description!, /general knowledge/i);
 });
 
@@ -111,9 +111,12 @@ test("landing, routes, and OG never promise a generate-from-knowledge path", () 
   assert.doesNotMatch(appRoot, /og\.jpg/);
 
   const shareMeta = read("src/lib/og/share-meta.ts");
+  const brandModule = read("src/lib/brand.ts");
   assert.match(shareMeta, /og:type/);
   assert.match(shareMeta, /og:url/);
-  assert.match(shareMeta, /meethint-og\.png/);
+  assert.match(shareMeta, /MEETHINT_OG_IMAGE/);
+  assert.match(brandModule, /meethint-og-v2\.png/);
+  assert.doesNotMatch(brandModule, /\/og\.jpg/);
 });
 
 test("design skill files must not reference or rewrite brand module copy", () => {

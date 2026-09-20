@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/og.jpg",
+      "destination": "/og/meethint-og-v2.png",
+      "permanent": true
+    }
+  ]
+}

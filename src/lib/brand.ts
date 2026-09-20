@@ -31,5 +31,17 @@ export const MEETHINT_TWITTER_DESCRIPTION =
 /** Canonical marketing origin — trailing slash matches Meta Sharing Debugger. */
 export const MEETHINT_CANONICAL_URL = `https://www.${MEETHINT_DOMAIN}/`;
 
+/**
+ * Versioned share-card asset — bump the filename (v2 → v3) when Meta or X cache
+ * stale previews after a metadata change.
+ */
+export const MEETHINT_OG_IMAGE_PATH = "/og/meethint-og-v2.png";
+
+/** Absolute Open Graph / Twitter image URL for the marketing homepage. */
+export const MEETHINT_OG_IMAGE = `https://www.${MEETHINT_DOMAIN}${MEETHINT_OG_IMAGE_PATH}`;
+
+export const MEETHINT_OG_IMAGE_ALT =
+  "MeetHint — real-time answers for technical conversations";
+
 /** Contract line — design skills must never rewrite or paraphrase in product UI. */
 export const MEETHINT_CONTRACT = "Cite or silence.";

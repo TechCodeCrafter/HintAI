@@ -1,6 +1,6 @@
 {
   "name": "meethint",
-  "description": "MeetHint — cite or silence. Live meeting copilot that cites your loaded files or stays silent.",
+  "description": "MeetHint — real-time, cited answers for technical conversations using your repos, docs, and company knowledge.",
   "homepage": "https://meethint.ai",
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "check:cursor-attribution": "node scripts/check-cursor-attribution.mjs",
     "check:branch-fresh": "node scripts/check-branch-fresh.mjs",
     "verify:production-deploy": "node scripts/verify-production-deploy.mjs",
+    "verify:social-meta": "node --experimental-strip-types scripts/verify-production-social-meta.mjs",
     "bisect:hydration": "node scripts/bisect-hydration.mjs",
     "verify:domain-email": "node scripts/verify-domain-email.mjs",
     "publish:mail-contacts": "node scripts/publish-mail-contacts.mjs",
