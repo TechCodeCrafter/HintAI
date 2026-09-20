@@ -71,9 +71,14 @@ test("brand constants are MeetHint everywhere public", () => {
   assert.equal(pkg.homepage, "https://meethint.ai");
   assert.match(pkg.description, /MeetHint/);
 
-  const site = JSON.parse(read("src/lib/og/site.json")) as { title: string; description?: string };
-  assert.equal(site.title, "MeetHint");
+  const site = JSON.parse(read("src/lib/og/site.json")) as {
+    title: string;
+    description?: string;
+    image?: string;
+  };
+  assert.match(site.title, /MeetHint/);
   assert.ok(site.description);
+  assert.equal(site.image, "/og/meethint-og.png");
   assert.doesNotMatch(site.description!, /general knowledge/i);
 });
 
@@ -97,14 +102,18 @@ test("landing, routes, and OG never promise a generate-from-knowledge path", () 
   assert.doesNotMatch(landing, />\s*Hint\s*</);
   assert.match(landing, /Cite it, or stay silent/);
 
-  const index = read("src/routes/index.tsx");
-  assert.match(index, /MEETHINT_TITLE/);
-  assert.match(index, /MEETHINT_DESCRIPTION/);
-  assert.doesNotMatch(index, /Hint — live answers/);
-
   const appRoot = read("src/routes/__root.tsx");
   assert.match(appRoot, /MEETHINT_NAME/);
+  assert.match(appRoot, /MEETHINT_TITLE/);
+  assert.match(appRoot, /MEETHINT_DESCRIPTION/);
+  assert.match(appRoot, /shareOgHeadMeta/);
   assert.doesNotMatch(appRoot, /APP_NAME\s*=\s*"Hint"/);
+  assert.doesNotMatch(appRoot, /og\.jpg/);
+
+  const shareMeta = read("src/lib/og/share-meta.ts");
+  assert.match(shareMeta, /og:type/);
+  assert.match(shareMeta, /og:url/);
+  assert.match(shareMeta, /meethint-og\.png/);
 });
 
 test("design skill files must not reference or rewrite brand module copy", () => {
