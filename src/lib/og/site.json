@@ -1,6 +1,7 @@
 {
-  "title": "MeetHint",
-  "description": "Live meeting copilot — cite or silence. Every answer backed by your files, or the card stays empty with a reason.",
+  "title": "MeetHint — Know before you answer",
+  "description": "Real-time, evidence-backed answers for technical conversations. Grounded in your repos, docs, and company knowledge.",
   "card": "custom",
-  "color": "07090C"
+  "color": "07090C",
+  "image": "/og/meethint-og.png"
 }

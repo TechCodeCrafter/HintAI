@@ -13,12 +13,23 @@ export const MEETHINT_SECURITY_CONTACT = `${MEETHINT_REPO}/security/advisories/n
 
 export const MEETHINT_SUPPORT_CONTACT = `${MEETHINT_REPO}/issues`;
 
-/** Page title suffix for marketing routes. */
-export const MEETHINT_TITLE = `${MEETHINT_NAME} — cite or silence from your files`;
+/** Document `<title>` and default meta description for marketing / root routes. */
+export const MEETHINT_TITLE = `${MEETHINT_NAME} — Real-time answers for technical conversations`;
 
-/** Meta / OG description: cite-or-silence only — no generate-from-knowledge path. */
 export const MEETHINT_DESCRIPTION =
-  "Live meeting copilot that searches your loaded files and shows a cited line to say — or stays silent with a reason. No general-knowledge fallback.";
+  "MeetHint gives you real-time, cited answers during technical conversations using your repos, docs, and company knowledge.";
+
+/** Open Graph / Twitter card copy (may differ from `<title>` for share previews). */
+export const MEETHINT_OG_TITLE = `${MEETHINT_NAME} — Know before you answer`;
+
+export const MEETHINT_OG_DESCRIPTION =
+  "Real-time, evidence-backed answers for technical conversations. Grounded in your repos, docs, and company knowledge.";
+
+export const MEETHINT_TWITTER_DESCRIPTION =
+  "Real-time answers from your repos, docs, and company knowledge.";
+
+/** Canonical marketing origin — trailing slash matches Meta Sharing Debugger. */
+export const MEETHINT_CANONICAL_URL = `https://www.${MEETHINT_DOMAIN}/`;
 
 /** Contract line — design skills must never rewrite or paraphrase in product UI. */
 export const MEETHINT_CONTRACT = "Cite or silence.";
