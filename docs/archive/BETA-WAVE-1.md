@@ -62,7 +62,7 @@ Invite five real users, observe product behavior in the wild, and collect eviden
 
 ## Invite checklist (per tester)
 
-- [ ] Send [BETA-TESTER-INSTRUCTIONS.md](./BETA-TESTER-INSTRUCTIONS.md)
+- [ ] Send [BETA-TESTING-SESSION.md](../BETA-TESTING-SESSION.md) (PDF from [beta-testing-session.html](../beta-testing-session.html))
 - [ ] Confirm they can sign in on production
 - [ ] Confirm account is isolated (they only see their own Knowledge Spaces)
 - [ ] Schedule debrief within 5 days of signup

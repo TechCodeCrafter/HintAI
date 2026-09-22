@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MeetHint Beta — Tester Brief</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --panel: #f8fafc;
+        --text: #0f172a;
+        --body: #334155;
+        --muted: #475569;
+        --accent: #6d28d9;
+        --border: #cbd5e1;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--body);
+        line-height: 1.55;
+        font-size: 16px;
+      }
+      .page {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 48px 40px 56px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid var(--border);
+      }
+      header svg { width: 48px; height: 48px; flex-shrink: 0; }
+      .brand { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+      .tag {
+        margin-left: auto;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 1.9rem;
+        line-height: 1.25;
+        letter-spacing: -0.03em;
+        margin: 0 0 12px;
+        color: var(--text);
+      }
+      .lede { color: var(--body); font-size: 1.05rem; margin: 0 0 32px; }
+      h2 {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 32px 0 12px;
+      }
+      p, li { color: var(--body); }
+      ul, ol { margin: 0; padding-left: 1.35rem; }
+      li + li { margin-top: 10px; }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-top: 12px;
+      }
+      .panel strong { color: var(--text); }
+      .devices { display: grid; gap: 0; }
+      .device {
+        display: grid;
+        grid-template-columns: 148px 1fr;
+        gap: 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .device:last-child { border-bottom: 0; }
+      .device dt { font-weight: 600; color: var(--text); margin: 0; }
+      .device dd { margin: 0; color: var(--body); }
+      .footer {
+        margin-top: 36px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+      a { color: #1d4ed8; }
+      @media print {
+        .page { padding: 24px; max-width: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="mh" x1="0" y1="0" x2="1" y2="0.35">
+              <stop offset="0%" stop-color="#2f6bf7" />
+              <stop offset="100%" stop-color="#8a4ff0" />
+            </linearGradient>
+          </defs>
+          <g fill="url(#mh)" stroke="url(#mh)" stroke-width="2" stroke-linejoin="round">
+            <path d="M9 10 L25 16 L25 26 L27.5 26 L27.5 38 L25 38 L25 48 L9 54 Z" />
+            <path d="M55 10 L39 16 L39 26 L36.5 26 L36.5 38 L39 38 L39 48 L55 54 Z" />
+          </g>
+          <g fill="#dfe4ff">
+            <rect x="28.8" y="28.5" width="1.4" height="7" rx="0.7" />
+            <rect x="31.3" y="26" width="1.4" height="12" rx="0.7" />
+            <rect x="33.8" y="28.5" width="1.4" height="7" rx="0.7" />
+          </g>
+        </svg>
+        <div class="brand">MeetHint</div>
+        <div class="tag">Private beta</div>
+      </header>
+
+      <h1>Tester brief — know before you answer</h1>
+      <p class="lede">
+        Thanks for helping us test MeetHint in a <strong>real meeting or realistic rehearsal</strong>.
+        Plan about <strong>30 minutes</strong> for setup, then use it in one conversation where cited answers would actually help.
+      </p>
+
+      <h2>What we need you to test</h2>
+      <div class="panel">
+        <ul>
+          <li><strong>Cite or silence</strong> — answers should come from <em>your</em> material with citations, or stay silent when the files don’t support an answer.</li>
+          <li><strong>Live during a call</strong> — mic + (on desktop) meeting tab audio, while you ask technical questions out loud or by typing.</li>
+          <li><strong>Your own sources</strong> — repo, folder, PDF, Word, PowerPoint, or spreadsheet you’re allowed to use — not the demo pack.</li>
+          <li><strong>Honest feedback</strong> — 👍 / 👎 on answers, plus a short note on what worked or broke trust.</li>
+        </ul>
+      </div>
+
+      <h2>Supported devices</h2>
+      <dl class="panel devices">
+        <div class="device">
+          <dt>Chrome / Edge</dt>
+          <dd>Best experience — Live with tab audio + mic, auto-answer when speech is detected.</dd>
+        </div>
+        <div class="device">
+          <dt>Safari (Mac)</dt>
+          <dd>Live with mic; tab audio is limited — type or speak questions manually.</dd>
+        </div>
+        <div class="device">
+          <dt>iPhone / iPad</dt>
+          <dd>Ask + Search with mic; tap <strong>Answer</strong> when the green dot appears. Full tab-audio Live needs desktop Chrome.</dd>
+        </div>
+      </dl>
+
+      <h2>Steps (about 30 min)</h2>
+      <ol class="panel">
+        <li>Sign in at <a href="https://www.meethint.ai">meethint.ai</a> with <strong>Sign in with Google</strong> (no invite code needed).</li>
+        <li>Create a <strong>Knowledge Space</strong> named after a real project or meeting.</li>
+        <li>Add <strong>your material</strong> (repo, folder, PDF, Office file, etc.) and wait for indexing to finish.</li>
+        <li>In Live, select <strong>your Knowledge Space</strong> — not <em>Demo pack (sample only)</em>.</li>
+        <li>Ask one test question you’d ask in a real meeting (e.g. “What owns authentication?” or “Where is the refund policy?”).</li>
+        <li>Start <strong>Live</strong> and use MeetHint in one real or realistic call for at least 10–15 minutes.</li>
+        <li>Rate answers with 👍 Useful or 👎 Not useful (pick a reason if asked).</li>
+      </ol>
+
+      <h2>Please tell us</h2>
+      <ol class="panel">
+        <li>Did any answer feel <strong>confident but wrong</strong>? (Copy the question + what it said.)</li>
+        <li>Did MeetHint stay <strong>silent</strong> when it should have, or speak when it shouldn’t?</li>
+        <li>Were <strong>citations</strong> useful — did they point to the right file/line?</li>
+        <li>What was the <strong>biggest friction</strong> (setup, indexing, Live, latency, UI)?</li>
+        <li>Would you use this in your next technical meeting? Why or why not?</li>
+      </ol>
+
+      <h2>Optional (helps a lot)</h2>
+      <div class="panel">
+        <p>
+          From Live → <strong>Diagnostics</strong> → download the JSON export and send it with your notes.
+          It contains timings and quality metrics only — <strong>not</strong> your source file contents.
+        </p>
+      </div>
+
+      <h2>Privacy</h2>
+      <div class="panel">
+        <p>
+          Your files stay <strong>on your device</strong> in the browser. Signing in on another computer does not copy uploads —
+          add material again on each device. We only receive what you send us (feedback, email, or a diagnostic export you choose to share).
+        </p>
+      </div>
+
+      <p class="footer">
+        Problems? Reply to your MeetHint contact. If something blocks you entirely (sign-in, wrong account data, crash loop), put
+        <strong>BLOCKER</strong> in the subject so we prioritize it.
+      </p>
+    </main>
+  </body>
+</html>

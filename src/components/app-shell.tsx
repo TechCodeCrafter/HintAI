@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { LiveNavLink } from "@/components/live-nav-link";
 import {
   ArrowRight,
@@ -6,9 +6,11 @@ import {
   Home,
   Menu,
   Radio,
+  Search,
   X,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useMeetHint } from "@/lib/store";
 import { AuthChrome } from "@/components/auth-chrome";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -16,6 +18,7 @@ import { cn } from "@/lib/cn";
 
 type NavItem = {
   to?: string;
+  hash?: string;
   live?: boolean;
   label: string;
   icon: typeof Home;
@@ -31,6 +34,7 @@ const NAV: NavItem[] = [
   },
   {
     to: "/home",
+    hash: "knowledge-spaces",
     label: "Knowledge Spaces",
     icon: BookOpen,
     match: (path) => path.startsWith("/context/") && !path.endsWith("/live"),
@@ -66,7 +70,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           );
         }
         return (
-          <Link key={item.label} to={item.to!} {...attrs}>
+          <Link key={item.label} to={item.to!} hash={item.hash} {...attrs}>
             <Icon aria-hidden className="size-4 shrink-0" />
             {item.label}
           </Link>
@@ -151,20 +155,53 @@ export function AppTopSearch({
 }: {
   placeholder?: string;
 }) {
+  const navigate = useNavigate();
+  const firstSpaceId = useMeetHint((s) => s.contexts[0]?.id);
+
+  const openSearch = useCallback(() => {
+    if (firstSpaceId) {
+      void navigate({ to: "/context/$id/ask", params: { id: firstSpaceId } });
+      return;
+    }
+    void navigate({ to: "/home", hash: "ask" });
+  }, [firstSpaceId, navigate]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "k") return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      event.preventDefault();
+      openSearch();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [openSearch]);
+
   return (
-    <label className="relative hidden min-w-0 flex-1 sm:block sm:max-w-md">
-      <span className="sr-only">Search</span>
-      <input
-        readOnly
-        placeholder={placeholder}
-        className="mh-field w-full cursor-default bg-surface pr-16 text-sm text-muted"
-        onFocus={(event) => event.currentTarget.blur()}
-        aria-hidden
-      />
+    <div className="relative hidden min-w-0 flex-1 sm:block sm:max-w-md">
+      <button
+        type="button"
+        data-testid="app-top-search"
+        onClick={openSearch}
+        className="mh-field flex w-full items-center gap-2 bg-surface pr-16 text-left text-sm text-muted transition-colors hover:border-accent/40 hover:text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        aria-label="Search your knowledge or ask a question"
+      >
+        <Search aria-hidden className="size-3.5 shrink-0 text-faint" />
+        <span className="truncate">{placeholder}</span>
+      </button>
       <kbd className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rounded border border-line px-1.5 py-0.5 text-[10px] text-faint">
         ⌘K
       </kbd>
-    </label>
+    </div>
   );
 }
 

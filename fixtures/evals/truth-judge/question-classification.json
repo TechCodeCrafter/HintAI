@@ -1,0 +1,204 @@
+[
+  {
+    "id": "qc-001",
+    "question": "What is the architecture of this application?",
+    "expectedClass": "architecture",
+    "note": "northstar home chip"
+  },
+  {
+    "id": "qc-002",
+    "question": "What does the auth service do?",
+    "expectedClass": "product_capability"
+  },
+  {
+    "id": "qc-003",
+    "question": "Where is retry logic implemented?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-004",
+    "question": "Why does that retry three times?",
+    "expectedClass": "general_technical_reasoning"
+  },
+  {
+    "id": "qc-005",
+    "question": "How does session cookie rotation work?",
+    "expectedClass": "security_compliance"
+  },
+  {
+    "id": "qc-006",
+    "question": "What is our uptime SLA for exports?",
+    "expectedClass": "contractual_sla"
+  },
+  {
+    "id": "qc-007",
+    "question": "How much does the enterprise plan cost?",
+    "expectedClass": "pricing_packaging"
+  },
+  {
+    "id": "qc-008",
+    "question": "What is the weather in Paris today?",
+    "expectedClass": "current_external_fact"
+  },
+  {
+    "id": "qc-009",
+    "question": "Who owns the settlement exporter module?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-010",
+    "question": "What components live under src/exporter?",
+    "expectedClass": "architecture"
+  },
+  {
+    "id": "qc-011",
+    "question": "What happens when the upload fails?",
+    "expectedClass": "general_technical_reasoning"
+  },
+  {
+    "id": "qc-012",
+    "question": "Is OAuth configured for the dashboard?",
+    "expectedClass": "security_compliance"
+  },
+  {
+    "id": "qc-013",
+    "question": "Where is the refund policy defined?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-014",
+    "question": "What did we change in the exporter?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-015",
+    "question": "Do we encrypt settlement files at rest?",
+    "expectedClass": "security_compliance"
+  },
+  {
+    "id": "qc-016",
+    "question": "What liability cap is in the MSA?",
+    "expectedClass": "contractual_sla"
+  },
+  {
+    "id": "qc-017",
+    "question": "How many seats are included in Pro?",
+    "expectedClass": "pricing_packaging"
+  },
+  {
+    "id": "qc-018",
+    "question": "Who won the World Series last year?",
+    "expectedClass": "current_external_fact"
+  },
+  {
+    "id": "qc-019",
+    "question": "What is the capital of France?",
+    "expectedClass": "current_external_fact"
+  },
+  {
+    "id": "qc-020",
+    "question": "Can you summarize this repo layout?",
+    "expectedClass": "architecture"
+  },
+  {
+    "id": "qc-021",
+    "question": "What capabilities does the edge auth layer expose?",
+    "expectedClass": "product_capability"
+  },
+  {
+    "id": "qc-022",
+    "question": "Which file defines PAY-219 runbook steps?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-023",
+    "question": "Why was dead-letter replay chosen?",
+    "expectedClass": "general_technical_reasoning"
+  },
+  {
+    "id": "qc-024",
+    "question": "Are we SOC 2 compliant for auth logs?",
+    "expectedClass": "security_compliance"
+  },
+  {
+    "id": "qc-025",
+    "question": "What response time is guaranteed in the contract?",
+    "expectedClass": "contractual_sla"
+  },
+  {
+    "id": "qc-026",
+    "question": "What is the per-seat price for annual billing?",
+    "expectedClass": "pricing_packaging"
+  },
+  {
+    "id": "qc-027",
+    "question": "What's the stock price of Acme Corp?",
+    "expectedClass": "current_external_fact"
+  },
+  {
+    "id": "qc-028",
+    "question": "How do I run the nightly export locally?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-029",
+    "question": "What is Northstar Payments responsible for?",
+    "expectedClass": "product_capability"
+  },
+  {
+    "id": "qc-030",
+    "question": "Where does CSV generation happen?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-031",
+    "question": "What is the system design for settlement uploads?",
+    "expectedClass": "architecture"
+  },
+  {
+    "id": "qc-032",
+    "question": "Why cap attempts at three?",
+    "expectedClass": "general_technical_reasoning"
+  },
+  {
+    "id": "qc-033",
+    "question": "Does auth verify cookies on every request?",
+    "expectedClass": "security_compliance"
+  },
+  {
+    "id": "qc-034",
+    "question": "What terms govern data retention?",
+    "expectedClass": "contractual_sla"
+  },
+  {
+    "id": "qc-035",
+    "question": "Is there a free tier?",
+    "expectedClass": "pricing_packaging"
+  },
+  {
+    "id": "qc-036",
+    "question": "What's the temperature today?",
+    "expectedClass": "current_external_fact"
+  },
+  {
+    "id": "qc-037",
+    "question": "Who wrote the auth middleware?",
+    "expectedClass": "implementation"
+  },
+  {
+    "id": "qc-038",
+    "question": "What does the exporter manage?",
+    "expectedClass": "product_capability"
+  },
+  {
+    "id": "qc-039",
+    "question": "How is the operator dashboard guarded?",
+    "expectedClass": "security_compliance"
+  },
+  {
+    "id": "qc-040",
+    "question": "Thanks everyone, see you tomorrow.",
+    "expectedClass": "other",
+    "note": "chatter"
+  }
+]

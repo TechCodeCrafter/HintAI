@@ -593,7 +593,7 @@ function createLaneFrameHandler(lane: Lane): (frame: Float32Array, playbackTime:
     }
     const level = rms(copy);
     const now = Date.now();
-    if (now - lastLevelAt > 80) {
+    if (now - lastLevelAt > 150) {
       lastLevelAt = now;
       useMeetHint.getState().setHearLevel(Math.min(1, level * 10));
     }

@@ -1,0 +1,344 @@
+/* MeetHint landing — layout/structure tweaks only. Colors stay in landing-enterprise-v2.css */
+
+.mhv2 {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.mhv2-button:hover {
+  transform: none;
+}
+
+.mhv2-window-dots {
+  display: none !important;
+}
+
+.mhv2-trust-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  color: var(--mhv2-body);
+  font-size: 13px;
+}
+
+.mhv2-trust-inline span::before {
+  content: "· ";
+  color: var(--mhv2-muted);
+}
+
+.mhv2-trust-inline span:first-child::before {
+  content: "";
+}
+
+.mhv2-step-icon {
+  display: none !important;
+}
+
+.mhv2-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mhv2-steps li {
+  border-left: 2px solid var(--mhv2-line);
+  padding-left: 16px;
+  margin-bottom: 20px;
+}
+
+.mhv2-security-cards {
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--mhv2-line);
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.mhv2-security-cards article {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  border: 0;
+  border-bottom: 1px solid var(--mhv2-line);
+  border-radius: 0;
+  padding: 16px 18px;
+  background: var(--mhv2-surface);
+}
+
+.mhv2-security-cards article svg {
+  display: none;
+}
+
+.mhv2-security-cards article:last-child {
+  border-bottom: 0;
+}
+
+.mhv2-professional-grid {
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--mhv2-line);
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.mhv2-professional-card {
+  border: 0;
+  border-bottom: 1px solid var(--mhv2-line);
+  border-radius: 0;
+  padding: 16px 18px;
+  background: var(--mhv2-surface);
+}
+
+.mhv2-professional-card:last-child {
+  border-bottom: 0;
+}
+
+.mhv2-professional-top,
+.mhv2-cited {
+  display: none;
+}
+
+.mhv2-material-board {
+  display: grid;
+  gap: 14px;
+  margin-top: 48px;
+}
+
+@media (min-width: 900px) {
+  .mhv2-material-board {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.mhv2-material-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--mhv2-line);
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.mhv2-material-group-head h3 {
+  margin: 0;
+  color: var(--mhv2-ink);
+  font-size: 14px;
+  font-weight: 660;
+  letter-spacing: -0.01em;
+}
+
+.mhv2-material-group-head p {
+  margin: 6px 0 0;
+  color: var(--mhv2-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mhv2-material-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mhv2-material-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid rgba(91, 76, 240, 0.14);
+  border-radius: 10px;
+  padding: 0 12px 0 10px;
+  background: linear-gradient(180deg, #fff 0%, var(--mhv2-purple-soft) 100%);
+}
+
+.mhv2-material-chip-ext {
+  display: inline-flex;
+  min-width: 2.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 3px 6px;
+  background: rgba(91, 76, 240, 0.1);
+  color: #5c50d6;
+  font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.mhv2-material-chip-name {
+  color: #343947;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.mhv2-material-chip-note {
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: rgba(91, 76, 240, 0.08);
+  color: #786cea;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.mhv2-refusal-points span svg,
+.mhv2-product-foot svg {
+  display: none;
+}
+
+.mhv2-refusal-points {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--mhv2-body);
+}
+
+.mhv2-product-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mhv2-product-signal {
+  display: inline-block;
+  border: 1px solid rgba(91, 76, 240, 0.14);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: var(--mhv2-purple-soft);
+  color: #6157b8;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.mhv2-product-signal svg {
+  display: none;
+}
+
+.mhv2-social-band {
+  padding-block: 56px;
+  border-bottom: 1px solid var(--mhv2-line);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.mhv2-social-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.mhv2-social-copy h2 {
+  margin-top: 10px;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.mhv2-social-copy p:last-child {
+  margin-top: 12px;
+  color: var(--mhv2-body);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.mhv2-social-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--mhv2-line);
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.mhv2-social-list li {
+  border: 0;
+  border-bottom: 1px solid var(--mhv2-line);
+  border-radius: 0;
+  padding: 14px 16px;
+  background: var(--mhv2-surface);
+}
+
+.mhv2-social-list li:last-child {
+  border-bottom: 0;
+}
+
+.mhv2-social-list strong,
+.mhv2-social-list span {
+  display: block;
+}
+
+.mhv2-social-list strong {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.mhv2-social-list span {
+  margin-top: 4px;
+  color: var(--mhv2-body);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.mhv2-privacy-band {
+  padding-block: 72px;
+  background: var(--mhv2-surface-soft);
+  border-bottom: 1px solid var(--mhv2-line);
+}
+
+.mhv2-privacy-faq {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.mhv2-privacy-item {
+  border: 1px solid var(--mhv2-line);
+  border-radius: 11px;
+  padding: 18px 20px;
+  background: var(--mhv2-surface);
+}
+
+.mhv2-privacy-item dt {
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.mhv2-privacy-item dd {
+  margin: 8px 0 0;
+  color: var(--mhv2-body);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.mhv2-privacy-more {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.mhv2-success-icon {
+  display: none;
+}
+
+@media (max-width: 839px) {
+  .mhv2-social-grid,
+  .mhv2-privacy-faq {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mhv2 * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

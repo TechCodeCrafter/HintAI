@@ -338,14 +338,14 @@ export function CreateContextFlow() {
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-fg">Private and local</p>
-                  <p className="ds-caption">Your data stays on device — not used for training.</p>
+                  <p className="ds-caption">Your data stays on device. Not used for training.</p>
                 </div>
               </li>
             </ul>
             <div className="rounded-lg bg-accent-soft p-4">
               <p className="text-sm text-fg">
                 <Sparkles aria-hidden className="mr-1 inline size-3.5 text-accent" />
-                Be specific with the name and description — it helps you find the right space later.
+                Be specific with the name and description. It helps you find the right space later.
               </p>
             </div>
           </aside>
