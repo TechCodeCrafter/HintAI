@@ -6,6 +6,8 @@ import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
 import { ContextShell } from "@/components/context-shell";
 import { ProductStateAlert } from "@/components/product-state-alert";
+import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
+import { allSourcesExcluded } from "@/lib/context/exclusions";
 import { VerifiedCitations } from "@/components/verified-citations";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
@@ -23,6 +25,8 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
   const searching = useMeetHint((s) => s.searching);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const search = useMeetHint((s) => s.search);
+  const includeAllSourcesInSearch = useMeetHint((s) => s.includeAllSourcesInSearch);
+  const sources = useMeetHint((s) => s.sources);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
   const [query, setQuery] = useState("");
@@ -45,6 +49,8 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
 
   const indexing = contextStatus === "hydrating" || contextStatus === "booting";
   const noSources = ready && sourceCount === 0;
+  const sourcesExcluded =
+    ready && allSourcesExcluded(sources, pack.files, pack.excludePatterns);
 
   return (
     <ContextShell>
@@ -57,6 +63,13 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
         </div>
         {indexing ? <ProductStateAlert state={productState("indexing")} /> : null}
         {noSources ? <ProductStateAlert state={productState("no-knowledge")} /> : null}
+        {sourcesExcluded ? (
+          <SourcesExclusionAlert
+            sources={sources}
+            pack={pack}
+            onIncludeAll={() => void includeAllSourcesInSearch()}
+          />
+        ) : null}
 
         <form
           className="space-y-3"

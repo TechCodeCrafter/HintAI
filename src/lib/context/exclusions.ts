@@ -1,6 +1,10 @@
 import type { IndexedChunk } from "../repo/types.ts";
 import type { VectorStore } from "../search/vector-store.ts";
+import type { StoredSource } from "./types.ts";
 import { normalizePath } from "./storage/schema.ts";
+
+export const SOURCES_EXCLUDED_REASON =
+  "All sources in this Knowledge Space are excluded from search. Include them again to get cited answers.";
 
 // Exact path or a glob such as docs/*.md or **/API_DOCUMENTATION.md.
 export function pathExcluded(path: string, patterns?: string[]): boolean {
@@ -36,6 +40,34 @@ export async function dropExcludedEvidence(
   }
   if (droppedIds.length > 0 && vectorStore) await vectorStore.delete(droppedIds);
   return { chunks: kept, droppedIds };
+}
+
+export function sourcePathsForExclusion(sources: StoredSource[], packFiles: { path: string }[]): string[] {
+  const paths = new Set<string>();
+  for (const file of packFiles) paths.add(file.path);
+  for (const source of sources) paths.add(source.path);
+  return [...paths];
+}
+
+export function countExcludedSources(
+  sources: StoredSource[],
+  packFiles: { path: string }[],
+  patterns?: string[],
+): { total: number; excluded: number } {
+  const paths = sourcePathsForExclusion(sources, packFiles);
+  if (paths.length === 0) return { total: 0, excluded: 0 };
+  if (!patterns?.length) return { total: paths.length, excluded: 0 };
+  const excluded = paths.filter((path) => pathExcluded(path, patterns)).length;
+  return { total: paths.length, excluded };
+}
+
+export function allSourcesExcluded(
+  sources: StoredSource[],
+  packFiles: { path: string }[],
+  patterns?: string[],
+): boolean {
+  const { total, excluded } = countExcludedSources(sources, packFiles, patterns);
+  return total > 0 && excluded === total;
 }
 
 export function toggleExcludePath(patterns: string[] | undefined, path: string): string[] {
