@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   ArrowRight,
   BookOpen,
@@ -25,6 +25,7 @@ import { useMeetHint } from "@/lib/store";
 export function ContextHome() {
   const { ready: vaultReady, accountId } = useAccountVaultReady();
   const spaceCatalogEpoch = useMeetHint((s) => s.spaceCatalogEpoch);
+  const locationHash = useRouterState({ select: (s) => s.location.hash });
   const [spaces, setSpaces] = useState<SpaceSummary[] | null>(null);
   const [legacy, setLegacy] = useState(false);
   const [migrating, setMigrating] = useState(false);
@@ -46,14 +47,14 @@ export function ContextHome() {
   }, [vaultReady, accountId, spaceCatalogEpoch]);
 
   useEffect(() => {
-    const hash = window.location.hash.replace(/^#/, "");
-    if (!hash) return;
+    const hash = locationHash.replace(/^#/, "");
+    if (!hash || spaces === null) return;
     const target = document.getElementById(hash);
     if (!target) return;
     requestAnimationFrame(() => {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-  }, [spaces]);
+  }, [locationHash, spaces]);
 
   async function convertLegacy() {
     setMigrating(true);
@@ -73,7 +74,7 @@ export function ContextHome() {
 
   return (
     <ContextShell>
-      <main className="mh-rise space-y-10">
+      <main className="space-y-10">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start">
           <div className="space-y-6">
             <PageHeader

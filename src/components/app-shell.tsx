@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState, type LinkProps } from "@tanstack/react-router";
 import { LiveNavLink } from "@/components/live-nav-link";
 import {
   ArrowRight,
@@ -24,6 +24,34 @@ type NavItem = {
   icon: typeof Home;
   match: (path: string) => boolean;
 };
+
+function scrollToHomeSection(id: string) {
+  requestAnimationFrame(() => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+function HomeSectionLink({
+  sectionId,
+  children,
+  onNavigate,
+  ...props
+}: Omit<LinkProps, "to"> & { sectionId: string; onNavigate?: () => void }) {
+  const navigate = useNavigate();
+  return (
+    <Link
+      {...props}
+      to="/home"
+      onClick={(event) => {
+        event.preventDefault();
+        onNavigate?.();
+        void navigate({ to: "/home", hash: sectionId }).then(() => scrollToHomeSection(sectionId));
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
 
 const NAV: NavItem[] = [
   {
@@ -69,8 +97,21 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             </LiveNavLink>
           );
         }
+        if (item.hash) {
+          return (
+            <HomeSectionLink
+              key={item.label}
+              sectionId={item.hash}
+              onNavigate={onNavigate}
+              {...attrs}
+            >
+              <Icon aria-hidden className="size-4 shrink-0" />
+              {item.label}
+            </HomeSectionLink>
+          );
+        }
         return (
-          <Link key={item.label} to={item.to!} hash={item.hash} {...attrs}>
+          <Link key={item.label} to={item.to!} {...attrs}>
             <Icon aria-hidden className="size-4 shrink-0" />
             {item.label}
           </Link>

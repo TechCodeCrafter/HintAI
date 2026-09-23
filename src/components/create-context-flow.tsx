@@ -2,21 +2,18 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import {
   BookOpen,
   Briefcase,
-  FileText,
-  FolderOpen,
   GraduationCap,
   Lightbulb,
   Lock,
   Presentation,
   Sparkles,
-  Upload,
   Zap,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
-import { DropzoneCard } from "@/components/ui/dropzone-card";
+import { MaterialUploadPanel } from "@/components/material-upload-panel";
 import { Input } from "@/components/ui/input";
 import { MetricCard } from "@/components/ui/metric-card";
 import { PageHeader } from "@/components/ui/page-header";
@@ -40,9 +37,6 @@ const KIND_ICONS: Record<ContextKind, typeof Briefcase> = {
 export function CreateContextFlow() {
   const navigate = useNavigate();
   const folderPicker = useFolderPicker();
-  const filesRef = useRef<HTMLInputElement>(null);
-  const pdfRef = useRef<HTMLInputElement>(null);
-
   const [step, setStep] = useState<Step>("identity");
   const [kind, setKind] = useState<ContextKind | null>(null);
   const [name, setName] = useState("");
@@ -195,59 +189,12 @@ export function CreateContextFlow() {
                   title="Add material"
                   description="Add content to this Knowledge Space. MeetHint indexes it so it can answer from it."
                 />
-                <div className="grid gap-3 md:grid-cols-3">
-                  <DropzoneCard
-                    icon={<FolderOpen aria-hidden />}
-                    title="Upload repo or folder"
-                    description="Paste a Git URL or drag & drop a folder"
-                    footer="GitHub repos or local folders"
-                    disabled={folderPicker.reading}
-                    testId="upload-folder-button"
-                    onClick={() => void folderPicker.offerFolder()}
-                  />
-                  <DropzoneCard
-                    icon={<Upload aria-hidden />}
-                    title="Upload files"
-                    description="Drag & drop files or click to browse"
-                    footer="Markdown, text, code, DOCX, XLSX, CSV, PPT, PPTX"
-                    testId="upload-files-button"
-                    onClick={() => filesRef.current?.click()}
-                  />
-                  <DropzoneCard
-                    icon={<FileText aria-hidden />}
-                    title="Add PDFs"
-                    description="Drag & drop PDFs or click to browse"
-                    footer="Text or scanned PDFs (limits apply)"
-                    onClick={() => pdfRef.current?.click()}
-                  />
-                </div>
-                <input
-                  ref={filesRef}
-                  type="file"
-                  multiple
-                  accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv,.ppt,.pptx"
-                  className="sr-only"
-                  aria-hidden
-                  tabIndex={-1}
-                  onChange={(event) => {
-                    const files = event.target.files;
-                    if (files && files.length > 0) void addFolder(files);
-                    event.target.value = "";
-                  }}
-                />
-                <input
-                  ref={pdfRef}
-                  type="file"
-                  multiple
-                  accept=".pdf,application/pdf"
-                  className="sr-only"
-                  aria-hidden
-                  tabIndex={-1}
-                  onChange={(event) => {
-                    const files = event.target.files;
-                    if (files && files.length > 0) void addPdfs(files);
-                    event.target.value = "";
-                  }}
+                <MaterialUploadPanel
+                  disabled={busy}
+                  folderReading={folderPicker.reading}
+                  onFolderClick={() => void folderPicker.offerFolder()}
+                  onFiles={(files) => addFolder(files)}
+                  onPdfs={(files) => addPdfs(files)}
                 />
               </section>
             ) : null}
