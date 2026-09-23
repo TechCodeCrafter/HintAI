@@ -1,28 +1,37 @@
-import {
-  ArrowRight,
-  Check,
-  ChevronRight,
-  Code2,
-  FileCheck2,
-  FileText,
-  FolderOpen,
-  Headphones,
-  LockKeyhole,
-  Mic2,
-  Search,
-  ShieldCheck,
-  Sparkles,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
-import { MEETHINT_DOMAIN, MEETHINT_MARK, MEETHINT_NAME } from "@/lib/brand";
+import { MEETHINT_DOMAIN, MEETHINT_MARK, MEETHINT_NAME, MEETHINT_REPO } from "@/lib/brand";
 import { demoMediaUrl } from "@/lib/demo-media";
 import { useClientMounted } from "@/lib/use-client-mounted";
 import { joinWaitlist } from "@/lib/waitlist";
 import "@/styles/landing-enterprise-v2.css";
+import "@/styles/landing-enterprise-extras.css";
 
 type FormState = "idle" | "sending" | "done" | "error";
+
+const PRIVACY_FAQ = [
+  {
+    q: "Is audio recorded?",
+    a: "MeetHint does not upload or store meeting audio on our servers. Speech is processed on your device for live captions and question detection.",
+  },
+  {
+    q: "Is data stored?",
+    a: "Your Knowledge Spaces, indexed chunks, and session history stay in your browser unless you use a signed-in deployment with server-backed storage.",
+  },
+  {
+    q: "Is processing local?",
+    a: "Indexing and search run locally. When an answer needs a model, only the retrieved excerpts required for that answer are sent to the provider you configure.",
+  },
+  {
+    q: "How long is data retained?",
+    a: "Until you clear site data in your browser or remove a Knowledge Space. We do not keep a copy of your files on MeetHint servers for indexing.",
+  },
+  {
+    q: "Does MeetHint access the screen?",
+    a: "No screen capture. On desktop Chrome you can optionally share a meeting tab with audio; otherwise MeetHint uses your microphone.",
+  },
+] as const;
 
 const PROFESSIONALS = [
   {
@@ -57,22 +66,36 @@ const PROFESSIONALS = [
   },
 ] as const;
 
-const MATERIALS: ReadonlyArray<{
-  label: string;
-  icon: LucideIcon;
-  note?: string;
-}> = [
-  { label: "Repositories", icon: Code2 },
-  { label: "Folders", icon: FolderOpen },
-  { label: "PDF", icon: FileText, note: "limits" },
-  { label: "DOCX", icon: FileText },
-  { label: "XLSX", icon: FileText },
-  { label: "CSV", icon: FileText },
-  { label: "Markdown", icon: FileText },
-  { label: "Code", icon: Code2 },
-  { label: "PPT", icon: FileText },
-  { label: "PPTX", icon: FileText },
-];
+const MATERIAL_GROUPS = [
+  {
+    label: "Code & repos",
+    hint: "Search implementation, not just READMEs. Git history is available on the demo pack today.",
+    items: [
+      { name: "Repositories", ext: "git" },
+      { name: "Folders", ext: "dir" },
+      { name: "Markdown", ext: "md" },
+      { name: "Source code", ext: "ts" },
+    ],
+  },
+  {
+    label: "Documents",
+    hint: "Page-level citations where supported",
+    items: [
+      { name: "PDF", ext: "pdf", note: "page limits" },
+      { name: "Word", ext: "docx" },
+      { name: "PowerPoint", ext: "pptx" },
+      { name: "Slides", ext: "ppt" },
+    ],
+  },
+  {
+    label: "Spreadsheets & data",
+    hint: "Structured answers from tables and exports",
+    items: [
+      { name: "Excel", ext: "xlsx" },
+      { name: "CSV", ext: "csv" },
+    ],
+  },
+] as const;
 
 function WaitlistForm() {
   const mounted = useClientMounted();
@@ -111,7 +134,6 @@ function WaitlistForm() {
   if (state === "done") {
     return (
       <div className="mhv2-waitlist-success" data-testid="waitlist-done" role="status">
-        <span className="mhv2-success-icon"><Check aria-hidden /></span>
         <span>You're on the list. We'll be in touch before the first calls go live.</span>
       </div>
     );
@@ -158,53 +180,50 @@ function HeroProduct() {
   return (
     <div className="mhv2-product-shell" aria-label="MeetHint cited answer preview">
       <div className="mhv2-product-topbar">
-        <div className="mhv2-window-dots" aria-hidden>
-          <span /><span /><span />
-        </div>
         <div className="mhv2-product-status">
-          <span className="mhv2-live-dot" />
-          Live meeting
+          <span className="mhv2-live-dot" aria-hidden />
+          Live session
         </div>
-        <span className="mhv2-product-meta">47 files</span>
+        <span className="mhv2-product-meta">47 files indexed</span>
       </div>
 
       <div className="mhv2-product-layout">
         <aside className="mhv2-product-sources">
           <div className="mhv2-mini-heading">Sources</div>
           <div className="mhv2-source active">
-            <FileText aria-hidden />
             <div><strong>security-architecture.pdf</strong><span>42 pages</span></div>
           </div>
           <div className="mhv2-source">
-            <FileText aria-hidden />
             <div><strong>enterprise-sla.pdf</strong><span>18 pages</span></div>
           </div>
           <div className="mhv2-source">
-            <Code2 aria-hidden />
             <div><strong>architecture.md</strong><span>Repository</span></div>
           </div>
           <div className="mhv2-source">
-            <FileText aria-hidden />
             <div><strong>customer-contract.pdf</strong><span>31 pages</span></div>
           </div>
         </aside>
 
         <div className="mhv2-product-room">
           <div className="mhv2-question-bubble">
-            <span className="mhv2-question-label"><Mic2 aria-hidden /> They asked</span>
+            <span className="mhv2-question-label">They asked</span>
             <p>“Do we support Canadian data residency?”</p>
           </div>
 
           <div className="mhv2-answer-card">
             <div className="mhv2-answer-head">
-              <span><Sparkles aria-hidden /> Answer ready</span>
+              <span>Answer ready</span>
               <span className="mhv2-time">0.8s</span>
+            </div>
+            <div className="mhv2-product-signals" aria-hidden="true">
+              <span className="mhv2-product-signal">Question detected during the call</span>
+              <span className="mhv2-product-signal">Evidence attached automatically</span>
             </div>
             <p className="mhv2-answer-copy">
               Yes. Canadian data residency is available for Enterprise deployments.
             </p>
             <button type="button" className="mhv2-citation">
-              <span className="mhv2-verified"><Check aria-hidden /> Verified</span>
+              <span className="mhv2-verified">Verified</span>
               <span>security-architecture.pdf</span>
               <span>§4.2 · p.17</span>
               <ChevronRight aria-hidden />
@@ -214,9 +233,9 @@ function HeroProduct() {
       </div>
 
       <div className="mhv2-product-foot">
-        <span><LockKeyhole aria-hidden /> Your material only</span>
-        <span><FileCheck2 aria-hidden /> Source attached</span>
-        <span><ShieldCheck aria-hidden /> No unsupported fallback</span>
+        <span>Your material only</span>
+        <span>Source attached</span>
+        <span>No unsupported fallback</span>
       </div>
     </div>
   );
@@ -248,7 +267,7 @@ function ProofConsole() {
             60 days' written notice.
           </p>
           <div className="mhv2-console-cite">
-            <span><Check aria-hidden /> Verified</span>
+            <span>Verified</span>
             <strong>MSA.pdf</strong>
             <span>§8.2 · p.17</span>
           </div>
@@ -312,27 +331,18 @@ export function MeetHintLandingEnterprise() {
                   <ArrowRight aria-hidden />
                 </a>
                 <a href="#demo" className="mhv2-button mhv2-button-secondary mhv2-button-large">
-                  <Headphones aria-hidden />
                   Watch 45 sec demo
                 </a>
               </div>
               <div className="mhv2-trust-inline">
-                <span><Check aria-hidden /> Your files only</span>
-                <span><Check aria-hidden /> Cited answers</span>
-                <span><Check aria-hidden /> Quiet when unsupported</span>
+                <span>Your files only</span>
+                <span>Cited answers</span>
+                <span>Quiet when unsupported</span>
               </div>
             </div>
 
             <div className="mhv2-hero-product">
               <HeroProduct />
-              <div className="mhv2-floating-note mhv2-floating-note-top">
-                <span>Question detected</span>
-                <strong>during the call</strong>
-              </div>
-              <div className="mhv2-floating-note mhv2-floating-note-bottom">
-                <span>Evidence</span>
-                <strong>attached automatically</strong>
-              </div>
             </div>
           </div>
         </section>
@@ -358,6 +368,60 @@ export function MeetHintLandingEnterprise() {
           </div>
         </section>
 
+        <section className="mhv2-social-band" aria-labelledby="social-proof-heading">
+          <div className="mhv2-wrap mhv2-social-grid">
+            <div className="mhv2-social-copy">
+              <p className="mhv2-eyebrow">PRIVATE BETA</p>
+              <h2 id="social-proof-heading">Built for developers and engineers in live meetings</h2>
+              <p>
+                MeetHint is in private beta with sales engineers, customer success teams, and technical
+                operators who need cited answers while the conversation is still happening.
+              </p>
+            </div>
+            <ul className="mhv2-social-list">
+              <li>
+                <strong>Private beta</strong>
+                <span>Invite-based access. No inflated public metrics.</span>
+              </li>
+              <li>
+                <strong>Open repository</strong>
+                <span>
+                  <a href={MEETHINT_REPO} className="mhv2-text-link">
+                    View source on GitHub
+                  </a>
+                </span>
+              </li>
+              <li>
+                <strong>Role-tested workflows</strong>
+                <span>Sales, solutions engineering, customer success, and technical support.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="privacy" className="mhv2-privacy-band" aria-labelledby="privacy-first-heading">
+          <div className="mhv2-wrap">
+            <div className="mhv2-section-heading mhv2-heading-center">
+              <p className="mhv2-eyebrow">PRIVACY FIRST</p>
+              <h2 id="privacy-first-heading">Straight answers about your data</h2>
+              <p>MeetHint is designed to search material you load, not to hoard your conversations.</p>
+            </div>
+            <dl className="mhv2-privacy-faq">
+              {PRIVACY_FAQ.map(({ q, a }) => (
+                <div key={q} className="mhv2-privacy-item">
+                  <dt>{q}</dt>
+                  <dd>{a}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mhv2-privacy-more">
+              <a href="/privacy" className="mhv2-text-link">
+                Read the full privacy policy <ArrowRight aria-hidden />
+              </a>
+            </p>
+          </div>
+        </section>
+
         <section id="product" className="mhv2-section mhv2-how">
           <div className="mhv2-wrap">
             <div className="mhv2-section-heading mhv2-heading-center">
@@ -366,32 +430,28 @@ export function MeetHintLandingEnterprise() {
               <p>MeetHint stays in the flow of the meeting instead of becoming another tab you have to search.</p>
             </div>
 
-            <div className="mhv2-steps">
-              <article>
-                <span className="mhv2-step-icon"><Mic2 aria-hidden /></span>
+            <ol className="mhv2-steps">
+              <li>
                 <span className="mhv2-step-number">01</span>
                 <h3>Hear the question</h3>
                 <p>MeetHint picks up the question that is actually being asked.</p>
-              </article>
-              <article>
-                <span className="mhv2-step-icon"><Search aria-hidden /></span>
+              </li>
+              <li>
                 <span className="mhv2-step-number">02</span>
                 <h3>Search your material</h3>
                 <p>It checks the documents, files, and code already loaded into the space.</p>
-              </article>
-              <article>
-                <span className="mhv2-step-icon"><Sparkles aria-hidden /></span>
+              </li>
+              <li>
                 <span className="mhv2-step-number">03</span>
                 <h3>Find the evidence</h3>
                 <p>MeetHint finds the passage that actually supports the answer.</p>
-              </article>
-              <article>
-                <span className="mhv2-step-icon"><FileCheck2 aria-hidden /></span>
+              </li>
+              <li>
                 <span className="mhv2-step-number">04</span>
                 <h3>Answer with proof</h3>
                 <p>You get the line to say with the source attached underneath it.</p>
-              </article>
-            </div>
+              </li>
+            </ol>
           </div>
         </section>
 
@@ -441,13 +501,9 @@ export function MeetHintLandingEnterprise() {
             <div className="mhv2-professional-grid">
               {PROFESSIONALS.map((item) => (
                 <article className="mhv2-professional-card" key={item.role}>
-                  <div className="mhv2-professional-top">
-                    <span className="mhv2-role">{item.role}</span>
-                    <span className="mhv2-cited"><Check aria-hidden /> Cited</span>
-                  </div>
+                  <p className="mhv2-role">{item.role}</p>
                   <p className="mhv2-professional-question">“{item.question}”</p>
                   <div className="mhv2-professional-source">
-                    <FileText aria-hidden />
                     <span>{item.source}</span>
                   </div>
                 </article>
@@ -466,9 +522,9 @@ export function MeetHintLandingEnterprise() {
                 as a real product state.
               </p>
               <div className="mhv2-refusal-points">
-                <span><ShieldCheck aria-hidden /> No general-knowledge fallback</span>
-                <span><LockKeyhole aria-hidden /> Search stays inside the allowed space</span>
-                <span><FileCheck2 aria-hidden /> Supported answers stay traceable</span>
+                <span>No general-knowledge fallback</span>
+                <span>Search stays inside the allowed space</span>
+                <span>Supported answers stay traceable</span>
               </div>
             </div>
 
@@ -478,7 +534,6 @@ export function MeetHintLandingEnterprise() {
                 <span>0 sources</span>
               </div>
               <div className="mhv2-empty-content">
-                <span className="mhv2-empty-icon"><Search aria-hidden /></span>
                 <h3>Your material doesn't cover this.</h3>
                 <p>MeetHint couldn't find evidence in the material available to this space.</p>
               </div>
@@ -500,21 +555,29 @@ export function MeetHintLandingEnterprise() {
               </p>
             </div>
 
-            <div className="mhv2-material-grid">
-              {MATERIALS.map(({ label, icon: Icon, note }) => (
-                <div className="mhv2-material-card" key={label}>
-                  <span className="mhv2-material-icon"><Icon aria-hidden /></span>
-                  <div>
-                    <strong>{label}</strong>
-                    {note ? <span className="mhv2-material-note">{note}</span> : <span>Supported source</span>}
-                  </div>
-                </div>
+            <div className="mhv2-material-board">
+              {MATERIAL_GROUPS.map((group) => (
+                <section className="mhv2-material-group" key={group.label} aria-label={group.label}>
+                  <header className="mhv2-material-group-head">
+                    <h3>{group.label}</h3>
+                    <p>{group.hint}</p>
+                  </header>
+                  <ul className="mhv2-material-chips">
+                    {group.items.map((item) => (
+                      <li key={item.ext}>
+                        <span className="mhv2-material-chip">
+                          <span className="mhv2-material-chip-ext">{item.ext}</span>
+                          <span className="mhv2-material-chip-name">{item.name}</span>
+                          {"note" in item && item.note ? (
+                            <span className="mhv2-material-chip-note">{item.note}</span>
+                          ) : null}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               ))}
             </div>
-
-            <p className="mhv2-material-disclaimer">
-              Add PDFs separately (page and size limits apply). Git-history answers ship on the built-in demo pack only.
-            </p>
           </div>
         </section>
 
@@ -533,15 +596,12 @@ export function MeetHintLandingEnterprise() {
             </div>
             <div className="mhv2-security-cards">
               <article>
-                <LockKeyhole aria-hidden />
                 <div><strong>Scoped search</strong><span>Search within the material available to the space.</span></div>
               </article>
               <article>
-                <FileCheck2 aria-hidden />
                 <div><strong>Evidence attached</strong><span>See the file and location behind supported answers.</span></div>
               </article>
               <article>
-                <ShieldCheck aria-hidden />
                 <div><strong>Unsupported means unsupported</strong><span>No evidence means no fabricated response.</span></div>
               </article>
             </div>
@@ -574,12 +634,13 @@ export function MeetHintLandingEnterprise() {
           <nav data-testid="landing-footer-trust-nav" aria-label="Footer">
             <a href="#product">Product</a>
             <a href="#professionals">Use cases</a>
-            <a href="/privacy">Privacy</a>
+            <a href="#privacy">Privacy first</a>
+            <a href="/privacy">Privacy policy</a>
             <a href="/terms">Terms</a>
             <a href="/security">Security</a>
             <a href="/contact">Contact</a>
           </nav>
-          <a href="/home" className="mhv2-footer-open">Open app <ArrowRight aria-hidden /></a>
+          <a href="/home" className="mhv2-footer-open">Open app</a>
         </div>
       </footer>
     </div>

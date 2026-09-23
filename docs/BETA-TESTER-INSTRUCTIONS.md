@@ -1,6 +1,39 @@
-# Hint Beta — Tester Instructions
+# MeetHint Beta — Tester Instructions
 
-Thanks for trying Hint in a real workflow. This takes about 30 minutes.
+Thanks for helping shape MeetHint in a real workflow.
+
+## Which guide to send
+
+| Audience | Document | Time |
+|----------|----------|------|
+| **Structured beta session (recommended)** | [MeetHint-Beta-Testing-Session.pdf](./MeetHint-Beta-Testing-Session.pdf) · [BETA-TESTING-SESSION.md](./BETA-TESTING-SESSION.md) | **2–2.5 hours** |
+| **Quick try / busy tester** | [beta-tester-brief.html](./beta-tester-brief.html) (Print → PDF) | **~30 min** + one meeting |
+
+For Wave 1 testers, send the **structured testing session** — phased test cases, ratings, NPS, moment log, debrief, and diagnostics export.
+
+---
+
+## Sign up (not invite-only)
+
+Testers **register themselves**:
+
+1. Go to [meethint.ai](https://www.meethint.ai)
+2. Click **Sign in with Google**
+3. No invite code required — account is created at sign-up
+4. Ask them to **reply with the Google email** they used so you can match feedback
+
+---
+
+## What we’re testing
+
+| Focus | What “good” looks like |
+|-------|-------------------------|
+| **Cite or silence** | Answers cite your material, or MeetHint stays quiet when the files don’t support an answer |
+| **Live in a call** | You ask out loud (or type); answers appear with sources during a real/realistic meeting |
+| **Your sources** | Repo, folder, PDF, Office files you’re allowed to use — not the built-in demo pack |
+| **Rich feedback** | 👍/👎 on answers, 1–5 ratings per phase, NPS, moment log, full debrief |
+
+---
 
 ## Supported devices
 
@@ -8,37 +41,67 @@ Thanks for trying Hint in a real workflow. This takes about 30 minutes.
 |--------|------------|
 | **Chrome or Edge on Mac/PC** | Full Live — share meeting tab with audio + mic, auto-answer |
 | **Safari on Mac** | Live with mic; tab audio share is limited — type or speak questions |
-| **iPhone / iPad** | Ask + cited Search (type or speak into mic). Tap **Answer** when the green dot appears, or use the **Answer ready** banner. Tab audio share needs desktop Chrome. |
+| **iPhone / iPad** | Ask + cited Search (type or speak into mic). Tab audio share needs desktop Chrome. |
 
-On phone or tablet, if voice is slow the first time, wait for “Loading captions…” to finish, then speak clearly or use the **Search** box.
+---
 
-## Steps
+## What to send back (required)
 
-1. **Sign in** at [meethint.ai](https://www.meethint.ai) with the account we invited you to use.
+1. **Google account email** used for sign-up
+2. **Completed testing session PDF** (Pass/Fail filled in)
+3. **Experience ratings** (1–5 per area) + **NPS** (0–10)
+4. **Moment log** — best moment, worst moment, what almost made them quit
+5. **Answer feedback log** — at least 5 Q&A pairs with 👍/👎 notes
+6. **Debrief** — all 14 questions answered
+7. **Diagnostics JSON** from Live → Diagnostics
+8. **Screenshots** of any wrong cited answers
 
-2. **Create a Knowledge Space** — name it after a project or meeting you actually care about.
-
-3. **Add your own material** — connect a folder, repo, PDF, PowerPoint, Word doc, or spreadsheet you’re allowed to use.
-
-   **Important:** In Live, pick **your Knowledge Space** in the folder menu — not **Demo pack (sample only)**. Demo answers come from sample payment docs, not your uploads.
-
-4. **Ask one question** — something you’d really want answered in a meeting, e.g. “What owns authentication?” or “Where is the refund policy defined?”
-
-5. **Start Live** — open Live for that Knowledge Space and leave it running while you work or in a short test call.
-
-6. **Use Hint in one real or realistic meeting** — ask at least one spoken or typed question and see whether the cited answer helps.
-
-7. **Give feedback** — on any supported answer, tap **👍 Useful** or **👎 Not useful** and pick a reason if asked.
-
-## Optional (helps us a lot)
-
-- From Live, open **Diagnostics** and download the JSON export after your session.
-- Reply to us with: what worked, what confused you, and whether you’d pay for this today.
+---
 
 ## Privacy
 
-Your files stay **on this device** in your browser. Signing in on another computer or tablet does **not** copy your uploads — add material again on each device. We do not receive your source content from normal use — only what you choose to send us (feedback notes or a diagnostic export you share).
+Your files stay **on this device** in your browser. Signing in on another computer or tablet does **not** copy your uploads — add material again on each device. We do not receive your source content from normal use — only what you choose to send us.
+
+---
 
 ## Problems?
 
-Email or message your contact on the Hint team. If something blocks you entirely (can’t sign in, lost data, see someone else’s files), say **BLOCKER** so we prioritize it.
+Email your MeetHint contact. If something blocks you entirely (can’t sign in with Google, lost data, see someone else’s files), say **BLOCKER** in the subject.
+
+---
+
+## Copy-paste invite email
+
+```
+Subject: MeetHint beta — structured testing session (~2.5 hours)
+
+Hi — thank you for helping test MeetHint.
+
+We’re running a structured testing session (not a casual demo). Plan about 2–2.5 hours with your own repo/docs loaded.
+
+Get started:
+1. Go to https://www.meethint.ai
+2. Click Sign in with Google (no invite code needed)
+3. Reply to this email with the Google address you used
+
+Before the session:
+• Chrome or Edge on desktop if possible
+• Your own project folder/repo and/or PDFs
+• Know 3–5 questions your docs CAN answer and 2–3 they CANNOT
+
+During the session:
+• Follow the attached guide phase by phase
+• Mark Pass/Fail on every test case
+• Rate each area 1–5 and 👍/👎 every answer you can
+• Export Diagnostics JSON from Live when finished
+• Send back: completed PDF + ratings + debrief + JSON
+
+What we care about most: cited answers from YOUR files, silence when unsupported, and whether you’d trust this in a real technical meeting.
+
+Blockers: put BLOCKER in the subject.
+
+Attached: MeetHint-Beta-Testing-Session.pdf
+
+Thanks,
+[Your name]
+```

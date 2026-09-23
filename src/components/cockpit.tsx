@@ -77,8 +77,6 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const sharingCall = useMeetHint((s) => s.sharingCall);
   const disarm = useMeetHint((s) => s.disarm);
   const card = useMeetHint((s) => s.card);
-  const utterances = useMeetHint((s) => s.utterances);
-  const liveDraft = useMeetHint((s) => s.liveDraft);
   const listenError = useMeetHint((s) => s.listenError);
   const folderError = useMeetHint((s) => s.folderError);
   const packNotice = useMeetHint((s) => s.packNotice);
@@ -121,7 +119,12 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
-  const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
+  const cueSearch = useMeetHint(
+    (s) =>
+      s.armed &&
+      (Boolean(s.liveDraft) || s.utterances.some((u) => u.role === "them")) &&
+      !s.card?.say,
+  );
   const demo = pack.id === "northstar-payments";
   const onDemoPack = demo;
   const listenLabel = live ? "Stop listen" : "Listen";
@@ -1067,6 +1070,15 @@ function PaneTab({
   );
 }
 
+function HearMeter() {
+  const hearLevel = useMeetHint((s) => s.hearLevel);
+  return (
+    <div className="hear-meter mt-3" aria-hidden="true">
+      <div className="hear-meter-fill" style={{ width: `${Math.round(hearLevel * 100)}%` }} />
+    </div>
+  );
+}
+
 function StatusDot({
   on,
   down,
@@ -1467,7 +1479,6 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
   const listenBlocked = useMeetHint((s) => s.listenBlocked);
   const sharingCall = useMeetHint((s) => s.sharingCall);
   const pack = useMeetHint((s) => s.pack);
-  const hearLevel = useMeetHint((s) => s.hearLevel);
   const asrStatus = useMeetHint((s) => s.asrStatus);
   const asrNote = useMeetHint((s) => s.asrNote);
   const asked = useMeetHint((s) => s.card?.query ?? s.heardQuestion);
@@ -1509,7 +1520,7 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [turns.length, liveDraft]);
+  }, [turns.length]);
 
   function dismissListenHint() {
     if (asrNote && asrDismissed !== asrNote) {
@@ -1595,11 +1606,7 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
             )}
             <div ref={endRef} />
           </div>
-          {live ? (
-            <div className="hear-meter mt-3" aria-hidden="true">
-              <div className="hear-meter-fill" style={{ width: `${Math.round(hearLevel * 100)}%` }} />
-            </div>
-          ) : null}
+          {live ? <HearMeter /> : null}
         </div>
         {extras}
         <form

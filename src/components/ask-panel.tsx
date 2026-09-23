@@ -48,7 +48,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
 
   return (
     <ContextShell>
-      <main className="mh-rise mx-auto max-w-2xl space-y-8 pb-16 pt-8">
+      <main className="mx-auto max-w-2xl space-y-8 pb-16 pt-8">
         <div className="space-y-2">
           <p className="mh-eyebrow">Ask</p>
           <h1 className="mh-display text-4xl sm:text-5xl">{pack.name}</h1>

@@ -290,6 +290,10 @@ function nextHydrationEpoch(): number {
   return hydrationEpoch;
 }
 
+function bumpSpaceCatalog() {
+  useMeetHint.setState((state) => ({ spaceCatalogEpoch: state.spaceCatalogEpoch + 1 }));
+}
+
 function searchIsLive(): boolean {
   return useMeetHint.getState().contextStatus === "ready";
 }
@@ -705,6 +709,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     recordBetaEventOnce("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
     recordBetaEvent("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
+    bumpSpaceCatalog();
     return context.id;
   },
   attachFolderToContext: async (contextId, list, options) => {
@@ -767,6 +772,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       recordBetaEvent("SOURCE_CONNECTED", { workspaceId: ws, spaceId: space.id, meta: { fileCount: hydrated.pack.files.length } });
       recordBetaEventOnce("INDEX_READY", { workspaceId: ws, spaceId: space.id });
       recordBetaEvent("INDEX_READY", { workspaceId: ws, spaceId: space.id });
+      bumpSpaceCatalog();
     } catch {
       if (epoch !== hydrationEpoch) return;
       set({
@@ -794,10 +800,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     else await repo.deleteContext(id);
 
     const bumpCatalog = async () => {
-      set({
-        contexts: await listStoredContexts(),
-        spaceCatalogEpoch: get().spaceCatalogEpoch + 1,
-      });
+      set({ contexts: await listStoredContexts() });
+      bumpSpaceCatalog();
     };
 
     const wasActive =
@@ -823,6 +827,12 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     set({ contexts: await listStoredContexts() });
   },
   activateSpace: async (spaceId) => {
+    const current = get();
+    if (current.activeSpaceId === spaceId && current.contextStatus === "ready") {
+      persistActiveSpaceId(spaceId);
+      return;
+    }
+    const sameSpace = current.activeSpaceId === spaceId;
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
@@ -831,7 +841,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       contextUpdating: false,
       hydrationEpoch: epoch,
       packNotice: null,
-      ...clearSessionOnSwitch(),
+      ...(sameSpace ? {} : clearSessionOnSwitch()),
     });
     persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
     try {
@@ -1293,6 +1303,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextError: null,
         folderError: rejectNote || packWarning(runtime.weak, runtime.pack.files.length),
       });
+      bumpSpaceCatalog();
     } catch {
       if (created && get().hydrationEpoch !== epoch) return;
       set({

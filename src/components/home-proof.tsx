@@ -30,6 +30,12 @@ export function HomeProof() {
     store.setTypedQuery(firstChip);
   }, [firstChip, hasUserSpace]);
 
+  useLayoutEffect(() => {
+    if (window.location.hash.replace(/^#/, "") !== "ask") return;
+    const input = document.querySelector<HTMLElement>('[data-testid="search-input"]');
+    input?.focus();
+  }, [hasUserSpace]);
+
   if (hasUserSpace && firstSpaceId) {
     return (
       <section className="space-y-4" data-testid="home-proof-user-space">
@@ -130,8 +136,8 @@ export function HomeProof() {
               {card?.say ? <AnswerSay text={card.say} /> : null}
               {card?.answerMode === "generated" ||
               (card?.answerMode === "synthesized" && !(card.usedEvidence ?? card.citations.length > 0)) ? (
-                <p className="generated-note" title="Older answer — not backed by your files.">
-                  Older answer — not backed by your files.
+                <p className="generated-note" title="Older answer. Not backed by your files.">
+                  Older answer. Not backed by your files.
                 </p>
               ) : null}
               {card && card.latencyMs > 0 ? (

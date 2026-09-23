@@ -123,7 +123,7 @@ export function SessionReceiptPanel({
                       </>
                     ) : (
                       <p className="text-sm text-muted">
-                        Not supported — no cited evidence in authorized material.
+                        Not supported. No cited evidence in authorized material.
                       </p>
                     )}
                   </div>

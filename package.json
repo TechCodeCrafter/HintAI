@@ -61,7 +61,9 @@
     "generate:og:legacy": "node scripts/generate-og-card.mjs",
     "latency:benchmark": "node scripts/latency-benchmark.mjs",
     "redteam:smoke": "node --experimental-strip-types --test src/lib/security/__tests__/redteam-harness.test.ts",
-    "redteam:harness": "node scripts/redteam-harness.mjs"
+    "redteam:harness": "node scripts/redteam-harness.mjs",
+    "eval:truth-judge": "node --env-file=.env --experimental-strip-types scripts/eval-truth-judge.mjs",
+    "eval:truth-judge:fixtures": "node scripts/build-truth-judge-fixtures.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

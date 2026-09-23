@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "description": "Offline truth-judge eval fixtures — synthetic only, no customer/beta data",
+  "counts": {
+    "question_classification": 40,
+    "evidence_applicability": 80,
+    "escalation": 95,
+    "total": 215
+  },
+  "tasks": [
+    "question_classification",
+    "evidence_applicability",
+    "escalation"
+  ]
+}
