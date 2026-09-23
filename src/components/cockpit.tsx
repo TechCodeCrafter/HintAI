@@ -47,6 +47,7 @@ import { isFramed, useLiveListen } from "@/lib/listen/speech";
 import { PdfPane } from "@/components/pdf-pane";
 import { AuthChrome } from "@/components/auth-chrome";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
 import { pathExcluded } from "@/lib/context/exclusions";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
@@ -1134,6 +1135,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const openPdfSource = useMeetHint((s) => s.openPdfSource);
   const togglePackExclusion = useMeetHint((s) => s.togglePackExclusion);
   const setPackExclusions = useMeetHint((s) => s.setPackExclusions);
+  const includeAllSourcesInSearch = useMeetHint((s) => s.includeAllSourcesInSearch);
   const card = useMeetHint((s) => s.card);
   const [filter, setFilter] = useState("");
   const [excludeGlob, setExcludeGlob] = useState("");
@@ -1216,6 +1218,13 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
       {weak ? (
         <p className="px-3 pb-2 text-xs text-warn">Mostly CI/config. Open the src folder, then Search.</p>
       ) : null}
+      <div className="px-4 pb-3">
+        <SourcesExclusionAlert
+          sources={sources}
+          pack={pack}
+          onIncludeAll={() => void includeAllSourcesInSearch()}
+        />
+      </div>
       <div className="grid min-h-0 min-w-0 flex-1 grid-rows-[minmax(16rem,0.55fr)_minmax(0,1fr)] gap-4 overflow-hidden px-4 pb-4">
         <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
           <label className="relative mb-3 block shrink-0">
@@ -1263,7 +1272,10 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                   aria-pressed={excluded}
                   aria-label={excluded ? `Include ${f.path} in search` : `Exclude ${f.path} from search`}
                   title={excluded ? "Include in search" : "Exclude from search"}
-                  onClick={() => void togglePackExclusion(f.path)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void togglePackExclusion(f.path);
+                  }}
                 >
                   {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
                 </button>
@@ -1308,7 +1320,10 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                     aria-pressed={excluded}
                     aria-label={excluded ? `Include ${source.path} in search` : `Exclude ${source.path} from search`}
                     title={excluded ? "Include in search" : "Exclude from search"}
-                    onClick={() => void togglePackExclusion(source.path)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void togglePackExclusion(source.path);
+                    }}
                   >
                     {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
                   </button>
