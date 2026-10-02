@@ -26,6 +26,8 @@ public/vad
 .grok/smoke-profile-*/
 .grok/production-smoke-*.json
 .tmp-kits
+# Local working notes for one contributor. Not part of the product.
+.tmp-notes
 .cursor/skills/**/__pycache__/
 security/deepteam/.venv/
 security/reports/*.json
