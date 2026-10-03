@@ -194,7 +194,7 @@ function HeroProduct() {
             <div><strong>security-architecture.pdf</strong><span>42 pages</span></div>
           </div>
           <div className="mhv2-source">
-            <div><strong>enterprise-sla.pdf</strong><span>18 pages</span></div>
+            <div><strong>enterprise.pdf</strong><span>18 pages</span></div>
           </div>
           <div className="mhv2-source">
             <div><strong>architecture.md</strong><span>Repository</span></div>
@@ -213,7 +213,7 @@ function HeroProduct() {
           <div className="mhv2-answer-card">
             <div className="mhv2-answer-head">
               <span>Answer ready</span>
-              <span className="mhv2-time">0.8s</span>
+
             </div>
             <div className="mhv2-product-signals" aria-hidden="true">
               <span className="mhv2-product-signal">Question detected during the call</span>
@@ -225,7 +225,7 @@ function HeroProduct() {
             <button type="button" className="mhv2-citation">
               <span className="mhv2-verified">Verified</span>
               <span>security-architecture.pdf</span>
-              <span>§4.2 · p.17</span>
+              <span></span>
               <ChevronRight aria-hidden />
             </button>
           </div>
@@ -269,7 +269,7 @@ function ProofConsole() {
           <div className="mhv2-console-cite">
             <span>Verified</span>
             <strong>MSA.pdf</strong>
-            <span>§8.2 · p.17</span>
+            <span>8.2 · p.17</span>
           </div>
         </div>
       </div>
