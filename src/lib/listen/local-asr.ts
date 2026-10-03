@@ -4,6 +4,20 @@ type Waiter = {
   partial?: (text: string) => void;
 };
 
+// Local Whisper ships in `public/meethint-asr-worker.js`, which imports
+// transformers from cdn.jsdelivr.net. That host is deliberately absent from the
+// app Content-Security-Policy (see scripts/security-headers.mjs buildAppCsp and
+// the two assertions in scripts/domain-reputation.test.mjs, plus the "Removed /
+// Not allowed" row in docs/DOMAIN-REPUTATION.md), so the worker cannot boot.
+// Spawning it anyway produced a CSP violation on every attempt plus a store
+// write per attempt, which re-rendered the transcript.
+//
+// Off by default. Turning it on requires bundling a local copy of the
+// transformers runtime into the worker so the import is same-origin; see
+// .tmp-notes/AGENT.md. Until then, transcription falls back to the browser
+// SpeechRecognition path in speech.ts, which needs no worker.
+const LOCAL_ASR_ENABLED = import.meta.env.VITE_LOCAL_ASR === "1";
+
 let worker: Worker | null = null;
 let ready: Promise<boolean> | null = null;
 let seq = 0;
@@ -56,6 +70,10 @@ function attach(next: Worker) {
 
 function ensureWorker(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(false);
+  // Local ASR is off unless explicitly enabled, because the worker imports
+  // transformers from a CDN the Content-Security-Policy blocks. Without this
+  // guard every call spawned a worker that could only fail.
+  if (!LOCAL_ASR_ENABLED) return Promise.resolve(false);
   if (ready) return ready;
   ready = new Promise((resolve) => {
     try {
