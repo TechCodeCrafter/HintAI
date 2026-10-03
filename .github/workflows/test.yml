@@ -25,7 +25,7 @@ jobs:
           trap 'kill $DEV_PID 2>/dev/null || true' EXIT
           ready=0
           for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8080/__app-env >/dev/null; then
+            if curl --fail --silent http://127.0.0.1:3001/__app-env >/dev/null; then
               ready=1
               break
             fi
