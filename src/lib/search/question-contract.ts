@@ -214,6 +214,30 @@ export function buildQuestionContract(
     }
   }
 
+  // Field questions ("what is the phone number", "what is the company name")
+  // name the *field*, not words the answer must contain. "Phone: 9931607655"
+  // contains no word "number"; "REDSHEEL" contains neither "company" nor
+  // "name". Requiring those tokens makes silence unconditional, which is why
+  // demos only pass when the user types the exact keyword from the file.
+  // Demote generic field words to optional and drop the definitional-copula
+  // ("X is ...") requirement for these questions.
+  const isFieldQuestion =
+    predicate?.kind === "contact" ||
+    /\bcompany name\b/.test(q) ||
+    (/\bcompany\b/.test(q) && /\bname\b/.test(q)) ||
+    /\bphone number\b/.test(q);
+  let needsDefinitionCopula =
+    /\bwhat(?:'s| is) (?:a |an |the )?[a-z]/.test(q) && !/\bwhat does\b/.test(q);
+  if (isFieldQuestion) {
+    for (let i = required.length - 1; i >= 0; i -= 1) {
+      if (FIELD_GENERIC.has(required[i] ?? "")) {
+        optional.push(required[i] ?? "");
+        required.splice(i, 1);
+      }
+    }
+    needsDefinitionCopula = false;
+  }
+
   lastTimings = { ...lastTimings, constructMs: nowMs() - started };
   return {
     shape,
@@ -223,12 +247,33 @@ export function buildQuestionContract(
     answerExpectation,
     enumeration,
     needsThreadSource,
-    needsDefinitionCopula: /\bwhat(?:'s| is) (?:a |an |the )?[a-z]/.test(q) && !/\bwhat does\b/.test(q),
+    needsDefinitionCopula,
     whenPredicative: whenAdjective(q),
     requiredVerb: relation?.verb ?? questionVerb(q),
     requiredRelation: relation,
     requestedEntityType: entityType,
   };
+}
+
+/**
+ * Generic field words that describe the *question* ("company name", "phone
+ * number") rather than tokens the cited line must contain. Kept closed so
+ * ordinary subject terms stay required.
+ */
+const FIELD_GENERIC = new Set(
+  "company name names phone number numbers telephone mobile email website site contact address".split(/\s+/),
+);
+
+/**
+ * True for field questions ("what is the phone number", "what is the company
+ * name") where the cited line is a short label:value or header, not a
+ * sentence. Callers use this to allow short field lines through the spoken
+ * gates while keeping the strict sentence rules everywhere else.
+ */
+export function isFieldContract(contract: QuestionContract): boolean {
+  if (contract.predicate?.kind === "contact") return true;
+  const optional = new Set(contract.subject.optionalTerms);
+  return optional.has("company") && optional.has("name");
 }
 
 function whenAdjective(q: string): string | undefined {
