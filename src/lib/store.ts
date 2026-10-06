@@ -200,6 +200,10 @@ type MeetHintState = {
   listenBlocked: "iframe" | "denied" | "missing" | "speech" | null;
   folderError: string | null;
   packNotice: string | null;
+  /** Set when search() is invoked before the context is ready — the UI shows it as a banner. */
+  searchNotice: string | null;
+  /** Persistent: the shared-tab lane has no working transcription path (no xAI key, local captions down). */
+  tabAsrDown: boolean;
   utterances: Utterance[];
   typedQuery: string;
   heardQuestion: string | null;
@@ -230,6 +234,7 @@ type MeetHintState = {
   setHearLevel: (level: number) => void;
   setAsrStatus: (status: MeetHintState["asrStatus"]) => void;
   setAsrNote: (note: string) => void;
+  setTabAsrDown: (down: boolean) => void;
   setListenError: (text: string | null, blocked?: MeetHintState["listenBlocked"]) => void;
   boot: (preferredSpaceId?: string) => Promise<void>;
   activateSpace: (spaceId: string) => Promise<void>;
@@ -259,6 +264,7 @@ type MeetHintState = {
   togglePackExclusion: (path: string) => Promise<void>;
   resetPack: () => void;
   dismissPackNotice: () => void;
+  dismissSearchNotice: () => void;
   currentMeeting: MeetingRecord | null;
   meetingHistory: MeetingRecord[];
   selectedClaimId: string | null;
@@ -318,6 +324,8 @@ function clearSessionOnSwitch(): Pick<
   | "liveDraft"
   | "ingestProgress"
   | "typedQuery"
+  | "searchNotice"
+  | "tabAsrDown"
 > {
   syncViewerBlobPins(null, null);
   return {
@@ -331,6 +339,8 @@ function clearSessionOnSwitch(): Pick<
     liveDraft: "",
     ingestProgress: null,
     typedQuery: "",
+    searchNotice: null,
+    tabAsrDown: false,
   };
 }
 
@@ -520,6 +530,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   listenBlocked: null,
   folderError: null,
   packNotice: null,
+  searchNotice: null,
+  tabAsrDown: false,
   currentMeeting: null,
   meetingHistory: [],
   selectedClaimId: null,
@@ -623,6 +635,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   setHearLevel: (level) => set({ hearLevel: Math.max(0, Math.min(1, level)) }),
   setAsrStatus: (status) => set({ asrStatus: status }),
   setAsrNote: (note) => set({ asrNote: note }),
+  setTabAsrDown: (down) => set({ tabAsrDown: down }),
   setListenError: (text, blocked = null) =>
     set({
       listenError: text,
@@ -1467,6 +1480,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
   },
   dismissPackNotice: () => set({ packNotice: null }),
+  dismissSearchNotice: () => set({ searchNotice: null }),
   openAudit: async () => {
     if (get().subscription === "free") {
       set({ upgradeFeature: "audit" });
@@ -1617,7 +1631,18 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   },
   search: async (explicit, opts) => {
     let state = get();
-    if (state.contextStatus !== "ready") return;
+    if (state.contextStatus !== "ready") {
+      // Never fail silently: the user pressed Search (or a shortcut) before
+      // the material was usable. Say so in a banner instead of swallowing it.
+      set({
+        searchNotice:
+          state.contextStatus === "error"
+            ? "Your sources failed to load. Reopen the Knowledge Space, then ask."
+            : "Still preparing your sources. Ask once indexing finishes.",
+      });
+      return;
+    }
+    if (state.searchNotice) set({ searchNotice: null });
     if (allSourcesExcluded(state.sources, state.pack.files, state.pack.excludePatterns)) {
       await get().includeAllSourcesInSearch();
       state = get();

@@ -32,8 +32,7 @@ function hasGlobbedMigrations(root: string): boolean {
  * PGLite instance it never queries.
  */
 /** Copies Silero / ONNX Runtime files so MicVAD can load them from /vad/. */
-function vadAssetsPlugin(): Plugin {
-  const copy = () => {
+function vadAssetsPlugin(): Plugin {  const copy = () => {
     const dest = join(process.cwd(), "public/vad");
     const vadDist = join(process.cwd(), "node_modules/@ricky0123/vad-web/dist");
     const ortDist = existsSync(join(process.cwd(), "node_modules/onnxruntime-web/dist"))
@@ -53,6 +52,31 @@ function vadAssetsPlugin(): Plugin {
   };
   return {
     name: "meethint-vad-assets",
+    buildStart: copy,
+    configureServer: copy,
+  };
+}
+
+/**
+ * Copies ONNX Runtime wasm/js shims so the bundled Whisper worker
+ * (src/lib/listen/asr.worker.ts) can load them same-origin from /ort-dist/.
+ * transformers v4 defaults env.backends.onnx.wasm.wasmPaths to the jsdelivr
+ * CDN, which the app CSP blocks; the worker pins wasmPaths to /ort-dist/.
+ */
+function asrAssetsPlugin(): Plugin {
+  const copy = () => {
+    const dest = join(process.cwd(), "public/ort-dist");
+    const ortDist = join(process.cwd(), "node_modules/onnxruntime-web/dist");
+    if (!existsSync(ortDist)) return;
+    mkdirSync(dest, { recursive: true });
+    for (const name of readdirSync(ortDist)) {
+      if (/^ort-wasm-simd-threaded(\.(asyncify|jsep|jspi))?\.(mjs|wasm)$/.test(name) && !name.endsWith(".map")) {
+        cpSync(join(ortDist, name), join(dest, name));
+      }
+    }
+  };
+  return {
+    name: "meethint-asr-assets",
     buildStart: copy,
     configureServer: copy,
   };
@@ -194,6 +218,7 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   plugins: [
     vadAssetsPlugin(),
+    asrAssetsPlugin(),
     pgliteBootstrapPlugin(),
     // Before tanstackStart so /auth/popup never falls through to the SPA.
     authPopupPlugin(),
