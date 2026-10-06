@@ -14,7 +14,7 @@ import {
   recordWorklet,
   tickFrame,
 } from "@/lib/listen/capture-probe";
-import { transcribeLocal, warmupAsr } from "@/lib/listen/local-asr";
+import { transcribeLocal, warmupAsr, reportAsrProblem } from "@/lib/listen/local-asr";
 import {
   type Ring,
   clearRing,
@@ -118,6 +118,21 @@ let sampleRate = 16000;
 let running = false;
 let hasComputer = false;
 let useXai = false;
+/**
+ * Generation counter for startHear/stopHear. startHear captures it at entry
+ * and bails after every await if it moved — a stop (or a second start) in
+ * the middle must not let the stale call continue and resurrect `running`.
+ */
+let hearSeq = 0;
+/**
+ * Liveness-over-verification trade-off: the xAI availability round-trip is
+ * kicked off while the user answers the tab-share prompt, but if it hasn't
+ * settled by the time the capture graph is ready to open, we proceed with
+ * the local path rather than keep the call unheard. 1500ms keeps the worst
+ * added startup latency imperceptible; a stalled check must never block
+ * hearing the call.
+ */
+const XAI_AVAILABILITY_SETTLE_MS = 1500;
 let lastLevelAt = 0;
 let latestJob: { frames: Float32Array[]; lane: LaneName; vad: number } | null = null;
 let pumping = false;
@@ -184,6 +199,7 @@ function release() {
   running = false;
   hasComputer = false;
   useXai = false;
+  hearSeq += 1;
   latestJob = null;
   pumping = false;
   pumpSeq += 1;
@@ -192,6 +208,7 @@ function release() {
   useMeetHint.getState().setHearLevel(0);
   useMeetHint.getState().setLiveDraft("");
   useMeetHint.getState().setAsrStatus("off");
+  useMeetHint.getState().setTabAsrDown(false);
   held.forEach((stream) => {
     stream.getTracks().forEach((track) => {
       try {
@@ -374,13 +391,28 @@ async function captionAccurate(
     }
   }
   mark("whisper-start", probe?.lane ?? "?", { path: "local" });
-  const raw = await transcribeLocal(
-    pcm16kFromFrames(frames, sampleRate),
-    asrFinalTimeoutMs(),
-    undefined,
-    true,
-  );
+  let raw: string;
+  try {
+    raw = await transcribeLocal(
+      pcm16kFromFrames(frames, sampleRate),
+      asrFinalTimeoutMs(),
+      undefined,
+      true,
+    );
+  } catch (err) {
+    // transcribeLocal already reported loudly (console + ASR note); mark the
+    // probe and treat the utterance as unheard rather than crashing the lane.
+    const message = err instanceof Error ? err.message : String(err);
+    mark("whisper-error", probe?.lane ?? "?", { error: message });
+    reportAsrProblem(`Caption failed for ${probe?.lane ?? "call"} audio: ${message}`);
+    return "";
+  }
   mark("whisper-done", probe?.lane ?? "?", { raw });
+  if (probe?.lane === "computer") {
+    // The tab lane has a working path again (e.g. captions finished loading
+    // after the no-path banner went up) — clear the persistent dead state.
+    useMeetHint.getState().setTabAsrDown(false);
+  }
   const cleaned = cleanCaption(raw);
   mark("clean-caption", probe?.lane ?? "?", { raw, cleaned });
   return cleaned;
@@ -417,8 +449,13 @@ async function pump() {
       if (!text || speechHeardRecently()) continue;
       draftFrom = job.lane;
       useMeetHint.getState().setLiveDraft(text, roleForLane(job.lane));
-    } catch {
-      /* keep streaming */
+    } catch (err) {
+      // transcribeLocal throws loudly on worker failure (console + throttled
+      // ASR note via reportAsrProblem); the preview loop must keep streaming.
+      mark("whisper-error", job.lane, {
+        error: err instanceof Error ? err.message : String(err),
+        preview: true,
+      });
     }
   }
   pumping = false;
@@ -821,6 +858,21 @@ export function isSharingCall(): boolean {
 
 export async function startHear(): Promise<void> {
   if (running) return;
+  hearSeq += 1;
+  const mySeq = hearSeq;
+  /** True if stopHear (or a newer startHear) ran while we were awaiting. */
+  const aborted = () => mySeq !== hearSeq;
+  const stopAcquired = (...streams: Array<MediaStream | null>) => {
+    for (const s of streams) {
+      s?.getTracks().forEach((t) => {
+        try {
+          t.stop();
+        } catch {
+          /* ignore */
+        }
+      });
+    }
+  };
   // Test-only: lets the harness sweep segmentation values without a rebuild.
   const override = (globalThis as { __GROUND_TUNING__?: Partial<SegmentTuning> }).__GROUND_TUNING__;
   if (override) configureSegmentation(override);
@@ -829,7 +881,22 @@ export async function startHear(): Promise<void> {
   const speech = await import("@/lib/listen/speech");
   if (speech.liveCaptionsOk()) speech.startCaptions();
   const mic = await openMic();
+  if (aborted()) {
+    speech.stopListeningAndMic();
+    stopAcquired(mic);
+    return;
+  }
+  // Kick off the xAI availability round-trip while the user answers the
+  // tab-share prompt, so settling the ASR path below costs no latency.
+  const xaiAvailable = transcribeAvailable()
+    .then((ok) => Boolean(ok))
+    .catch(() => false);
   const computer = tabAudioShareLikely() ? await openComputer() : null;
+  if (aborted()) {
+    speech.stopListeningAndMic();
+    stopAcquired(mic, computer);
+    return;
+  }
   const streams = [mic, computer].filter((s): s is MediaStream => Boolean(s));
   if (streams.length === 0) {
     speech.stopListeningAndMic();
@@ -844,6 +911,40 @@ export async function startHear(): Promise<void> {
   });
   held = streams;
   hasComputer = Boolean(computer);
+  // captionAccurate() reads useXai synchronously for every committed clip, so
+  // the xAI/local path must be settled before the capture graph opens —
+  // otherwise the first utterance after Hear goes down a path that was never
+  // verified. Bounded, so a stalled availability check can't keep the call
+  // from being heard at all; unverified means local, and a local failure is
+  // loud (whisper-error mark + ASR note), never silent.
+  useXai = await Promise.race([
+    xaiAvailable,
+    new Promise<boolean>((resolve) => setTimeout(() => resolve(false), XAI_AVAILABILITY_SETTLE_MS)),
+  ]);
+  if (aborted()) {
+    speech.stopListeningAndMic();
+    stopAcquired(mic, computer);
+    return;
+  }
+  // Persistent no-path state: the tab lane has NO working transcription path
+  // when xAI is unavailable AND local captions can't boot. Per-clip failures
+  // are already loud (reportAsrProblem + whisper-error); this is the durable
+  // banner the user must act on (reload), distinct from those transient notes.
+  // The decision is frozen here — the async boot check must not read a
+  // useXai that a later stopHear already reset.
+  const tabHasXaiPath = useXai;
+  const tabLaneLive = hasComputer;
+  if (!tabHasXaiPath && tabLaneLive) {
+    void warmupAsr().then((ok) => {
+      if (ok || !running) return;
+      useMeetHint.getState().setTabAsrDown(true);
+      reportAsrProblem(
+        "Tab audio will not be transcribed: no xAI path and captions failed to load. Reload to retry.",
+      );
+    });
+  } else {
+    useMeetHint.getState().setTabAsrDown(false);
+  }
   useMeetHint.getState().clearThem();
   running = true;
   try {
@@ -851,6 +952,11 @@ export async function startHear(): Promise<void> {
   } catch (error) {
     release();
     throw error instanceof Error ? error : new Error("Could not start the audio worklet.");
+  }
+  // stopHear during startGraph already released everything; don't resurrect.
+  if (aborted()) {
+    release();
+    return;
   }
   useMeetHint.getState().setSharingCall(true);
   useMeetHint.getState().arm();
@@ -867,14 +973,6 @@ export async function startHear(): Promise<void> {
           ? "Mic only on this device — speak your question clearly, or type it below. Tab audio share works best on Chrome desktop."
           : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
   useMeetHint.getState().setAsrNote(what);
-
-  void transcribeAvailable()
-    .then((ok) => {
-      if (running) useXai = Boolean(ok);
-    })
-    .catch(() => {
-      useXai = false;
-    });
 }
 
 export async function startCallShare(): Promise<void> {

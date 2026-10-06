@@ -42,11 +42,15 @@ test("tabAudioShareLikely is false on mobile and true on desktop Chrome", async 
 });
 
 test("liveCaptionsOk includes desktop Safari but not iOS", async () => {
+  // recognitionCtor() reads constructors off `window`, which doesn't exist
+  // under node --test: alias the browser global to globalThis for this test.
+  const g = globalThis as unknown as Record<string, unknown>;
+  const prevWindow = g.window;
+  g.window = g;
   const { liveCaptionsOk } = await import("../speech.ts");
   class FakeRec {}
-  const w = globalThis as typeof globalThis & { webkitSpeechRecognition?: typeof FakeRec };
-  const prev = w.webkitSpeechRecognition;
-  w.webkitSpeechRecognition = FakeRec;
+  const prev = g.webkitSpeechRecognition;
+  g.webkitSpeechRecognition = FakeRec;
   try {
     withUa(
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
@@ -59,7 +63,9 @@ test("liveCaptionsOk includes desktop Safari but not iOS", async () => {
       assert.equal(liveCaptionsOk(), false);
     });
   } finally {
-    if (prev) w.webkitSpeechRecognition = prev;
-    else delete w.webkitSpeechRecognition;
+    if (prev) g.webkitSpeechRecognition = prev;
+    else delete g.webkitSpeechRecognition;
+    if (prevWindow !== undefined) g.window = prevWindow;
+    else delete g.window;
   }
 });
