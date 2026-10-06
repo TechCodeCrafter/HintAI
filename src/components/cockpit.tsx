@@ -82,6 +82,8 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const folderError = useMeetHint((s) => s.folderError);
   const packNotice = useMeetHint((s) => s.packNotice);
   const dismissPackNotice = useMeetHint((s) => s.dismissPackNotice);
+  const searchNotice = useMeetHint((s) => s.searchNotice);
+  const dismissSearchNotice = useMeetHint((s) => s.dismissSearchNotice);
   const currentMeeting = useMeetHint((s) => s.currentMeeting);
   const pack = useMeetHint((s) => s.pack);
   const playMeeting = useMeetHint((s) => s.playMeeting);
@@ -441,6 +443,23 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             type="button"
             className="shrink-0 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
             onClick={dismissPackNotice}
+          >
+            Dismiss
+          </button>
+        </div>
+      ) : null}
+
+      {searchNotice ? (
+        <div
+          role="status"
+          data-testid="search-notice-banner"
+          className="flex items-start justify-between gap-3 border-b border-line bg-accent-soft px-4 py-3 text-sm text-fg md:px-8"
+        >
+          <p>{searchNotice}</p>
+          <button
+            type="button"
+            className="shrink-0 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
+            onClick={dismissSearchNotice}
           >
             Dismiss
           </button>
@@ -1500,6 +1519,7 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
   const pack = useMeetHint((s) => s.pack);
   const asrStatus = useMeetHint((s) => s.asrStatus);
   const asrNote = useMeetHint((s) => s.asrNote);
+  const tabAsrDown = useMeetHint((s) => s.tabAsrDown);
   const asked = useMeetHint((s) => s.card?.query ?? s.heardQuestion);
   const queryRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -1579,6 +1599,15 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
         </span>
       </div>
       <div className="flex min-h-0 min-w-0 flex-col gap-5 overflow-auto px-5 py-4">
+        {tabAsrDown ? (
+          <div
+            role="alert"
+            data-testid="tab-asr-down-banner"
+            className="flex items-start justify-between gap-3 rounded-[10px] bg-warn-soft px-3 py-2 text-sm text-fg"
+          >
+            <p>Tab audio won&apos;t be transcribed. Reload to retry.</p>
+          </div>
+        ) : null}
         {listenHint ? (
           <div
             role="status"
