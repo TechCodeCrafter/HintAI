@@ -404,7 +404,51 @@ function sat(tf: number): number {
 function freq(words: Map<string, number>, term: string): number {
   const exact = words.get(term) ?? 0;
   const stem = words.get(`~${stemOf(term)}`) ?? 0;
-  return exact + 0.5 * stem;
+  const direct = exact + 0.5 * stem;
+  if (direct > 0) return direct;
+  // Typo tolerance: a single edit ("experince" -> "experience") must still
+  // retrieve. Only for terms >=5 chars, only edit distance 1, weighted below
+  // exact/stem so correct spellings always win. Bounded scan over the chunk's
+  // distinct tokens — chunks are small, queries are short.
+  if (term.length < 5) return 0;
+  let best = 0;
+  for (const [word, count] of words) {
+    if (word.startsWith("~") || word.length < 5) continue;
+    if (Math.abs(word.length - term.length) > 1) continue;
+    if (!isEditDistanceOne(word, term)) continue;
+    if (count > best) best = count;
+  }
+  return 0.6 * best;
+}
+
+/** True when a and b differ by exactly one insertion/deletion/substitution. */
+function isEditDistanceOne(a: string, b: string): boolean {
+  if (a === b) return true;
+  const la = a.length;
+  const lb = b.length;
+  if (Math.abs(la - lb) > 1) return false;
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < la && j < lb) {
+    if (a[i] === b[j]) {
+      i += 1;
+      j += 1;
+      continue;
+    }
+    edits += 1;
+    if (edits > 1) return false;
+    if (la === lb) {
+      i += 1;
+      j += 1;
+    } else if (la > lb) {
+      i += 1;
+    } else {
+      j += 1;
+    }
+  }
+  edits += la - i + (lb - j);
+  return edits <= 1;
 }
 
 /**
@@ -448,7 +492,7 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   // entry points and file heads. Kept deliberately narrow: the old blanket
   // "what is" bias boosted the head of every file and pinned citations to line 1.
   const wantsShape =
-    /\barchitecture\b|\bstructure\b|\boverview\b|how is (?:this|the|it) (?:built|organized|structured)|what does (?:this|the) (?:app|application|service|project|repo|codebase) do/.test(
+    /\barchitecture\b|\bstructure\b|\boverview\b|how is (?:this|the|it) (?:built|organized|structured)|what does (?:this|the|our) (?:app|application|service|project|repo|codebase|product|platform|tool|system) do/.test(
       q,
     );
   // "Why seven lambdas?" used to rank a "7)" step list inside one function.
@@ -459,10 +503,17 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   // Behavior questions are answered by the component that does the work, not
   // the route that triggers it. Used to boost services/workers/lambdas and to
   // avoid letting a router docstring stand in for the pipeline behind it.
+  // Includes the spoken form "what this product does" (no adjacent "what
+  // does") — without this, single-MD demos rank the "product plan" header
+  // over the "X is a ..." definition line.
   const wantsBehavior =
-    /\bwhat does\b|\bwhat's\b|\bhow does\b|\bhow do\b|\bhow is\b|\bwhat happens\b|\bwhat is .* (?:for|doing)\b|\bhow are\b/.test(
+    (/\bwhat does\b|\bwhat's\b|\bhow does\b|\bhow do\b|\bhow is\b|\bwhat happens\b|\bwhat is .* (?:for|doing)\b|\bhow are\b/.test(
       q,
-    ) && !wantsApi;
+    ) ||
+      /\bwhat\b(?: this| that| the| our)?(?: product| app| application| platform| tool| system)?\s+does\b/.test(
+        q,
+      )) &&
+    !wantsApi;
   const wantsDefinition = /\b(?:what is|what's|define|explain|describe)\b/i.test(q);
   const idf = idfMap(terms, chunks);
   const phrase = terms.join(" ");

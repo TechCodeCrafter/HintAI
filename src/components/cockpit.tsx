@@ -120,11 +120,15 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
+  // Deliberately does NOT read `s.liveDraft`. That value is rewritten on every
+  // interim caption (`speech.ts:103`) and oscillates between "" and partial text
+  // at segment boundaries (`call-share.ts:152,574,629`), so deriving the cue
+  // from it made this boolean flicker and re-rendered the whole 1,800-line
+  // cockpit, file viewer included, on every caption while listening. The live
+  // caption itself is rendered by RoomPanel, which subscribes on its own.
+  // `utterances` is append-only, so this only flips once per finished utterance.
   const cueSearch = useMeetHint(
-    (s) =>
-      s.armed &&
-      (Boolean(s.liveDraft) || s.utterances.some((u) => u.role === "them")) &&
-      !s.card?.say,
+    (s) => s.armed && s.utterances.some((u) => u.role === "them") && !s.card?.say,
   );
   const demo = pack.id === "northstar-payments";
   const onDemoPack = demo;

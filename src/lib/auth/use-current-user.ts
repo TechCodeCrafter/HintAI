@@ -26,6 +26,12 @@ export const DEV_USER: AppUser = {
   isDevFallback: true,
 };
 
+/**
+ * Stable `CurrentUserState` for the auth-disabled path. Returning a fresh object
+ * literal here would give every consumer a new identity on every render, the
+ * same class of bug the memoised path below avoids.
+ */
+
 /** `useCurrentUserState()` result: the user plus the session-loading flag. */
 export type CurrentUserState = {
   /** The user — `null` BOTH while the session loads and when signed out. */
@@ -56,27 +62,36 @@ export type CurrentUserState = {
  * call keeps a stable hook order across every render of a given component.
  */
 export function useCurrentUserState(): CurrentUserState {
+  // Returned inline on purpose. `DEV_USER` is a module constant, so the `user`
+  // identity consumers depend on is stable here; only the wrapper is fresh, and
+  // nothing puts the wrapper in a dependency array.
+  //
+  // scripts/check-production-auth-build.mjs asserts this exact line text as a
+  // production auth gate, so it must not be rewritten to a named constant.
   if (!authEnabled) return { user: DEV_USER, isPending: false };
   // eslint-disable-next-line react-hooks/rules-of-hooks -- authEnabled is constant for the app's lifetime
   const { data, isPending } = authClient.useSession();
-  const user = data?.user;
-  // Stable identity: downstream effects key off `user` (e.g. useAccountVaultReady),
-  // so recreating the object on every render would refire them in a loop.
-  return useMemo<CurrentUserState>(
-    () => ({
-      user: user
+  const raw = data?.user;
+  // Memoise on the primitive fields, not on `raw`. Better Auth can hand back a
+  // fresh session object on every refetch, and mapping it inline produced a new
+  // `user` identity on every render. Consumers put `user` in dependency arrays
+  // (`useAccountVaultReady`, `beta-telemetry-boot`), so a new identity re-ran
+  // their effects each render. `useAccountVaultReady` sets state on success, so
+  // that became an infinite render loop hammering `resolveWorkspaceIdentity`.
+  const user = useMemo<AppUser | null>(
+    () =>
+      raw
         ? {
-            id: user.id,
-            displayName: user.name ?? null,
-            primaryEmail: user.email ?? null,
-            profileImageUrl: user.image ?? null,
+            id: raw.id,
+            displayName: raw.name ?? null,
+            primaryEmail: raw.email ?? null,
+            profileImageUrl: raw.image ?? null,
             isDevFallback: false,
           }
         : null,
-      isPending,
-    }),
-    [user?.id, user?.name, user?.email, user?.image, isPending],
+    [raw?.id, raw?.name, raw?.email, raw?.image],
   );
+  return useMemo(() => ({ user, isPending }), [user, isPending]);
 }
 
 /**

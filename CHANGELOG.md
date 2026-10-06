@@ -53,6 +53,40 @@ Lock file pruned 426 entries. No source change.
 
 ### Fixed
 
+**`/app` deadlocked on "Loading Knowledge Space..."** (not yet committed)
+
+`src/routes/app.tsx` refused to render `Cockpit` while `contextStatus` was
+`"booting"` or `"hydrating"`. The store starts in `"booting"` (`store.ts`), and
+`Cockpit`'s mount effect is the only caller of `boot()`, which is what clears that
+status. Cockpit therefore never mounted, `boot()` never ran, and the page stayed on
+the loading message permanently. Each visit remounted the tree, which re-ran the
+workspace identity server function and the ASR worker warm-up, so the
+`resolveWorkspaceIdentity` call and the worker CSP violation repeated on every
+navigation.
+
+`Cockpit` now renders regardless of `contextStatus`. It already subscribes to
+`contextStatus` and `contextUpdating` and renders its own indexing note, so the
+loading state is still surfaced.
+
+**Repeated workspace identity fetch on authenticated routes**
+
+`useCurrentUserState` built a new `user` object on every call. The effect in
+`useAccountVaultReady` depends on it, so it re-ran each render and re-fetched
+without settling. The `user` object is now memoised on its primitive fields.
+
+**Cockpit re-rendered on every live caption**
+
+`cueSearch` read `s.liveDraft`, which is rewritten on every interim caption and
+oscillates between empty and partial text at segment boundaries. The derived
+boolean flickered, re-rendering the whole cockpit including the file viewer. It now
+derives from `utterances`, which is append-only.
+
+**ASR worker retried a permanently blocked import**
+
+`local-asr.ts` reset its cached promise on every failure, so each attempt spawned a
+fresh worker that hit the same blocked CDN import and wrote another `asrNote` to the
+store. Local ASR is now gated behind `VITE_LOCAL_ASR`, off by default.
+
 **Unwanted symbol removed from the enterprise landing page** - `74100d8` (Pratik Sinha)
 
 The section sign was rendering in citation text, showing `§4.2 · p.17` instead of
@@ -60,6 +94,16 @@ The section sign was rendering in citation text, showing `§4.2 · p.17` instead
 `enterprise-sla.pdf` to `enterprise.pdf`.
 
 `src/components/meethint-landing-enterprise.tsx`, 4 lines changed.
+
+### Known issues, not fixed
+
+**Local Whisper cannot load under the app Content-Security-Policy.**
+`public/meethint-asr-worker.js:39` imports transformers from `cdn.jsdelivr.net`,
+which is deliberately absent from the app CSP and asserted as removed by
+`scripts/domain-reputation.test.mjs` and recorded in `docs/DOMAIN-REPUTATION.md`.
+Transcription falls back to the browser `SpeechRecognition` path. The fix is to
+bundle a local copy of the transformers runtime into the worker so the import is
+same-origin. That changes the security posture, so it needs team agreement.
 
 ### Removed
 
@@ -108,6 +152,13 @@ already carries the full tsconfig-relative prefix in `"@/*": ["./src/*"]`.
 Removing it changes no import resolution. No other option in the config is
 affected, `moduleResolution: "bundler"` and `target: "ES2022"` are both valid
 in TypeScript 7.
+
+**`db:migrate` now reads `.env`** - `package.json`
+
+Plain Node does not read `.env` files; only Vite does. That is why the dev server
+saw `DATABASE_URL` while standalone scripts did not. Now uses
+`node --env-file=.env`, matching the existing `flight:capture` and
+`eval:truth-judge` scripts.
 
 `.gitignore` - added `.tmp-notes`, removed 4 entries for the deleted `.cursor/`
 folder.

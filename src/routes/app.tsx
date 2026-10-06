@@ -20,9 +20,18 @@ function Home() {
     contexts.map((row) => row.id),
   );
 
-  // Only redirect once the store has actually loaded the space list — otherwise
-  // this route would show "Loading…" forever, since Cockpit is what calls boot().
-  if (spaceId && contextStatus === "ready") {
+  // Cockpit must render even while `contextStatus` is "booting" / "hydrating".
+  // Cockpit's mount effect is the ONLY caller of `boot()` (cockpit.tsx), and
+  // `boot()` is what clears that status. Gating Cockpit behind the status it is
+  // responsible for clearing deadlocked /app on "Loading Knowledge Space…"
+  // forever: the initial store state is "booting" (store.ts), so Cockpit never
+  // mounted, boot never ran, and the status never changed. It also tore Cockpit
+  // down and remounted it on every boot cycle, which re-ran the workspace
+  // identity server function and the ASR worker warm-up each time.
+  //
+  // Cockpit already subscribes to contextStatus and contextUpdating and renders
+  // its own indexing/status note, so the loading state is still surfaced.
+  if (spaceId) {
     return (
       <RequireAuth>
         <Navigate to="/context/$id/live" params={{ id: spaceId }} replace />
@@ -30,9 +39,6 @@ function Home() {
     );
   }
 
-  // Cockpit mounts for every non-redirect outcome and owns boot(); never swap
-  // it out on "booting"/"hydrating" or it unmounts mid-boot and re-boots in an
-  // infinite loop.
   return (
     <RequireAuth>
       <Cockpit />
