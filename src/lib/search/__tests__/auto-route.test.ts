@@ -178,14 +178,16 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
 const llmOnlyHits = () =>
   retryHits.map((hit, index) => (index === 0 ? { ...hit, score: FAST_PATH_MIN_SCORE - 1 } : hit));
 
-test("an API error is not disguised as missing material", async () => {
+test("a broken LLM still checks the files, and silence states the coverage truth", async () => {
   const broken = await routeSearchAnswer("Why does that retry three times?", llmOnlyHits(), 0, {
     pack: NORTHSTAR,
     ask: async () => ({ text: null, reason: "Add API key" }),
   });
   assert.equal(broken.consumeQuota, false);
   assert.equal(broken.card.say, null);
-  assert.equal(broken.card.reason, "Couldn't produce a cited answer: Add API key");
+  // The files were examined and had nothing sayable: silence states the
+  // coverage truth, never the transport error. No silence-as-upsell.
+  assert.equal(broken.card.reason, "Your material doesn't cover this");
   assert.equal(silentCardReason(3, "Add API key"), "Couldn't produce a cited answer: Add API key");
   assert.match(silentCardReason(0, `${"x".repeat(200)}`), /^Couldn't produce a cited answer: x{120}$/);
 });
@@ -202,10 +204,12 @@ test("a timeout does not spend two more model calls", async () => {
   assert.equal(asks, 1);
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "Couldn't produce a cited answer: timeout");
+  // The free offline files check still runs after the timeout; with nothing
+  // sayable in the files, silence states the coverage truth.
+  assert.equal(routed.card.reason, "Your material doesn't cover this");
 });
 
-test("the first error across tiers is the one the silent card shows", async () => {
+test("silence after a transport error states the coverage truth, not the error", async () => {
   assert.ok(cardHits.length > 0);
   const routed = await routeSearchAnswer("Do we store card numbers in the export?", cardHits, 0, {
     pack: NORTHSTAR,
@@ -216,7 +220,7 @@ test("the first error across tiers is the one the silent card shows", async () =
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "Couldn't produce a cited answer: timeout");
+  assert.equal(routed.card.reason, "Your material doesn't cover this");
 });
 
 test("failed LLM answers do not consume quota", async () => {

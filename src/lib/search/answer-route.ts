@@ -202,8 +202,14 @@ function failedCard(
       say: null,
       // Prefer the composer's shape-specific reason ("The material says what
       // this does, not why it was chosen") over the generic routing string — a
-      // precise silence is what makes restraint legible as a feature.
-      reason: specificLocalReason(localReason) ?? silentCardReason(hitCount, firstError),
+      // precise silence is what makes restraint legible as a feature. When the
+      // files were checked (localCard ran and rejected), the coverage truth
+      // wins over any transport error: a missing API key is never presented
+      // as the reason when the files were examined and had nothing to say.
+      // Silence only ever means "truly nothing found".
+      reason:
+        specificLocalReason(localReason) ??
+        silentCardReason(hitCount, localReason === undefined ? firstError : undefined),
       citations: [],
       query,
       latencyMs: Math.round(performance.now() - t0),
@@ -306,12 +312,12 @@ export async function routeSearchAnswer(
     );
   }
   firstError = noteError(firstError, grounded);
-  if (isTransportError(grounded)) {
-    const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-    return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
-  }
+  // A transport error (no API key, timeout, 429, …) skips the remaining LLM
+  // stages — no more model calls are spent — but the offline files check
+  // below still runs. Both avenues are attempted before silence is declared.
+  const llmTransportFailed = isTransportError(grounded);
 
-  if (hits.length > 0) {
+  if (!llmTransportFailed && hits.length > 0) {
     const synthesisStart = performance.now();
     const synthesized = await synthesizeAnswer(query, hits, t0, opts);
     synthesisMs = Math.round(performance.now() - synthesisStart);
@@ -335,10 +341,6 @@ export async function routeSearchAnswer(
       );
     }
     firstError = noteError(firstError, synthesized);
-    if (isTransportError(synthesized)) {
-      const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-      return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
-    }
   }
 
   if (localAttempt) {

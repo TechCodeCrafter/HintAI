@@ -180,7 +180,12 @@ export function splitClaimClauses(claim: string): string[] {
     /\s*;\s*/,
     /(?<=[.!?])\s+/,
     /\s*,\s+(?=and\b|but\b|so\b|then\b|while\b|because\b)/i,
-    /\s+and\s+(?=[a-z][a-z-]*\s+(?:are|is|was|were|has|have|require|run|process|support)\b)/i,
+    // A conjoined clause ("…and PDF retention window is RETAIN_DAYS calendar
+    // days") is its own clause even when its subject is a phrase rather than a
+    // single word. Each conjunct is still hosted in — and numerically and
+    // negation-checked against — its own evidence sentence, so adversarial
+    // splices and negation flips stay blocked exactly as before.
+    /\s+and\s+(?=[a-z][a-z-]*(?:\s+[a-z][a-z-]*)*\s+(?:are|is|was|were|has|have|require|run|process|support)\b)/i,
     /\s*,\s+/,
   ]) {
     parts = parts.flatMap((part) =>

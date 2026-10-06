@@ -155,8 +155,13 @@ export function architectureCard(pack: RepoPack, query: string, latencyMs: numbe
   // Bulleted capabilities only enrich a thin description; they never replace it.
   const spoken = purpose.capabilities.slice(0, 4);
   const listed = purpose.capabilities.length >= 2 && purpose.description.text.length < 60;
+  const truncated = listed ? purpose.capabilities.length - spoken.length : 0;
   if (listed) {
-    say += `: ${capabilityList(purpose.capabilities.map((c) => c.text))}`;
+    // The list is its own sentence, not a colon-joined tail of the description:
+    // the verifier hosts every clause in the evidence sentence it was read
+    // from, and "description: item, item" fuses two evidence sentences into one
+    // clause that neither hosts.
+    say += `. It manages ${capabilityList(purpose.capabilities.map((c) => c.text))}`;
   }
   say += ".";
 
@@ -192,6 +197,10 @@ export function architectureCard(pack: RepoPack, query: string, latencyMs: numbe
     main ? humanize(main.dir) : "",
     ...(main ? [countWord(main.parts.length)] : []),
     ...(main?.parts ?? []),
+    // The truncated remainder ("plus two more") is a count the composer
+    // derived from the file — like the component count above — so it is
+    // declared as structure rather than read as an unsupported number.
+    ...(truncated > 0 ? [countWord(truncated)] : []),
   ];
   if (!verifyClaim(say, [span], structural).ok) {
     return silent(query, latencyMs, "Nothing in this material says what it does.");
