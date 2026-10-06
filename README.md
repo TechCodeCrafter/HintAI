@@ -1,8 +1,8 @@
 # MeetHint
 
-Browser meeting copilot for live calls. Load your material once. When someone asks a question, MeetHint searches what you loaded and shows a short line to say — with the file and line it came from.
+Browser meeting copilot for live calls. Load your material once. When someone asks a question, MeetHint searches what you loaded and shows a short line to say — with the file and line it came from. When your material doesn't cover the question, it says so plainly and offers a clearly-labeled general-knowledge answer instead of leaving you hanging on a live call.
 
-**Cite or silence.** Every spoken word is backed by a citation into your material, or the card stays empty with a specific reason. There is no general-knowledge tier and no “generate when the files can’t answer” path.
+**Cite, or label.** Every grounded answer carries a citation into your material. Anything the model says from general knowledge is badged as such — never mixed into a cited answer, never presented as grounded.
 
 This is not a thin RAG wrapper. The search layer alone is ~8,300 lines of implementation (plus tests) across 80+ modules under `src/lib/search/` — hybrid retrieval, an evidence model with byte-level coordinates, shape-aware admission, offline exact extraction, and LLM-assisted synthesis that must pass **`verifyClaim`** (bag-of-words plus negation, numeric, and phrase-order checks) before it can speak.
 
@@ -29,7 +29,7 @@ This is the only loop that defines whether MeetHint works:
 | Surface | What it does |
 |---|---|
 | **Room** | Live transcript from tab audio + mic; questions trigger Search automatically |
-| **Card** | A cited line from your files, or silence with a reason |
+| **Card** | A cited line from your files — or, when your files don't cover it, a clearly-labeled general-knowledge answer, or silence with a reason |
 | **Repo** | The loaded pack — files, commits, citations you can open in-place |
 | **Claim Audit** (Pro, waitlist) | Side path — tracks claims against your material; not part of the core loop |
 
@@ -47,10 +47,13 @@ spoken question
   → generateAnswer      grounded: cited + verifyClaim, or INSUFFICIENT
   → synthesizeAnswer    cited synthesis only — uncited output discarded
   → localCard           offline exact extraction (free, always cited)
-  → silence             specific reason: no hits, uncovered, transport error
+  → general knowledge   labeled fallback when files don't cover it: no citations,
+                        badged as general knowledge, never blended with cited claims
+  → silence             specific reason — only when nothing can answer
+                        (e.g., no model available and offline extraction failed)
 ```
 
-An optional model key helps combine passages **from numbered chunks only**. If the model returns no verifiable citations, the pipeline falls through to offline extraction or silence. `localCard` success and silence never consume the free-tier daily quota; only a cited LLM-backed answer does.
+An optional model key helps combine passages **from numbered chunks only**. If the model returns no verifiable citations, the pipeline falls through to offline extraction. When the material genuinely doesn't cover the question, the card switches to a **general-knowledge answer** — visually distinct, citation-free, and marked so no one mistakes it for grounded. The two modes never mix: one card is either grounded or general, never both. `localCard` success and silence never consume the free-tier daily quota; only model-backed answers do.
 
 ---
 
@@ -101,7 +104,7 @@ Thread context (`thread.ts`) resolves follow-ups (“and after that?”) without
 
 Two PCM lanes at 16 kHz: shared tab audio (them) and mic (you, or them when no tab). Energy VAD with pre-roll ring buffer, fragment merge, and force-commit at 7 s.
 
-Default transcription: **Whisper in a Web Worker** (`@xenova/transformers`, ONNX/WASM). Browser `SpeechRecognition` runs in parallel on supported engines. Optional server path exists but is off without `XAI_API_KEY`.
+Default transcription: **Whisper in a Web Worker** (bundled `@huggingface/transformers` build, ONNX/WASM — no CDN, works offline once the model is cached). Browser `SpeechRecognition` runs in parallel on supported engines. Optional server path exists but is off without `XAI_API_KEY`.
 
 Details: ARCHITECTURE §4.
 
@@ -119,7 +122,7 @@ Details: ARCHITECTURE §4.
 
 | | Free | Pro |
 |---|---|---|
-| Search | Cite-or-silence, 20 cited LLM answers / local day | Unlimited cited answers |
+| Search | Grounded answers + labeled general-knowledge fallback, 20 model-backed answers / local day | Unlimited model-backed answers |
 | Claim Audit | — | Meeting claim tracking + export |
 | Offline `localCard` | Free | Free |
 
@@ -147,11 +150,11 @@ Key search modules: `retrieve.ts` · `hybrid.ts` · `semantic-retrieve.ts` · `v
 ```bash
 npm i
 cp .env.example .env
-npm run dev          # http://localhost:8080
+npm run dev          # http://localhost:3001
 ```
 
 ```bash
-npm test             # 780+ unit tests (src + scripts)
+npm test             # 770+ unit tests (src + scripts)
 npm run typecheck
 npm run test:e2e     # 15 Playwright specs (needs: npx playwright install chromium)
 ```
@@ -176,7 +179,7 @@ Suggested demo questions are prefilled; answers use the same pipeline as your fi
 
 TanStack Start · React 19 · Tailwind v4 · zustand · Dexie · Vite · Nitro (Vercel preset) · Node 22
 
-Optional: `@xenova/transformers` (local ASR + embeddings), provider API keys in-browser for cited synthesis only.
+Optional: `@huggingface/transformers` (local ASR + embeddings), provider API keys in-browser for cited synthesis and the general-knowledge fallback.
 
 ---
 
