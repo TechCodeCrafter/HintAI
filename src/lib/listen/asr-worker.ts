@@ -1,14 +1,28 @@
-let transcriber = null;
+/// <reference lib="webworker" />
+
+/**
+ * Local captions worker. Bundled by Vite (unlike the old CDN-imported
+ * public/meethint-asr-worker.js), so it always works offline and uses the
+ * same installed @huggingface/transformers the rest of the app does.
+ */
+
+type PcmJob = { type: "pcm"; id: number; final?: boolean; buffer: ArrayBuffer };
+type BootMsg = { type: "boot" };
+
+type Transcriber = (pcm: Float32Array, opts?: Record<string, unknown>) => Promise<unknown>;
+
+let transcriber: Transcriber | null = null;
 /**
  * Two classes of work. A preview is disposable — a newer one replaces it, so the
  * live caption never falls behind. A final is the line that gets committed to the
  * transcript, so it is queued and always answered.
  */
-let finals = [];
-let preview = null;
+let finals: PcmJob[] = [];
+let preview: PcmJob | null = null;
 let inferring = false;
 
-function tune(env) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function tune(env: any) {
   env.allowLocalModels = false;
   env.allowRemoteModels = true;
   env.useBrowserCache = true;
@@ -18,13 +32,15 @@ function tune(env) {
   }
 }
 
-async function loadModel(pipeline) {
+async function loadModel(
+  pipeline: (task: string, id: string, opts?: Record<string, unknown>) => Promise<Transcriber>,
+) {
   const ids = ["Xenova/distil-whisper-small.en", "Xenova/whisper-tiny.en"];
-  let last = null;
+  let last: unknown = null;
   for (const id of ids) {
     try {
       return await pipeline("automatic-speech-recognition", id, {
-        progress_callback: (data) => {
+        progress_callback: (data: unknown) => {
           self.postMessage({ type: "progress", data });
         },
       });
@@ -36,12 +52,12 @@ async function loadModel(pipeline) {
 }
 
 async function boot() {
-  const { env, pipeline } = await import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/+esm");
+  const { env, pipeline } = await import("@huggingface/transformers");
   tune(env);
-  transcriber = await loadModel(pipeline);
+  transcriber = await loadModel(pipeline as never);
 }
 
-async function decode(pcm) {
+async function decode(pcm: Float32Array) {
   const opts = {
     return_timestamps: false,
     temperature: 0,
@@ -51,14 +67,14 @@ async function decode(pcm) {
     compression_ratio_threshold: 2.2,
   };
   try {
-    return await transcriber(pcm, opts);
+    return await transcriber!(pcm, opts);
   } catch {
-    return await transcriber(pcm, { return_timestamps: false });
+    return await transcriber!(pcm, { return_timestamps: false });
   }
 }
 
-function nextJob() {
-  if (finals.length > 0) return finals.shift();
+function nextJob(): PcmJob | null {
+  if (finals.length > 0) return finals.shift()!;
   const job = preview;
   preview = null;
   return job;
@@ -72,7 +88,7 @@ async function drain() {
     try {
       if (!transcriber) throw new Error("not ready");
       const pcm = new Float32Array(job.buffer);
-      const out = await decode(pcm);
+      const out = (await decode(pcm)) as { text?: string } | Array<{ text?: string }>;
       // Always answer the job that finished. Dropping the result here left the
       // caller waiting out its whole timeout for work already done.
       const text = (Array.isArray(out) ? out[0]?.text : out?.text) ?? "";
@@ -89,8 +105,8 @@ async function drain() {
   }
 }
 
-self.onmessage = async (event) => {
-  const msg = event.data ?? {};
+self.onmessage = async (event: MessageEvent) => {
+  const msg = (event.data ?? {}) as BootMsg | PcmJob;
   try {
     if (msg.type === "boot") {
       await boot();
@@ -111,8 +127,10 @@ self.onmessage = async (event) => {
   } catch (err) {
     self.postMessage({
       type: "error",
-      id: msg.id,
+      id: (msg as PcmJob).id,
       error: err instanceof Error ? err.message : String(err),
     });
   }
 };
+
+export {};

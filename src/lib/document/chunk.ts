@@ -56,13 +56,25 @@ export function buildDocumentChunks(
     const structured = derived.pages.find((entry) => entry.pageNumber === page.pageNumber);
     const outlineHeading = headingByPage.get(page.pageNumber);
     const banned = furnitureBannedRanges(page, structured, furnitureTexts);
-    if (!structured || structured.blocks.length === 0) {
-      if (page.index === "full") {
-        chunks.push(...legacyFullPageChunks(document, page, outlineHeading, banned));
-      }
+    const pageChunks =
+      !structured || structured.blocks.length === 0
+        ? page.index === "full"
+          ? legacyFullPageChunks(document, page, outlineHeading, banned)
+          : []
+        : chunksFromStructuredPage(document, page, structured, outlineHeading, banned);
+
+    if (pageChunks.length > 0) {
+      chunks.push(...pageChunks);
       continue;
     }
-    chunks.push(...chunksFromStructuredPage(document, page, structured, outlineHeading, banned));
+
+    // Structured parsing can recognize the page but produce no admissible
+    // paragraph/list chunks. Readable full-page text must not become invisible
+    // to search — fall back to verbatim page-window chunks. Isolated-line and
+    // skipped pages remain intentionally non-searchable fragment candidates.
+    if (page.index === "full" && page.text.trim().length >= 16) {
+      chunks.push(...legacyFullPageChunks(document, page, outlineHeading, banned));
+    }
   }
   return chunks;
 }

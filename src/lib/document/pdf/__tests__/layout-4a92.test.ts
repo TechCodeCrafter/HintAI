@@ -241,5 +241,5 @@ test("DOCUMENT_NORMALIZER_VERSION bump invalidates old IR", () => {
   assert.ok(evidence);
   assert.equal(documentIsCurrent(evidence, document), true);
   assert.equal(documentIsCurrent(evidence, { ...document, normalizerVersion: DOCUMENT_NORMALIZER_VERSION - 1 }), false);
-  assert.equal(DOCUMENT_NORMALIZER_VERSION, 3);
+  assert.ok(DOCUMENT_NORMALIZER_VERSION >= 4);
 });

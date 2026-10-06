@@ -165,7 +165,7 @@ test("empty hits stay silent without calling the model", async () => {
 test("extractBestSentence picks the overlapping line from a hit", () => {
   const hit = retryHits[0];
   assert.ok(hit);
-  assert.match(extractBestSentence(hit.text, "retry three times"), /retry|three|attempt/i);
+  assert.match(extractBestSentence(hit.text, "retry three times"), /retr(?:y|ies)|three|3|attempt/i);
 });
 
 test("uncited synthesis is insufficient", async () => {

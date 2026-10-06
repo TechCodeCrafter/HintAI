@@ -20,15 +20,9 @@ function Home() {
     contexts.map((row) => row.id),
   );
 
-  if (contextStatus === "booting" || contextStatus === "hydrating") {
-    return (
-      <RequireAuth>
-        <p className="p-8 text-sm text-muted">Loading Knowledge Space…</p>
-      </RequireAuth>
-    );
-  }
-
-  if (spaceId) {
+  // Only redirect once the store has actually loaded the space list — otherwise
+  // this route would show "Loading…" forever, since Cockpit is what calls boot().
+  if (spaceId && contextStatus === "ready") {
     return (
       <RequireAuth>
         <Navigate to="/context/$id/live" params={{ id: spaceId }} replace />
@@ -36,6 +30,9 @@ function Home() {
     );
   }
 
+  // Cockpit mounts for every non-redirect outcome and owns boot(); never swap
+  // it out on "booting"/"hydrating" or it unmounts mid-boot and re-boots in an
+  // infinite loop.
   return (
     <RequireAuth>
       <Cockpit />

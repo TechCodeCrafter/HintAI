@@ -9,6 +9,7 @@ import {
   isolatedLineEligible,
 } from "../chunk.ts";
 import { DOCUMENT_NORMALIZER_VERSION, PDF_PARSER_VERSION } from "../../context/index-versions.ts";
+import { deriveDocumentStructure } from "../structure.ts";
 import type { NormalizedDocument, NormalizedPage } from "../types.ts";
 
 function page(partial: Partial<NormalizedPage> & Pick<NormalizedPage, "text">): NormalizedPage {
@@ -79,6 +80,18 @@ test("deterministic IDs, exact offsets, and no fake line coordinates", () => {
     second.map((chunk) => chunk.id),
   );
   assert.ok(first.length >= 2);
+});
+
+test("structured but inadmissible blocks fall back to full-page chunks", () => {
+  const text = "Serializable isolation prevents lost outcomes.\nTwo-phase locking requires waits.";
+  const doc = document({ pages: [page({ text })] });
+  const structure = deriveDocumentStructure(doc);
+  structure.pages[0]!.blocks = [
+    { id: "heading-only", kind: "heading", page: 1, lineIds: [], itemIndexes: [], normStart: 0, normEnd: text.length },
+  ];
+  const chunks = buildDocumentChunks(doc, structure);
+  assert.ok(chunks.length > 0);
+  assert.ok(chunks.some((chunk) => chunk.text.includes("Serializable isolation")));
 });
 
 test("a DocumentChunk never spans pages", () => {

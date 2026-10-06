@@ -2,10 +2,12 @@ import { llmDebug } from "../debug.ts";
 import { getDefaultModel, getModelById } from "../ai/models.ts";
 import type { SpaceMaterialView } from "../context/material-view.ts";
 import { enrichFileCitation, fileInMaterial, sourceLabel } from "../context/material-view.ts";
+import { documentEvidenceFromRange } from "../document/evidence.ts";
 import { isFileHit, type Citation, type Hit, type RepoPack } from "../repo/types.ts";
 import type { AnswerMode } from "./answer-mode.ts";
 import { provenanceLabel } from "./cite.ts";
 import { textEvidence, verifyClaim, type Evidence } from "./evidence.ts";
+import type { LocalCardContext } from "./local-card.ts";
 
 export type AnswerPolicy = "extract" | "synthesize";
 
@@ -45,14 +47,21 @@ const CHUNK_CHARS = 720;
 const CHUNKS_PER_FILE = 2;
 
 const GROUNDED_INSTRUCTION = `Use ONLY the chunks below. Never use general knowledge.
+Interpret the user's intent, concepts, synonyms, and paraphrases within those chunks — exact wording is not required.
 If insufficient, respond exactly: INSUFFICIENT
 Cite claims with [1] or [2]. Max 2 sentences.`;
 
 /** Keep retrieval order but stop a single file from filling the prompt. */
-export function hitsForPrompt(hits: Hit[], cap = CHUNK_CAP, perFile = CHUNKS_PER_FILE): Hit[] {
+export function hitsForPrompt(
+  hits: Hit[],
+  cap = CHUNK_CAP,
+  perFile = CHUNKS_PER_FILE,
+  query?: string,
+): Hit[] {
+  const ordered = query ? reorderHitsForQuery(hits, query) : hits;
   const used = new Map<string, number>();
   const out: Hit[] = [];
-  for (const hit of hits) {
+  for (const hit of ordered) {
     const taken = used.get(hit.path) ?? 0;
     if (taken >= perFile) continue;
     used.set(hit.path, taken + 1);
@@ -70,7 +79,7 @@ function chunkHeader(hit: Hit, material?: SpaceMaterialView): string {
 
 /** Grounded synthesis prompt. The model may use only the numbered chunks. */
 export function buildSynthesisPrompt(query: string, hits: Hit[], material?: SpaceMaterialView): string {
-  const chunks = hitsForPrompt(hits).map((hit, i) => {
+  const chunks = hitsForPrompt(hits, CHUNK_CAP, CHUNKS_PER_FILE, query).map((hit, i) => {
     return `[${i + 1}] ${chunkHeader(hit, material)}\n${(hit.text ?? "").slice(0, CHUNK_CHARS)}`;
   });
   const documents = chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
@@ -82,8 +91,8 @@ ${documents}
 QUESTION: "${query}"`;
 }
 
-function formatChunks(hits: Hit[], material?: SpaceMaterialView): string {
-  const chunks = hitsForPrompt(hits).map((hit, i) => {
+function formatChunks(hits: Hit[], material?: SpaceMaterialView, query?: string): string {
+  const chunks = hitsForPrompt(hits, CHUNK_CAP, CHUNKS_PER_FILE, query).map((hit, i) => {
     return `[${i + 1}] ${chunkHeader(hit, material)}\n${(hit.text ?? "").slice(0, CHUNK_CHARS)}`;
   });
   return chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
@@ -107,17 +116,129 @@ export function buildWeakEvidencePrompt(
   return `${GROUNDED_INSTRUCTION}
 ${historyBlock(history)}
 DOCUMENT CHUNKS:
-${formatChunks(hits, material)}
+${formatChunks(hits, material, query)}
 
 QUESTION: "${query}"`;
 }
 
+const MATCH_STOP_WORDS = new Set([
+  "what", "when", "where", "which", "how", "why", "who", "whose",
+  "does", "do", "did", "is", "are", "was", "were", "can", "could",
+  "should", "would", "will", "has", "have", "had", "the", "a", "an",
+  "this", "that", "these", "those", "with", "from", "about", "into",
+]);
+
+const CONCEPT_GROUPS: string[][] = [
+  ["auth", "authentication", "authenticate", "login", "signin", "session", "token"],
+  ["api", "endpoint", "route", "router"],
+  ["database", "db", "storage", "persistence", "schema"],
+  ["error", "failure", "fault", "exception", "retry"],
+  ["deploy", "deployment", "release", "hosting", "production"],
+  ["upload", "import", "ingest", "add"],
+  ["search", "find", "retrieve", "query", "lookup"],
+  ["config", "configuration", "settings", "env", "environment"],
+  ["document", "pdf", "file", "source", "corpus"],
+];
+
+const DIGIT_WORD: Record<string, string> = {
+  "1": "one", "2": "two", "3": "three", "4": "four", "5": "five",
+  "6": "six", "7": "seven", "8": "eight", "9": "nine", "10": "ten",
+};
+const WORD_DIGIT: Record<string, string> = Object.fromEntries(
+  Object.entries(DIGIT_WORD).map(([digit, word]) => [word, digit]),
+);
+
+/** Shallow suffix normalization; enough for concept overlap without pretending to be a full stemmer. */
+function stemForMatch(word: string): string {
+  const cut = word
+    .replace(/ies$/, "y")
+    .replace(/(ational|ization|ations|ition|ment|ness)$/, "")
+    .replace(/(ing|ed|es|s|al|ly)$/, "");
+  return cut.length >= 3 ? cut : word;
+}
+
+function matchWords(text: string): string[] {
+  const raw = text
+    .toLowerCase()
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .split(/[^a-z0-9]+/)
+    .filter((word) => (word.length > 2 || /^\d+$/.test(word)) && !MATCH_STOP_WORDS.has(word));
+  const out = [...raw];
+  for (const word of raw) {
+    const alias = DIGIT_WORD[word] ?? WORD_DIGIT[word];
+    if (alias) out.push(alias);
+  }
+  return out;
+}
+
+function trigramSet(word: string): Set<string> {
+  const padded = `  ${word} `;
+  const grams = new Set<string>();
+  for (let i = 0; i <= padded.length - 3; i += 1) grams.add(padded.slice(i, i + 3));
+  return grams;
+}
+
+function wordsAreSimilar(a: string, b: string): boolean {
+  if (a === b || stemForMatch(a) === stemForMatch(b)) return true;
+  if ((a.length >= 4 && b.startsWith(a)) || (b.length >= 4 && a.startsWith(b))) return true;
+  const left = trigramSet(a);
+  const right = trigramSet(b);
+  let overlap = 0;
+  for (const gram of left) if (right.has(gram)) overlap += 1;
+  return overlap / Math.max(left.size, right.size, 1) >= 0.62;
+}
+
+function wordsShareConcept(a: string, b: string): boolean {
+  const aStem = stemForMatch(a);
+  const bStem = stemForMatch(b);
+  return CONCEPT_GROUPS.some((group) => {
+    const stems = group.map(stemForMatch);
+    return (stems.includes(aStem) || stems.includes(a)) &&
+      (stems.includes(bStem) || stems.includes(b));
+  });
+}
+
+/** Soft lexical affinity: stems, similar spellings, and nearby technical concepts. */
+function termMatchesText(term: string, words: string[]): boolean {
+  const termStem = stemForMatch(term);
+  return words.some((word) => {
+    const wordStem = stemForMatch(word);
+    return word === term || wordStem === termStem || wordsAreSimilar(wordStem, termStem) || wordsShareConcept(word, term);
+  });
+}
+
+function semanticHitScore(hit: Hit, query: string): number {
+  const terms = [...new Set(matchWords(query))];
+  if (terms.length === 0) return 0;
+  const haystackWords = matchWords(`${hit.path}\n${hit.text ?? ""}`);
+  return terms.reduce((score, term) => score + (termMatchesText(term, haystackWords) ? 1 : 0), 0);
+}
+
+function reorderHitsForQuery(hits: Hit[], query: string): Hit[] {
+  return hits
+    .map((hit) => ({ hit, semantic: semanticHitScore(hit, query) }))
+    .sort((a, b) => b.semantic - a.semantic || (b.hit.score ?? 0) - (a.hit.score ?? 0))
+    .map(({ hit }) => hit);
+}
+
+function scoreSentenceAgainstQuery(sentence: string, query: string): number {
+  const terms = [...new Set(matchWords(query))];
+  if (terms.length === 0) return 0;
+  const words = matchWords(sentence);
+  const stemSet = new Set(words.map(stemForMatch));
+  let matched = 0;
+  for (const term of terms) {
+    if (words.includes(term) || stemSet.has(stemForMatch(term)) || termMatchesText(term, words)) {
+      matched += 1;
+    }
+  }
+  const fullPhrase = query.toLowerCase().replace(/\s+/g, " ").trim();
+  const exactPhraseBonus = fullPhrase.length > 4 && sentence.toLowerCase().includes(fullPhrase) ? 2 : 0;
+  return matched / terms.length + matched * 0.2 + exactPhraseBonus;
+}
+
 /** Pick the sentence in a chunk that overlaps the question most. */
 export function extractBestSentence(text: string, query: string): string {
-  const terms = query
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((term) => term.length > 2);
   const sentences = text
     .split(/(?<=[.!?])\s+|\n+/)
     .map((sentence) => sentence.replace(/\s+/g, " ").trim())
@@ -126,8 +247,7 @@ export function extractBestSentence(text: string, query: string): string {
   let best = sentences[0]!;
   let bestScore = -1;
   for (const sentence of sentences) {
-    const lower = sentence.toLowerCase();
-    const score = terms.reduce((sum, term) => sum + (lower.includes(term) ? 1 : 0), 0);
+    const score = scoreSentenceAgainstQuery(sentence, query);
     if (score > bestScore) {
       bestScore = score;
       best = sentence;
@@ -166,7 +286,12 @@ function resolveFileContent(hit: Hit, pack?: RepoPack, material?: SpaceMaterialV
   );
 }
 
-function evidenceFromHit(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView): Evidence | null {
+function evidenceFromHit(
+  hit: Hit,
+  pack?: RepoPack,
+  material?: SpaceMaterialView,
+  context?: LocalCardContext,
+): Evidence | null {
   if (isFileHit(hit)) {
     const file = resolveFileContent(hit, pack, material);
     if (file) {
@@ -182,6 +307,19 @@ function evidenceFromHit(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView
           sourceId: hit.sourceId ?? (material ? fileInMaterial(material, hit.path, hit.sourceId)?.sourceId : undefined),
         });
       }
+    }
+  }
+  if (hit.kind === "document") {
+    const document = context?.document?.(hit.sourceId);
+    if (document && document.contentHash === hit.contentHash) {
+      const evidence = documentEvidenceFromRange({
+        document,
+        page: hit.page,
+        normStart: hit.startOffset,
+        normEnd: hit.endOffset,
+        spokenText: hit.text,
+      });
+      if (evidence) return evidence;
     }
   }
   if (!hit.text) return null;
@@ -246,6 +384,7 @@ function evidenceForMarkers(
   hits: Hit[],
   pack?: RepoPack,
   material?: SpaceMaterialView,
+  context?: LocalCardContext,
 ): { evidence: Evidence[]; citations: Citation[] } {
   const evidence: Evidence[] = [];
   const citations: Citation[] = [];
@@ -253,7 +392,7 @@ function evidenceForMarkers(
   for (const index of citationIndexes(text)) {
     const hit = hits[index - 1];
     if (!hit) continue;
-    const span = evidenceFromHit(hit, pack, material);
+    const span = evidenceFromHit(hit, pack, material, context);
     if (!span || seen.has(span.id)) continue;
     seen.add(span.id);
     evidence.push(span);
@@ -274,6 +413,8 @@ export type GenerateOpts = {
   modelId?: string;
   pack?: RepoPack;
   material?: SpaceMaterialView;
+  /** Document lookup used to turn PDF hits into page-level evidence. */
+  cardContext?: LocalCardContext;
   maxTokens?: number;
   threadHistory?: string[];
 };
@@ -345,13 +486,14 @@ export async function generateAnswer(
 ): Promise<AnswerResult> {
   if (hits.length === 0) return { ok: false, reason: "insufficient" };
   const llmStart = performance.now();
-  const remote = await completePrompt(query, buildSynthesisPrompt(query, hits, opts?.material), "extract", opts);
+  const selectedHits = hitsForPrompt(hits, CHUNK_CAP, CHUNKS_PER_FILE, query);
+  const remote = await completePrompt(query, buildSynthesisPrompt(query, selectedHits, opts?.material), "extract", opts);
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = stripCitationMarkers(remote.text);
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
+  const { evidence, citations } = evidenceForMarkers(remote.text, selectedHits, opts?.pack, opts?.material, opts?.cardContext);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
   const check = verifyClaim(say, evidence);
@@ -382,9 +524,10 @@ export async function synthesizeAnswer(
   opts?: GenerateOpts,
 ): Promise<AnswerResult> {
   const llmStart = performance.now();
+  const selectedHits = hitsForPrompt(hits, CHUNK_CAP, CHUNKS_PER_FILE, query);
   const remote = await completePrompt(
     query,
-    buildWeakEvidencePrompt(query, hits, opts?.threadHistory, opts?.material),
+    buildWeakEvidencePrompt(query, selectedHits, opts?.threadHistory, opts?.material),
     "synthesize",
     opts,
   );
@@ -393,7 +536,7 @@ export async function synthesizeAnswer(
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = stripCitationMarkers(remote.text);
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
+  const { evidence, citations } = evidenceForMarkers(remote.text, selectedHits, opts?.pack, opts?.material, opts?.cardContext);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
   const check = verifyClaim(say, evidence);
