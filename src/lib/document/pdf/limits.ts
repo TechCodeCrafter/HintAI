@@ -1,13 +1,13 @@
 export const PDF_LIMITS = {
-  maxBytesPerPdf: 12 * 1024 * 1024,
-  maxPagesPerPdf: 80,
-  maxExtractedCharsPerPdf: 250_000,
-  maxDocumentChunksPerPdf: 200,
-  maxPdfBytesPerContext: 40 * 1024 * 1024,
-  maxPdfPagesPerContext: 400,
-  maxExtractedCharsPerContext: 1_500_000,
-  maxDocumentChunksPerContext: 800,
-  maxPdfsPerContext: 24,
+  maxBytesPerPdf: 25 * 1024 * 1024,
+  maxPagesPerPdf: 600,
+  maxExtractedCharsPerPdf: 2_000_000,
+  maxDocumentChunksPerPdf: 2000,
+  maxPdfBytesPerContext: 80 * 1024 * 1024,
+  maxPdfPagesPerContext: 3000,
+  maxExtractedCharsPerContext: 8_000_000,
+  maxDocumentChunksPerContext: 6000,
+  maxPdfsPerContext: 48,
   concurrentParse: 1,
 } as const;
 

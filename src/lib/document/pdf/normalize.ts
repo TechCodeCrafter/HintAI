@@ -70,13 +70,31 @@ export function normalizePage(input: {
     }
     const builder = createTextBuilder();
     appendColumn(builder, isolated, false);
-    return finish(input.pageNumber, items, builder, "uncertain", "isolated-lines", useful);
+    return finish(
+      input.pageNumber,
+      items,
+      builder,
+      "uncertain",
+      readableProseLines(builder.text) >= 2 ? "full" : "isolated-lines",
+      useful,
+    );
   }
 
   const builder = createTextBuilder();
   appendColumn(builder, lines, true);
   const index: PageIndexMode = builder.text.trim() ? "full" : "skipped";
   return finish(input.pageNumber, items, builder, "single-column", index, useful);
+}
+
+/** True when a fragment page has at least one non-trivia sentence per line — a full paragraph split apart, not decorations. */
+function readableProseLines(text: string): number {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => {
+      const words = line.split(/\s+/).filter((word) => /[A-Za-z]{2,}/.test(word));
+      return words.length >= 4 && /[.!?]["'”’)]*$/.test(line);
+    }).length;
 }
 
 function emptyPage(

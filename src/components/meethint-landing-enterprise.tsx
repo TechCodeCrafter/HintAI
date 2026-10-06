@@ -42,17 +42,17 @@ const PROFESSIONALS = [
   {
     role: "Solutions Engineering",
     question: "Do we support Canadian data residency?",
-    source: "security-architecture.pdf · §4.2",
+    source: "security-architecture.pdf · ",
   },
   {
     role: "Customer Success",
     question: "What did we promise this customer?",
-    source: "implementation-notes.md · §8",
+    source: "implementation-notes.md · ",
   },
   {
     role: "Security",
     question: "What evidence supports this control?",
-    source: "security-review.pdf · p.17",
+    source: "security-review.pdf · ",
   },
   {
     role: "Engineering",
@@ -62,7 +62,7 @@ const PROFESSIONALS = [
   {
     role: "Implementation",
     question: "Which requirement changed last week?",
-    source: "client-notes.md · Sep 14",
+    source: "client-notes.md · ",
   },
 ] as const;
 

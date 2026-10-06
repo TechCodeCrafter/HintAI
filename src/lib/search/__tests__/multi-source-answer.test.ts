@@ -371,7 +371,7 @@ test("repo and PDF evidence can appear in one cited synthesis answer", async () 
     material,
     cardContext: ctx,
     ask: async () => ({
-      text: "Retention keeps logs for RETAIN_DAYS repo days and PDF retention window is RETAIN_DAYS calendar days. [1][2]",
+      text: "Retention policy keeps logs for RETAIN_DAYS repo days. PDF retention window is RETAIN_DAYS calendar days for customers. [1][2]",
     }),
   });
   assert.ok(routed.card.say, routed.card.reason);

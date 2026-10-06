@@ -1,5 +1,6 @@
 import type { PdfReadiness, PdfStoredSource } from "../../context/types.ts";
 import { READINESS_NOTES } from "./notes.ts";
+import { PDF_LIMITS } from "./limits.ts";
 
 export type SourceStatusLabel = {
   short: string;
@@ -52,10 +53,10 @@ export function userFacingPdfNote(readiness: PdfReadiness, note?: string): strin
     return "MeetHint couldn't read this PDF.";
   }
   if (note === READINESS_NOTES.refusedPages) {
-    return "This PDF is over the 80-page limit.";
+    return `This PDF is over the ${PDF_LIMITS.maxPagesPerPdf}-page limit.`;
   }
   if (note === READINESS_NOTES.refusedBytes) {
-    return "This PDF is over the 12 MB limit.";
+    return `This PDF is over the ${Math.round(PDF_LIMITS.maxBytesPerPdf / 1024 / 1024)} MB limit.`;
   }
   return note || "This PDF could not be indexed.";
 }

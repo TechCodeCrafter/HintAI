@@ -1,5 +1,4 @@
-import type { PDFDocumentProxy, RenderTask } from "pdfjs-dist";
-import { TextLayer } from "pdfjs-dist";
+import type { PDFDocumentProxy, RenderTask, TextLayer } from "pdfjs-dist";
 import { openPdfDocument } from "../pdf/pdfjs.ts";
 import { buildTextLayerMap, type TextLayerMap } from "./map.ts";
 import type { ViewerLatency } from "./metrics.ts";
@@ -125,7 +124,10 @@ export function createPdfRenderer() {
     container.style.height = `${Math.floor(viewport.height)}px`;
 
     const tLayer = now();
-    textLayer = new TextLayer({
+    const { TextLayer: TextLayerCtor } = await (typeof window === "undefined"
+      ? import("pdfjs-dist/legacy/build/pdf.mjs")
+      : import("pdfjs-dist"));
+    textLayer = new TextLayerCtor({
       textContentSource: textContent,
       container,
       viewport,

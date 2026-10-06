@@ -327,7 +327,21 @@ function structuralOrderingExempt(
   return [...exempt];
 }
 
-function verifiableText(evidence: Evidence | EvidenceSpan): string {
+/** The corpus a bag-of-words support check can read; it includes source coordinates. */
+function supportCorpusText(evidence: Evidence | EvidenceSpan): string {
+  if ("kind" in evidence) {
+    if (evidence.kind === "document") return `${evidence.path}\n${evidence.supportText}`;
+    if (evidence.kind === "commit") {
+      return [evidence.message, evidence.author ?? "", evidence.pr ?? "", evidence.sha].join("\n");
+    }
+  }
+  return "path" in evidence && typeof evidence.path === "string"
+    ? `${evidence.path}\n${evidence.text}`
+    : evidence.text;
+}
+
+/** The text sentence checks may anchor against. Metadata namespaces are excluded. */
+function semanticSourceText(evidence: Evidence | EvidenceSpan): string {
   if ("kind" in evidence) {
     if (evidence.kind === "document") return evidence.supportText;
     if (evidence.kind === "commit") {
@@ -407,7 +421,8 @@ export function verifyClaim(
   evidence: Array<Evidence | EvidenceSpan>,
   structural: string[] = [],
 ): SupportCheck {
-  const evidenceTexts = evidence.map(verifiableText);
+  const evidenceTexts = evidence.map(supportCorpusText);
+  const semanticTexts = evidence.map(semanticSourceText);
   const evidenceCorpus = evidenceTexts.join("\n").toLowerCase();
   const fullCorpus = [...evidenceTexts, ...structural].join("\n").toLowerCase();
   const checked = contentTokens(say);
@@ -417,7 +432,7 @@ export function verifyClaim(
   const proseTokens = checked.filter((word) => evidenceCorpus.includes(word));
   if (proseTokens.length >= 2) {
     const blocks = evidence.flatMap((item, index) =>
-      evidenceBlocksFor(item, evidenceTexts[index] ?? ""),
+      evidenceBlocksFor(item, semanticTexts[index] ?? ""),
     );
     const orderingExempt = structuralOrderingExempt(evidence, structural);
     const semantic = verifyClaimSemantics(

@@ -77,7 +77,7 @@ function ensureWorker(): Promise<boolean> {
   if (ready) return ready;
   ready = new Promise((resolve) => {
     try {
-      const next = new Worker("/meethint-asr-worker.js", { type: "module" });
+      const next = new Worker(new URL("./asr-worker.ts", import.meta.url), { type: "module" });
       worker = next;
       attach(next);
       const bootWait = (event: MessageEvent) => {

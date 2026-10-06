@@ -115,6 +115,94 @@ function bytesToBuffer(bytes: Uint8Array): ArrayBuffer {
   return copy.buffer;
 }
 
+/** Build a legacy OLE2 (.ppt) compound file: header + FAT + directory + one `PowerPoint Document` stream. */
+function minimalLegacyPpt(slideText: string): ArrayBuffer {
+  const SECT = 512;
+  const atom = (rectype: number, payload: Uint8Array): Uint8Array =>
+    concat(u16(0), u16(rectype), u32(payload.length), payload);
+  const utf16 = (text: string): Uint8Array => {
+    const out = new Uint8Array(text.length * 2);
+    for (let i = 0; i < text.length; i += 1) {
+      const code = text.charCodeAt(i);
+      out[i * 2] = code & 0xff;
+      out[i * 2 + 1] = code >> 8;
+    }
+    return out;
+  };
+  const streamAtoms = concat(
+    atom(3999, new Uint8Array([1])),
+    atom(4000, utf16(slideText)),
+    atom(3999, new Uint8Array([1])),
+  );
+  // Pad so the stream crosses the 4 KiB mini-stream cutoff and stays record-aligned (zeros parse as no-op len-0 atoms).
+  const targetLen = Math.max(4104, Math.ceil(streamAtoms.length / 8) * 8);
+  const stream = new Uint8Array(targetLen);
+  stream.set(streamAtoms, 0);
+  const dataSectors = Math.ceil(stream.length / SECT);
+  const fat = new Uint8Array(SECT).fill(0xff);
+  const fatDv = new DataView(fat.buffer);
+  fatDv.setUint32(0, 0xfffffffd, true);
+  fatDv.setUint32(4, 0xfffffffe, true);
+  for (let i = 2; i < 2 + dataSectors - 1; i += 1) fatDv.setUint32(i * 4, i + 1, true);
+  fatDv.setUint32((2 + dataSectors - 1) * 4, 0xfffffffe, true);
+  const direntry = (
+    name: string,
+    type: number,
+    left: number,
+    right: number,
+    child: number,
+    start: number,
+    size: number,
+  ): Uint8Array => {
+    const out = new Uint8Array(128);
+    const nameBytes = new Uint8Array((name.length + 1) * 2);
+    for (let i = 0; i < name.length; i += 1) {
+      const code = name.charCodeAt(i);
+      nameBytes[i * 2] = code & 0xff;
+      nameBytes[i * 2 + 1] = code >> 8;
+    }
+    out.set(nameBytes, 0);
+    const dv = new DataView(out.buffer);
+    dv.setUint16(64, nameBytes.length, true);
+    out[66] = type;
+    out[67] = 1;
+    dv.setUint32(68, left, true);
+    dv.setUint32(72, right, true);
+    dv.setUint32(76, child, true);
+    dv.setUint32(116, start, true);
+    dv.setUint32(120, size, true);
+    return out;
+  };
+  const ENDOFCHAIN = 0xfffffffe;
+  const ENDOFSID = 0xffffffff;
+  const directory = concat(
+    direntry("Root Entry", 5, ENDOFSID, ENDOFSID, 1, ENDOFCHAIN, 0),
+    direntry("PowerPoint Document", 2, ENDOFSID, ENDOFSID, ENDOFSID, 2, stream.length),
+    new Uint8Array(SECT - 2 * 128).fill(0xff),
+  );
+  const header = new Uint8Array(SECT);
+  header.set([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1], 0);
+  const hdv = new DataView(header.buffer);
+  hdv.setUint16(24, 0x003e, true);
+  hdv.setUint16(26, 3, true);
+  hdv.setUint16(28, 0xfffe, true);
+  hdv.setUint16(30, 9, true);
+  hdv.setUint16(32, 6, true);
+  hdv.setUint32(40, 0, true);
+  hdv.setUint32(44, 1, true);
+  hdv.setUint32(48, 1, true);
+  hdv.setUint32(56, 4096, true);
+  hdv.setUint32(60, ENDOFCHAIN, true);
+  hdv.setUint32(64, 0, true);
+  hdv.setUint32(68, ENDOFCHAIN, true);
+  hdv.setUint32(72, 0, true);
+  hdv.setUint32(76, 0, true);
+  for (let i = 1; i < 109; i += 1) hdv.setUint32(76 + i * 4, 0xffffffff, true);
+  const padded = new Uint8Array(dataSectors * SECT);
+  padded.set(stream, 0);
+  return bytesToBuffer(concat(header, fat, directory, padded));
+}
+
 function minimalPptx(slideText: string, noteText?: string): ArrayBuffer {
   const files: Record<string, string> = {
     "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -227,6 +315,19 @@ test("parsePptx rejects an empty buffer", () => {
 
 test("parsePpt rejects non-OLE buffers", async () => {
   await assert.rejects(() => parsePpt(new TextEncoder().encode("hello").buffer));
+});
+
+test("parsePpt extracts slide text from a legacy OLE .ppt", async () => {
+  const result = await parsePpt(minimalLegacyPpt("Hiring plan review"));
+  assert.match(result, /Hiring plan review/);
+});
+
+test("packFromFiles indexes a legacy .ppt", async () => {
+  const loaded = await packFromFiles([new File([minimalLegacyPpt("Migration rollback criteria")], "plan.ppt")]);
+  assert.deepEqual(loaded.failed, []);
+  assert.equal(loaded.pack.files.length, 1);
+  assert.equal(loaded.pack.files[0]?.language, "ppt");
+  assert.match(loaded.pack.files[0]?.content ?? "", /Migration rollback criteria/);
 });
 
 test("parsePpt accepts PPTX bytes when a deck was saved with a .ppt extension", async () => {
@@ -353,6 +454,27 @@ test("docx indexes and retrieves definition content", async () => {
   const card = localCard("What is Bernoulli's principle?", hits, hydrated.pack, 0, null);
   assert.ok(card.say, `expected a spoken answer, got reason: ${card.reason ?? "none"}`);
   assert.match(card.say ?? "", /Bernoulli/i);
+});
+
+test("legacy ppt indexes and retrieves engineering slide content", async () => {
+  const { buildChunks, retrieve } = await import("../../../search/retrieve.ts");
+  const { localCard } = await import("../../../search/local-card.ts");
+  const slide =
+    "Volta's law states that the total voltage around a closed loop equals the sum of the voltage drops.";
+  const loaded = await packFromFiles([new File([minimalLegacyPpt(slide)], "circuits.ppt")]);
+  assert.equal(loaded.failed.length, 0);
+  const repo = createMemoryRepository();
+  const { context } = await persistPackAsContext(loaded.pack, repo);
+  const hydrated = await indexContext(repo, context.id);
+  assert.ok(
+    hydrated.chunks.some((chunk) => "text" in chunk && /Volta/.test(chunk.text)),
+    "expected Volta text in indexed chunks",
+  );
+  const hits = retrieve("What is Volta's law?", buildChunks(hydrated.pack));
+  assert.ok(hits.length > 0, "expected retrieval hits for Volta's law");
+  const card = localCard("What is Volta's law?", hits, hydrated.pack, 0, null);
+  assert.ok(card.say, `expected a spoken answer, got reason: ${card.reason ?? "none"}`);
+  assert.match(card.say ?? "", /Volta/i);
 });
 
 test("pptx indexes and retrieves engineering slide content", async () => {

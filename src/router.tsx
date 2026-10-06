@@ -3,5 +3,11 @@ import { AppErrorComponent } from "@/lib/error-component";
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
-  return createRouter({ routeTree, defaultErrorComponent: AppErrorComponent });
+  return createRouter({
+    routeTree,
+    defaultErrorComponent: AppErrorComponent,
+    defaultNotFoundComponent: () => (
+      <div className="p-6 text-sm text-muted">This page couldn't be found.</div>
+    ),
+  });
 }

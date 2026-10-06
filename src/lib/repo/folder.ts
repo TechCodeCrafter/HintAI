@@ -67,8 +67,8 @@ const ALLOW_EXT = new Set([
 
 const MAX_FILES = 500;
 const MAX_FILE_BYTES = 150_000;
-const OFFICE_MAX_FILE_BYTES = 4_000_000;
-const MAX_TOTAL_BYTES = 8_000_000;
+const OFFICE_MAX_FILE_BYTES = 16_000_000;
+const MAX_TOTAL_BYTES = 32_000_000;
 
 export type FolderLoadOptions = {
   includeTests?: boolean;

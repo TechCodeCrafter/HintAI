@@ -19,6 +19,7 @@ import { finishPdfIngest, resumePdfWork } from "../ingest-flow.ts";
 import { contextNameForPdfs, pdfSourceStatus, userFacingPdfNote } from "../source-status.ts";
 import { EVAL_PDF_FIXTURES } from "../eval-fixtures.ts";
 import { PDF_LIMITS } from "../limits.ts";
+import { buildPdfBytes } from "../build-fixture.ts";
 
 const TEXT_PACK: RepoPack = {
   id: "unused",
@@ -351,14 +352,23 @@ test("folder ingestion still skips PDFs", async () => {
 test("refused page-limit PDF is terminal and contributes no chunks", async () => {
   const repo = createMemoryRepository();
   const context = await repo.createContext({ name: "notes" });
+  const overLimit = Math.max(81, PDF_LIMITS.maxPagesPerPdf + 1);
+  const terminallyRefusedBytes = buildPdfBytes({
+    pages: Array.from({ length: overLimit }, () => ({ items: [{ str: "page", x: 72, y: 700 }] })),
+  });
+  const terminallyRefused = new File(
+    [terminallyRefusedBytes.buffer as ArrayBuffer],
+    "refused.pdf",
+    { type: "application/pdf" },
+  );
   await repo.upsertSources(context.id, [
-    { path: "refused.pdf", kind: "pdf", blob: pdfFile("refused.pdf", EVAL_PDF_FIXTURES["refused.pdf"]) },
+    { path: "refused.pdf", kind: "pdf", blob: terminallyRefused },
   ]);
   const done = await finishPdfIngest(repo, context.id);
   const source = done.sources[0];
   assert.ok(isPdfSource(source));
   assert.equal(source.readiness, "refused");
-  assert.match(userFacingPdfNote("refused", source.readinessNote), /80-page/);
+  assert.match(userFacingPdfNote("refused", source.readinessNote), new RegExp(`${PDF_LIMITS.maxPagesPerPdf}-page`));
   assert.equal(done.runtime?.chunks.filter((chunk) => chunk.kind === "document").length, 0);
 });
 
