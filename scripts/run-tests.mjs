@@ -24,7 +24,15 @@ const GROUPS = [
   {
     name: "src",
     command: process.execPath,
-    args: ["--experimental-strip-types", "--test", ...srcTests],
+    args: [
+      "--experimental-strip-types",
+      // Bare node has no bundler, so teach it the tsconfig `@/*` → `./src/*`
+      // alias used across src/ (see scripts/test-alias-loader.mjs).
+      "--import",
+      "./scripts/test-alias-loader.mjs",
+      "--test",
+      ...srcTests,
+    ],
   },
 ];
 
