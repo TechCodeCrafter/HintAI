@@ -84,7 +84,7 @@ test("hits plus grounded success become a cited docs card when fast path is inel
   assert.ok(routed.card.citations.length >= 1);
 });
 
-test("uncited synthesis ok is never spoken — localCard or silence only", async () => {
+test("uncited synthesis ok is never spoken as grounded — localCard, labeled general, or silence only", async () => {
   const uploadChunks = buildChunks(uploadPack);
   const uploadHits = retrieve("Where are we actually doing the upload?", uploadChunks, 6);
   assert.ok(uploadHits.length > 0);
@@ -95,24 +95,30 @@ test("uncited synthesis ok is never spoken — localCard or silence only", async
     0,
     { pack: uploadPack, ask: uncitedSynthesisAsk() },
   );
-  assert.notEqual(uploadRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
-  assert.equal(uploadRouted.consumeQuota, false);
-  if (uploadRouted.card.say) {
-    assert.equal(uploadRouted.card.answerMode, "docs");
-    assert.ok(uploadRouted.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
+  if (uploadRouted.card.say === UNCITED_UPLOAD_SYNTHESIS) {
+    // v2: uncited text may surface via the labeled general-knowledge fallback,
+    // never as a grounded answer.
+    assert.equal(uploadRouted.tier, "general");
+    assert.equal(uploadRouted.card.answerMode, "general");
+    assert.deepEqual(uploadRouted.card.citations, []);
+  } else {
+    assert.equal(uploadRouted.consumeQuota, false);
+    if (uploadRouted.card.say) {
+      assert.equal(uploadRouted.card.answerMode, "docs");
+      assert.ok(uploadRouted.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
+    }
   }
 
   const devHits = retrieve("Who is a full stack developer?", chunks);
-  const silentRouted = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
+  const generalRouted = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
     pack: NORTHSTAR,
     ask: uncitedSynthesisAsk(),
   });
-  assert.notEqual(silentRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
-  assert.equal(silentRouted.card.say, null);
-  assert.equal(
-    silentRouted.card.reason,
-    devHits.length === 0 ? "No matching material" : "Your material doesn't cover this",
-  );
+  // v2: off-topic falls back to labeled general knowledge, not silence.
+  assert.equal(generalRouted.tier, "general");
+  assert.equal(generalRouted.card.answerMode, "general");
+  assert.ok(generalRouted.card.say);
+  assert.deepEqual(generalRouted.card.citations, []);
 });
 
 test("uncited synthesis falls through to localCard when the pack can cite", async () => {
@@ -129,12 +135,27 @@ test("uncited synthesis falls through to localCard when the pack can cite", asyn
   assert.ok(routed.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
 });
 
-test("off-topic questions with irrelevant hits stay silent instead of speaking general knowledge", async () => {
+test("off-topic questions fall back to labeled general knowledge", async () => {
   const devHits = retrieve("Who is a full stack developer?", chunks);
   const routed = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
     pack: NORTHSTAR,
     ask: uncitedSynthesisAsk("A full-stack developer works across the client and the server."),
   });
+  assert.equal(routed.tier, "general");
+  assert.equal(routed.consumeQuota, true);
+  assert.ok(routed.card.say);
+  assert.equal(routed.card.answerMode, "general");
+  assert.deepEqual(routed.card.citations, []);
+});
+
+test("off-topic questions stay silent in strict mode", async () => {
+  const devHits = retrieve("Who is a full stack developer?", chunks);
+  const routed = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
+    pack: NORTHSTAR,
+    strictMode: true,
+    ask: uncitedSynthesisAsk("A full-stack developer works across the client and the server."),
+  });
+  assert.equal(routed.tier, "silent");
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
   assert.equal(
