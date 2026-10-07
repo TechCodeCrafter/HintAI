@@ -278,7 +278,7 @@ export type GenerateOpts = {
   threadHistory?: string[];
 };
 
-type CompletionResult =
+export type CompletionResult =
   | { ok: true; text: string; modelName?: string }
   | { ok: false; reason: "error"; message: string };
 
@@ -309,7 +309,7 @@ async function runCompletion(
   }
 }
 
-async function completePrompt(
+export async function completePrompt(
   query: string,
   prompt: string,
   policy: AnswerPolicy,

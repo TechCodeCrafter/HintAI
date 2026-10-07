@@ -17,6 +17,7 @@ import {
   type GeneratedAnswer,
 } from "./generate-answer.ts";
 import { localCard } from "./local-card.ts";
+import { generalAnswer } from "./general-answer.ts";
 
 const ERROR_REASON_CAP = 120;
 
@@ -48,7 +49,7 @@ function specificLocalReason(localReason?: string): string | undefined {
   return GENERIC_LOCAL_REASONS.has(localReason) ? undefined : localReason;
 }
 
-export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
+export type AnswerTier = "grounded" | "synthesis" | "localCard" | "general" | "silent";
 
 /** Backward-compatible latency object; extended stages are optional on older records. */
 export type SearchLatency = AnswerStageTimings;
@@ -72,6 +73,8 @@ export type RouteSearchOpts = GenerateOpts & {
   retrieveMs?: number;
   /** Shadow localCard before LLM tiers — flight capture only, does not change routing. */
   measureProgressive?: boolean;
+  /** When true, skip the general-knowledge fallback: pure cite-or-silence. */
+  strictMode?: boolean;
 };
 
 function noteError(first: string | undefined, result: AnswerResult): string | undefined {
@@ -219,12 +222,14 @@ function failedCard(
 }
 
 /**
- * Production routing (Milestone 2 Step 5C):
+ * Production routing:
  * 1. Fail-fast on empty/weak retrieval — no LLM
  * 2. High-confidence verified localCard — skip LLM when evidence contract is already satisfied
  * 3. Grounded LLM (generateAnswer)
  * 4. Cited synthesis LLM (synthesizeAnswer)
- * 5. localCard fallback — never general knowledge
+ * 5. localCard fallback — files only, never general knowledge
+ * 6. General-knowledge LLM fallback — labeled, uncited; skipped in strict mode
+ * 7. Silence — truly nothing found
  */
 export async function routeSearchAnswer(
   query: string,
@@ -240,12 +245,14 @@ export async function routeSearchAnswer(
   let groundedMs = 0;
   let synthesisMs = 0;
   let localCardMs = 0;
+  let generalMs = 0;
 
   const routeStages = (): Partial<AnswerStageTimings> => ({
     routeMs: Math.round(performance.now() - routeStart),
     groundedMs,
     synthesisMs,
     localCardMs,
+    generalMs,
     llmMs,
     verifyMs,
   });
@@ -358,6 +365,38 @@ export async function routeSearchAnswer(
         progressive: progressiveFor("localCard", local.latency.totalMs, local.card.say),
       };
     }
+  }
+
+  // General-knowledge fallback: the grounded pipeline returned INSUFFICIENT.
+  // Runs only with a working model (no transport failure) and only when the
+  // user hasn't opted into strict cite-or-silence. The retrieved chunks are
+  // NOT passed to the model — this branch can never launder file content into
+  // an uncited answer. The card carries zero citations and zero evidence.
+  if (!llmTransportFailed && !opts?.strictMode) {
+    const generalStart = performance.now();
+    const general = await generalAnswer(query, t0, opts);
+    generalMs = Math.round(performance.now() - generalStart);
+    llmMs += generalMs;
+    if (general.ok) {
+      const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
+      return {
+        consumeQuota: true,
+        tier: "general",
+        latency,
+        progressive: progressiveFor("general", latency.totalMs, general.say),
+        card: {
+          say: general.say,
+          citations: [],
+          query,
+          latencyMs: general.latencyMs,
+          source: general.modelName ?? "general",
+          answerMode: "general",
+          usedEvidence: false,
+          modelName: general.modelName,
+        },
+      };
+    }
+    firstError = noteError(firstError, { ok: false, reason: "error", message: general.message });
   }
 
   const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());

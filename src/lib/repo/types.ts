@@ -155,13 +155,13 @@ export type Card = {
   /** Extract is "local". Synthesize/generate store the model name. */
   source: "grok" | "local" | "polished" | "assisted" | "synthesize" | string;
   /** How the spoken line was produced. */
-  answerMode?: "docs" | "synthesized" | "generated";
+  answerMode?: "docs" | "synthesized" | "generated" | "general";
   /** False when a synthesized line did not cite the pack. */
   usedEvidence?: boolean;
   modelName?: string;
   /** Flight-recorder id for thumbs-down feedback on this answer. */
   answerId?: string;
-  flightTier?: "grounded" | "synthesis" | "localCard" | "silent";
+  flightTier?: "grounded" | "synthesis" | "localCard" | "general" | "silent";
   flightLatencyMs?: number;
 };
 
