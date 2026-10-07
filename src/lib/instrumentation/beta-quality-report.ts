@@ -91,6 +91,7 @@ export function computeBetaQualityMetrics(input?: {
     grounded: 0,
     synthesis: 0,
     localCard: 0,
+    general: 0,
     silent: 0,
   };
   for (const row of answers) tierMix[row.tier] += 1;
