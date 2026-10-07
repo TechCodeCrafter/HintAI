@@ -4,6 +4,18 @@ type Waiter = {
   partial?: (text: string) => void;
 };
 
+// Local captions run in `src/lib/listen/asr-worker.ts`, a Vite-bundled module
+// worker. It replaces `public/meethint-asr-worker.js`, which imported the
+// transformers runtime from cdn.jsdelivr.net — a host deliberately absent from
+// the app Content-Security-Policy, so the old worker could never boot. The
+// bundled worker imports the installed @huggingface/transformers same-origin
+// instead (models download from huggingface.co, which the CSP allows).
+//
+// Off by default behind VITE_LOCAL_ASR=1. Until it is enabled, transcription
+// falls back to the browser SpeechRecognition path in speech.ts, which needs
+// no worker.
+const LOCAL_ASR_ENABLED = import.meta.env.VITE_LOCAL_ASR === "1";
+
 let worker: Worker | null = null;
 let ready: Promise<boolean> | null = null;
 let seq = 0;
@@ -56,10 +68,13 @@ function attach(next: Worker) {
 
 function ensureWorker(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(false);
+  // Spawning the worker when it cannot boot produced a CSP violation on every
+  // attempt plus a store write per attempt, which re-rendered the transcript.
+  if (!LOCAL_ASR_ENABLED) return Promise.resolve(false);
   if (ready) return ready;
   ready = new Promise((resolve) => {
     try {
-      const next = new Worker("/meethint-asr-worker.js", { type: "module" });
+      const next = new Worker(new URL("./asr-worker.ts", import.meta.url), { type: "module" });
       worker = next;
       attach(next);
       const bootWait = (event: MessageEvent) => {
