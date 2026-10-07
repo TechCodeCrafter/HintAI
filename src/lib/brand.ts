@@ -43,5 +43,8 @@ export const MEETHINT_OG_IMAGE = `https://www.${MEETHINT_DOMAIN}${MEETHINT_OG_IM
 export const MEETHINT_OG_IMAGE_ALT =
   "MeetHint social preview showing the official logo and a cited technical answer card";
 
-/** Contract line — design skills must never rewrite or paraphrase in product UI. */
+/** Contract line — design skills must never rewrite or paraphrase in product UI.
+ * No general-knowledge fallback: every spoken word is backed by a citation
+ * into the user's material, or the card stays silent with a specific reason.
+ */
 export const MEETHINT_CONTRACT = "Cite or silence.";

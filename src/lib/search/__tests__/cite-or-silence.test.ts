@@ -31,7 +31,13 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.doesNotMatch(route, /generateGeneralAnswer/);
   assert.doesNotMatch(cardsmith, /completeGeneral/);
   assert.match(route, /localCardFastPathEligible/);
-  assert.match(route, /localCard fallback — never general knowledge/);
+  // v2 contract: cite, or label. The localCard step stays files-only; the
+  // general-knowledge fallback is a separate terminal branch that is labeled,
+  // uncited, and skipped in strict mode.
+  assert.match(route, /localCard fallback — files only, never general knowledge/);
+  assert.match(route, /tier: "general"/);
+  assert.match(route, /answerMode: "general"/);
+  assert.match(route, /strictMode/);
   assert.match(store, /runSpaceScopedRetrieval/);
   const searchFn = store.slice(store.indexOf("search: async"));
   assert.match(searchFn, /runSpaceScopedRetrieval\(\{/);

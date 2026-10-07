@@ -84,7 +84,7 @@ test("hits plus grounded success become a cited docs card when fast path is inel
   assert.ok(routed.card.citations.length >= 1);
 });
 
-test("uncited synthesis ok is never spoken — localCard or silence only", async () => {
+test("uncited synthesis ok is never spoken as grounded — localCard, labeled general, or silence only", async () => {
   const uploadChunks = buildChunks(uploadPack);
   const uploadHits = retrieve("Where are we actually doing the upload?", uploadChunks, 6);
   assert.ok(uploadHits.length > 0);
@@ -95,24 +95,30 @@ test("uncited synthesis ok is never spoken — localCard or silence only", async
     0,
     { pack: uploadPack, ask: uncitedSynthesisAsk() },
   );
-  assert.notEqual(uploadRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
-  assert.equal(uploadRouted.consumeQuota, false);
-  if (uploadRouted.card.say) {
-    assert.equal(uploadRouted.card.answerMode, "docs");
-    assert.ok(uploadRouted.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
+  if (uploadRouted.card.say === UNCITED_UPLOAD_SYNTHESIS) {
+    // v2: uncited text may surface via the labeled general-knowledge fallback,
+    // never as a grounded answer.
+    assert.equal(uploadRouted.tier, "general");
+    assert.equal(uploadRouted.card.answerMode, "general");
+    assert.deepEqual(uploadRouted.card.citations, []);
+  } else {
+    assert.equal(uploadRouted.consumeQuota, false);
+    if (uploadRouted.card.say) {
+      assert.equal(uploadRouted.card.answerMode, "docs");
+      assert.ok(uploadRouted.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
+    }
   }
 
   const devHits = retrieve("Who is a full stack developer?", chunks);
-  const silentRouted = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
+  const generalRouted = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
     pack: NORTHSTAR,
     ask: uncitedSynthesisAsk(),
   });
-  assert.notEqual(silentRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
-  assert.equal(silentRouted.card.say, null);
-  assert.equal(
-    silentRouted.card.reason,
-    devHits.length === 0 ? "No matching material" : "Your material doesn't cover this",
-  );
+  // v2: off-topic falls back to labeled general knowledge, not silence.
+  assert.equal(generalRouted.tier, "general");
+  assert.equal(generalRouted.card.answerMode, "general");
+  assert.ok(generalRouted.card.say);
+  assert.deepEqual(generalRouted.card.citations, []);
 });
 
 test("uncited synthesis falls through to localCard when the pack can cite", async () => {
@@ -129,12 +135,27 @@ test("uncited synthesis falls through to localCard when the pack can cite", asyn
   assert.ok(routed.card.citations.some((c) => c.kind === "file" && c.path.includes("uploads.py")));
 });
 
-test("off-topic questions with irrelevant hits stay silent instead of speaking general knowledge", async () => {
+test("off-topic questions fall back to labeled general knowledge", async () => {
   const devHits = retrieve("Who is a full stack developer?", chunks);
   const routed = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
     pack: NORTHSTAR,
     ask: uncitedSynthesisAsk("A full-stack developer works across the client and the server."),
   });
+  assert.equal(routed.tier, "general");
+  assert.equal(routed.consumeQuota, true);
+  assert.ok(routed.card.say);
+  assert.equal(routed.card.answerMode, "general");
+  assert.deepEqual(routed.card.citations, []);
+});
+
+test("off-topic questions stay silent in strict mode", async () => {
+  const devHits = retrieve("Who is a full stack developer?", chunks);
+  const routed = await routeSearchAnswer("Who is a full stack developer?", devHits, 0, {
+    pack: NORTHSTAR,
+    strictMode: true,
+    ask: uncitedSynthesisAsk("A full-stack developer works across the client and the server."),
+  });
+  assert.equal(routed.tier, "silent");
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
   assert.equal(
@@ -151,6 +172,18 @@ test("off-topic questions with no hits stay silent", async () => {
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
   assert.equal(routed.card.reason, "No matching material");
+});
+
+test("zero hits fall back to labeled general knowledge when the model can answer", async () => {
+  const routed = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
+    pack: NORTHSTAR,
+    ask: uncitedSynthesisAsk("I don't have live weather data, but Tokyo is typically mild in October."),
+  });
+  assert.equal(routed.tier, "general");
+  assert.equal(routed.consumeQuota, true);
+  assert.ok(routed.card.say);
+  assert.equal(routed.card.answerMode, "general");
+  assert.deepEqual(routed.card.citations, []);
 });
 
 test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async () => {
@@ -178,14 +211,16 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
 const llmOnlyHits = () =>
   retryHits.map((hit, index) => (index === 0 ? { ...hit, score: FAST_PATH_MIN_SCORE - 1 } : hit));
 
-test("an API error is not disguised as missing material", async () => {
+test("a broken LLM still checks the files, and silence states the coverage truth", async () => {
   const broken = await routeSearchAnswer("Why does that retry three times?", llmOnlyHits(), 0, {
     pack: NORTHSTAR,
     ask: async () => ({ text: null, reason: "Add API key" }),
   });
   assert.equal(broken.consumeQuota, false);
   assert.equal(broken.card.say, null);
-  assert.equal(broken.card.reason, "Couldn't produce a cited answer: Add API key");
+  // The files were examined and had nothing sayable: silence states the
+  // coverage truth, never the transport error. No silence-as-upsell.
+  assert.equal(broken.card.reason, "Your material doesn't cover this");
   assert.equal(silentCardReason(3, "Add API key"), "Couldn't produce a cited answer: Add API key");
   assert.match(silentCardReason(0, `${"x".repeat(200)}`), /^Couldn't produce a cited answer: x{120}$/);
 });
@@ -202,10 +237,12 @@ test("a timeout does not spend two more model calls", async () => {
   assert.equal(asks, 1);
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "Couldn't produce a cited answer: timeout");
+  // The free offline files check still runs after the timeout; with nothing
+  // sayable in the files, silence states the coverage truth.
+  assert.equal(routed.card.reason, "Your material doesn't cover this");
 });
 
-test("the first error across tiers is the one the silent card shows", async () => {
+test("silence after a transport error states the coverage truth, not the error", async () => {
   assert.ok(cardHits.length > 0);
   const routed = await routeSearchAnswer("Do we store card numbers in the export?", cardHits, 0, {
     pack: NORTHSTAR,
@@ -216,7 +253,7 @@ test("the first error across tiers is the one the silent card shows", async () =
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "Couldn't produce a cited answer: timeout");
+  assert.equal(routed.card.reason, "Your material doesn't cover this");
 });
 
 test("failed LLM answers do not consume quota", async () => {

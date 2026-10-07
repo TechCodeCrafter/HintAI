@@ -452,13 +452,35 @@ function genericLocalCard(
     // Its evidence is the message, so the Card cites the commit rather than the
     // code chunk that happened to rank alongside it — that chunk does not
     // contain the sentence, and citing it was a claim the file could not back.
+    //
+    // Admission applies here exactly as it does to extracted prose: the message
+    // must cover the question's subject. Without this gate an off-topic question
+    // ("What is our parental leave policy?") is answered with whatever commit
+    // ranked highest on incidental word overlap — the confident-wrong-answer
+    // defect the relevance floor is supposed to hold back.
     const message = plain(why.message);
-    if (looksSpoken(message)) {
+    const terms = contentWords(canonical);
+    const provenance = provenanceOf(terms, subjectTerms(terms, pack), message, why.path);
+    if (looksSpoken(message) && admissible(provenance)) {
       const spoken = sayable(twoSentences(message) ?? "");
       if (spoken) {
         say = spoken;
         evidence = [commitFrom(why, spoken)];
       }
+    } else {
+      noteAttempt({
+        query,
+        path: why.path,
+        line: why.startLine,
+        origin: "why",
+        candidate: message,
+        generic: false,
+        relevance: 0,
+        score: why.score ?? 0,
+        accepted: false,
+        reject: "NO_SUBJECT_COVERAGE",
+        provenance: explain(provenance),
+      });
     }
   }
 

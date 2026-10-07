@@ -5,7 +5,10 @@ export const ANONYMOUS_WORKSPACE_PREFIX = "ws_anon_";
 const ANONYMOUS_INSTANCE_KEY = "meethint.anonymousInstance";
 
 function authEnabled(): boolean {
-  return import.meta.env.VITE_AUTH_ENABLED !== "false";
+  return (
+    (import.meta as { env?: Record<string, string | undefined> }).env?.VITE_AUTH_ENABLED !==
+    "false"
+  );
 }
 
 export class AnonymousTierError extends Error {

@@ -42,12 +42,68 @@ function formatSpreadsheetRows(rows: unknown[][]): string {
   return lines.join("\n");
 }
 
+let domParserShim: Promise<void> | null = null;
+
+/**
+ * read-excel-file's browser build needs a global DOMParser, which Node (test
+ * runner) doesn't provide. Shim it from @xmldom/xmldom — the same parser the
+ * package's own Node build uses — so one code path parses in both runtimes.
+ * Browsers already define DOMParser, so this loads nothing there.
+ */
+function ensureDomParser(): Promise<void> {
+  if (typeof DOMParser !== "undefined") return Promise.resolve();
+  domParserShim ??= import("@xmldom/xmldom").then(({ DOMParser: NodeDOMParser }) => {
+    (globalThis as unknown as { DOMParser: unknown }).DOMParser = NodeDOMParser;
+  });
+  return domParserShim;
+}
+
+/** Split CSV text into rows of cells (quoted fields and "" escapes handled). */
+function parseCsvRows(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    if (quoted) {
+      if (char === '"') {
+        if (text[i + 1] === '"') {
+          cell += '"';
+          i += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        cell += char;
+      }
+      continue;
+    }
+    if (char === '"') quoted = true;
+    else if (char === ",") {
+      row.push(cell);
+      cell = "";
+    } else if (char === "\n") {
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = "";
+    } else if (char !== "\r") {
+      cell += char;
+    }
+  }
+  row.push(cell);
+  rows.push(row);
+  return rows;
+}
+
 /** Parse XLSX or CSV to structured text. Uses read-excel-file (not legacy xlsx). */
 export async function parseXlsx(arrayBuffer: ArrayBuffer): Promise<string> {
+  await ensureDomParser();
   const bytes = new Uint8Array(arrayBuffer);
   const isZip = bytes.length >= 2 && bytes[0] === 0x50 && bytes[1] === 0x4b;
   if (!isZip) {
-    return new TextDecoder().decode(bytes).trim();
+    return formatSpreadsheetRows(parseCsvRows(new TextDecoder().decode(bytes)));
   }
   const parts: string[] = [];
   for (const sheetName of await readSheetNames(arrayBuffer)) {

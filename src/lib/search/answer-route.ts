@@ -17,6 +17,7 @@ import {
   type GeneratedAnswer,
 } from "./generate-answer.ts";
 import { localCard } from "./local-card.ts";
+import { generalAnswer } from "./general-answer.ts";
 
 const ERROR_REASON_CAP = 120;
 
@@ -48,7 +49,7 @@ function specificLocalReason(localReason?: string): string | undefined {
   return GENERIC_LOCAL_REASONS.has(localReason) ? undefined : localReason;
 }
 
-export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
+export type AnswerTier = "grounded" | "synthesis" | "localCard" | "general" | "silent";
 
 /** Backward-compatible latency object; extended stages are optional on older records. */
 export type SearchLatency = AnswerStageTimings;
@@ -72,6 +73,8 @@ export type RouteSearchOpts = GenerateOpts & {
   retrieveMs?: number;
   /** Shadow localCard before LLM tiers — flight capture only, does not change routing. */
   measureProgressive?: boolean;
+  /** When true, skip the general-knowledge fallback: pure cite-or-silence. */
+  strictMode?: boolean;
 };
 
 function noteError(first: string | undefined, result: AnswerResult): string | undefined {
@@ -202,8 +205,14 @@ function failedCard(
       say: null,
       // Prefer the composer's shape-specific reason ("The material says what
       // this does, not why it was chosen") over the generic routing string — a
-      // precise silence is what makes restraint legible as a feature.
-      reason: specificLocalReason(localReason) ?? silentCardReason(hitCount, firstError),
+      // precise silence is what makes restraint legible as a feature. When the
+      // files were checked (localCard ran and rejected), the coverage truth
+      // wins over any transport error: a missing API key is never presented
+      // as the reason when the files were examined and had nothing to say.
+      // Silence only ever means "truly nothing found".
+      reason:
+        specificLocalReason(localReason) ??
+        silentCardReason(hitCount, localReason === undefined ? firstError : undefined),
       citations: [],
       query,
       latencyMs: Math.round(performance.now() - t0),
@@ -213,12 +222,14 @@ function failedCard(
 }
 
 /**
- * Production routing (Milestone 2 Step 5C):
+ * Production routing:
  * 1. Fail-fast on empty/weak retrieval — no LLM
  * 2. High-confidence verified localCard — skip LLM when evidence contract is already satisfied
  * 3. Grounded LLM (generateAnswer)
  * 4. Cited synthesis LLM (synthesizeAnswer)
- * 5. localCard fallback — never general knowledge
+ * 5. localCard fallback — files only, never general knowledge
+ * 6. General-knowledge LLM fallback — labeled, uncited; skipped in strict mode
+ * 7. Silence — truly nothing found
  */
 export async function routeSearchAnswer(
   query: string,
@@ -234,12 +245,14 @@ export async function routeSearchAnswer(
   let groundedMs = 0;
   let synthesisMs = 0;
   let localCardMs = 0;
+  let generalMs = 0;
 
   const routeStages = (): Partial<AnswerStageTimings> => ({
     routeMs: Math.round(performance.now() - routeStart),
     groundedMs,
     synthesisMs,
     localCardMs,
+    generalMs,
     llmMs,
     verifyMs,
   });
@@ -268,7 +281,54 @@ export async function routeSearchAnswer(
         : undefined,
     });
 
+  /**
+   * General-knowledge fallback: runs when the grounded pipeline returned
+   * INSUFFICIENT. Only with a working model (no transport failure) and only
+   * when the user hasn't opted into strict cite-or-silence. The retrieved
+   * chunks are NOT passed to the model — this branch can never launder file
+   * content into an uncited answer. The card carries zero citations and zero
+   * evidence.
+   */
+  const tryGeneralFallback = async (
+    llmTransportFailed: boolean,
+  ): Promise<RoutedSearchAnswer | null> => {
+    if (llmTransportFailed || opts?.strictMode) return null;
+    const generalStart = performance.now();
+    const general = await generalAnswer(query, t0, opts);
+    generalMs = Math.round(performance.now() - generalStart);
+    llmMs += generalMs;
+    if (!general.ok) {
+      firstError = noteError(firstError, { ok: false, reason: "error", message: general.message });
+      return null;
+    }
+    const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
+    return {
+      consumeQuota: true,
+      tier: "general",
+      latency,
+      progressive: progressiveFor("general", latency.totalMs, general.say),
+      card: {
+        say: general.say,
+        citations: [],
+        query,
+        latencyMs: general.latencyMs,
+        source: general.modelName ?? "general",
+        answerMode: "general",
+        usedEvidence: false,
+        modelName: general.modelName,
+      },
+    };
+  };
+
   if (shouldFailFastRetrieval(query, hits)) {
+    // Fail-fast skips the grounded LLM stages, but the general-knowledge
+    // fallback still runs — "no matching material" is exactly when it's needed.
+    // The fallback is best-effort: its error must not pollute the clean
+    // silent reason below.
+    const savedError = firstError;
+    const generalRouted = await tryGeneralFallback(false);
+    if (generalRouted) return generalRouted;
+    firstError = savedError;
     const latency = latencyOf(t0, retrieveMs, { llmMs: 0, verifyMs: 0 }, routeStages());
     return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
   }
@@ -306,12 +366,12 @@ export async function routeSearchAnswer(
     );
   }
   firstError = noteError(firstError, grounded);
-  if (isTransportError(grounded)) {
-    const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-    return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
-  }
+  // A transport error (no API key, timeout, 429, …) skips the remaining LLM
+  // stages — no more model calls are spent — but the offline files check
+  // below still runs. Both avenues are attempted before silence is declared.
+  const llmTransportFailed = isTransportError(grounded);
 
-  if (hits.length > 0) {
+  if (!llmTransportFailed && hits.length > 0) {
     const synthesisStart = performance.now();
     const synthesized = await synthesizeAnswer(query, hits, t0, opts);
     synthesisMs = Math.round(performance.now() - synthesisStart);
@@ -335,10 +395,6 @@ export async function routeSearchAnswer(
       );
     }
     firstError = noteError(firstError, synthesized);
-    if (isTransportError(synthesized)) {
-      const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-      return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
-    }
   }
 
   if (localAttempt) {
@@ -357,6 +413,10 @@ export async function routeSearchAnswer(
       };
     }
   }
+
+  // General-knowledge fallback: the grounded pipeline returned INSUFFICIENT.
+  const generalRouted = await tryGeneralFallback(llmTransportFailed);
+  if (generalRouted) return generalRouted;
 
   const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
   // The composer already decided why it cannot speak — surface that reason

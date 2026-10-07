@@ -6,7 +6,10 @@ import { applyTheme, readTheme, THEME_BOOT } from "./theme.ts";
 test("boot script writes a stored light theme before paint", () => {
   assert.match(THEME_BOOT, /meethint-theme/);
   assert.match(THEME_BOOT, /dataset\.theme/);
-  assert.match(THEME_BOOT, /prefers-color-scheme: light/);
+  // Intentional: no prefers-color-scheme sniffing — the boot script uses a
+  // fixed light default to avoid hydration flicker (commit 8ff5704).
+  assert.doesNotMatch(THEME_BOOT, /prefers-color-scheme/);
+  assert.match(THEME_BOOT, /t="light"/);
 });
 
 test("applyTheme persists and paints light tokens", () => {

@@ -19,6 +19,7 @@ attachments
 artifacts
 .qa-audio
 public/vad
+public/ort-dist
 .DS_Store
 .grok/status
 .grok/preview.log

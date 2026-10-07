@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { isBrave, isIOS, isSafari } from "@/lib/listen/browser-capability";
 import { markSpeechLive, roleForLane, stopCallShare } from "@/lib/listen/call-share";
+import { CaptionHealth } from "@/lib/listen/caption-health";
 import { cleanCaption } from "@/lib/search/question";
 import { useMeetHint } from "@/lib/store";
 
@@ -84,6 +85,10 @@ let restartTimer = 0;
 let greetTimer = 0;
 let greeted = false;
 let lastSpeechError = "";
+/** Visible dead-caption state for the mic lane — see noteNetworkError below. */
+const CAPTIONS_NETWORK_DEAD =
+  "Captions failed: network unreachable. Check your connection, then press Listen.";
+const captionHealth = new CaptionHealth();
 /**
  * SpeechRecognition numbers its results, and extends the one at the current index
  * as more audio arrives — so the index is the event. The counter scopes it per
@@ -99,6 +104,12 @@ function ingestResult(event: RecEvent) {
     if (event.results[i]?.isFinal) finalText += piece;
     else interim += piece;
   }
+  // A result proves the caption service is reachable — revive a dead lane and
+  // clear its notice, but only if the notice is still ours to clear.
+  captionHealth.noteHeard();
+  if (useMeetHint.getState().asrNote === CAPTIONS_NETWORK_DEAD) {
+    useMeetHint.getState().setAsrNote("");
+  }
   markSpeechLive();
   useMeetHint.getState().setLiveDraft(cleanCaption(interim), roleForLane("mic"));
   const text = cleanCaption(finalText);
@@ -113,6 +124,9 @@ function ingestResult(event: RecEvent) {
 
 function greet() {
   if (greeted) return;
+  // Never claim "Hearing you" when the caption lane is actually dead — the
+  // dead-caption notice owns the line until the service recovers.
+  if (captionHealth.dead) return;
   if (useMeetHint.getState().listenError) return;
   greeted = true;
   if (useMeetHint.getState().sharingCall) return;
@@ -129,6 +143,7 @@ function scheduleGreet() {
 function failSoft(reason: ListenBlock) {
   stopped = true;
   running = false;
+  captionHealth.reset();
   window.clearTimeout(restartTimer);
   window.clearTimeout(greetTimer);
   try {
@@ -191,6 +206,12 @@ function wire(instance: Recognition) {
       failSoft(hasLiveMic() ? "speech" : isFramed() ? "iframe" : "denied");
       return;
     }
+    if (err === "network" && captionHealth.noteNetworkError()) {
+      // A blip or two stays silent — onend backs off and restarts. But a lane
+      // that keeps failing is dead, not transient: say so loudly instead of
+      // retrying forever under a "Hearing you" banner.
+      useMeetHint.getState().setAsrNote(CAPTIONS_NETWORK_DEAD);
+    }
     // Network errors are transient; onend backs off and restarts.
   };
   instance.onend = () => {
@@ -228,6 +249,7 @@ export function startCaptions(): boolean {
   if (!recognitionCtor()) return false;
   stopped = false;
   lastSpeechError = "";
+  captionHealth.reset();
   useMeetHint.getState().setListenError(null);
   return startRecognition();
 }
@@ -243,6 +265,7 @@ function beginListen() {
   }
   stopped = false;
   lastSpeechError = "";
+  captionHealth.reset();
   useMeetHint.getState().setListenError(null);
   const micPromise = ensureMic();
   const started = startRecognition();

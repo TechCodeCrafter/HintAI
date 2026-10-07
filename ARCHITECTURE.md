@@ -13,9 +13,10 @@ say — with the file and line it came from.
 
 The product claim is narrow and load-bearing:
 
-> **Cite or silence. Every spoken word is backed by a citation into your material,
-> or the card stays empty with a specific reason. There is no general-knowledge
-> tier and no “generate when the files can’t answer” path.**
+> **Cite, or label. Every grounded answer carries a citation into your material.
+> When the material doesn't cover the question, the model may answer from
+> general knowledge — clearly badged as such, never cited, never blended with
+> grounded claims. Pure silence remains for when neither path can answer.**
 
 A Card is either a cited line (from offline extraction or LLM-assisted synthesis
 *from numbered chunks only*, with markers verified) plus coordinates, or silence.
@@ -480,8 +481,8 @@ Product copy and the upgrade modal sell one distinction:
 
 | Tier | Search | Claim Audit |
 |---|---|---|
-| **Free** | Cite-or-silence Search, 20 successful LLM-backed answers per local day | — |
-| **Pro** | Unlimited cited answers (same cite-or-silence pipeline) | Meeting claim audit and export |
+| **Free** | Cite-or-label Search, 20 successful LLM-backed answers per local day | — |
+| **Pro** | Unlimited cited answers (same cite-or-label pipeline) | Meeting claim audit and export |
 
 Quota (`extract-quota.ts`) counts only answers where `routeSearchAnswer` returns
 `consumeQuota: true` — a cited grounded or synthesis card. Offline `localCard`

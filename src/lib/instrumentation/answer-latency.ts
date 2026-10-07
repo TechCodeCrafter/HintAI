@@ -37,6 +37,7 @@ export type AnswerStageTimings = {
   groundedMs?: number;
   synthesisMs?: number;
   localCardMs?: number;
+  generalMs?: number;
   llmMs: number;
   verifyMs: number;
   /** search() entry → routed card ready. */

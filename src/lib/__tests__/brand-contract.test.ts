@@ -165,20 +165,19 @@ test("design skill files must not reference or rewrite brand module copy", () =>
   );
 });
 
-test("README and ARCHITECTURE agree on cite-or-silence", () => {
+test("README and ARCHITECTURE agree on cite-or-label", () => {
   const readme = read("README.md");
   const architecture = read("ARCHITECTURE.md");
-  const contract = /Cite or silence/i;
-  const noGeneral = /no general-knowledge/i;
+  const contract = /Cite, or label/i;
+  const labeledGeneral = /labeled general-knowledge|badged as such/i;
 
   assert.match(readme, contract);
-  assert.match(readme, noGeneral);
+  assert.match(readme, labeledGeneral);
   assert.match(architecture, contract);
-  assert.match(architecture, noGeneral);
   assert.match(architecture, /Generated from the repository/);
 
   const route = read("src/lib/search/answer-route.ts");
-  assert.match(route, /localCard fallback — never general knowledge/);
+  assert.match(route, /localCard fallback — files only, never general knowledge/);
   assert.match(route, /localCardFastPathEligible/);
   assert.match(architecture, /localCard/);
 });

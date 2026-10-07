@@ -132,7 +132,7 @@ export function analyzeFlightRecords(records: FlightRecord[]): FlightAnalysisRep
   const supported = answers.filter((row) => row.supported !== false && row.say);
   const multiSource = answers.filter((row) => (row.sourceCount ?? 0) > 1);
 
-  const tiers: AnswerTier[] = ["localCard", "grounded", "synthesis", "silent"];
+  const tiers: AnswerTier[] = ["localCard", "grounded", "synthesis", "general", "silent"];
   const byTier = tiers.map((tier) => tierReport(tier, answers.filter((row) => row.tier === tier)));
 
   const localCardRows = answers.filter((row) => row.tier === "localCard");
