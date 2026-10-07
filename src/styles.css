@@ -579,6 +579,11 @@ html[data-theme="light"] .cite-chip:hover:enabled {
   color: var(--color-warn);
 }
 
+.badge-general {
+  background: rgb(96 165 250 / 0.16);
+  color: var(--color-info, #60a5fa);
+}
+
 html[data-theme="light"] .badge-from-docs {
   background: #e8f6ee;
   color: #217a4d;
@@ -592,6 +597,11 @@ html[data-theme="light"] .badge-synthesized {
 html[data-theme="light"] .badge-generated {
   background: #fff4e0;
   color: #9a6700;
+}
+
+html[data-theme="light"] .badge-general {
+  background: #e3f0fe;
+  color: #1d5fb8;
 }
 
 .generated-note {

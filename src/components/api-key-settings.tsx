@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { X } from "lucide-react";
 import { readClientKeys, writeClientKeys } from "@/lib/ai/client-keys";
 import type { ModelProvider, ProviderKeys } from "@/lib/ai/models";
+import { readStrictMode, writeStrictMode } from "@/lib/search/strict-mode";
 import { Button } from "@/components/ui/button";
 
 const PROVIDERS: Array<{ id: ModelProvider; label: string }> = [
@@ -17,11 +18,13 @@ export function ApiKeySettings({ onClose }: { onClose: () => void }) {
   const [draft, setDraft] = useState<ProviderKeys>({});
   const [saved, setSaved] = useState<ProviderKeys>({});
   const [notice, setNotice] = useState<string | null>(null);
+  const [strictMode, setStrictMode] = useState(false);
 
   useEffect(() => {
     const current = readClientKeys();
     setSaved(current);
     setDraft({});
+    setStrictMode(readStrictMode());
   }, []);
 
   useEffect(() => {
@@ -115,6 +118,28 @@ export function ApiKeySettings({ onClose }: { onClose: () => void }) {
               </div>
             );
           })}
+        </div>
+        <div className="mt-5 border-t border-subtle pt-4">
+          <label className="flex cursor-pointer items-start gap-3" htmlFor="strict-mode-toggle">
+            <input
+              id="strict-mode-toggle"
+              type="checkbox"
+              checked={strictMode}
+              onChange={(event) => {
+                const next = event.target.checked;
+                setStrictMode(next);
+                writeStrictMode(next);
+              }}
+              className="mt-0.5"
+            />
+            <span>
+              <span className="block text-xs font-medium text-fg">Strict cite-or-silence mode</span>
+              <span className="mt-1 block text-xs leading-relaxed text-muted">
+                Skip the general-knowledge fallback. Answers come only from your files, or the
+                room stays silent.
+              </span>
+            </span>
+          </label>
         </div>
         {notice ? <p className="mt-4 text-xs text-muted">{notice}</p> : null}
       </div>

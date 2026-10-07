@@ -80,6 +80,7 @@ import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
 import { recordAnswerFlight } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
+import { readStrictMode } from "@/lib/search/strict-mode";
 import { officeReadError, packFromFiles, truncationNotice, type FolderLoadOptions } from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
@@ -1811,6 +1812,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       threadHistory,
       retrieveMs,
       measureProgressive: isFlightRecorder(),
+      strictMode: readStrictMode(),
     });
     if (epoch !== searchEpoch) return;
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
