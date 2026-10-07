@@ -71,7 +71,10 @@ export async function generalAnswer(
     return { ok: false, reason: "error", message: completion.message };
   }
   const say = stripCitationShapes(completion.text).trim();
-  if (!say || /^insufficient$/i.test(say)) {
+  // The model signals it cannot answer helpfully with INSUFFICIENT (prompt
+  // contract). Match leniently: the word alone, with punctuation, or as a
+  // short prefix ("Insufficient information…").
+  if (!say || /^insufficient\b[.!…]*$/i.test(say) || (/^insufficient\b/i.test(say) && say.length < 60)) {
     return { ok: false, reason: "error", message: "general answer insufficient" };
   }
   return {

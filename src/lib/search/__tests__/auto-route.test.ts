@@ -174,6 +174,18 @@ test("off-topic questions with no hits stay silent", async () => {
   assert.equal(routed.card.reason, "No matching material");
 });
 
+test("zero hits fall back to labeled general knowledge when the model can answer", async () => {
+  const routed = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
+    pack: NORTHSTAR,
+    ask: uncitedSynthesisAsk("I don't have live weather data, but Tokyo is typically mild in October."),
+  });
+  assert.equal(routed.tier, "general");
+  assert.equal(routed.consumeQuota, true);
+  assert.ok(routed.card.say);
+  assert.equal(routed.card.answerMode, "general");
+  assert.deepEqual(routed.card.citations, []);
+});
+
 test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async () => {
   const none = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
     pack: NORTHSTAR,

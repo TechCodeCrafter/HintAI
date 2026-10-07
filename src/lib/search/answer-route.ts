@@ -281,7 +281,54 @@ export async function routeSearchAnswer(
         : undefined,
     });
 
+  /**
+   * General-knowledge fallback: runs when the grounded pipeline returned
+   * INSUFFICIENT. Only with a working model (no transport failure) and only
+   * when the user hasn't opted into strict cite-or-silence. The retrieved
+   * chunks are NOT passed to the model — this branch can never launder file
+   * content into an uncited answer. The card carries zero citations and zero
+   * evidence.
+   */
+  const tryGeneralFallback = async (
+    llmTransportFailed: boolean,
+  ): Promise<RoutedSearchAnswer | null> => {
+    if (llmTransportFailed || opts?.strictMode) return null;
+    const generalStart = performance.now();
+    const general = await generalAnswer(query, t0, opts);
+    generalMs = Math.round(performance.now() - generalStart);
+    llmMs += generalMs;
+    if (!general.ok) {
+      firstError = noteError(firstError, { ok: false, reason: "error", message: general.message });
+      return null;
+    }
+    const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
+    return {
+      consumeQuota: true,
+      tier: "general",
+      latency,
+      progressive: progressiveFor("general", latency.totalMs, general.say),
+      card: {
+        say: general.say,
+        citations: [],
+        query,
+        latencyMs: general.latencyMs,
+        source: general.modelName ?? "general",
+        answerMode: "general",
+        usedEvidence: false,
+        modelName: general.modelName,
+      },
+    };
+  };
+
   if (shouldFailFastRetrieval(query, hits)) {
+    // Fail-fast skips the grounded LLM stages, but the general-knowledge
+    // fallback still runs — "no matching material" is exactly when it's needed.
+    // The fallback is best-effort: its error must not pollute the clean
+    // silent reason below.
+    const savedError = firstError;
+    const generalRouted = await tryGeneralFallback(false);
+    if (generalRouted) return generalRouted;
+    firstError = savedError;
     const latency = latencyOf(t0, retrieveMs, { llmMs: 0, verifyMs: 0 }, routeStages());
     return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
   }
@@ -368,36 +415,8 @@ export async function routeSearchAnswer(
   }
 
   // General-knowledge fallback: the grounded pipeline returned INSUFFICIENT.
-  // Runs only with a working model (no transport failure) and only when the
-  // user hasn't opted into strict cite-or-silence. The retrieved chunks are
-  // NOT passed to the model — this branch can never launder file content into
-  // an uncited answer. The card carries zero citations and zero evidence.
-  if (!llmTransportFailed && !opts?.strictMode) {
-    const generalStart = performance.now();
-    const general = await generalAnswer(query, t0, opts);
-    generalMs = Math.round(performance.now() - generalStart);
-    llmMs += generalMs;
-    if (general.ok) {
-      const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-      return {
-        consumeQuota: true,
-        tier: "general",
-        latency,
-        progressive: progressiveFor("general", latency.totalMs, general.say),
-        card: {
-          say: general.say,
-          citations: [],
-          query,
-          latencyMs: general.latencyMs,
-          source: general.modelName ?? "general",
-          answerMode: "general",
-          usedEvidence: false,
-          modelName: general.modelName,
-        },
-      };
-    }
-    firstError = noteError(firstError, { ok: false, reason: "error", message: general.message });
-  }
+  const generalRouted = await tryGeneralFallback(llmTransportFailed);
+  if (generalRouted) return generalRouted;
 
   const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
   // The composer already decided why it cannot speak — surface that reason
