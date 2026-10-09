@@ -1648,7 +1648,9 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
               }
             }}
             rows={2}
-            placeholder={demo ? "Why does that retry three times?" : "What is the architecture of this application?"}
+            placeholder={liveDraft && liveDraft !== "…"
+      ? liveDraft
+      : demo ? "Why does that retry three times?" : "What is the architecture of this application?"}
             className="ground-input ground-question"
           />
           <div className="flex min-w-0 flex-wrap items-center gap-2">
