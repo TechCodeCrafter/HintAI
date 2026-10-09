@@ -29,6 +29,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
   const sources = useMeetHint((s) => s.sources);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
+  const liveDraft = useMeetHint((s) => s.liveDraft);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             rows={3}
             value={query}
             disabled={!ready || searching}
-            placeholder={ready ? "Ask about this Knowledge Space…" : "Loading sources…"}
+            placeholder={liveDraft && liveDraft !== "…" ? liveDraft : ready ? "Ask about this Knowledge Space…" : "Loading sources…"}
             className="w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-fg"
             onChange={(event) => setQuery(event.target.value)}
           />
