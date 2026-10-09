@@ -188,3 +188,5 @@ Optional: `@xenova/transformers` (local ASR + embeddings), provider API keys in-
 | `/app` | Cockpit |
 | `/create` | New context + folder upload |
 | `/relay` | Read-only phone view of the current Card |
+
+just for deployment
