@@ -47,7 +47,15 @@ export async function parseXlsx(arrayBuffer: ArrayBuffer): Promise<string> {
   const bytes = new Uint8Array(arrayBuffer);
   const isZip = bytes.length >= 2 && bytes[0] === 0x50 && bytes[1] === 0x4b;
   if (!isZip) {
-    return new TextDecoder().decode(bytes).trim();
+    return formatSpreadsheetRows(splitCsvRows(new TextDecoder().decode(bytes)));
+  }
+  // Node (tests/SSR) has no DOMParser, which the read-excel-file browser
+  // build needs — and its /node entry drags fs/stream/unzipper into the
+  // browser bundle. So under Node we parse sheet XML directly with the same
+  // fflate + regex stack the PPTX parser already uses. Browsers keep the
+  // richer read-excel-file path (typed dates, etc.).
+  if (typeof DOMParser === "undefined") {
+    return parseXlsxWithoutDom(bytes);
   }
   const parts: string[] = [];
   for (const sheetName of await readSheetNames(arrayBuffer)) {
@@ -56,6 +64,126 @@ export async function parseXlsx(arrayBuffer: ArrayBuffer): Promise<string> {
     parts.push(`--- Sheet: ${sheetName} ---`, formatSpreadsheetRows(rows));
   }
   return parts.join("\n");
+}
+
+/** Quote-aware CSV split: commas inside "quoted" cells are not separators. */
+function splitCsvRows(text: string): unknown[][] {
+  const rows: unknown[][] = [];
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    const cells: string[] = [];
+    let current = "";
+    let quoted = false;
+    for (let i = 0; i < line.length; i += 1) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (quoted && line[i + 1] === '"') {
+          current += '"';
+          i += 1;
+        } else {
+          quoted = !quoted;
+        }
+        continue;
+      }
+      if (ch === "," && !quoted) {
+        cells.push(current.trim());
+        current = "";
+        continue;
+      }
+      current += ch;
+    }
+    cells.push(current.trim());
+    rows.push(cells);
+  }
+  return rows;
+}
+
+/** XLSX sheet parsing without a DOM: shared strings + inline values only. */
+function parseXlsxWithoutDom(bytes: Uint8Array): string {
+  let files: Record<string, Uint8Array>;
+  try {
+    files = unzipSync(bytes);
+  } catch {
+    throw new Error("Could not unzip xlsx payload.");
+  }
+  const byName = (suffix: string): Uint8Array | undefined => {
+    const key = Object.keys(files).find((name) => name.toLowerCase().endsWith(suffix));
+    return key ? files[key] : undefined;
+  };
+  const shared: string[] = [];
+  const sharedXml = byName("xl/sharedstrings.xml");
+  if (sharedXml) {
+    const xml = strFromU8(sharedXml);
+    for (const item of xml.matchAll(/<si>([\s\S]*?)<\/si>/g)) {
+      const text = [...(item[1] ?? "").matchAll(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g)]
+        .map((part) => decodeXmlText(part[1] ?? ""))
+        .join("");
+      shared.push(text);
+    }
+  }
+  const sheetOrder = ((): string[] => {
+    const workbook = byName("xl/workbook.xml");
+    if (workbook) {
+      const names = [...strFromU8(workbook).matchAll(/<sheet\b[^>]*\/>/g)].length;
+      if (names > 0) {
+        return Array.from({ length: names }, (_, i) => `xl/worksheets/sheet${i + 1}.xml`);
+      }
+    }
+    return Object.keys(files)
+      .filter((name) => /^xl\/worksheets\/sheet\d+\.xml$/i.test(name))
+      .sort((a, b) => Number(a.match(/sheet(\d+)/i)?.[1] ?? 0) - Number(b.match(/sheet(\d+)/i)?.[1] ?? 0));
+  })();
+  const parts: string[] = [];
+  sheetOrder.forEach((entry, index) => {
+    const data = files[entry];
+    if (!data) return;
+    const rows = parseXlsxSheetRows(strFromU8(data), shared);
+    if (rows.length === 0) return;
+    parts.push(`--- Sheet: Sheet${index + 1} ---`, formatSpreadsheetRows(rows));
+  });
+  // Fall back to real sheet names when workbook.xml names exist.
+  const workbook = byName("xl/workbook.xml");
+  if (workbook) {
+    const names = [...strFromU8(workbook).matchAll(/<sheet\b[^>]*name="([^"]+)"[^>]*\/>/g)].map(
+      (match) => decodeXmlText(match[1] ?? ""),
+    );
+    let seen = 0;
+    for (let i = 0; i < parts.length; i += 2) {
+      if (names[seen]) parts[i] = `--- Sheet: ${names[seen]} ---`;
+      seen += 1;
+    }
+  }
+  return parts.join("\n");
+}
+
+function parseXlsxSheetRows(xml: string, shared: string[]): unknown[][] {
+  const rows: unknown[][] = [];
+  for (const row of xml.matchAll(/<row\b[^>]*>([\s\S]*?)<\/row>/g)) {
+    const cells: string[] = [];
+    for (const cell of (row[1] ?? "").matchAll(/<c\b([^>]*)>([\s\S]*?)<\/c>/g)) {
+      const attrs = cell[1] ?? "";
+      const body = cell[2] ?? "";
+      const type = attrs.match(/\bt="([^"]+)"/)?.[1];
+      if (type === "inlineStr") {
+        const text = [...body.matchAll(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g)]
+          .map((part) => decodeXmlText(part[1] ?? ""))
+          .join("");
+        cells.push(text);
+        continue;
+      }
+      const value = body.match(/<v>([\s\S]*?)<\/v>/)?.[1]?.trim() ?? "";
+      if (type === "s") {
+        const index = Number(value);
+        cells.push(Number.isInteger(index) && shared[index] !== undefined ? shared[index] : value);
+      } else if (type === "b") {
+        cells.push(value === "1" ? "TRUE" : value === "0" ? "FALSE" : value);
+      } else {
+        cells.push(decodeXmlText(value));
+      }
+    }
+    if (cells.some((cell) => cell.trim())) rows.push(cells);
+  }
+  return rows;
 }
 
 function decodeXmlText(value: string): string {

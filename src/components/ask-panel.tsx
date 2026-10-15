@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnswerFeedback } from "@/components/answer-feedback";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
 import { ContextShell } from "@/components/context-shell";
 import { ProductStateAlert } from "@/components/product-state-alert";
+import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
+import { allSourcesExcluded } from "@/lib/context/exclusions";
 import { VerifiedCitations } from "@/components/verified-citations";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
@@ -14,6 +16,7 @@ import { cardUsedEvidence } from "@/lib/search/answer-mode";
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { recordBetaEventOnce } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
+import { cleanCaption } from "@/lib/search/question";
 
 export function AskPanel({ spaceId }: { spaceId: string }) {
   const { ready: vaultReady } = useAccountVaultReady();
@@ -23,9 +26,20 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
   const searching = useMeetHint((s) => s.searching);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const search = useMeetHint((s) => s.search);
+  const includeAllSourcesInSearch = useMeetHint((s) => s.includeAllSourcesInSearch);
+  const sources = useMeetHint((s) => s.sources);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
+  const liveDraft = useMeetHint((s) => s.liveDraft);
   const [query, setQuery] = useState("");
+  const userEditedRef = useRef(false);
+
+  // Put live speech into the box as real text (unless the person is typing).
+  useEffect(() => {
+    if (userEditedRef.current || !liveDraft || liveDraft === "…") return;
+    const spoken = cleanCaption(liveDraft);
+    if (spoken) setQuery(spoken);
+  }, [liveDraft]);
 
   useEffect(() => {
     if (!vaultReady) return;
@@ -45,10 +59,12 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
 
   const indexing = contextStatus === "hydrating" || contextStatus === "booting";
   const noSources = ready && sourceCount === 0;
+  const sourcesExcluded =
+    ready && allSourcesExcluded(sources, pack.files, pack.excludePatterns);
 
   return (
     <ContextShell>
-      <main className="mh-rise mx-auto max-w-2xl space-y-8 pb-16 pt-8">
+      <main className="mx-auto max-w-2xl space-y-8 pb-16 pt-8">
         <div className="space-y-2">
           <p className="mh-eyebrow">Ask</p>
           <h1 className="mh-display text-4xl sm:text-5xl">{pack.name}</h1>
@@ -57,6 +73,13 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
         </div>
         {indexing ? <ProductStateAlert state={productState("indexing")} /> : null}
         {noSources ? <ProductStateAlert state={productState("no-knowledge")} /> : null}
+        {sourcesExcluded ? (
+          <SourcesExclusionAlert
+            sources={sources}
+            pack={pack}
+            onIncludeAll={() => void includeAllSourcesInSearch()}
+          />
+        ) : null}
 
         <form
           className="space-y-3"
@@ -64,6 +87,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             event.preventDefault();
             const text = query.trim();
             if (!text || !ready) return;
+            userEditedRef.current = false;
             void search(text);
           }}
         >
@@ -78,7 +102,10 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             disabled={!ready || searching}
             placeholder={ready ? "Ask about this Knowledge Space…" : "Loading sources…"}
             className="w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-fg"
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              userEditedRef.current = event.target.value !== "";
+              setQuery(event.target.value);
+            }}
           />
           <div className="flex flex-wrap gap-2">
             <button type="submit" data-testid="ask-submit" className="mh-cta" disabled={!ready || searching || !query.trim()}>

@@ -7,12 +7,13 @@ import { evidenceIsCurrent, verifyClaim } from "./evidence.ts";
 import { type Shape, evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
 import { type RejectCode, closeDecision, noteAttempt, overrideDecision } from "./claim-trace.ts";
 import { contentWords } from "./spoken.ts";
-import { sayable } from "./say.ts";
+import { isFieldLine, sayable } from "./say.ts";
 import { documentClaimAdmissible, documentSubjectTerms } from "./document-subject.ts";
 import { mentions } from "./subject.ts";
 import {
   type QuestionContract,
   claimFitsContract,
+  isFieldContract,
   sourceHitEligible,
 } from "./question-contract.ts";
 
@@ -131,8 +132,7 @@ export function documentCard(
   const subject = documentSubjectTerms(terms, documents);
   const claim = extractDocumentClaim(hit.text, terms, subject, documents, contract);
   timings.extractMs = nowMs() - extractStart;
-  if (!claim) return silent("Nothing in it I would say out loud.", "NO_SPEAKABLE_SENTENCE");
-  if (contract) {
+  if (!claim) return silent("Nothing in it I would say out loud.", "NO_SPEAKABLE_SENTENCE");  if (contract) {
     if (!claimFitsContract(claim.text, contract, hit.text)) {
       return silent("Nothing loaded answers that.", "NO_SUBJECT_COVERAGE");
     }
@@ -144,7 +144,7 @@ export function documentCard(
     return silent(shapeGap(shape), "WRONG_SHAPE");
   }
 
-  const spoken = sayable(claim.text);
+  const spoken = sayable(claim.text, contract ? isFieldContract(contract) : false);
   if (!spoken) return silent("Nothing in it I would say out loud.", "NO_SPEAKABLE_SENTENCE");
 
   const normStart = hit.startOffset + claim.start;
@@ -190,6 +190,7 @@ export function extractDocumentClaim(
   documents: NormalizedDocument[],
   contract?: QuestionContract,
 ): { text: string; start: number; end: number } | null {
+  const allowField = contract ? isFieldContract(contract) : false;
   const admissible = (text: string) =>
     contract ? claimFitsContract(text, contract, chunkText) : documentClaimAdmissible(text, subject, documents);
   const list = listingClaim(chunkText, terms);
@@ -200,14 +201,17 @@ export function extractDocumentClaim(
       ...part,
       score: terms.filter((term) => mentions(part.text.toLowerCase(), term)).length,
     }))
-    .filter((part) => looksDocumentSpoken(part.text));
+    .filter((part) => looksDocumentSpoken(part.text, allowField));
   scored.sort((a, b) => b.score - a.score || a.text.length - b.text.length);
   for (const part of scored) {
-    if (part.score <= 0) continue;
+    // Field lines ("Phone: 9931607655", "REDSHEEL") carry no overlapping
+    // question terms by design — the question names the field, the line holds
+    // the value. Admissibility (contract) still decides; score must not veto.
+    if (part.score <= 0 && !(allowField && isFieldLine(part.text))) continue;
     if (isSmashed(part.text)) continue;
     if (admissible(part.text)) return part;
   }
-  if (chunkText.length <= 260 && looksDocumentSpoken(chunkText) && !isSmashed(chunkText) && admissible(chunkText)) {
+  if (chunkText.length <= 260 && looksDocumentSpoken(chunkText, allowField) && !isSmashed(chunkText) && admissible(chunkText)) {
     return { text: chunkText, start: 0, end: chunkText.length };
   }
   return null;
@@ -275,7 +279,8 @@ function splitSmashed(part: { text: string; start: number; end: number }): Array
   return out.flatMap((item) => (isSmashed(item.text) ? splitSmashed(item) : [item]));
 }
 
-function looksDocumentSpoken(text: string): boolean {
+function looksDocumentSpoken(text: string, allowField = false): boolean {
+  if (allowField && isFieldLine(text)) return true;
   const words = text.split(/\s+/).filter(Boolean);
   if (words.length < 4) return false;
   if (/[=;{}<>]|^\s*(def |class |const |function |import )/.test(text)) return false;

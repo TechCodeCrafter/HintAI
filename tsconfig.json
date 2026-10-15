@@ -24,7 +24,10 @@
       "vite/client",
       "node"
     ],
-    "baseUrl": ".",
+    // No `baseUrl`. It is removed in TypeScript 7 (error TS5102) and was only ever
+    // a resolution root here. `paths` already carries the full tsconfig-relative
+    // prefix, so dropping it changes nothing for the `@/*` alias and no longer
+    // shadows bare specifiers that are real packages or `node:` builtins.
     "paths": {
       "@/*": [
         "./src/*"

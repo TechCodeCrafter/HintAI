@@ -108,10 +108,18 @@ const explicitBaseURL = normalizeOriginUrl(env("BETTER_AUTH_URL"));
 // Explicit `string[]` (not a readonly tuple) — Better Auth's DynamicBaseURLConfig
 // requires a mutable `allowedHosts: string[]`.
 const previewAllowedHosts: string[] = [...PREVIEW_ALLOWED_HOSTS];
-// Local `npm run dev` (port 8080 contract). Browsers may send Origin as any of
-// these for the same server — trusting only `localhost` rejects `127.0.0.1` and
-// breaks email/password with "Invalid origin".
+// Local dev ports (package.json `dev` uses 3001; 3002 is the overflow when
+// 3001 is held by another server; 8080 entries kept for older tooling).
+// Browsers may send Origin as any of these for the same server — trusting
+// only `localhost` rejects `127.0.0.1` and breaks email/password with
+// "Invalid origin".
 const LOCAL_DEV_ORIGINS: string[] = [
+  "http://localhost:3001",
+  "http://127.0.0.1:3001",
+  "http://[::1]:3001",
+  "http://localhost:3002",
+  "http://127.0.0.1:3002",
+  "http://[::1]:3002",
   "http://localhost:8080",
   "http://127.0.0.1:8080",
   "http://[::1]:8080",

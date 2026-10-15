@@ -47,6 +47,7 @@ import { isFramed, useLiveListen } from "@/lib/listen/speech";
 import { PdfPane } from "@/components/pdf-pane";
 import { AuthChrome } from "@/components/auth-chrome";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
 import { pathExcluded } from "@/lib/context/exclusions";
 import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
@@ -77,8 +78,6 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const sharingCall = useMeetHint((s) => s.sharingCall);
   const disarm = useMeetHint((s) => s.disarm);
   const card = useMeetHint((s) => s.card);
-  const utterances = useMeetHint((s) => s.utterances);
-  const liveDraft = useMeetHint((s) => s.liveDraft);
   const listenError = useMeetHint((s) => s.listenError);
   const folderError = useMeetHint((s) => s.folderError);
   const packNotice = useMeetHint((s) => s.packNotice);
@@ -121,7 +120,16 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
   const live = (armed && !playing && !listenError) || sharingCall;
-  const cueSearch = armed && (Boolean(liveDraft) || utterances.some((u) => u.role === "them")) && !card?.say;
+  // Deliberately does NOT read `s.liveDraft`. That value is rewritten on every
+  // interim caption (`speech.ts:103`) and oscillates between "" and partial text
+  // at segment boundaries (`call-share.ts:152,574,629`), so deriving the cue
+  // from it made this boolean flicker and re-rendered the whole 1,800-line
+  // cockpit, file viewer included, on every caption while listening. The live
+  // caption itself is rendered by RoomPanel, which subscribes on its own.
+  // `utterances` is append-only, so this only flips once per finished utterance.
+  const cueSearch = useMeetHint(
+    (s) => s.armed && s.utterances.some((u) => u.role === "them") && !s.card?.say,
+  );
   const demo = pack.id === "northstar-payments";
   const onDemoPack = demo;
   const listenLabel = live ? "Stop listen" : "Listen";
@@ -1067,6 +1075,15 @@ function PaneTab({
   );
 }
 
+function HearMeter() {
+  const hearLevel = useMeetHint((s) => s.hearLevel);
+  return (
+    <div className="hear-meter mt-3" aria-hidden="true">
+      <div className="hear-meter-fill" style={{ width: `${Math.round(hearLevel * 100)}%` }} />
+    </div>
+  );
+}
+
 function StatusDot({
   on,
   down,
@@ -1122,6 +1139,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const openPdfSource = useMeetHint((s) => s.openPdfSource);
   const togglePackExclusion = useMeetHint((s) => s.togglePackExclusion);
   const setPackExclusions = useMeetHint((s) => s.setPackExclusions);
+  const includeAllSourcesInSearch = useMeetHint((s) => s.includeAllSourcesInSearch);
   const card = useMeetHint((s) => s.card);
   const [filter, setFilter] = useState("");
   const [excludeGlob, setExcludeGlob] = useState("");
@@ -1204,6 +1222,13 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
       {weak ? (
         <p className="px-3 pb-2 text-xs text-warn">Mostly CI/config. Open the src folder, then Search.</p>
       ) : null}
+      <div className="px-4 pb-3">
+        <SourcesExclusionAlert
+          sources={sources}
+          pack={pack}
+          onIncludeAll={() => void includeAllSourcesInSearch()}
+        />
+      </div>
       <div className="grid min-h-0 min-w-0 flex-1 grid-rows-[minmax(16rem,0.55fr)_minmax(0,1fr)] gap-4 overflow-hidden px-4 pb-4">
         <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
           <label className="relative mb-3 block shrink-0">
@@ -1251,7 +1276,10 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                   aria-pressed={excluded}
                   aria-label={excluded ? `Include ${f.path} in search` : `Exclude ${f.path} from search`}
                   title={excluded ? "Include in search" : "Exclude from search"}
-                  onClick={() => void togglePackExclusion(f.path)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void togglePackExclusion(f.path);
+                  }}
                 >
                   {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
                 </button>
@@ -1296,7 +1324,10 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                     aria-pressed={excluded}
                     aria-label={excluded ? `Include ${source.path} in search` : `Exclude ${source.path} from search`}
                     title={excluded ? "Include in search" : "Exclude from search"}
-                    onClick={() => void togglePackExclusion(source.path)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void togglePackExclusion(source.path);
+                    }}
                   >
                     {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
                   </button>
@@ -1467,31 +1498,49 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
   const listenBlocked = useMeetHint((s) => s.listenBlocked);
   const sharingCall = useMeetHint((s) => s.sharingCall);
   const pack = useMeetHint((s) => s.pack);
-  const hearLevel = useMeetHint((s) => s.hearLevel);
   const asrStatus = useMeetHint((s) => s.asrStatus);
   const asrNote = useMeetHint((s) => s.asrNote);
   const asked = useMeetHint((s) => s.card?.query ?? s.heardQuestion);
   const queryRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  // How many finished utterances have already been added to the Question box.
+  // null until mount, so earlier history is not dumped into the box.
+  const consumedRef = useRef<number | null>(null);
   const [asrDismissed, setAsrDismissed] = useState<string | null>(null);
   const [iframeDismissed, setIframeDismissed] = useState(false);
   const [framed, setFramed] = useState(false);
   const draft = liveDraft === "…" ? "…" : cleanCaption(liveDraft);
   const themDraft = draftRole === "them" ? draft : "";
   const youDraft = draftRole === "you" ? draft : "";
+  const finals = useMemo(
+    () =>
+      utterances
+        .filter((u) => u.role === "them" || u.role === "you")
+        .map((u) => ({
+          id: u.id,
+          role: u.role as "them" | "you",
+          text: cleanCaption(u.text),
+        }))
+        .filter((u) => u.text),
+    [utterances],
+  );
   const turns = useMemo(() => {
-    const spoken = utterances
-      .filter((u) => u.role === "them" || u.role === "you")
-      .map((u) => ({
-        id: u.id,
-        role: u.role as "them" | "you",
-        text: cleanCaption(u.text),
-      }))
-      .filter((u) => u.text);
+    const spoken = [...finals];
     if (themDraft) spoken.push({ id: "draft-them", role: "them", text: themDraft });
     if (youDraft) spoken.push({ id: "draft-you", role: "you", text: youDraft });
     return spoken;
-  }, [utterances, themDraft, youDraft]);
+  }, [finals, themDraft, youDraft]);
+  // Words still being transcribed. Shown at the end of the box until they finish,
+  // then they are added to the box for real by the effect below.
+  const rawTail = themDraft || youDraft;
+  const liveTail =
+    rawTail && rawTail !== "…" && !typedQuery.trimEnd().endsWith(rawTail) ? rawTail : "";
+  // The box = everything said so far (kept in the store) + the line in progress.
+  const boxValue = liveTail
+    ? typedQuery.trim()
+      ? `${typedQuery.trimEnd()} ${liveTail}`
+      : liveTail
+    : typedQuery;
   const live = (armed && !playing && !listenError) || sharingCall;
   const demo = pack.id === "northstar-payments";
   const iframeHint =
@@ -1509,7 +1558,38 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [turns.length, liveDraft]);
+  }, [turns.length]);
+
+  // Add each finished utterance to the end of the Question box, so
+  // "I am Pratik." + "I am a boy." becomes "I am Pratik. I am a boy.".
+  useEffect(() => {
+    if (consumedRef.current === null || finals.length < consumedRef.current) {
+      consumedRef.current = finals.length;
+      return;
+    }
+    if (finals.length === consumedRef.current) return;
+    const fresh = finals.slice(consumedRef.current).map((t) => t.text);
+    consumedRef.current = finals.length;
+    let next = useMeetHint.getState().typedQuery.trim();
+    for (const text of fresh) {
+      if (next.endsWith(text)) continue; // same line reported twice
+      next = next ? `${next} ${text}` : text;
+    }
+    setTypedQuery(next);
+  }, [finals, setTypedQuery]);
+
+  // Search with what is in the box, then clear it so the next question starts fresh.
+  async function runSearch() {
+    const text = boxValue.trim();
+    if (!text) {
+      void search();
+      return;
+    }
+    const sent = text;
+    setTypedQuery(sent); // bake any in-progress words into the box
+    await search(sent);
+    if (useMeetHint.getState().typedQuery.trim() === sent) setTypedQuery("");
+  }
 
   function dismissListenHint() {
     if (asrNote && asrDismissed !== asrNote) {
@@ -1595,35 +1675,38 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
             )}
             <div ref={endRef} />
           </div>
-          {live ? (
-            <div className="hear-meter mt-3" aria-hidden="true">
-              <div className="hear-meter-fill" style={{ width: `${Math.round(hearLevel * 100)}%` }} />
-            </div>
-          ) : null}
+          {live ? <HearMeter /> : null}
         </div>
         {extras}
         <form
           className="flex min-w-0 flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
-            void search();
+            void runSearch();
           }}
         >
           <p className="ground-hint">Question</p>
           <textarea
             ref={queryRef}
             data-testid="search-input"
-            value={typedQuery}
-            onChange={(e) => setTypedQuery(e.target.value)}
+            value={boxValue}
+            onChange={(e) => {
+              let value = e.target.value;
+              // don't bake the in-progress words in; they get added when finished
+              if (liveTail && value.endsWith(liveTail)) {
+                value = value.slice(0, value.length - liveTail.length).trimEnd();
+              }
+              setTypedQuery(value);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                void search();
+                void runSearch();
               }
             }}
             rows={2}
             placeholder={demo ? "Why does that retry three times?" : "What is the architecture of this application?"}
-            className="ground-input ground-question"
+            className="ground-input ground-question text-fg"
           />
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <Button type="submit" size="sm" className="min-w-24" disabled={!searchReady}>

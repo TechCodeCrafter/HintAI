@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { FileText, FolderGit2, FolderOpen, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { FolderGit2, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
+import { MaterialUploadPanel } from "@/components/material-upload-panel";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
 import { Badge } from "@/components/ui/badge";
@@ -80,8 +81,6 @@ function formatRelativeTime(ts: number): string {
 export function ContextDetail({ id }: { id: string }) {
   const navigate = useNavigate();
   const folderPicker = useFolderPicker();
-  const filesRef = useRef<HTMLInputElement>(null);
-  const pdfRef = useRef<HTMLInputElement>(null);
   const [space, setSpace] = useState<SpaceRecord | null>(null);
   const [sources, setSources] = useState<StoredSource[]>([]);
   const [status, setStatus] = useState<"ready" | "indexing" | "error">("ready");
@@ -92,8 +91,6 @@ export function ContextDetail({ id }: { id: string }) {
   const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
   const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
   const deleteStoredContext = useMeetHint((s) => s.deleteStoredContext);
-  const activateSpace = useMeetHint((s) => s.activateSpace);
-
   const primaryContextId = space?.primaryContextId ?? id;
   const sourceRows = useMemo(() => rowsFromSources(sources), [sources]);
   const totalFiles = useMemo(
@@ -140,7 +137,20 @@ export function ContextDetail({ id }: { id: string }) {
     setSources(memberSources);
     setStatus(nextStatus);
     persistActiveSpaceId(record.id);
-    void activateSpace(record.id);
+  }
+
+  async function ingestFiles(files: File[]) {
+    await attachFolderToContext(primaryContextId, files);
+    await load();
+  }
+
+  async function ingestPdfs(files: File[]) {
+    const state = useMeetHint.getState();
+    if (space && state.activeContextId !== primaryContextId) {
+      await state.activateSpace(space.id);
+    }
+    await addPdfFiles(files);
+    await load();
   }
 
   useEffect(() => {
@@ -174,7 +184,7 @@ export function ContextDetail({ id }: { id: string }) {
 
   return (
     <ContextShell wide>
-      <main className="mh-rise space-y-8" data-testid="space-detail">
+      <main className="space-y-8" data-testid="space-detail">
         <PageHeader
           overline="Knowledge Space"
           title={space.name}
@@ -191,7 +201,7 @@ export function ContextDetail({ id }: { id: string }) {
           }
         />
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2">
           <Link
             to="/context/$id/ask"
             params={{ id: space.id }}
@@ -216,35 +226,14 @@ export function ContextDetail({ id }: { id: string }) {
               <p className="text-xs text-muted">Add a source first</p>
             </div>
           )}
-          <button
-            type="button"
-            data-testid="add-repo-folder"
-            className="ds-surface-elevated flex min-h-[5.5rem] flex-col justify-between p-4 text-left transition-colors hover:border-accent"
-            disabled={folderPicker.reading}
-            onClick={() => void folderPicker.offerFolder()}
-          >
-            <FolderOpen aria-hidden className="size-4 text-accent" />
-            <p className="text-sm font-medium text-fg">{folderPicker.reading ? "Reading…" : "Add repo / folder"}</p>
-          </button>
-          <div className="grid grid-cols-2 gap-3 sm:col-span-2 lg:col-span-1">
-            <button
-              type="button"
-              className="ds-surface-elevated flex flex-col justify-between p-4 text-left transition-colors hover:border-accent"
-              onClick={() => filesRef.current?.click()}
-            >
-              <p className="text-sm font-medium text-fg">Add files</p>
-            </button>
-            <button
-              type="button"
-              data-testid="add-pdf"
-              className="ds-surface-elevated flex flex-col justify-between p-4 text-left transition-colors hover:border-accent"
-              onClick={() => pdfRef.current?.click()}
-            >
-              <FileText aria-hidden className="size-4 text-accent" />
-              <p className="text-sm font-medium text-fg">Add PDF</p>
-            </button>
-          </div>
         </div>
+
+        <MaterialUploadPanel
+          folderReading={folderPicker.reading}
+          onFolderClick={() => void folderPicker.offerFolder()}
+          onFiles={(files) => ingestFiles(files)}
+          onPdfs={(files) => ingestPdfs(files)}
+        />
 
         <div className="ds-metric-grid">
           <MetricCard label="Total files" value={totalFiles} detail="Indexed on this device" />
@@ -360,36 +349,6 @@ export function ContextDetail({ id }: { id: string }) {
           picker={folderPicker}
           onIndex={(files, options) => {
             void attachFolderToContext(primaryContextId, files, options).then(() => load());
-          }}
-        />
-        <input
-          ref={filesRef}
-          type="file"
-          multiple
-          accept=".md,.mdx,.txt,.ts,.tsx,.js,.jsx,.py,.go,.rs,.java,.kt,.json,.css,.yml,.yaml,.docx,.xlsx,.csv,.ppt,.pptx"
-          className="sr-only"
-          aria-hidden
-          tabIndex={-1}
-          onChange={(event) => {
-            const files = event.target.files;
-            if (files && files.length > 0) void attachFolderToContext(primaryContextId, files).then(() => load());
-            event.target.value = "";
-          }}
-        />
-        <input
-          ref={pdfRef}
-          type="file"
-          multiple
-          accept=".pdf,application/pdf"
-          className="sr-only"
-          aria-hidden
-          tabIndex={-1}
-          onChange={(event) => {
-            const files = event.target.files;
-            if (files && files.length > 0) {
-              void activateSpace(space.id).then(() => addPdfFiles(files)).then(() => load());
-            }
-            event.target.value = "";
           }}
         />
       </main>

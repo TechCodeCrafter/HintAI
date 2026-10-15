@@ -43,7 +43,28 @@ const EMPHATIC_ABSENCE = /\bat all\b|\bany(thing|where|more)?\b/;
  */
 export function shapeOf(query: string): Shape {
   const q = query.toLowerCase().trim();
-  if (/\b(who|whom|whose)\b/.test(q) || /\bwho (wrote|touched|owns|added|changed)\b/.test(q)) return "who";
+  // Ownership/authorship is narrow: who wrote / touched / owns / maintains.
+  // "Who is Macbeth" is a definition question about a document subject, not a
+  // request for code ownership — it must read as "what", or every doc demo
+  // fails with "says what this does, not who owns it."
+  if (
+    /\bwho\s+(wrote|touched|owns?|added|changed|maintains?|maintained|created|authored|reviewed|approved)\b/.test(
+      q,
+    ) ||
+    /\bwho owns\b/.test(q) ||
+    (/\bwho\b/.test(q) && /\bown(?:s|er|ership)\b/.test(q))
+  )
+    return "who";
+  if (/\b(who|whom|whose)\b/.test(q)) {
+    if (/\b(who|whom|whose)\s+(is|are|was|were)\b/.test(q)) return "what";
+    // Bare "who <name>" without an ownership verb is a definition lookup
+    // ("who macbeth"), not an authorship question. Keep strict ownership only
+    // for the verb patterns above so "Who touched the auth flow?" still reads
+    // as "who".
+    if (!/\b(wrote|touched|owns?|added|changed|maintains?|maintained|created|authored|reviewed|approved|owner|ownership)\b/.test(q))
+      return "what";
+    return "who";
+  }
   // A challenge is an absence question wearing a statement's clothes. "We're not
   // testing this at all, right?" asks GROUND to confirm that something does not
   // exist, and nothing retrieved can confirm that — least of all a file that

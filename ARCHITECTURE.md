@@ -132,7 +132,7 @@ utterance rather than dropped.
 Three paths exist; one is the default.
 
 - **Local Whisper (default).** `@xenova/transformers` in a web worker
-  (`public/meethint-asr-worker.js`), ONNX via WASM, trying
+  (`src/lib/listen/asr-worker.ts`, Vite-bundled), ONNX via WASM, trying
   `distil-whisper-small.en` then `whisper-tiny.en`. Warmed on boot. Every
   committed clip goes through this.
 - **Browser `SpeechRecognition` (parallel, mic only).** Runs on Chrome and Edge

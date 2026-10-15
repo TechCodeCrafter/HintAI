@@ -1,0 +1,1238 @@
+[
+  {
+    "id": "ex-001",
+    "question": "Why does that retry three times?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 6
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-002",
+    "question": "What is the weather in Paris?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-003",
+    "question": "What is Zylorp billing code?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 2
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-004",
+    "question": "What does auth do and how are retries capped?",
+    "topEvidence": [
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 5
+      },
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ESCALATE",
+    "note": "multi-source"
+  },
+  {
+    "id": "ex-005",
+    "question": "What does the auth service do?",
+    "topEvidence": [
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-006",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-007",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-008",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-009",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-010",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-011",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-012",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-013",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-014",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-015",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-016",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-017",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-018",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-019",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-020",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-021",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-022",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-023",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-024",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-025",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-026",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-027",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-028",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-029",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-030",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-031",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-032",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-033",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-034",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-035",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-036",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-037",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-038",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-039",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-040",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-041",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-042",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-043",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-044",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-045",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-046",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-047",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-048",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-049",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-050",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-051",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-052",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-053",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-054",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-055",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-056",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-057",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-058",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-059",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-060",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-061",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-062",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-063",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-064",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-065",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-066",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-067",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-068",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-069",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-070",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-071",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-072",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-073",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-074",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-075",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-076",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-077",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-078",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-079",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-080",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-081",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-082",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-083",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-084",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-085",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-086",
+    "question": "Where is retry.ts?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-087",
+    "question": "Capital of France?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 0
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-088",
+    "question": "Who owns auth and exporter?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 3
+      },
+      {
+        "path": "src/auth.ts",
+        "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-089",
+    "question": "Thanks everyone",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-090",
+    "question": "Why three retries?",
+    "topEvidence": [
+      {
+        "path": "src/exporter/retry.ts",
+        "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "score": 4
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-091",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "docs/pricing.md",
+        "text": "Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-092",
+    "question": "Enterprise price?",
+    "topEvidence": [
+      {
+        "path": "README.md",
+        "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "score": 1
+      }
+    ],
+    "expected": "SILENT"
+  },
+  {
+    "id": "ex-093",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "docs/sla.md",
+        "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "score": 5
+      }
+    ],
+    "expected": "ANSWER_WITH_CURRENT_PIPELINE"
+  },
+  {
+    "id": "ex-094",
+    "question": "SLA uptime?",
+    "topEvidence": [
+      {
+        "path": "tests/sla.test.ts",
+        "text": "expect(uptime).toBe(1)",
+        "score": 2
+      }
+    ],
+    "expected": "ESCALATE"
+  },
+  {
+    "id": "ex-095",
+    "question": "Route docs vs worker?",
+    "topEvidence": [
+      {
+        "path": "docs/routes.md",
+        "text": "POST /export triggers worker",
+        "score": 3
+      },
+      {
+        "path": "worker/export.ts",
+        "text": "Cron handles export batch",
+        "score": 3
+      }
+    ],
+    "expected": "ESCALATE"
+  }
+]

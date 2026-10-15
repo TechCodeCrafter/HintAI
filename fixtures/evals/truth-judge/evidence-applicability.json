@@ -1,0 +1,738 @@
+[
+  {
+    "id": "ea-001",
+    "question": "Why does that retry three times?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-002",
+    "question": "What does the auth service do?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-003",
+    "question": "What is the architecture?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-004",
+    "question": "What is the weather today?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "off-topic"
+  },
+  {
+    "id": "ea-005",
+    "question": "Why does that retry three times?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "wrong source"
+  },
+  {
+    "id": "ea-006",
+    "question": "Where is retry logic?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-007",
+    "question": "What is enterprise pricing?",
+    "evidence": {
+      "path": "docs/pricing.md",
+      "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-008",
+    "question": "What is enterprise pricing?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-009",
+    "question": "What uptime is guaranteed?",
+    "evidence": {
+      "path": "docs/sla.md",
+      "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-010",
+    "question": "What uptime is guaranteed?",
+    "evidence": {
+      "path": "tests/retry.test.ts",
+      "text": "expect(retries).toBe(3)"
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "test vs contract"
+  },
+  {
+    "id": "ea-011",
+    "question": "How does cookie rotation work?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-012",
+    "question": "How does cookie rotation work?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-013",
+    "question": "What happens on export failure?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Failures land in the dead-letter queue and are replayed."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-014",
+    "question": "What happens on export failure?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-015",
+    "question": "Where is settlement CSV built?",
+    "evidence": {
+      "path": "README.md",
+      "text": "builds the settlement CSV and uploads it"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-016",
+    "question": "Where is settlement CSV built?",
+    "evidence": {
+      "path": "external/weather.txt",
+      "text": "The weather in Paris is sunny with mild winds."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-017",
+    "question": "Is auth checked on every request?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-018",
+    "question": "Is auth checked on every request?",
+    "evidence": {
+      "path": "docs/pricing.md",
+      "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-019",
+    "question": "What is the retry cap?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-020",
+    "question": "What is the retry cap?",
+    "evidence": {
+      "path": "src/demo.ts",
+      "text": "export const token = 'demo';"
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-021",
+    "question": "What does Northstar export?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-022",
+    "question": "What does Northstar export?",
+    "evidence": {
+      "path": "docs/sla.md",
+      "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-023",
+    "question": "Who verifies sessions?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-024",
+    "question": "Who verifies sessions?",
+    "evidence": {
+      "path": "tests/auth.test.ts",
+      "text": "describe('retry', () => {})"
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-025",
+    "question": "What is PAY-219?",
+    "evidence": {
+      "path": "README.md",
+      "text": "replayed from the PAY-219 runbook"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-026",
+    "question": "What is PAY-219?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-027",
+    "question": "How does cookie rotation work? (variant 2)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-028",
+    "question": "How does cookie rotation work? (variant 2)",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-029",
+    "question": "What happens on export failure? (variant 2)",
+    "evidence": {
+      "path": "README.md",
+      "text": "Failures land in the dead-letter queue and are replayed."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-030",
+    "question": "What happens on export failure? (variant 2)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-031",
+    "question": "Where is settlement CSV built? (variant 2)",
+    "evidence": {
+      "path": "README.md",
+      "text": "builds the settlement CSV and uploads it"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-032",
+    "question": "Where is settlement CSV built? (variant 2)",
+    "evidence": {
+      "path": "external/weather.txt",
+      "text": "The weather in Paris is sunny with mild winds."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-033",
+    "question": "Is auth checked on every request? (variant 2)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-034",
+    "question": "Is auth checked on every request? (variant 2)",
+    "evidence": {
+      "path": "docs/pricing.md",
+      "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-035",
+    "question": "What is the retry cap? (variant 2)",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-036",
+    "question": "What is the retry cap? (variant 2)",
+    "evidence": {
+      "path": "src/demo.ts",
+      "text": "export const token = 'demo';"
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-037",
+    "question": "What does Northstar export? (variant 2)",
+    "evidence": {
+      "path": "README.md",
+      "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-038",
+    "question": "What does Northstar export? (variant 2)",
+    "evidence": {
+      "path": "docs/sla.md",
+      "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-039",
+    "question": "Who verifies sessions? (variant 2)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-040",
+    "question": "Who verifies sessions? (variant 2)",
+    "evidence": {
+      "path": "tests/auth.test.ts",
+      "text": "describe('retry', () => {})"
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-041",
+    "question": "What is PAY-219? (variant 2)",
+    "evidence": {
+      "path": "README.md",
+      "text": "replayed from the PAY-219 runbook"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-042",
+    "question": "What is PAY-219? (variant 2)",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-043",
+    "question": "How does cookie rotation work? (variant 3)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-044",
+    "question": "How does cookie rotation work? (variant 3)",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-045",
+    "question": "What happens on export failure? (variant 3)",
+    "evidence": {
+      "path": "README.md",
+      "text": "Failures land in the dead-letter queue and are replayed."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-046",
+    "question": "What happens on export failure? (variant 3)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-047",
+    "question": "Where is settlement CSV built? (variant 3)",
+    "evidence": {
+      "path": "README.md",
+      "text": "builds the settlement CSV and uploads it"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-048",
+    "question": "Where is settlement CSV built? (variant 3)",
+    "evidence": {
+      "path": "external/weather.txt",
+      "text": "The weather in Paris is sunny with mild winds."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-049",
+    "question": "Is auth checked on every request? (variant 3)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-050",
+    "question": "Is auth checked on every request? (variant 3)",
+    "evidence": {
+      "path": "docs/pricing.md",
+      "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-051",
+    "question": "What is the retry cap? (variant 3)",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-052",
+    "question": "What is the retry cap? (variant 3)",
+    "evidence": {
+      "path": "src/demo.ts",
+      "text": "export const token = 'demo';"
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-053",
+    "question": "What does Northstar export? (variant 3)",
+    "evidence": {
+      "path": "README.md",
+      "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-054",
+    "question": "What does Northstar export? (variant 3)",
+    "evidence": {
+      "path": "docs/sla.md",
+      "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-055",
+    "question": "Who verifies sessions? (variant 3)",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-056",
+    "question": "Who verifies sessions? (variant 3)",
+    "evidence": {
+      "path": "tests/auth.test.ts",
+      "text": "describe('retry', () => {})"
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-057",
+    "question": "What is PAY-219? (variant 3)",
+    "evidence": {
+      "path": "README.md",
+      "text": "replayed from the PAY-219 runbook"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-058",
+    "question": "What is PAY-219? (variant 3)",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-59",
+    "question": "Why does that retry three times?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at four."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "numeric drift"
+  },
+  {
+    "id": "ea-60",
+    "question": "Why does that retry three times?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are not capped at three."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "negation"
+  },
+  {
+    "id": "ea-61",
+    "question": "What owns authentication?",
+    "evidence": {
+      "path": "README.md",
+      "text": "src/auth — verifies and rotates session cookies"
+    },
+    "expected": "APPLICABLE",
+    "note": "partial support"
+  },
+  {
+    "id": "ea-62",
+    "question": "What owns authentication?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Settlement exports run nightly."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "irrelevant similarity"
+  },
+  {
+    "id": "ea-63",
+    "question": "What is Zylorp headquarters address?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "unsupported"
+  },
+  {
+    "id": "ea-64",
+    "question": "What is Zylorp headquarters address?",
+    "evidence": {
+      "path": "external/zylorp.txt",
+      "text": "123 Main St"
+    },
+    "expected": "APPLICABLE",
+    "note": "exact supported in wrong corpus item"
+  },
+  {
+    "id": "ea-65",
+    "question": "What version is retry policy?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Policy v2 caps attempts at three."
+    },
+    "expected": "APPLICABLE",
+    "note": "version mention ok"
+  },
+  {
+    "id": "ea-66",
+    "question": "What version is retry policy?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Policy v3 caps attempts at three."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "version mismatch"
+  },
+  {
+    "id": "ea-67",
+    "question": "Does README mention S3?",
+    "evidence": {
+      "path": "README.md",
+      "text": "exports merchant settlement files to S3"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-68",
+    "question": "Does README mention S3?",
+    "evidence": {
+      "path": "README.md",
+      "text": "guards the operator dashboard"
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "partial unrelated sentence"
+  },
+  {
+    "id": "ea-69",
+    "question": "What handles dead-letter replay?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Failures land in the dead-letter queue and are replayed"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-70",
+    "question": "What handles dead-letter replay?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "related wrong module"
+  },
+  {
+    "id": "ea-71",
+    "question": "Is session rotated on exit?",
+    "evidence": {
+      "path": "src/auth.ts",
+      "text": "rotates it on the way out"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-72",
+    "question": "Is session rotated on exit?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "on the way out"
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "phrase collision"
+  },
+  {
+    "id": "ea-73",
+    "question": "What is edge auth purpose?",
+    "evidence": {
+      "path": "README.md",
+      "text": "guards the operator dashboard with edge auth"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-74",
+    "question": "What is edge auth purpose?",
+    "evidence": {
+      "path": "docs/pricing.md",
+      "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+    },
+    "expected": "NOT_APPLICABLE"
+  },
+  {
+    "id": "ea-75",
+    "question": "How many export attempts?",
+    "evidence": {
+      "path": "src/exporter/retry.ts",
+      "text": "capped at three"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-76",
+    "question": "How many export attempts?",
+    "evidence": {
+      "path": "tests/retry.test.ts",
+      "text": "toBe(3)"
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "test assertion not doc"
+  },
+  {
+    "id": "ea-77",
+    "question": "What routes trigger export?",
+    "evidence": {
+      "path": "docs/routes.md",
+      "text": "POST /export triggers worker"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-78",
+    "question": "What routes trigger export?",
+    "evidence": {
+      "path": "worker/export.ts",
+      "text": "Cron handles export batch"
+    },
+    "expected": "NOT_APPLICABLE",
+    "note": "worker behavior not route doc"
+  },
+  {
+    "id": "ea-79",
+    "question": "What is nightly schedule?",
+    "evidence": {
+      "path": "README.md",
+      "text": "Exports run per merchant on a nightly schedule"
+    },
+    "expected": "APPLICABLE"
+  },
+  {
+    "id": "ea-80",
+    "question": "What is nightly schedule?",
+    "evidence": {
+      "path": "external/weather.txt",
+      "text": "The weather in Paris is sunny with mild winds."
+    },
+    "expected": "NOT_APPLICABLE"
+  }
+]

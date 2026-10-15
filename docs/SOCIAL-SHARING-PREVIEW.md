@@ -6,14 +6,17 @@ Last updated: 2026-09-20
 
 | Field | Value |
 |-------|--------|
-| File | `public/og/meethint-og.png` |
+| File | `public/og/meethint-og-v4.png` |
 | Size | 1200 × 630 |
-| Public URL | `https://www.meethint.ai/og/meethint-og.png` |
+| Public URL | `https://www.meethint.ai/og/meethint-og-v4.png` |
 | Regenerate | `npm run generate:og` |
+| Official mark | Composited from `public/meethint-mark.svg` (transparent; same geometry as `MeetHintMark`) |
 
-Design: dark navy canvas, blue/violet gradient glow, MeetHint mark + wordmark, headline **Know before you answer.**, and a product-style answer card (SSO / SCIM example with GitHub · Docs · PDF sources).
+Do not use `favicon.svg` for OG — it includes the rounded app-icon plate. Legacy paths redirect to v4 via `vercel.json`.
 
 ## Metadata (SSR via `src/routes/__root.tsx`)
+
+Single authoritative source: `src/lib/brand.ts` (copy + image URL) and `src/lib/og/share-meta.ts` (tag list).
 
 | Tag | Value |
 |-----|--------|
@@ -25,51 +28,23 @@ Design: dark navy canvas, blue/violet gradient glow, MeetHint mark + wordmark, h
 | `og:type` | `website` |
 | `og:url` | `https://www.meethint.ai/` |
 | `og:site_name` | MeetHint |
-| `og:image` | `https://www.meethint.ai/og/meethint-og.png` |
+| `og:image` | `https://www.meethint.ai/og/meethint-og-v4.png` |
 | `og:image:width` / `height` | 1200 / 630 |
-| `og:image:alt` | MeetHint — real-time answers for technical conversations |
+| `og:image:alt` | MeetHint social preview showing the official logo and a cited technical answer card |
 | `twitter:card` | `summary_large_image` |
 | `twitter:title` | MeetHint — Know before you answer |
 | `twitter:description` | Real-time answers from your repos, docs, and company knowledge. |
-| `twitter:image` | `https://www.meethint.ai/og/meethint-og.png` |
-
-Implementation: `src/lib/og/share-meta.ts` + `src/lib/brand.ts`.
-
-The marketing route (`/`) stays `ssr: false` for autofill hydration; OG tags are on the root route so crawlers receive them without client JS.
-
-## Platform behavior
-
-| Platform | Expected preview |
-|----------|------------------|
-| **Facebook / LinkedIn** | Large image card with headline + product mock; title/description from Open Graph |
-| **X (Twitter)** | `summary_large_image` — full 1200×630 asset, headline readable with ~40px safe margins |
-| **Slack / Discord / iMessage** | OG image + title + description unfurl |
+| `twitter:image` | `https://www.meethint.ai/og/meethint-og-v4.png` |
 
 ## Meta Sharing Debugger
 
-After deploy, open [Sharing Debugger](https://developers.facebook.com/tools/debug/) for `https://www.meethint.ai/` and click **Fetch new information**.
+After deploy:
+
+1. `npm run verify:social-meta`
+2. [Sharing Debugger](https://developers.facebook.com/tools/debug/) → **Scrape Again**
 
 ### Remaining warning (safe to ignore)
 
 | Property | Status |
 |----------|--------|
-| `fb:app_id` | **Not set** — intentional. No Facebook Login / Social Plugins integration exists. Meta shows a warning; previews still render. Add only when a real Meta App ID is configured. |
-
-`og:url` and `og:type` are now present — the previous missing-property warnings for those should clear after rescrape.
-
-## Validation checklist
-
-```bash
-npm run generate:og    # refresh PNG if copy/layout changes
-npm run typecheck
-npm test
-npm run build
-# Optional: grep built SSR output for og:image after deploy
-```
-
-- [x] OG tags defined in SSR head (`__root__.tsx`)
-- [x] Canonical URL with trailing slash
-- [x] No duplicate `og:image` pointing at legacy `og.jpg` in app head
-- [x] PNG committed at `public/og/meethint-og.png`
-
-Legacy plain **Hint** card (`public/og.jpg`) is superseded for TanStack head tags; file may remain for Grok PWA bake until removed separately.
+| `fb:app_id` | **Not set** — intentional. MeetHint does not currently use a Meta app integration. Meta may show a warning; previews still render. |

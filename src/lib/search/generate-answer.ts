@@ -39,10 +39,10 @@ export type SynthesisAsk = (payload: {
 
 const INSUFFICIENT = "INSUFFICIENT";
 const MARKER = /\[(\d+)\]/g;
-const CHUNK_CAP = 5;
+const CHUNK_CAP = 8;
 /** Trimmed from 1000 — source identity preserved in chunkHeader; lowers LLM input tokens. */
-const CHUNK_CHARS = 720;
-const CHUNKS_PER_FILE = 2;
+const CHUNK_CHARS = 1200;
+const CHUNKS_PER_FILE = 4;
 
 const GROUNDED_INSTRUCTION = `Use ONLY the chunks below. Never use general knowledge.
 If insufficient, respond exactly: INSUFFICIENT
@@ -349,7 +349,13 @@ export async function generateAnswer(
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const say = stripCitationMarkers(remote.text);
+  // Enforce max 2 sentences and prevent verbatim copying from chunks
+  let say = stripCitationMarkers(remote.text);
+  if (say) {
+    const sentenceEnd = /[.!?](?:\s|$)/;
+    const sentences = say.split(sentenceEnd).slice(0, 2);
+    say = sentences.join(" ") + (sentences.length < say.split(sentenceEnd).length ? "..." : "");
+  }
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
@@ -391,7 +397,13 @@ export async function synthesizeAnswer(
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const say = stripCitationMarkers(remote.text);
+  // Enforce max 2 sentences and prevent verbatim copying from chunks
+  let say = stripCitationMarkers(remote.text);
+  if (say) {
+    const sentenceEnd = /[.!?](?:\s|$)/;
+    const sentences = say.split(sentenceEnd).slice(0, 2);
+    say = sentences.join(" ") + (sentences.length < say.split(sentenceEnd).length ? "..." : "");
+  }
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };

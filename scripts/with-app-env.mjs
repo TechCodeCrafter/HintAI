@@ -20,9 +20,9 @@
  * `process.env`, which is why the merge has to happen before Vite starts.
  */
 import { spawn } from "node:child_process";
-import { readFileSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { constants as osConstants } from "node:os";
-import { dirname, join } from "node:path";
+import path, { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveAppVersion } from "./resolve-app-version.mjs";
 
@@ -109,6 +109,45 @@ export function isMainModule(moduleUrl) {
   }
 }
 
+/**
+ * Decide how to launch `command`.
+ *
+ * Windows ships no extensionless `vite`, only `vite.cmd`, and Node refuses to
+ * spawn a `.cmd` without a shell (CVE-2024-27980). So a bare bin name is routed
+ * through `cmd.exe` explicitly. Spawning `cmd.exe` by path keeps `shell: true`
+ * off, which is what Node warns about when unescaped args are passed through it
+ * (DEP0190).
+ *
+ * A command carrying a path or an extension is spawned directly, never through a
+ * shell: `cmd.exe` splits on spaces, so a wrapped
+ * `C:\Program Files\nodejs\node.exe` would be torn in half.
+ *
+ * Returns `{ file, args }` to hand to `spawn`.
+ */
+export function spawnPlan(command, args, env = process.env, root = projectRoot()) {
+  const bare =
+    process.platform === "win32" &&
+    !command.includes("/") &&
+    !command.includes("\\") &&
+    !/\.[a-z]+$/i.test(command);
+  if (!bare) return { file: command, args };
+
+  const shim = `${command}.cmd`;
+  const dirs = [
+    ...String(env.PATH ?? "").split(path.delimiter),
+    join(root, "node_modules", ".bin"),
+  ];
+  if (!dirs.some((dir) => dir && existsSync(join(dir, shim)))) {
+    return { file: command, args };
+  }
+  const comspec = env.ComSpec || env.COMSPEC || "cmd.exe";
+  // The shim is a bare name by the check above, so it carries no spaces and
+  // needs no quoting. `cmd.exe /s /c` strips one layer of outer quotes, so
+  // quoting it here would hand cmd a literal `"vite.cmd"` it cannot resolve.
+  const line = [shim, ...args.map((a) => (/\s/.test(a) ? `"${a}"` : a))].join(" ");
+  return { file: comspec, args: ["/d", "/s", "/c", line] };
+}
+
 function main(argv) {
   const [command, ...args] = argv;
   if (!command) {
@@ -116,7 +155,8 @@ function main(argv) {
     process.exit(2);
   }
   const env = mergeAppEnv(readAppEnv(projectRoot()), process.env);
-  const child = spawn(command, args, { stdio: "inherit", env });
+  const { file, args: childArgs } = spawnPlan(command, args, env);
+  const child = spawn(file, childArgs, { stdio: "inherit", env });
   // The dev server is long-running and is stopped by signalling this wrapper.
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
     process.on(signal, () => child.kill(signal));
