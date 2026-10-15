@@ -2,7 +2,7 @@
 set -eu
 cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 node scripts/preview.mjs stop || true
-if curl -sf -o /dev/null --max-time 2 http://127.0.0.1:8080/; then
+if curl -sf -o /dev/null --max-time 2 http://127.0.0.1:3001/; then
   exit 0
 fi
 mkdir -p /tmp

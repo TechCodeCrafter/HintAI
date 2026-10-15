@@ -13,8 +13,13 @@ const HEDGE =
 /**
  * Normalizes a candidate spoken line. Returns null when nothing sayable is left,
  * which the callers treat as "stay silent".
+ *
+ * `allowField` is only for field questions ("what is the phone number",
+ * "what is the company name") where the honest cited answer is a short
+ * label:value or header ("Phone: 9931607655", "REDSHEEL"), not a sentence.
+ * Everywhere else the strict sentence gates stay.
  */
-export function sayable(text: string | null | undefined): string | null {
+export function sayable(text: string | null | undefined, allowField = false): string | null {
   if (!text) return null;
   let out = text.replace(/\s+/g, " ").trim();
 
@@ -25,11 +30,37 @@ export function sayable(text: string | null | undefined): string | null {
   }
 
   out = out.replace(/^[,;:.\-–—]+\s*/, "").trim();
+  if (allowField && isFieldLine(out)) {
+    if (out.length < 4) return null;
+    if (!/[A-Za-z0-9]/.test(out)) return null;
+    return out.charAt(0).toUpperCase() + out.slice(1);
+  }
   if (out.length < 12) return null;
   if (!/[A-Za-z]/.test(out)) return null;
   if (out.split(/\s+/).filter(Boolean).length < 3) return null;
 
   return out.charAt(0).toUpperCase() + out.slice(1);
+}
+
+/**
+ * A short label:value line or header that is a legitimate cited answer for a
+ * field question: "Phone: 9931607655", "Email: a@b.com", "REDSHEEL".
+ * Deliberately narrow — must look like a contact label, a contact value, an
+ * email, or a short single-header token.
+ */
+export function isFieldLine(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed || trimmed.length > 120 || /[=;{}<>]/.test(trimmed)) return false;
+  if (/^(phone|tel\.?|telephone|mobile|email|company)\s*:/i.test(trimmed)) return true;
+  if (/^[A-Za-z0-9][A-Za-z0-9 .&'-]{1,60}$/.test(trimmed) && /[A-Za-z]/.test(trimmed)) {
+    // Short header: 1-4 words, no sentence punctuation. "REDSHEEL" qualifies;
+    // "This is the current product plan for erstuff." does not.
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    if (words.length <= 4 && !/[.!?]/.test(trimmed)) return true;
+  }
+  if (/\+?\d[\d\s().-]{6,}\d/.test(trimmed)) return true;
+  if (/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(trimmed)) return true;
+  return false;
 }
 
 /**

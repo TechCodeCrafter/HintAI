@@ -24,7 +24,14 @@ import {
   readActiveSpaceId,
   readSavedPack,
 } from "@/lib/context/migration";
-import { dropExcludedEvidence, normalizeExcludePatterns, pathExcluded, toggleExcludePath } from "@/lib/context/exclusions";
+import {
+  allSourcesExcluded,
+  dropExcludedEvidence,
+  normalizeExcludePatterns,
+  pathExcluded,
+  SOURCES_EXCLUDED_REASON,
+  toggleExcludePath,
+} from "@/lib/context/exclusions";
 import { getVectorStore } from "@/lib/search/vector-access";
 import { getContextRepository, listSpaceSummaries, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
 import type { CreateContextInput } from "@/lib/context/repository";
@@ -248,6 +255,7 @@ type MeetHintState = {
   loadFolder: (list: FileList | File[], options?: FolderLoadOptions) => Promise<void>;
   addPdfFiles: (list: FileList | File[]) => Promise<void>;
   setPackExclusions: (patterns: string[]) => Promise<void>;
+  includeAllSourcesInSearch: () => Promise<void>;
   togglePackExclusion: (path: string) => Promise<void>;
   resetPack: () => void;
   dismissPackNotice: () => void;
@@ -288,6 +296,10 @@ function withContextWrite<T>(contextId: string, work: () => Promise<T>): Promise
 function nextHydrationEpoch(): number {
   hydrationEpoch += 1;
   return hydrationEpoch;
+}
+
+function bumpSpaceCatalog() {
+  useMeetHint.setState((state) => ({ spaceCatalogEpoch: state.spaceCatalogEpoch + 1 }));
 }
 
 function searchIsLive(): boolean {
@@ -705,6 +717,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     recordBetaEventOnce("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
     recordBetaEvent("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
+    bumpSpaceCatalog();
     return context.id;
   },
   attachFolderToContext: async (contextId, list, options) => {
@@ -767,6 +780,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       recordBetaEvent("SOURCE_CONNECTED", { workspaceId: ws, spaceId: space.id, meta: { fileCount: hydrated.pack.files.length } });
       recordBetaEventOnce("INDEX_READY", { workspaceId: ws, spaceId: space.id });
       recordBetaEvent("INDEX_READY", { workspaceId: ws, spaceId: space.id });
+      bumpSpaceCatalog();
     } catch {
       if (epoch !== hydrationEpoch) return;
       set({
@@ -794,10 +808,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     else await repo.deleteContext(id);
 
     const bumpCatalog = async () => {
-      set({
-        contexts: await listStoredContexts(),
-        spaceCatalogEpoch: get().spaceCatalogEpoch + 1,
-      });
+      set({ contexts: await listStoredContexts() });
+      bumpSpaceCatalog();
     };
 
     const wasActive =
@@ -823,6 +835,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     set({ contexts: await listStoredContexts() });
   },
   activateSpace: async (spaceId) => {
+    const current = get();
+    if (current.activeSpaceId === spaceId && current.contextStatus === "ready") {
+      persistActiveSpaceId(spaceId);
+      if (allSourcesExcluded(current.sources, current.pack.files, current.pack.excludePatterns)) {
+        await get().includeAllSourcesInSearch();
+      }
+      return;
+    }
+    const sameSpace = current.activeSpaceId === spaceId;
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
@@ -831,7 +852,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       contextUpdating: false,
       hydrationEpoch: epoch,
       packNotice: null,
-      ...clearSessionOnSwitch(),
+      ...(sameSpace ? {} : clearSessionOnSwitch()),
     });
     persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
     try {
@@ -942,6 +963,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           folderError: packWarning(runtime.weak, runtime.pack.files.length),
         });
       });
+      if (epoch !== hydrationEpoch) return;
+      const active = get();
+      if (
+        active.activeSpaceId === space.id &&
+        active.contextStatus === "ready" &&
+        allSourcesExcluded(active.sources, active.pack.files, active.pack.excludePatterns)
+      ) {
+        await get().includeAllSourcesInSearch();
+      }
     } catch {
       if (epoch !== hydrationEpoch) return;
       set({
@@ -1293,6 +1323,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         contextError: null,
         folderError: rejectNote || packWarning(runtime.weak, runtime.pack.files.length),
       });
+      bumpSpaceCatalog();
     } catch {
       if (created && get().hydrationEpoch !== epoch) return;
       set({
@@ -1403,6 +1434,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       if (epoch !== hydrationEpoch) return;
       set({ folderError: "Could not update pack exclusions." });
     }
+  },
+  includeAllSourcesInSearch: async () => {
+    const patterns = get().pack.excludePatterns;
+    if (!patterns?.length) return;
+    await get().setPackExclusions([]);
   },
   togglePackExclusion: async (path) => {
     await get().setPackExclusions(toggleExcludePath(get().pack.excludePatterns, path));
@@ -1580,8 +1616,12 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     }));
   },
   search: async (explicit, opts) => {
-    const state = get();
+    let state = get();
     if (state.contextStatus !== "ready") return;
+    if (allSourcesExcluded(state.sources, state.pack.files, state.pack.excludePatterns)) {
+      await get().includeAllSourcesInSearch();
+      state = get();
+    }
     const typed = state.typedQuery.trim();
     const fromRoom = liveQuestionFromTranscript(
       state.utterances
@@ -1661,6 +1701,24 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const scopeT0 = performance.now();
     buildSearchRetrievalScope(state, workspaceId);
     const scopePrepMs = Math.round(performance.now() - scopeT0);
+
+    if (allSourcesExcluded(state.sources, state.pack.files, state.pack.excludePatterns)) {
+      const blocked = {
+        say: null,
+        reason: SOURCES_EXCLUDED_REASON,
+        citations: [],
+        query,
+        latencyMs: Math.round(performance.now() - t0),
+        source: "local" as const,
+      };
+      set({
+        searching: false,
+        refining: false,
+        ...applyCard(blocked, get().openDocument),
+      });
+      persist({ card: blocked, armed: get().armed, listening: get().listening, searching: false });
+      return;
+    }
 
     const retrieveT0 = performance.now();
     const hits = await runSpaceScopedRetrieval({

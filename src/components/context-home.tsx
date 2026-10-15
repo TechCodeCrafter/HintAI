@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   ArrowRight,
   BookOpen,
@@ -25,6 +25,7 @@ import { useMeetHint } from "@/lib/store";
 export function ContextHome() {
   const { ready: vaultReady, accountId } = useAccountVaultReady();
   const spaceCatalogEpoch = useMeetHint((s) => s.spaceCatalogEpoch);
+  const locationHash = useRouterState({ select: (s) => s.location.hash });
   const [spaces, setSpaces] = useState<SpaceSummary[] | null>(null);
   const [legacy, setLegacy] = useState(false);
   const [migrating, setMigrating] = useState(false);
@@ -45,6 +46,16 @@ export function ContextHome() {
     void reload();
   }, [vaultReady, accountId, spaceCatalogEpoch]);
 
+  useEffect(() => {
+    const hash = locationHash.replace(/^#/, "");
+    if (!hash || spaces === null) return;
+    const target = document.getElementById(hash);
+    if (!target) return;
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [locationHash, spaces]);
+
   async function convertLegacy() {
     setMigrating(true);
     setError(null);
@@ -63,13 +74,13 @@ export function ContextHome() {
 
   return (
     <ContextShell>
-      <main className="mh-rise space-y-10">
+      <main className="space-y-10">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start">
           <div className="space-y-6">
             <PageHeader
               overline="Welcome to MeetHint"
               title="Get ready for your first meeting."
-              description="MeetHint listens during your call, searches the material you loaded, and shows a cited answer — or stays silent when your files don't support one."
+              description="MeetHint listens during your call, searches the material you loaded, and shows a cited answer, or stays silent when your files don't support one."
             />
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="ds-surface-subtle space-y-1 p-4">
@@ -78,7 +89,7 @@ export function ContextHome() {
               </div>
               <div className="ds-surface-subtle space-y-1 p-4">
                 <p className="ds-card-title">Your data stays local</p>
-                <p className="ds-caption">Indexed on device — not uploaded.</p>
+                <p className="ds-caption">Indexed on device. Not uploaded.</p>
               </div>
               <div className="ds-surface-subtle space-y-1 p-4">
                 <p className="ds-card-title">Built for teams</p>
@@ -89,7 +100,7 @@ export function ContextHome() {
           <BetaOnboardingChecklist spaceId={firstSpaceId} />
         </div>
 
-        <section className="space-y-4">
+        <section id="ask" className="scroll-mt-24 space-y-4">
           <div className="space-y-1">
             <p className="ds-overline">Ask Hint</p>
             <h2 className="ds-section-title">What would you like to know?</h2>
@@ -193,7 +204,7 @@ export function ContextHome() {
           </p>
         ) : null}
 
-        <section className="space-y-3">
+        <section id="knowledge-spaces" className="scroll-mt-24 space-y-3">
           <div className="flex items-center justify-between gap-3">
             <h2 className="ds-section-title">Recent Knowledge Spaces</h2>
             <Link to="/create" className="inline-flex items-center gap-1 text-sm text-accent hover:text-fg">

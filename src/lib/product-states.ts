@@ -3,6 +3,7 @@
 export type ProductStateCode =
   | "indexing"
   | "no-knowledge"
+  | "sources-excluded"
   | "unsupported-answer"
   | "provider-failure"
   | "missing-api-key"
@@ -26,6 +27,12 @@ const STATES: Record<ProductStateCode, Omit<ProductState, "code">> = {
     title: "No knowledge connected",
     message: "Add a repo, folder, or PDF to this Knowledge Space before asking or starting Live.",
     action: "Add sources",
+  },
+  "sources-excluded": {
+    title: "Sources excluded from search",
+    message:
+      "Every file in this Knowledge Space is excluded, so Hint cannot cite anything. Include all sources again to search PDFs, docs, and code.",
+    action: "Include all sources",
   },
   "unsupported-answer": {
     title: "No cited answer",
@@ -66,6 +73,7 @@ export function inferProductStateFromReason(reason: string | null | undefined): 
   if (lower.includes("network") || lower.includes("fetch") || lower.includes("provider")) {
     return productState("provider-failure");
   }
+  if (lower.includes("excluded from search")) return productState("sources-excluded");
   if (lower.includes("no matching") || lower.includes("doesn't cover") || lower.includes("does not cover")) {
     return productState("unsupported-answer");
   }

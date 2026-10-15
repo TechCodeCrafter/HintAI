@@ -1,6 +1,6 @@
 {
   "name": "meethint",
-  "description": "MeetHint — cite or silence. Live meeting copilot that cites your loaded files or stays silent.",
+  "description": "MeetHint — real-time, cited answers for technical conversations using your repos, docs, and company knowledge.",
   "homepage": "https://meethint.ai",
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "nf3": "0.3.17"
   },
   "scripts": {
-    "dev": "node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 8080",
+    "dev": "node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 3001",
     "build": "node scripts/copy-demo-media.mjs && node scripts/with-app-env.mjs vite build && node scripts/copy-pglite-assets.mjs && node scripts/fix-ssr-bundle.mjs && npm run db:migrate",
     "db:migrate": "node scripts/migrate.mjs",
     "build:dev": "node scripts/with-app-env.mjs vite build --mode development",
@@ -32,6 +32,7 @@
     "check:cursor-attribution": "node scripts/check-cursor-attribution.mjs",
     "check:branch-fresh": "node scripts/check-branch-fresh.mjs",
     "verify:production-deploy": "node scripts/verify-production-deploy.mjs",
+    "verify:social-meta": "node --experimental-strip-types scripts/verify-production-social-meta.mjs",
     "bisect:hydration": "node scripts/bisect-hydration.mjs",
     "verify:domain-email": "node scripts/verify-domain-email.mjs",
     "publish:mail-contacts": "node scripts/publish-mail-contacts.mjs",
@@ -60,7 +61,9 @@
     "generate:og:legacy": "node scripts/generate-og-card.mjs",
     "latency:benchmark": "node scripts/latency-benchmark.mjs",
     "redteam:smoke": "node --experimental-strip-types --test src/lib/security/__tests__/redteam-harness.test.ts",
-    "redteam:harness": "node scripts/redteam-harness.mjs"
+    "redteam:harness": "node scripts/redteam-harness.mjs",
+    "eval:truth-judge": "node --env-file=.env --experimental-strip-types scripts/eval-truth-judge.mjs",
+    "eval:truth-judge:fixtures": "node scripts/build-truth-judge-fixtures.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -73,7 +76,7 @@
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-router": "^1.170.0",
-    "@tanstack/react-start": "^1.168.0",
+    "@tanstack/react-start": "1.168.61",
     "@tanstack/router-plugin": "^1.168.0",
     "better-auth": "~1.6.30",
     "class-variance-authority": "^0.7.1",
@@ -120,6 +123,6 @@
     "remotion": "^4.0.518",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.56.1",
-    "vite": "^8.2.0"
+    "vite": "^8.3.2"
   }
 }

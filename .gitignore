@@ -26,16 +26,13 @@ public/vad
 .grok/smoke-profile-*/
 .grok/production-smoke-*.json
 .tmp-kits
-.cursor/skills/**/__pycache__/
+# Local working notes for one contributor. Not part of the product.
+.tmp-notes
 security/deepteam/.venv/
 security/reports/*.json
 .impeccable/last-run.json
 .impeccable/config.local.json
 .impeccable/hook.cache.json
-# Local Impeccable skill install (CI uses npm run design:detect; do not vendor binaries)
-.cursor/skills/impeccable/
-.cursor/hooks.json
-.cursor/agents/impeccable-*.md
 skills-lock.json
 # Optional motion-taste skills installed locally for design QA
 .agents/skills/emil-design-eng/

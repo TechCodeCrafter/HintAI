@@ -1,0 +1,4977 @@
+{
+  "generatedAt": "2026-09-22T13:54:56.358Z",
+  "branch": "experiment/jev-truth-judge",
+  "dataset": {
+    "version": 1,
+    "description": "Offline truth-judge eval fixtures — synthetic only, no customer/beta data",
+    "counts": {
+      "question_classification": 40,
+      "evidence_applicability": 80,
+      "escalation": 95,
+      "total": 215
+    },
+    "tasks": [
+      "question_classification",
+      "evidence_applicability",
+      "escalation"
+    ]
+  },
+  "jevApiVerification": {
+    "endpoint": "https://api.typesafe.ai/v1/systemone",
+    "auth": "Authorization: Bearer <JEV_API_KEY or TYPESAFE_API_KEY>",
+    "requestSchema": {
+      "model": "required (default jev-latest)",
+      "state": "string | object | array",
+      "questions": "Record<id, { type: choice|noul|score, instructions, criteria? }>"
+    },
+    "responseSchema": {
+      "answers": "Record<id, { choice?, probabilities?, confidence? } | { noul? } | { score? }>",
+      "usage": "{ input_tokens?, output_tokens?, cost_usd? }"
+    },
+    "batching": "Multiple questions in one POST supported",
+    "documentedRateLimits": "~1200 req/min, 250k tokens/sec (TypeSafe docs, Sep 2026)",
+    "timeoutMs": 15000,
+    "liveProbe": "SKIPPED — no API key"
+  },
+  "missingKeys": [
+    "JEV_API_KEY (or TYPESAFE_API_KEY)"
+  ],
+  "judges": {
+    "deterministic": {
+      "question_classification": {
+        "total": 40,
+        "accuracy": 0.8,
+        "precision": {
+          "architecture": 1,
+          "product_capability": 1,
+          "security_compliance": 0.625,
+          "implementation": 0.7142857142857143,
+          "general_technical_reasoning": 0.8,
+          "contractual_sla": 1,
+          "pricing_packaging": 1,
+          "current_external_fact": 1,
+          "other": 0.3333333333333333
+        },
+        "recall": {
+          "architecture": 1,
+          "product_capability": 0.5,
+          "security_compliance": 0.8333333333333334,
+          "implementation": 0.625,
+          "general_technical_reasoning": 1,
+          "contractual_sla": 0.75,
+          "pricing_packaging": 0.75,
+          "current_external_fact": 1,
+          "other": 1
+        },
+        "confusion": {
+          "architecture": {
+            "architecture": 4,
+            "product_capability": 0,
+            "security_compliance": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "product_capability": {
+            "architecture": 0,
+            "product_capability": 2,
+            "security_compliance": 2,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "security_compliance": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 5,
+            "implementation": 1,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "implementation": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 1,
+            "implementation": 5,
+            "general_technical_reasoning": 1,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 1
+          },
+          "general_technical_reasoning": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 4,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "contractual_sla": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 3,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 1
+          },
+          "pricing_packaging": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 0,
+            "implementation": 1,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 3,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "current_external_fact": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 5,
+            "other": 0
+          },
+          "other": {
+            "architecture": 0,
+            "product_capability": 0,
+            "security_compliance": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 1
+          }
+        },
+        "macroPrecision": 0.8302910052910053,
+        "macroRecall": 0.8287037037037037,
+        "cases": [
+          {
+            "id": "qc-001",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-002",
+            "expected": "product_capability",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-003",
+            "expected": "implementation",
+            "predicted": "general_technical_reasoning",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-004",
+            "expected": "general_technical_reasoning",
+            "predicted": "general_technical_reasoning",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-005",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-006",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-007",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-008",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-009",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-010",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-011",
+            "expected": "general_technical_reasoning",
+            "predicted": "general_technical_reasoning",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-012",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-013",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-014",
+            "expected": "implementation",
+            "predicted": "other",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-015",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-016",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-017",
+            "expected": "pricing_packaging",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-018",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-019",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-020",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-021",
+            "expected": "product_capability",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-022",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-023",
+            "expected": "general_technical_reasoning",
+            "predicted": "general_technical_reasoning",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-024",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-025",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-026",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-027",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-028",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-029",
+            "expected": "product_capability",
+            "predicted": "product_capability",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-030",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-031",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-032",
+            "expected": "general_technical_reasoning",
+            "predicted": "general_technical_reasoning",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-033",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-034",
+            "expected": "contractual_sla",
+            "predicted": "other",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-035",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-036",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-037",
+            "expected": "implementation",
+            "predicted": "security_compliance",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-038",
+            "expected": "product_capability",
+            "predicted": "product_capability",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-039",
+            "expected": "security_compliance",
+            "predicted": "implementation",
+            "confidence": 1,
+            "latencyMs": 0
+          },
+          {
+            "id": "qc-040",
+            "expected": "other",
+            "predicted": "other",
+            "confidence": 1,
+            "latencyMs": 0
+          }
+        ],
+        "latencyMs": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "n": 40
+        }
+      },
+      "evidence_applicability": {
+        "total": 80,
+        "accuracy": 0.5625,
+        "precision": 0.5352112676056338,
+        "recall": 0.95,
+        "unsafeContinuation": 33,
+        "unsafeContinuationRate": 0.4125,
+        "falseSilence": 2,
+        "falseSilenceRate": 0.025,
+        "falseEscalation": 0,
+        "falseEscalationRate": 0,
+        "falseApplicability": 33,
+        "falseApplicabilityRate": 0.4125,
+        "safeCoverage": 0.475,
+        "refusalRate": 0.1125,
+        "falseApplicable": 33,
+        "falseNotApplicable": 2,
+        "unsafeContinuationCases": [
+          {
+            "id": "ea-008",
+            "question": "What is enterprise pricing?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-010",
+            "question": "What uptime is guaranteed?",
+            "evidenceExcerpt": "tests/retry.test.ts: expect(retries).toBe(3)",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-012",
+            "question": "How does cookie rotation work?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-014",
+            "question": "What happens on export failure?",
+            "evidenceExcerpt": "src/auth.ts: The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-016",
+            "question": "Where is settlement CSV built?",
+            "evidenceExcerpt": "external/weather.txt: The weather in Paris is sunny with mild winds.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-018",
+            "question": "Is auth checked on every request?",
+            "evidenceExcerpt": "docs/pricing.md: Enterprise plan is billed annually at twelve hundred dollars per seat.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-020",
+            "question": "What is the retry cap?",
+            "evidenceExcerpt": "src/demo.ts: export const token = 'demo';",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-022",
+            "question": "What does Northstar export?",
+            "evidenceExcerpt": "docs/sla.md: We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-026",
+            "question": "What is PAY-219?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-028",
+            "question": "How does cookie rotation work? (variant 2)",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-030",
+            "question": "What happens on export failure? (variant 2)",
+            "evidenceExcerpt": "src/auth.ts: The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-032",
+            "question": "Where is settlement CSV built? (variant 2)",
+            "evidenceExcerpt": "external/weather.txt: The weather in Paris is sunny with mild winds.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-034",
+            "question": "Is auth checked on every request? (variant 2)",
+            "evidenceExcerpt": "docs/pricing.md: Enterprise plan is billed annually at twelve hundred dollars per seat.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-036",
+            "question": "What is the retry cap? (variant 2)",
+            "evidenceExcerpt": "src/demo.ts: export const token = 'demo';",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-038",
+            "question": "What does Northstar export? (variant 2)",
+            "evidenceExcerpt": "docs/sla.md: We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-042",
+            "question": "What is PAY-219? (variant 2)",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-044",
+            "question": "How does cookie rotation work? (variant 3)",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-046",
+            "question": "What happens on export failure? (variant 3)",
+            "evidenceExcerpt": "src/auth.ts: The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-048",
+            "question": "Where is settlement CSV built? (variant 3)",
+            "evidenceExcerpt": "external/weather.txt: The weather in Paris is sunny with mild winds.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-050",
+            "question": "Is auth checked on every request? (variant 3)",
+            "evidenceExcerpt": "docs/pricing.md: Enterprise plan is billed annually at twelve hundred dollars per seat.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-052",
+            "question": "What is the retry cap? (variant 3)",
+            "evidenceExcerpt": "src/demo.ts: export const token = 'demo';",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-054",
+            "question": "What does Northstar export? (variant 3)",
+            "evidenceExcerpt": "docs/sla.md: We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-058",
+            "question": "What is PAY-219? (variant 3)",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-60",
+            "question": "Why does that retry three times?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are not capped at three.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-62",
+            "question": "What owns authentication?",
+            "evidenceExcerpt": "README.md: Settlement exports run nightly.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-63",
+            "question": "What is Zylorp headquarters address?",
+            "evidenceExcerpt": "README.md: Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-66",
+            "question": "What version is retry policy?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Policy v3 caps attempts at three.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-68",
+            "question": "Does README mention S3?",
+            "evidenceExcerpt": "README.md: guards the operator dashboard",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-70",
+            "question": "What handles dead-letter replay?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-72",
+            "question": "Is session rotated on exit?",
+            "evidenceExcerpt": "src/exporter/retry.ts: on the way out",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-74",
+            "question": "What is edge auth purpose?",
+            "evidenceExcerpt": "docs/pricing.md: Enterprise plan is billed annually at twelve hundred dollars per seat.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-78",
+            "question": "What routes trigger export?",
+            "evidenceExcerpt": "worker/export.ts: Cron handles export batch",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          },
+          {
+            "id": "ea-80",
+            "question": "What is nightly schedule?",
+            "evidenceExcerpt": "external/weather.txt: The weather in Paris is sunny with mild winds.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "provider": "deterministic"
+          }
+        ],
+        "thresholdSweep": [
+          {
+            "threshold": 0.5,
+            "unsafeContinuationRate": 0.4125,
+            "correctContinuationRate": 0.475,
+            "falseSilenceRate": 0.025,
+            "escalationRate": 0.8875,
+            "silenceRate": 0.1125,
+            "coverageRate": 0.8875
+          },
+          {
+            "threshold": 0.6,
+            "unsafeContinuationRate": 0.4125,
+            "correctContinuationRate": 0.475,
+            "falseSilenceRate": 0.025,
+            "escalationRate": 0.8875,
+            "silenceRate": 0.1125,
+            "coverageRate": 0.8875
+          },
+          {
+            "threshold": 0.7,
+            "unsafeContinuationRate": 0.4125,
+            "correctContinuationRate": 0.475,
+            "falseSilenceRate": 0.025,
+            "escalationRate": 0.8875,
+            "silenceRate": 0.1125,
+            "coverageRate": 0.8875
+          },
+          {
+            "threshold": 0.8,
+            "unsafeContinuationRate": 0.4125,
+            "correctContinuationRate": 0.475,
+            "falseSilenceRate": 0.025,
+            "escalationRate": 0.8875,
+            "silenceRate": 0.1125,
+            "coverageRate": 0.8875
+          },
+          {
+            "threshold": 0.9,
+            "unsafeContinuationRate": 0,
+            "correctContinuationRate": 0,
+            "falseSilenceRate": 0.5,
+            "escalationRate": 0,
+            "silenceRate": 1,
+            "coverageRate": 0
+          },
+          {
+            "threshold": 0.95,
+            "unsafeContinuationRate": 0,
+            "correctContinuationRate": 0,
+            "falseSilenceRate": 0.5,
+            "escalationRate": 0,
+            "silenceRate": 1,
+            "coverageRate": 0
+          },
+          {
+            "threshold": 0.98,
+            "unsafeContinuationRate": 0,
+            "correctContinuationRate": 0,
+            "falseSilenceRate": 0.5,
+            "escalationRate": 0,
+            "silenceRate": 1,
+            "coverageRate": 0
+          }
+        ],
+        "cases": [
+          {
+            "id": "ea-001",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 3
+          },
+          {
+            "id": "ea-002",
+            "question": "What does the auth service do?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 1
+          },
+          {
+            "id": "ea-003",
+            "question": "What is the architecture?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-004",
+            "question": "What is the weather today?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0,
+            "note": "off-topic"
+          },
+          {
+            "id": "ea-005",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0,
+            "note": "wrong source"
+          },
+          {
+            "id": "ea-006",
+            "question": "Where is retry logic?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-007",
+            "question": "What is enterprise pricing?",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-008",
+            "question": "What is enterprise pricing?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-009",
+            "question": "What uptime is guaranteed?",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-010",
+            "question": "What uptime is guaranteed?",
+            "evidence": {
+              "path": "tests/retry.test.ts",
+              "text": "expect(retries).toBe(3)"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "test vs contract"
+          },
+          {
+            "id": "ea-011",
+            "question": "How does cookie rotation work?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-012",
+            "question": "How does cookie rotation work?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-013",
+            "question": "What happens on export failure?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-014",
+            "question": "What happens on export failure?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-015",
+            "question": "Where is settlement CSV built?",
+            "evidence": {
+              "path": "README.md",
+              "text": "builds the settlement CSV and uploads it"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-016",
+            "question": "Where is settlement CSV built?",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-017",
+            "question": "Is auth checked on every request?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-018",
+            "question": "Is auth checked on every request?",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-019",
+            "question": "What is the retry cap?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-020",
+            "question": "What is the retry cap?",
+            "evidence": {
+              "path": "src/demo.ts",
+              "text": "export const token = 'demo';"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-021",
+            "question": "What does Northstar export?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-022",
+            "question": "What does Northstar export?",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-023",
+            "question": "Who verifies sessions?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-024",
+            "question": "Who verifies sessions?",
+            "evidence": {
+              "path": "tests/auth.test.ts",
+              "text": "describe('retry', () => {})"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-025",
+            "question": "What is PAY-219?",
+            "evidence": {
+              "path": "README.md",
+              "text": "replayed from the PAY-219 runbook"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-026",
+            "question": "What is PAY-219?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-027",
+            "question": "How does cookie rotation work? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-028",
+            "question": "How does cookie rotation work? (variant 2)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-029",
+            "question": "What happens on export failure? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-030",
+            "question": "What happens on export failure? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-031",
+            "question": "Where is settlement CSV built? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "builds the settlement CSV and uploads it"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-032",
+            "question": "Where is settlement CSV built? (variant 2)",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-033",
+            "question": "Is auth checked on every request? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-034",
+            "question": "Is auth checked on every request? (variant 2)",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-035",
+            "question": "What is the retry cap? (variant 2)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-036",
+            "question": "What is the retry cap? (variant 2)",
+            "evidence": {
+              "path": "src/demo.ts",
+              "text": "export const token = 'demo';"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-037",
+            "question": "What does Northstar export? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-038",
+            "question": "What does Northstar export? (variant 2)",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-039",
+            "question": "Who verifies sessions? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-040",
+            "question": "Who verifies sessions? (variant 2)",
+            "evidence": {
+              "path": "tests/auth.test.ts",
+              "text": "describe('retry', () => {})"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-041",
+            "question": "What is PAY-219? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "replayed from the PAY-219 runbook"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-042",
+            "question": "What is PAY-219? (variant 2)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-043",
+            "question": "How does cookie rotation work? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-044",
+            "question": "How does cookie rotation work? (variant 3)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-045",
+            "question": "What happens on export failure? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-046",
+            "question": "What happens on export failure? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-047",
+            "question": "Where is settlement CSV built? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "builds the settlement CSV and uploads it"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-048",
+            "question": "Where is settlement CSV built? (variant 3)",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-049",
+            "question": "Is auth checked on every request? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-050",
+            "question": "Is auth checked on every request? (variant 3)",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-051",
+            "question": "What is the retry cap? (variant 3)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-052",
+            "question": "What is the retry cap? (variant 3)",
+            "evidence": {
+              "path": "src/demo.ts",
+              "text": "export const token = 'demo';"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-053",
+            "question": "What does Northstar export? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-054",
+            "question": "What does Northstar export? (variant 3)",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-055",
+            "question": "Who verifies sessions? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-056",
+            "question": "Who verifies sessions? (variant 3)",
+            "evidence": {
+              "path": "tests/auth.test.ts",
+              "text": "describe('retry', () => {})"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-057",
+            "question": "What is PAY-219? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "replayed from the PAY-219 runbook"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-058",
+            "question": "What is PAY-219? (variant 3)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-59",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at four."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0,
+            "note": "numeric drift"
+          },
+          {
+            "id": "ea-60",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are not capped at three."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "negation"
+          },
+          {
+            "id": "ea-61",
+            "question": "What owns authentication?",
+            "evidence": {
+              "path": "README.md",
+              "text": "src/auth — verifies and rotates session cookies"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 1,
+            "note": "partial support"
+          },
+          {
+            "id": "ea-62",
+            "question": "What owns authentication?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Settlement exports run nightly."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "irrelevant similarity"
+          },
+          {
+            "id": "ea-63",
+            "question": "What is Zylorp headquarters address?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "unsupported"
+          },
+          {
+            "id": "ea-64",
+            "question": "What is Zylorp headquarters address?",
+            "evidence": {
+              "path": "external/zylorp.txt",
+              "text": "123 Main St"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0,
+            "note": "exact supported in wrong corpus item"
+          },
+          {
+            "id": "ea-65",
+            "question": "What version is retry policy?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Policy v2 caps attempts at three."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "version mention ok"
+          },
+          {
+            "id": "ea-66",
+            "question": "What version is retry policy?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Policy v3 caps attempts at three."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "version mismatch"
+          },
+          {
+            "id": "ea-67",
+            "question": "Does README mention S3?",
+            "evidence": {
+              "path": "README.md",
+              "text": "exports merchant settlement files to S3"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-68",
+            "question": "Does README mention S3?",
+            "evidence": {
+              "path": "README.md",
+              "text": "guards the operator dashboard"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "partial unrelated sentence"
+          },
+          {
+            "id": "ea-69",
+            "question": "What handles dead-letter replay?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-70",
+            "question": "What handles dead-letter replay?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "related wrong module"
+          },
+          {
+            "id": "ea-71",
+            "question": "Is session rotated on exit?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "rotates it on the way out"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-72",
+            "question": "Is session rotated on exit?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "on the way out"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "phrase collision"
+          },
+          {
+            "id": "ea-73",
+            "question": "What is edge auth purpose?",
+            "evidence": {
+              "path": "README.md",
+              "text": "guards the operator dashboard with edge auth"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-74",
+            "question": "What is edge auth purpose?",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-75",
+            "question": "How many export attempts?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "capped at three"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-76",
+            "question": "How many export attempts?",
+            "evidence": {
+              "path": "tests/retry.test.ts",
+              "text": "toBe(3)"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 0,
+            "note": "test assertion not doc"
+          },
+          {
+            "id": "ea-77",
+            "question": "What routes trigger export?",
+            "evidence": {
+              "path": "docs/routes.md",
+              "text": "POST /export triggers worker"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-78",
+            "question": "What routes trigger export?",
+            "evidence": {
+              "path": "worker/export.ts",
+              "text": "Cron handles export batch"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0,
+            "note": "worker behavior not route doc"
+          },
+          {
+            "id": "ea-79",
+            "question": "What is nightly schedule?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Exports run per merchant on a nightly schedule"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          },
+          {
+            "id": "ea-80",
+            "question": "What is nightly schedule?",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.85,
+            "applicableProbability": 0.85,
+            "latencyMs": 0
+          }
+        ],
+        "latencyMs": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 3,
+          "n": 80
+        }
+      },
+      "escalation": {
+        "total": 95,
+        "accuracy": 0.8947368421052632,
+        "precision": 0.9666666666666667,
+        "recall": 0.7631578947368421,
+        "unsafeContinuation": 0,
+        "unsafeContinuationRate": 0,
+        "falseSilence": 0,
+        "falseSilenceRate": 0,
+        "falseEscalation": 9,
+        "falseEscalationRate": 0.09473684210526316,
+        "falseApplicability": 0,
+        "falseApplicabilityRate": 0,
+        "safeCoverage": 0.5894736842105263,
+        "refusalRate": 0.30526315789473685,
+        "answerRate": 0.3157894736842105,
+        "escalateRate": 0.37894736842105264,
+        "silentRate": 0.30526315789473685,
+        "cases": [
+          {
+            "id": "ex-001",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-002",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-003",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-004",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-005",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-006",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-007",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-008",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-009",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-010",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-011",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-012",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-013",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-014",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-015",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-016",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-017",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-018",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-019",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-020",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-021",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-022",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-023",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-024",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-025",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-026",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-027",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-028",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-029",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-030",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-031",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-032",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-033",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-034",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-035",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-036",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-037",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-038",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-039",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-040",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-041",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-042",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-043",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-044",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-045",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-046",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-047",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-048",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-049",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-050",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-051",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-052",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-053",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-054",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-055",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-056",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-057",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-058",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-059",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-060",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-061",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-062",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-063",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-064",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-065",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-066",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-067",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-068",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-069",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-070",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-071",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-072",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-073",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-074",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-075",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-076",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-077",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-078",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-079",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-080",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-081",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-082",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-083",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-084",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-085",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-086",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-087",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-088",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-089",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-090",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-091",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-092",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-093",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-094",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          },
+          {
+            "id": "ex-095",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "confidence": 0.8,
+            "latencyMs": 0
+          }
+        ],
+        "latencyMs": {
+          "p50": 0,
+          "p95": 0,
+          "p99": 0,
+          "n": 95
+        }
+      },
+      "cost": {
+        "measuredTotalUsd": null,
+        "measuredInputTokens": null,
+        "estimatedPer1000QuestionsUsd": null,
+        "estimatedPer10000QuestionsUsd": null
+      },
+      "jevBatchLatency": null
+    },
+    "llm": {
+      "question_classification": {
+        "total": 40,
+        "accuracy": 0.625,
+        "precision": {
+          "architecture": 1,
+          "product_capability": 1,
+          "implementation": 0.5,
+          "general_technical_reasoning": 0.3333333333333333,
+          "security_compliance": 1,
+          "contractual_sla": 1,
+          "pricing_packaging": 1,
+          "current_external_fact": 1,
+          "other": 0.09090909090909091
+        },
+        "recall": {
+          "architecture": 0.75,
+          "product_capability": 0.5,
+          "implementation": 0.375,
+          "general_technical_reasoning": 0.25,
+          "security_compliance": 0.6666666666666666,
+          "contractual_sla": 1,
+          "pricing_packaging": 1,
+          "current_external_fact": 0.6,
+          "other": 1
+        },
+        "confusion": {
+          "architecture": {
+            "architecture": 3,
+            "product_capability": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 1,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "product_capability": {
+            "architecture": 0,
+            "product_capability": 2,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 2
+          },
+          "implementation": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 3,
+            "general_technical_reasoning": 0,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 5
+          },
+          "general_technical_reasoning": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 2,
+            "general_technical_reasoning": 1,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 1
+          },
+          "security_compliance": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 1,
+            "general_technical_reasoning": 1,
+            "security_compliance": 4,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "contractual_sla": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "security_compliance": 0,
+            "contractual_sla": 4,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "pricing_packaging": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 4,
+            "current_external_fact": 0,
+            "other": 0
+          },
+          "current_external_fact": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 3,
+            "other": 2
+          },
+          "other": {
+            "architecture": 0,
+            "product_capability": 0,
+            "implementation": 0,
+            "general_technical_reasoning": 0,
+            "security_compliance": 0,
+            "contractual_sla": 0,
+            "pricing_packaging": 0,
+            "current_external_fact": 0,
+            "other": 1
+          }
+        },
+        "macroPrecision": 0.7693602693602695,
+        "macroRecall": 0.6824074074074074,
+        "cases": [
+          {
+            "id": "qc-001",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "confidence": 0.95,
+            "latencyMs": 1202
+          },
+          {
+            "id": "qc-002",
+            "expected": "product_capability",
+            "predicted": "product_capability",
+            "latencyMs": 903
+          },
+          {
+            "id": "qc-003",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "confidence": 0.85,
+            "latencyMs": 861
+          },
+          {
+            "id": "qc-004",
+            "expected": "general_technical_reasoning",
+            "predicted": "general_technical_reasoning",
+            "latencyMs": 1176
+          },
+          {
+            "id": "qc-005",
+            "expected": "security_compliance",
+            "predicted": "general_technical_reasoning",
+            "confidence": 0.85,
+            "latencyMs": 557
+          },
+          {
+            "id": "qc-006",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "latencyMs": 787
+          },
+          {
+            "id": "qc-007",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "confidence": 0.95,
+            "latencyMs": 818
+          },
+          {
+            "id": "qc-008",
+            "expected": "current_external_fact",
+            "predicted": "other",
+            "confidence": 0.95,
+            "latencyMs": 837
+          },
+          {
+            "id": "qc-009",
+            "expected": "implementation",
+            "predicted": "other",
+            "confidence": 0.85,
+            "latencyMs": 676
+          },
+          {
+            "id": "qc-010",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "latencyMs": 780
+          },
+          {
+            "id": "qc-011",
+            "expected": "general_technical_reasoning",
+            "predicted": "implementation",
+            "confidence": 0.85,
+            "latencyMs": 1399
+          },
+          {
+            "id": "qc-012",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "latencyMs": 783
+          },
+          {
+            "id": "qc-013",
+            "expected": "implementation",
+            "predicted": "other",
+            "confidence": 0.9,
+            "latencyMs": 690
+          },
+          {
+            "id": "qc-014",
+            "expected": "implementation",
+            "predicted": "other",
+            "latencyMs": 742
+          },
+          {
+            "id": "qc-015",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "latencyMs": 712
+          },
+          {
+            "id": "qc-016",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "confidence": 0.9,
+            "latencyMs": 663
+          },
+          {
+            "id": "qc-017",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "confidence": 0.9,
+            "latencyMs": 871
+          },
+          {
+            "id": "qc-018",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "latencyMs": 760
+          },
+          {
+            "id": "qc-019",
+            "expected": "current_external_fact",
+            "predicted": "other",
+            "confidence": 0.95,
+            "latencyMs": 711
+          },
+          {
+            "id": "qc-020",
+            "expected": "architecture",
+            "predicted": "general_technical_reasoning",
+            "latencyMs": 612
+          },
+          {
+            "id": "qc-021",
+            "expected": "product_capability",
+            "predicted": "product_capability",
+            "latencyMs": 820
+          },
+          {
+            "id": "qc-022",
+            "expected": "implementation",
+            "predicted": "other",
+            "confidence": 0.9,
+            "latencyMs": 607
+          },
+          {
+            "id": "qc-023",
+            "expected": "general_technical_reasoning",
+            "predicted": "implementation",
+            "latencyMs": 851
+          },
+          {
+            "id": "qc-024",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "confidence": 0.9,
+            "latencyMs": 898
+          },
+          {
+            "id": "qc-025",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "latencyMs": 671
+          },
+          {
+            "id": "qc-026",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "latencyMs": 563
+          },
+          {
+            "id": "qc-027",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "latencyMs": 906
+          },
+          {
+            "id": "qc-028",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "latencyMs": 770
+          },
+          {
+            "id": "qc-029",
+            "expected": "product_capability",
+            "predicted": "other",
+            "confidence": 0.9,
+            "latencyMs": 898
+          },
+          {
+            "id": "qc-030",
+            "expected": "implementation",
+            "predicted": "implementation",
+            "latencyMs": 592
+          },
+          {
+            "id": "qc-031",
+            "expected": "architecture",
+            "predicted": "architecture",
+            "confidence": 0.85,
+            "latencyMs": 546
+          },
+          {
+            "id": "qc-032",
+            "expected": "general_technical_reasoning",
+            "predicted": "other",
+            "latencyMs": 583
+          },
+          {
+            "id": "qc-033",
+            "expected": "security_compliance",
+            "predicted": "implementation",
+            "latencyMs": 591
+          },
+          {
+            "id": "qc-034",
+            "expected": "contractual_sla",
+            "predicted": "contractual_sla",
+            "confidence": 0.85,
+            "latencyMs": 838
+          },
+          {
+            "id": "qc-035",
+            "expected": "pricing_packaging",
+            "predicted": "pricing_packaging",
+            "confidence": 0.9,
+            "latencyMs": 578
+          },
+          {
+            "id": "qc-036",
+            "expected": "current_external_fact",
+            "predicted": "current_external_fact",
+            "confidence": 0.95,
+            "latencyMs": 653
+          },
+          {
+            "id": "qc-037",
+            "expected": "implementation",
+            "predicted": "other",
+            "latencyMs": 596
+          },
+          {
+            "id": "qc-038",
+            "expected": "product_capability",
+            "predicted": "other",
+            "confidence": 0.85,
+            "latencyMs": 798
+          },
+          {
+            "id": "qc-039",
+            "expected": "security_compliance",
+            "predicted": "security_compliance",
+            "latencyMs": 679
+          },
+          {
+            "id": "qc-040",
+            "expected": "other",
+            "predicted": "other",
+            "latencyMs": 637
+          }
+        ],
+        "latencyMs": {
+          "p50": 742,
+          "p95": 1176,
+          "p99": 1399,
+          "n": 40
+        }
+      },
+      "evidence_applicability": {
+        "total": 80,
+        "accuracy": 0.9375,
+        "precision": 0.9069767441860465,
+        "recall": 0.975,
+        "unsafeContinuation": 4,
+        "unsafeContinuationRate": 0.05,
+        "falseSilence": 1,
+        "falseSilenceRate": 0.0125,
+        "falseEscalation": 0,
+        "falseEscalationRate": 0,
+        "falseApplicability": 4,
+        "falseApplicabilityRate": 0.05,
+        "safeCoverage": 0.4875,
+        "refusalRate": 0.4625,
+        "falseApplicable": 4,
+        "falseNotApplicable": 1,
+        "unsafeContinuationCases": [
+          {
+            "id": "ea-022",
+            "question": "What does Northstar export?",
+            "evidenceExcerpt": "docs/sla.md: We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "provider": "llm"
+          },
+          {
+            "id": "ea-66",
+            "question": "What version is retry policy?",
+            "evidenceExcerpt": "src/exporter/retry.ts: Policy v3 caps attempts at three.",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "provider": "llm"
+          },
+          {
+            "id": "ea-76",
+            "question": "How many export attempts?",
+            "evidenceExcerpt": "tests/retry.test.ts: toBe(3)",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "provider": "llm"
+          },
+          {
+            "id": "ea-78",
+            "question": "What routes trigger export?",
+            "evidenceExcerpt": "worker/export.ts: Cron handles export batch",
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "provider": "llm"
+          }
+        ],
+        "thresholdSweep": [
+          {
+            "threshold": 0.5,
+            "unsafeContinuationRate": 0.1625,
+            "correctContinuationRate": 0.4875,
+            "falseSilenceRate": 0.0125,
+            "escalationRate": 0.65,
+            "silenceRate": 0.35,
+            "coverageRate": 0.65
+          },
+          {
+            "threshold": 0.6,
+            "unsafeContinuationRate": 0.1625,
+            "correctContinuationRate": 0.4875,
+            "falseSilenceRate": 0.0125,
+            "escalationRate": 0.65,
+            "silenceRate": 0.35,
+            "coverageRate": 0.65
+          },
+          {
+            "threshold": 0.7,
+            "unsafeContinuationRate": 0.1625,
+            "correctContinuationRate": 0.4875,
+            "falseSilenceRate": 0.0125,
+            "escalationRate": 0.65,
+            "silenceRate": 0.35,
+            "coverageRate": 0.65
+          },
+          {
+            "threshold": 0.8,
+            "unsafeContinuationRate": 0.15,
+            "correctContinuationRate": 0.475,
+            "falseSilenceRate": 0.025,
+            "escalationRate": 0.625,
+            "silenceRate": 0.375,
+            "coverageRate": 0.625
+          },
+          {
+            "threshold": 0.9,
+            "unsafeContinuationRate": 0.075,
+            "correctContinuationRate": 0.475,
+            "falseSilenceRate": 0.025,
+            "escalationRate": 0.55,
+            "silenceRate": 0.45,
+            "coverageRate": 0.55
+          },
+          {
+            "threshold": 0.95,
+            "unsafeContinuationRate": 0.025,
+            "correctContinuationRate": 0.05,
+            "falseSilenceRate": 0.45,
+            "escalationRate": 0.075,
+            "silenceRate": 0.925,
+            "coverageRate": 0.075
+          },
+          {
+            "threshold": 0.98,
+            "unsafeContinuationRate": 0.025,
+            "correctContinuationRate": 0.0375,
+            "falseSilenceRate": 0.4625,
+            "escalationRate": 0.0625,
+            "silenceRate": 0.9375,
+            "coverageRate": 0.0625
+          }
+        ],
+        "cases": [
+          {
+            "id": "ea-001",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 1304
+          },
+          {
+            "id": "ea-002",
+            "question": "What does the auth service do?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 903
+          },
+          {
+            "id": "ea-003",
+            "question": "What is the architecture?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 700
+          },
+          {
+            "id": "ea-004",
+            "question": "What is the weather today?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 608,
+            "note": "off-topic"
+          },
+          {
+            "id": "ea-005",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 945,
+            "note": "wrong source"
+          },
+          {
+            "id": "ea-006",
+            "question": "Where is retry logic?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 704
+          },
+          {
+            "id": "ea-007",
+            "question": "What is enterprise pricing?",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 934
+          },
+          {
+            "id": "ea-008",
+            "question": "What is enterprise pricing?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0,
+            "applicableProbability": 1,
+            "latencyMs": 749
+          },
+          {
+            "id": "ea-009",
+            "question": "What uptime is guaranteed?",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 1,
+            "applicableProbability": 1,
+            "latencyMs": 787
+          },
+          {
+            "id": "ea-010",
+            "question": "What uptime is guaranteed?",
+            "evidence": {
+              "path": "tests/retry.test.ts",
+              "text": "expect(retries).toBe(3)"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.2,
+            "applicableProbability": 0.8,
+            "latencyMs": 716,
+            "note": "test vs contract"
+          },
+          {
+            "id": "ea-011",
+            "question": "How does cookie rotation work?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 583
+          },
+          {
+            "id": "ea-012",
+            "question": "How does cookie rotation work?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 1042
+          },
+          {
+            "id": "ea-013",
+            "question": "What happens on export failure?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 766
+          },
+          {
+            "id": "ea-014",
+            "question": "What happens on export failure?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 644
+          },
+          {
+            "id": "ea-015",
+            "question": "Where is settlement CSV built?",
+            "evidence": {
+              "path": "README.md",
+              "text": "builds the settlement CSV and uploads it"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 665
+          },
+          {
+            "id": "ea-016",
+            "question": "Where is settlement CSV built?",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 641
+          },
+          {
+            "id": "ea-017",
+            "question": "Is auth checked on every request?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 779
+          },
+          {
+            "id": "ea-018",
+            "question": "Is auth checked on every request?",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 1026
+          },
+          {
+            "id": "ea-019",
+            "question": "What is the retry cap?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 608
+          },
+          {
+            "id": "ea-020",
+            "question": "What is the retry cap?",
+            "evidence": {
+              "path": "src/demo.ts",
+              "text": "export const token = 'demo';"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 595
+          },
+          {
+            "id": "ea-021",
+            "question": "What does Northstar export?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 572
+          },
+          {
+            "id": "ea-022",
+            "question": "What does Northstar export?",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 764
+          },
+          {
+            "id": "ea-023",
+            "question": "Who verifies sessions?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 876
+          },
+          {
+            "id": "ea-024",
+            "question": "Who verifies sessions?",
+            "evidence": {
+              "path": "tests/auth.test.ts",
+              "text": "describe('retry', () => {})"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.2,
+            "applicableProbability": 0.8,
+            "latencyMs": 928
+          },
+          {
+            "id": "ea-025",
+            "question": "What is PAY-219?",
+            "evidence": {
+              "path": "README.md",
+              "text": "replayed from the PAY-219 runbook"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 871
+          },
+          {
+            "id": "ea-026",
+            "question": "What is PAY-219?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 1218
+          },
+          {
+            "id": "ea-027",
+            "question": "How does cookie rotation work? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 543
+          },
+          {
+            "id": "ea-028",
+            "question": "How does cookie rotation work? (variant 2)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.2,
+            "applicableProbability": 0.8,
+            "latencyMs": 808
+          },
+          {
+            "id": "ea-029",
+            "question": "What happens on export failure? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 796
+          },
+          {
+            "id": "ea-030",
+            "question": "What happens on export failure? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 812
+          },
+          {
+            "id": "ea-031",
+            "question": "Where is settlement CSV built? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "builds the settlement CSV and uploads it"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 842
+          },
+          {
+            "id": "ea-032",
+            "question": "Where is settlement CSV built? (variant 2)",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 927
+          },
+          {
+            "id": "ea-033",
+            "question": "Is auth checked on every request? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 810
+          },
+          {
+            "id": "ea-034",
+            "question": "Is auth checked on every request? (variant 2)",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 738
+          },
+          {
+            "id": "ea-035",
+            "question": "What is the retry cap? (variant 2)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 563
+          },
+          {
+            "id": "ea-036",
+            "question": "What is the retry cap? (variant 2)",
+            "evidence": {
+              "path": "src/demo.ts",
+              "text": "export const token = 'demo';"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 651
+          },
+          {
+            "id": "ea-037",
+            "question": "What does Northstar export? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 823
+          },
+          {
+            "id": "ea-038",
+            "question": "What does Northstar export? (variant 2)",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.7,
+            "applicableProbability": 0.30000000000000004,
+            "latencyMs": 925
+          },
+          {
+            "id": "ea-039",
+            "question": "Who verifies sessions? (variant 2)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 674
+          },
+          {
+            "id": "ea-040",
+            "question": "Who verifies sessions? (variant 2)",
+            "evidence": {
+              "path": "tests/auth.test.ts",
+              "text": "describe('retry', () => {})"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.2,
+            "applicableProbability": 0.8,
+            "latencyMs": 575
+          },
+          {
+            "id": "ea-041",
+            "question": "What is PAY-219? (variant 2)",
+            "evidence": {
+              "path": "README.md",
+              "text": "replayed from the PAY-219 runbook"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 638
+          },
+          {
+            "id": "ea-042",
+            "question": "What is PAY-219? (variant 2)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 736
+          },
+          {
+            "id": "ea-043",
+            "question": "How does cookie rotation work? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 852
+          },
+          {
+            "id": "ea-044",
+            "question": "How does cookie rotation work? (variant 3)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.2,
+            "applicableProbability": 0.8,
+            "latencyMs": 691
+          },
+          {
+            "id": "ea-045",
+            "question": "What happens on export failure? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 620
+          },
+          {
+            "id": "ea-046",
+            "question": "What happens on export failure? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 953
+          },
+          {
+            "id": "ea-047",
+            "question": "Where is settlement CSV built? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "builds the settlement CSV and uploads it"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 605
+          },
+          {
+            "id": "ea-048",
+            "question": "Where is settlement CSV built? (variant 3)",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 964
+          },
+          {
+            "id": "ea-049",
+            "question": "Is auth checked on every request? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 584
+          },
+          {
+            "id": "ea-050",
+            "question": "Is auth checked on every request? (variant 3)",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 1012
+          },
+          {
+            "id": "ea-051",
+            "question": "What is the retry cap? (variant 3)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 1,
+            "applicableProbability": 1,
+            "latencyMs": 652
+          },
+          {
+            "id": "ea-052",
+            "question": "What is the retry cap? (variant 3)",
+            "evidence": {
+              "path": "src/demo.ts",
+              "text": "export const token = 'demo';"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 678
+          },
+          {
+            "id": "ea-053",
+            "question": "What does Northstar export? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 818
+          },
+          {
+            "id": "ea-054",
+            "question": "What does Northstar export? (variant 3)",
+            "evidence": {
+              "path": "docs/sla.md",
+              "text": "We guarantee 99.9% uptime for export API availability per contract section 4.2."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 609
+          },
+          {
+            "id": "ea-055",
+            "question": "Who verifies sessions? (variant 3)",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "The auth service verifies the session cookie on every non-public request and rotates it on the way out."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.75,
+            "applicableProbability": 0.75,
+            "latencyMs": 894
+          },
+          {
+            "id": "ea-056",
+            "question": "Who verifies sessions? (variant 3)",
+            "evidence": {
+              "path": "tests/auth.test.ts",
+              "text": "describe('retry', () => {})"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.25,
+            "applicableProbability": 0.75,
+            "latencyMs": 803
+          },
+          {
+            "id": "ea-057",
+            "question": "What is PAY-219? (variant 3)",
+            "evidence": {
+              "path": "README.md",
+              "text": "replayed from the PAY-219 runbook"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 628
+          },
+          {
+            "id": "ea-058",
+            "question": "What is PAY-219? (variant 3)",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 664
+          },
+          {
+            "id": "ea-59",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at four."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 774,
+            "note": "numeric drift"
+          },
+          {
+            "id": "ea-60",
+            "question": "Why does that retry three times?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are not capped at three."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 664,
+            "note": "negation"
+          },
+          {
+            "id": "ea-61",
+            "question": "What owns authentication?",
+            "evidence": {
+              "path": "README.md",
+              "text": "src/auth — verifies and rotates session cookies"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 702,
+            "note": "partial support"
+          },
+          {
+            "id": "ea-62",
+            "question": "What owns authentication?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Settlement exports run nightly."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 512,
+            "note": "irrelevant similarity"
+          },
+          {
+            "id": "ea-63",
+            "question": "What is Zylorp headquarters address?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0,
+            "applicableProbability": 1,
+            "latencyMs": 638,
+            "note": "unsupported"
+          },
+          {
+            "id": "ea-64",
+            "question": "What is Zylorp headquarters address?",
+            "evidence": {
+              "path": "external/zylorp.txt",
+              "text": "123 Main St"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 795,
+            "note": "exact supported in wrong corpus item"
+          },
+          {
+            "id": "ea-65",
+            "question": "What version is retry policy?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Policy v2 caps attempts at three."
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 864,
+            "note": "version mention ok"
+          },
+          {
+            "id": "ea-66",
+            "question": "What version is retry policy?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Policy v3 caps attempts at three."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 817,
+            "note": "version mismatch"
+          },
+          {
+            "id": "ea-67",
+            "question": "Does README mention S3?",
+            "evidence": {
+              "path": "README.md",
+              "text": "exports merchant settlement files to S3"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.95,
+            "applicableProbability": 0.95,
+            "latencyMs": 1088
+          },
+          {
+            "id": "ea-68",
+            "question": "Does README mention S3?",
+            "evidence": {
+              "path": "README.md",
+              "text": "guards the operator dashboard"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 916,
+            "note": "partial unrelated sentence"
+          },
+          {
+            "id": "ea-69",
+            "question": "What handles dead-letter replay?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Failures land in the dead-letter queue and are replayed"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 700
+          },
+          {
+            "id": "ea-70",
+            "question": "What handles dead-letter replay?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "Attempts are capped at three because the payment gateway stalls rather than failing fast."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.8,
+            "applicableProbability": 0.19999999999999996,
+            "latencyMs": 712,
+            "note": "related wrong module"
+          },
+          {
+            "id": "ea-71",
+            "question": "Is session rotated on exit?",
+            "evidence": {
+              "path": "src/auth.ts",
+              "text": "rotates it on the way out"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 533
+          },
+          {
+            "id": "ea-72",
+            "question": "Is session rotated on exit?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "on the way out"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.2,
+            "applicableProbability": 0.8,
+            "latencyMs": 866,
+            "note": "phrase collision"
+          },
+          {
+            "id": "ea-73",
+            "question": "What is edge auth purpose?",
+            "evidence": {
+              "path": "README.md",
+              "text": "guards the operator dashboard with edge auth"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 692
+          },
+          {
+            "id": "ea-74",
+            "question": "What is edge auth purpose?",
+            "evidence": {
+              "path": "docs/pricing.md",
+              "text": "Enterprise plan is billed annually at twelve hundred dollars per seat."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 562
+          },
+          {
+            "id": "ea-75",
+            "question": "How many export attempts?",
+            "evidence": {
+              "path": "src/exporter/retry.ts",
+              "text": "capped at three"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 1,
+            "applicableProbability": 1,
+            "latencyMs": 845
+          },
+          {
+            "id": "ea-76",
+            "question": "How many export attempts?",
+            "evidence": {
+              "path": "tests/retry.test.ts",
+              "text": "toBe(3)"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 825,
+            "note": "test assertion not doc"
+          },
+          {
+            "id": "ea-77",
+            "question": "What routes trigger export?",
+            "evidence": {
+              "path": "docs/routes.md",
+              "text": "POST /export triggers worker"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 723
+          },
+          {
+            "id": "ea-78",
+            "question": "What routes trigger export?",
+            "evidence": {
+              "path": "worker/export.ts",
+              "text": "Cron handles export batch"
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 677,
+            "note": "worker behavior not route doc"
+          },
+          {
+            "id": "ea-79",
+            "question": "What is nightly schedule?",
+            "evidence": {
+              "path": "README.md",
+              "text": "Exports run per merchant on a nightly schedule"
+            },
+            "expected": "APPLICABLE",
+            "predicted": "APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.9,
+            "latencyMs": 1061
+          },
+          {
+            "id": "ea-80",
+            "question": "What is nightly schedule?",
+            "evidence": {
+              "path": "external/weather.txt",
+              "text": "The weather in Paris is sunny with mild winds."
+            },
+            "expected": "NOT_APPLICABLE",
+            "predicted": "NOT_APPLICABLE",
+            "confidence": 0.9,
+            "applicableProbability": 0.09999999999999998,
+            "latencyMs": 536
+          }
+        ],
+        "latencyMs": {
+          "p50": 738,
+          "p95": 1042,
+          "p99": 1304,
+          "n": 80
+        }
+      },
+      "escalation": {
+        "total": 95,
+        "accuracy": 0.6736842105263158,
+        "precision": 0.7916666666666666,
+        "recall": 1,
+        "unsafeContinuation": 20,
+        "unsafeContinuationRate": 0.21052631578947367,
+        "falseSilence": 1,
+        "falseSilenceRate": 0.010526315789473684,
+        "falseEscalation": 0,
+        "falseEscalationRate": 0,
+        "falseApplicability": 0,
+        "falseApplicabilityRate": 0,
+        "safeCoverage": 0.5789473684210527,
+        "refusalRate": 0.10526315789473684,
+        "answerRate": 0.5052631578947369,
+        "escalateRate": 0.3894736842105263,
+        "silentRate": 0.10526315789473684,
+        "cases": [
+          {
+            "id": "ex-001",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 895
+          },
+          {
+            "id": "ex-002",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 597
+          },
+          {
+            "id": "ex-003",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 618
+          },
+          {
+            "id": "ex-004",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 565
+          },
+          {
+            "id": "ex-005",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 588
+          },
+          {
+            "id": "ex-006",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 825
+          },
+          {
+            "id": "ex-007",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 696
+          },
+          {
+            "id": "ex-008",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 624
+          },
+          {
+            "id": "ex-009",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 641
+          },
+          {
+            "id": "ex-010",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1045
+          },
+          {
+            "id": "ex-011",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 533
+          },
+          {
+            "id": "ex-012",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 742
+          },
+          {
+            "id": "ex-013",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 614
+          },
+          {
+            "id": "ex-014",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 796
+          },
+          {
+            "id": "ex-015",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 699
+          },
+          {
+            "id": "ex-016",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 575
+          },
+          {
+            "id": "ex-017",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 583
+          },
+          {
+            "id": "ex-018",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 553
+          },
+          {
+            "id": "ex-019",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 488
+          },
+          {
+            "id": "ex-020",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1030
+          },
+          {
+            "id": "ex-021",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 807
+          },
+          {
+            "id": "ex-022",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 718
+          },
+          {
+            "id": "ex-023",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 610
+          },
+          {
+            "id": "ex-024",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 685
+          },
+          {
+            "id": "ex-025",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 620
+          },
+          {
+            "id": "ex-026",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 755
+          },
+          {
+            "id": "ex-027",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 726
+          },
+          {
+            "id": "ex-028",
+            "expected": "ESCALATE",
+            "predicted": "SILENT",
+            "latencyMs": 627
+          },
+          {
+            "id": "ex-029",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 810
+          },
+          {
+            "id": "ex-030",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 894
+          },
+          {
+            "id": "ex-031",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 884
+          },
+          {
+            "id": "ex-032",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 740
+          },
+          {
+            "id": "ex-033",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 615
+          },
+          {
+            "id": "ex-034",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 717
+          },
+          {
+            "id": "ex-035",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 867
+          },
+          {
+            "id": "ex-036",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 936
+          },
+          {
+            "id": "ex-037",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 769
+          },
+          {
+            "id": "ex-038",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 682
+          },
+          {
+            "id": "ex-039",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 619
+          },
+          {
+            "id": "ex-040",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1349
+          },
+          {
+            "id": "ex-041",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 615
+          },
+          {
+            "id": "ex-042",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 636
+          },
+          {
+            "id": "ex-043",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 554
+          },
+          {
+            "id": "ex-044",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 1058
+          },
+          {
+            "id": "ex-045",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 596
+          },
+          {
+            "id": "ex-046",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 759
+          },
+          {
+            "id": "ex-047",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 671
+          },
+          {
+            "id": "ex-048",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 648
+          },
+          {
+            "id": "ex-049",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 728
+          },
+          {
+            "id": "ex-050",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1055
+          },
+          {
+            "id": "ex-051",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 891
+          },
+          {
+            "id": "ex-052",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 676
+          },
+          {
+            "id": "ex-053",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 681
+          },
+          {
+            "id": "ex-054",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 722
+          },
+          {
+            "id": "ex-055",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 580
+          },
+          {
+            "id": "ex-056",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 677
+          },
+          {
+            "id": "ex-057",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 739
+          },
+          {
+            "id": "ex-058",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 633
+          },
+          {
+            "id": "ex-059",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 688
+          },
+          {
+            "id": "ex-060",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 775
+          },
+          {
+            "id": "ex-061",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 893
+          },
+          {
+            "id": "ex-062",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 1018
+          },
+          {
+            "id": "ex-063",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 979
+          },
+          {
+            "id": "ex-064",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 667
+          },
+          {
+            "id": "ex-065",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 643
+          },
+          {
+            "id": "ex-066",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 842
+          },
+          {
+            "id": "ex-067",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 680
+          },
+          {
+            "id": "ex-068",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 597
+          },
+          {
+            "id": "ex-069",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 614
+          },
+          {
+            "id": "ex-070",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1039
+          },
+          {
+            "id": "ex-071",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 693
+          },
+          {
+            "id": "ex-072",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 642
+          },
+          {
+            "id": "ex-073",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 596
+          },
+          {
+            "id": "ex-074",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 856
+          },
+          {
+            "id": "ex-075",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1045
+          },
+          {
+            "id": "ex-076",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 717
+          },
+          {
+            "id": "ex-077",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 1087
+          },
+          {
+            "id": "ex-078",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 553
+          },
+          {
+            "id": "ex-079",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 1151
+          },
+          {
+            "id": "ex-080",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1253
+          },
+          {
+            "id": "ex-081",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 1008
+          },
+          {
+            "id": "ex-082",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 811
+          },
+          {
+            "id": "ex-083",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 565
+          },
+          {
+            "id": "ex-084",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 724
+          },
+          {
+            "id": "ex-085",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 606
+          },
+          {
+            "id": "ex-086",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 633
+          },
+          {
+            "id": "ex-087",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 855
+          },
+          {
+            "id": "ex-088",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 579
+          },
+          {
+            "id": "ex-089",
+            "expected": "SILENT",
+            "predicted": "SILENT",
+            "latencyMs": 797
+          },
+          {
+            "id": "ex-090",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 892
+          },
+          {
+            "id": "ex-091",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 645
+          },
+          {
+            "id": "ex-092",
+            "expected": "SILENT",
+            "predicted": "ESCALATE",
+            "latencyMs": 557
+          },
+          {
+            "id": "ex-093",
+            "expected": "ANSWER_WITH_CURRENT_PIPELINE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 589
+          },
+          {
+            "id": "ex-094",
+            "expected": "ESCALATE",
+            "predicted": "ESCALATE",
+            "latencyMs": 791
+          },
+          {
+            "id": "ex-095",
+            "expected": "ESCALATE",
+            "predicted": "ANSWER_WITH_CURRENT_PIPELINE",
+            "latencyMs": 657
+          }
+        ],
+        "latencyMs": {
+          "p50": 693,
+          "p95": 1058,
+          "p99": 1349,
+          "n": 95
+        }
+      },
+      "cost": {
+        "measuredTotalUsd": null,
+        "measuredInputTokens": null,
+        "estimatedPer1000QuestionsUsd": null,
+        "estimatedPer10000QuestionsUsd": null,
+        "note": "LLM provider does not expose per-call cost in synthesis-client — not estimated"
+      },
+      "jevBatchLatency": null
+    }
+  },
+  "ensemble": {},
+  "recommendation": "CONTINUE EXPERIMENT — JEV_API_KEY required to complete Jev comparison",
+  "decisionRule": "Feature flag candidate only if unsafe continuation materially below 41.25% baseline, safe coverage useful, acceptable p95/cost/privacy. No production merge in this milestone. Blocked: JEV_API_KEY (or TYPESAFE_API_KEY)",
+  "failureAnalysis": {
+    "LLM FALSE POSITIVES": [
+      {
+        "id": "ea-022",
+        "question": "What does Northstar export?",
+        "excerpt": "docs/sla.md: We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.9,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-66",
+        "question": "What version is retry policy?",
+        "excerpt": "src/exporter/retry.ts: Policy v3 caps attempts at three.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.9,
+        "likelyReason": "version mismatch"
+      },
+      {
+        "id": "ea-76",
+        "question": "How many export attempts?",
+        "excerpt": "tests/retry.test.ts: toBe(3)",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.9,
+        "likelyReason": "test assertion not doc"
+      },
+      {
+        "id": "ea-78",
+        "question": "What routes trigger export?",
+        "excerpt": "worker/export.ts: Cron handles export batch",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.9,
+        "likelyReason": "worker behavior not route doc"
+      }
+    ],
+    "LLM FALSE NEGATIVES": [
+      {
+        "id": "ea-003",
+        "question": "What is the architecture?",
+        "excerpt": "README.md: Northstar exports merchant settlement files to S3 and guards the operator dashboard with edge auth.",
+        "expected": "APPLICABLE",
+        "predicted": "NOT_APPLICABLE",
+        "confidence": 0.8,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      }
+    ],
+    "DETERMINISTIC FALSE POSITIVES": [
+      {
+        "id": "ea-008",
+        "question": "What is enterprise pricing?",
+        "excerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-010",
+        "question": "What uptime is guaranteed?",
+        "excerpt": "tests/retry.test.ts: expect(retries).toBe(3)",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "test vs contract"
+      },
+      {
+        "id": "ea-012",
+        "question": "How does cookie rotation work?",
+        "excerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-014",
+        "question": "What happens on export failure?",
+        "excerpt": "src/auth.ts: The auth service verifies the session cookie on every non-public request and rotates it on the way out.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-016",
+        "question": "Where is settlement CSV built?",
+        "excerpt": "external/weather.txt: The weather in Paris is sunny with mild winds.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-018",
+        "question": "Is auth checked on every request?",
+        "excerpt": "docs/pricing.md: Enterprise plan is billed annually at twelve hundred dollars per seat.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-020",
+        "question": "What is the retry cap?",
+        "excerpt": "src/demo.ts: export const token = 'demo';",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-022",
+        "question": "What does Northstar export?",
+        "excerpt": "docs/sla.md: We guarantee 99.9% uptime for export API availability per contract section 4.2.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-026",
+        "question": "What is PAY-219?",
+        "excerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-028",
+        "question": "How does cookie rotation work? (variant 2)",
+        "excerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "expected": "NOT_APPLICABLE",
+        "predicted": "APPLICABLE",
+        "confidence": 0.85,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      }
+    ],
+    "DETERMINISTIC FALSE NEGATIVES": [
+      {
+        "id": "ea-006",
+        "question": "Where is retry logic?",
+        "excerpt": "src/exporter/retry.ts: Attempts are capped at three because the payment gateway stalls rather than failing fast.",
+        "expected": "APPLICABLE",
+        "predicted": "NOT_APPLICABLE",
+        "confidence": 0.9,
+        "likelyReason": "overlap heuristic / verifyClaim mismatch"
+      },
+      {
+        "id": "ea-64",
+        "question": "What is Zylorp headquarters address?",
+        "excerpt": "external/zylorp.txt: 123 Main St",
+        "expected": "APPLICABLE",
+        "predicted": "NOT_APPLICABLE",
+        "confidence": 0.9,
+        "likelyReason": "exact supported in wrong corpus item"
+      }
+    ]
+  },
+  "decisionTable": [
+    {
+      "judge": "Deterministic",
+      "applicabilityAccuracy": 0.5625,
+      "unsafeContinuation": 0.4125,
+      "safeCoverage": 0.475,
+      "p95": 0,
+      "costPer1k": null
+    },
+    {
+      "judge": "LLM",
+      "applicabilityAccuracy": 0.9375,
+      "unsafeContinuation": 0.05,
+      "safeCoverage": 0.4875,
+      "p95": 1042,
+      "costPer1k": null
+    }
+  ]
+}
