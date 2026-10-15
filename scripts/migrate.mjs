@@ -13,10 +13,22 @@
  * the same files at startup instead (see src/lib/db.ts).
  */
 import { readdir, readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import pg from "pg";
 import { pendingMigrations } from "./migration-plan.mjs";
+
+// Local builds read ./.env; hosted builders (Vercel) inject env directly and
+// have no .env file — `node --env-file=.env` hard-crashes there ("node: .env:
+// not found", build exit 9), so load it here only when it exists.
+try {
+  if (existsSync(join(dirname(fileURLToPath(import.meta.url)), "..", ".env"))) {
+    process.loadEnvFile();
+  }
+} catch {
+  // Env comes from the platform — continue with process.env as-is.
+}
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
