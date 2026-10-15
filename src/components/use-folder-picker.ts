@@ -30,7 +30,9 @@ export function useFolderPicker() {
       }
       return;
     }
-    inputRef.current?.click();
+    // Directory picker not available - no fallback since inputRef is not connected.
+    // The showDirectoryPicker API is the primary method for folder selection.
+    return;
   }
 
   function acceptList(list: FileList | File[] | null) {

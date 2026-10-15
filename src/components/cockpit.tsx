@@ -1503,25 +1503,44 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
   const asked = useMeetHint((s) => s.card?.query ?? s.heardQuestion);
   const queryRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  // How many finished utterances have already been added to the Question box.
+  // null until mount, so earlier history is not dumped into the box.
+  const consumedRef = useRef<number | null>(null);
   const [asrDismissed, setAsrDismissed] = useState<string | null>(null);
   const [iframeDismissed, setIframeDismissed] = useState(false);
   const [framed, setFramed] = useState(false);
   const draft = liveDraft === "…" ? "…" : cleanCaption(liveDraft);
   const themDraft = draftRole === "them" ? draft : "";
   const youDraft = draftRole === "you" ? draft : "";
+  const finals = useMemo(
+    () =>
+      utterances
+        .filter((u) => u.role === "them" || u.role === "you")
+        .map((u) => ({
+          id: u.id,
+          role: u.role as "them" | "you",
+          text: cleanCaption(u.text),
+        }))
+        .filter((u) => u.text),
+    [utterances],
+  );
   const turns = useMemo(() => {
-    const spoken = utterances
-      .filter((u) => u.role === "them" || u.role === "you")
-      .map((u) => ({
-        id: u.id,
-        role: u.role as "them" | "you",
-        text: cleanCaption(u.text),
-      }))
-      .filter((u) => u.text);
+    const spoken = [...finals];
     if (themDraft) spoken.push({ id: "draft-them", role: "them", text: themDraft });
     if (youDraft) spoken.push({ id: "draft-you", role: "you", text: youDraft });
     return spoken;
-  }, [utterances, themDraft, youDraft]);
+  }, [finals, themDraft, youDraft]);
+  // Words still being transcribed. Shown at the end of the box until they finish,
+  // then they are added to the box for real by the effect below.
+  const rawTail = themDraft || youDraft;
+  const liveTail =
+    rawTail && rawTail !== "…" && !typedQuery.trimEnd().endsWith(rawTail) ? rawTail : "";
+  // The box = everything said so far (kept in the store) + the line in progress.
+  const boxValue = liveTail
+    ? typedQuery.trim()
+      ? `${typedQuery.trimEnd()} ${liveTail}`
+      : liveTail
+    : typedQuery;
   const live = (armed && !playing && !listenError) || sharingCall;
   const demo = pack.id === "northstar-payments";
   const iframeHint =
@@ -1540,6 +1559,37 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
   }, [turns.length]);
+
+  // Add each finished utterance to the end of the Question box, so
+  // "I am Pratik." + "I am a boy." becomes "I am Pratik. I am a boy.".
+  useEffect(() => {
+    if (consumedRef.current === null || finals.length < consumedRef.current) {
+      consumedRef.current = finals.length;
+      return;
+    }
+    if (finals.length === consumedRef.current) return;
+    const fresh = finals.slice(consumedRef.current).map((t) => t.text);
+    consumedRef.current = finals.length;
+    let next = useMeetHint.getState().typedQuery.trim();
+    for (const text of fresh) {
+      if (next.endsWith(text)) continue; // same line reported twice
+      next = next ? `${next} ${text}` : text;
+    }
+    setTypedQuery(next);
+  }, [finals, setTypedQuery]);
+
+  // Search with what is in the box, then clear it so the next question starts fresh.
+  async function runSearch() {
+    const text = boxValue.trim();
+    if (!text) {
+      void search();
+      return;
+    }
+    const sent = text;
+    setTypedQuery(sent); // bake any in-progress words into the box
+    await search(sent);
+    if (useMeetHint.getState().typedQuery.trim() === sent) setTypedQuery("");
+  }
 
   function dismissListenHint() {
     if (asrNote && asrDismissed !== asrNote) {
@@ -1632,26 +1682,31 @@ function TranscriptPane({ extras }: { active: boolean; extras: ReactNode }) {
           className="flex min-w-0 flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
-            void search();
+            void runSearch();
           }}
         >
           <p className="ground-hint">Question</p>
           <textarea
             ref={queryRef}
             data-testid="search-input"
-            value={typedQuery}
-            onChange={(e) => setTypedQuery(e.target.value)}
+            value={boxValue}
+            onChange={(e) => {
+              let value = e.target.value;
+              // don't bake the in-progress words in; they get added when finished
+              if (liveTail && value.endsWith(liveTail)) {
+                value = value.slice(0, value.length - liveTail.length).trimEnd();
+              }
+              setTypedQuery(value);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                void search();
+                void runSearch();
               }
             }}
             rows={2}
-            placeholder={liveDraft && liveDraft !== "…"
-      ? liveDraft
-      : demo ? "Why does that retry three times?" : "What is the architecture of this application?"}
-            className="ground-input ground-question"
+            placeholder={demo ? "Why does that retry three times?" : "What is the architecture of this application?"}
+            className="ground-input ground-question text-fg"
           />
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <Button type="submit" size="sm" className="min-w-24" disabled={!searchReady}>
