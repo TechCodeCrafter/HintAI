@@ -8,6 +8,7 @@ import type { Sql } from "@/lib/db";
 import type { DocumentChunk, NormalizedPage } from "../document/types.ts";
 import {
   SERVER_CORPUS_LIMITS,
+  buildFtsQuery,
   quotaAfterUpload,
   type ServerCorpusUsage,
   type ServerDocMeta,
@@ -140,6 +141,10 @@ export async function retrieveChunks(
 ): Promise<{ chunks: DocumentChunk[]; pages: NormalizedPage[] }> {
   const clean = query.trim().slice(0, 500);
   if (!clean) return { chunks: [], pages: [] };
+  // OR-ed content tokens (see buildFtsQuery): a field question must recall
+  // the value line even when the question's field words aren't in the chunk.
+  const fts = buildFtsQuery(clean);
+  if (!fts) return { chunks: [], pages: [] };
   const top = Math.max(1, Math.min(SERVER_CORPUS_LIMITS.maxRetrieveLimit, Math.floor(limit) || 8));
   const hits = await sql<{ chunk: DocumentChunk }>`
     select c.chunk as chunk
@@ -147,7 +152,7 @@ export async function retrieveChunks(
     join server_sources s
       on s.user_id = c.user_id and s.space_id = c.space_id
       and s.source_id = c.source_id and s.content_hash = c.content_hash
-    cross join websearch_to_tsquery('english', ${clean}) as q
+    cross join to_tsquery('english', ${fts}) as q
     where c.user_id = ${userId} and c.space_id = ${spaceId}
       and s.status = 'ready'
       and c.search_vec @@ q
