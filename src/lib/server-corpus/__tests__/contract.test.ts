@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  buildFtsQuery,
   buildUploadBatches,
   quotaAfterUpload,
   SERVER_CORPUS_LIMITS,
@@ -95,4 +96,11 @@ test("quota math blocks past the page budget", () => {
   assert.ok(quotaAfterUpload(100, 50).ok);
   const over = quotaAfterUpload(SERVER_CORPUS_LIMITS.maxPagesPerUser, 1);
   assert.equal(over.ok, false);
+});
+
+test("FTS query ORs content tokens and drops stopwords", () => {
+  assert.equal(buildFtsQuery("what is the phone number"), "phone | number");
+  assert.equal(buildFtsQuery("who is macbeth"), "macbeth");
+  assert.equal(buildFtsQuery("what is it"), null);
+  assert.equal(buildFtsQuery(""), null);
 });

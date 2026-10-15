@@ -172,3 +172,26 @@ export function quotaAfterUpload(
   }
   return { ok: true, totalPages };
 }
+
+const FTS_STOP = new Set(
+  "what when where which how why who whose does do did doing done is are was were be been being have has had having the a an this that these those and or but for from with into about after before then there here it its our we you your they them their to of in on at by as can could should would will might must".split(/\s+/),
+);
+
+/**
+ * Recall query for Postgres FTS: content tokens OR-ed, so "what is the phone
+ * number" recalls the "Phone: 9931607655" line (AND semantics would require
+ * the word "number" in the chunk and miss). Precision stays client-side: the
+ * card stack re-ranks and verifies. Returns null when nothing searchable.
+ */
+export function buildFtsQuery(query: string): string | null {
+  const terms = [
+    ...new Set(
+      query
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter((t) => t.length > 2 && !FTS_STOP.has(t)),
+    ),
+  ].slice(0, 12);
+  if (terms.length === 0) return null;
+  return terms.join(" | ");
+}
