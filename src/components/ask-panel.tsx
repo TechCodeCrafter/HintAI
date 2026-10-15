@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnswerFeedback } from "@/components/answer-feedback";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
@@ -16,6 +16,7 @@ import { cardUsedEvidence } from "@/lib/search/answer-mode";
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { recordBetaEventOnce } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
+import { cleanCaption } from "@/lib/search/question";
 
 export function AskPanel({ spaceId }: { spaceId: string }) {
   const { ready: vaultReady } = useAccountVaultReady();
@@ -31,6 +32,14 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
   const liveDraft = useMeetHint((s) => s.liveDraft);
   const [query, setQuery] = useState("");
+  const userEditedRef = useRef(false);
+
+  // Put live speech into the box as real text (unless the person is typing).
+  useEffect(() => {
+    if (userEditedRef.current || !liveDraft || liveDraft === "…") return;
+    const spoken = cleanCaption(liveDraft);
+    if (spoken) setQuery(spoken);
+  }, [liveDraft]);
 
   useEffect(() => {
     if (!vaultReady) return;
@@ -78,6 +87,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             event.preventDefault();
             const text = query.trim();
             if (!text || !ready) return;
+            userEditedRef.current = false;
             void search(text);
           }}
         >
@@ -90,9 +100,12 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             rows={3}
             value={query}
             disabled={!ready || searching}
-            placeholder={liveDraft && liveDraft !== "…" ? liveDraft : ready ? "Ask about this Knowledge Space…" : "Loading sources…"}
+            placeholder={ready ? "Ask about this Knowledge Space…" : "Loading sources…"}
             className="w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-fg"
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              userEditedRef.current = event.target.value !== "";
+              setQuery(event.target.value);
+            }}
           />
           <div className="flex flex-wrap gap-2">
             <button type="submit" data-testid="ask-submit" className="mh-cta" disabled={!ready || searching || !query.trim()}>
