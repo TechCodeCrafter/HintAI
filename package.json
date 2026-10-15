@@ -1,6 +1,6 @@
 {
   "name": "meethint",
-  "description": "MeetHint — real-time, cited answers for technical conversations using your repos, docs, and company knowledge.",
+  "description": "MeetHint \u2014 real-time, cited answers for technical conversations using your repos, docs, and company knowledge.",
   "homepage": "https://meethint.ai",
   "repository": {
     "type": "git",
@@ -17,10 +17,10 @@
     "nf3": "0.3.17"
   },
   "scripts": {
-    "dev": "node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 3001",
-    "build": "node scripts/copy-demo-media.mjs && node scripts/with-app-env.mjs vite build && node scripts/copy-pglite-assets.mjs && node scripts/fix-ssr-bundle.mjs && npm run db:migrate",
+    "dev": "node init && node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 3001",
+    "build": "node init && node scripts/copy-demo-media.mjs && node scripts/with-app-env.mjs vite build && node scripts/copy-pglite-assets.mjs && node scripts/fix-ssr-bundle.mjs && npm run db:migrate",
     "db:migrate": "node --env-file=.env scripts/migrate.mjs",
-    "build:dev": "node scripts/with-app-env.mjs vite build --mode development",
+    "build:dev": "node init && node scripts/with-app-env.mjs vite build --mode development",
     "preview": "node scripts/with-app-env.mjs vite preview",
     "preview:e2e": "node scripts/with-app-env.mjs vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "preview:restart": "node scripts/preview.mjs restart",
