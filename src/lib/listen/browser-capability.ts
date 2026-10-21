@@ -24,6 +24,37 @@ export function isMobileTouch(): boolean {
   return isIOS() || /Android/.test(navigator.userAgent);
 }
 
+export function isFramed(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+}
+
+export function hasSpeechRecognition(): boolean {
+  const g = globalThis as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown };
+  return Boolean(g.SpeechRecognition ?? g.webkitSpeechRecognition);
+}
+
+/**
+ * Browser speech captions alongside Whisper. Desktop Chrome/Edge/Safari;
+ * iOS uses on-device Whisper only (webkit STT is too flaky in continuous mode).
+ * Brave exposes the API then fails with network — excluded.
+ */
+export function liveCaptionsOk(): boolean {
+  if (typeof navigator === "undefined") return false;
+  if (!hasSpeechRecognition()) return false;
+  if (isFramed()) return false;
+  if (isBrave()) return false;
+  if (isIOS()) return false;
+  const ua = navigator.userAgent;
+  if (/OPR|Opera/.test(ua)) return false;
+  if (/Chrome|Chromium|Edg\//.test(ua)) return true;
+  return isSafari();
+}
+
 /** Tab audio share is reliable on desktop Chrome/Edge; mobile/tablet is mic-first. */
 export function tabAudioShareLikely(): boolean {
   if (typeof navigator === "undefined") return false;

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { isBrave, isIOS, isSafari } from "@/lib/listen/browser-capability";
+import { isFramed, isIOS, liveCaptionsOk } from "@/lib/listen/browser-capability";
 import { markSpeechLive, roleForLane, stopCallShare } from "@/lib/listen/call-share";
 import { cleanCaption } from "@/lib/search/question";
 import { useMeetHint } from "@/lib/store";
@@ -37,35 +37,11 @@ export function speechSupported(): boolean {
   return recognitionCtor() !== null;
 }
 
-/**
- * Browser speech captions alongside Whisper. Desktop Chrome/Edge/Safari;
- * iOS uses on-device Whisper only (webkit STT is too flaky in continuous mode).
- * Brave exposes the API then fails with network — excluded.
- */
-export function liveCaptionsOk(): boolean {
-  if (typeof navigator === "undefined") return false;
-  if (!recognitionCtor()) return false;
-  if (isFramed()) return false;
-  if (isBrave()) return false;
-  if (isIOS()) return false;
-  const ua = navigator.userAgent;
-  if (/OPR|Opera/.test(ua)) return false;
-  if (/Chrome|Chromium|Edg\//.test(ua)) return true;
-  return isSafari();
-}
+export { isFramed, liveCaptionsOk };
 
 /** When true, the mic lane VAD can defer to browser captions (desktop only). */
 export function captionsSkipWhisperMic(): boolean {
   return liveCaptionsOk();
-}
-
-export function isFramed(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.self !== window.top;
-  } catch {
-    return true;
-  }
 }
 
 const MESSAGES: Record<ListenBlock, string> = {

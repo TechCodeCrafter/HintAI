@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PdfPane } from "@/components/pdf-pane";
 import { installShotDocument, VIEWER_SHOTS } from "@/lib/document/viewer/qa-boot";
 import { openTargetFromEvidence } from "@/lib/document/viewer/resolve";
 import { syncViewerBlobPins } from "@/lib/document/viewer/retain";
+import { qaToolsEnabled } from "@/lib/qa-tools";
 import { useMeetHint } from "@/lib/store";
 
 export const Route = createFileRoute("/eval/viewer")({
+  // Installs fixture spaces into the bound account, so it must not be
+  // reachable from a production build.
+  beforeLoad: () => {
+    if (!qaToolsEnabled) throw redirect({ to: "/", replace: true });
+  },
+  validateSearch: (search: Record<string, unknown>): { shot?: string } =>
+    typeof search.shot === "string" ? { shot: search.shot } : {},
   component: ViewerEvalPage,
   head: () => ({ meta: [{ title: "MeetHint PDF viewer QA" }] }),
 });
 
 function ViewerEvalPage() {
-  const [shotId, setShotId] = useState("exact");
+  // Read from the route, not set after mount: the old two-step installed the
+  // "exact" fixture first and then the requested one.
+  const { shot: shotId = "exact" } = Route.useSearch();
   const shot = VIEWER_SHOTS.find((item) => item.id === shotId) ?? VIEWER_SHOTS[0];
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setShotId(new URLSearchParams(window.location.search).get("shot") ?? "exact");
-  }, []);
 
   useEffect(() => {
     let cancelled = false;

@@ -109,8 +109,11 @@ export async function parsePdf(
   } catch {
     return terminal(input, "unreadable", READINESS_NOTES.unreadable, 0, []);
   } finally {
+    // `cleanup()` only drops caches; destroying the loading task frees the
+    // document and its bytes in the pdf.js worker (same as the viewer's
+    // `destroyPdf`). Everything needed has been copied out above.
     try {
-      await doc.cleanup();
+      await doc.loadingTask.destroy();
     } catch {
       // ignore
     }

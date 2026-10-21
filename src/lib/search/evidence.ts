@@ -1,6 +1,6 @@
 import { reconstructSourceText } from "../document/source-text.ts";
 import type { DocumentItemRange, NormalizedDocument } from "../document/types.ts";
-import { splitEvidenceBlocks, verifyClaimSemantics } from "./claim-verify.ts";
+import { numbersStayWithSubject, splitEvidenceBlocks, verifyClaimSemantics } from "./claim-verify.ts";
 import {
   type EvidenceSpan,
   countLines,
@@ -327,6 +327,16 @@ function structuralOrderingExempt(
   return [...exempt];
 }
 
+/** Numbers that need no prose subject: structural vocabulary and commit metadata. */
+function freeNumberText(evidence: Array<Evidence | EvidenceSpan>, structural: string[]): string {
+  const parts = [...structural];
+  for (const item of evidence) {
+    if (!("kind" in item) || item.kind !== "commit") continue;
+    parts.push(item.date ?? "", item.pr ?? "", item.shortSha ?? "", item.sha ?? "");
+  }
+  return parts.join("\n").toLowerCase();
+}
+
 function verifiableText(evidence: Evidence | EvidenceSpan): string {
   if ("kind" in evidence) {
     if (evidence.kind === "document") return evidence.supportText;
@@ -378,6 +388,50 @@ export type SupportCheck = {
   checked: number;
 };
 
+/**
+ * Substring match, plus the singular of a plural: "2–2.5 hours" is supported by
+ * "2–2.5 hour test session". Only an "s"/"es" is dropped, so no new word can
+ * slip in — just the number of one the evidence already has.
+ */
+export function corpusHasWord(corpus: string, word: string): boolean {
+  if (corpus.includes(word)) return true;
+  if (WRITTEN_SHORT[word]?.some((short) => short.test(corpus))) return true;
+  if (word.length < 5 || !word.endsWith("s") || word.endsWith("ss")) return false;
+  // Whole word only: "alerts" must not pass on "alerting".
+  const singular = (stem: string) => new RegExp(`\\b${stem.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(corpus);
+  return singular(word.slice(0, -1)) || (word.endsWith("es") && singular(word.slice(0, -2)));
+}
+
+/**
+ * Spoken words whose evidence is usually written short: a PDF says "~35 min",
+ * the answer says "approximately 35 minutes". A fixed, auditable list — each
+ * form matched as a whole token, so "min" never matches inside "admin".
+ */
+const APPROX = [/~\s*\d/, /\bapprox\b/, /\bca\.\s*\d/];
+const WRITTEN_SHORT: Record<string, RegExp[]> = {
+  approximately: APPROX,
+  roughly: APPROX,
+  minutes: [/\d\s*mins?\b/, /\bmins?\b/],
+  minute: [/\d\s*min\b/, /\bmin\b/],
+  hours: [/\d\s*(?:hrs?|h)\b/, /\bhrs?\b/],
+  hour: [/\d\s*(?:hr|h)\b/, /\bhr\b/],
+  seconds: [/\d\s*(?:secs?|s)\b/, /\bsecs?\b/],
+  second: [/\d\s*(?:sec|s)\b/, /\bsec\b/],
+  percent: [/\d\s*%/],
+  number: [/\bno\.\s*\d/, /#\s*\d/],
+};
+
+/**
+ * Drop numbered-list markers ("2 No invite code needed…") from the passages a
+ * claim is anchored to. Otherwise the "dropped a material number" rule read the
+ * marker as a quantity and rejected a verbatim answer. Only a 1–2 digit number
+ * at a line start, before a capitalised word; the full text still backs every
+ * number a claim actually states.
+ */
+function stripListMarkers(text: string): string {
+  return text.replace(/^([ \t]*)\d{1,2}[.)]?[ \t]+(?=[A-Z])/gm, "$1");
+}
+
 /** The words a support check is answerable for: long enough to carry meaning. */
 function contentTokens(say: string): string[] {
   return [
@@ -411,13 +465,13 @@ export function verifyClaim(
   const evidenceCorpus = evidenceTexts.join("\n").toLowerCase();
   const fullCorpus = [...evidenceTexts, ...structural].join("\n").toLowerCase();
   const checked = contentTokens(say);
-  const missing = checked.filter((word) => !fullCorpus.includes(word));
+  const missing = checked.filter((word) => !corpusHasWord(fullCorpus, word));
   if (missing.length > 0) return { ok: false, missing, checked: checked.length };
 
   const proseTokens = checked.filter((word) => evidenceCorpus.includes(word));
   if (proseTokens.length >= 2) {
     const blocks = evidence.flatMap((item, index) =>
-      evidenceBlocksFor(item, evidenceTexts[index] ?? ""),
+      evidenceBlocksFor(item, stripListMarkers(evidenceTexts[index] ?? "")),
     );
     const orderingExempt = structuralOrderingExempt(evidence, structural);
     const semantic = verifyClaimSemantics(
@@ -430,6 +484,9 @@ export function verifyClaim(
     );
     if (!semantic.ok) {
       return { ok: false, missing: semantic.reasons, checked: checked.length };
+    }
+    if (!numbersStayWithSubject(say, proseTokens, blocks, freeNumberText(evidence, structural))) {
+      return { ok: false, missing: ["numeric"], checked: checked.length };
     }
   }
   return { ok: true, missing: [], checked: checked.length };

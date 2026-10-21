@@ -13,6 +13,7 @@ import {
   EyeOff,
   ExternalLink,
   FileCode2,
+  FileDown,
   FileText,
   FolderGit2,
   FolderOpen,
@@ -23,6 +24,7 @@ import {
   Plus,
   Minimize2,
   Play,
+  ReceiptText,
   Search,
   Square,
   Trash2,
@@ -61,6 +63,7 @@ import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
 import { ProductStateAlert } from "@/components/product-state-alert";
 import { isFlightRecorder } from "@/lib/debug";
+import { qaToolsEnabled } from "@/lib/qa-tools";
 import { downloadBetaDiagnostics } from "@/lib/instrumentation/beta-diagnostics";
 import { recordBetaEventOnce, noteBetaSessionStart } from "@/lib/instrumentation/beta-telemetry";
 import { downloadFlightLog } from "@/lib/instrumentation/flight-recorder";
@@ -160,7 +163,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
     if (params.get("overlay") === "1") setOverlay(true);
     if (!vaultReady) return;
     void useMeetHint.getState().boot(spaceId).then(() => {
-      if (params.get("viewerqa") === "1") {
+      if (qaToolsEnabled && params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
       noteBetaSessionStart();
@@ -270,7 +273,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
               size="sm"
               disabled={!searchReady}
               onClick={() => void search()}
-              className={cn("ml-auto md:hidden", cueSearch && "ring-1 ring-accent/50")}
+              className={cn("cockpit-search md:hidden", cueSearch && "ring-1 ring-accent/50")}
             >
               <Search className="size-4" />
               Search
@@ -302,7 +305,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
               aria-label={autoAnswer ? "Auto answer on" : "Auto answer off"}
               title="When they ask about this folder, the answer fills"
               disabled={!searchReady}
-              className={autoAnswer ? "border-transparent bg-accent-soft text-fg" : undefined}
+              className={cn("min-w-11", autoAnswer && "border-transparent bg-accent-soft text-fg")}
               onClick={() => setAutoAnswer(!autoAnswer)}
             >
               <span
@@ -319,7 +322,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
               aria-label="Audit this meeting"
               title="Review claims after the meeting"
               disabled={!searchReady}
-              className={auditOpen ? "border-transparent bg-accent-soft text-fg" : undefined}
+              className={cn("max-md:hidden", auditOpen && "border-transparent bg-accent-soft text-fg")}
               onClick={() => void openAudit()}
             >
               <ClipboardList className="size-4" />
@@ -332,9 +335,10 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
               aria-label="Session receipt"
               title="Questions, cited answers, and unsupported items from this session"
               disabled={answerHistory.length === 0}
+              className="max-xl:hidden"
               onClick={() => setReceiptOpen(true)}
             >
-              <ClipboardList className="size-4" />
+              <ReceiptText className="size-4" />
               <span className="hidden lg:inline">Receipt</span>
             </Button>
             <Button
@@ -344,6 +348,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
               aria-label="Export beta diagnostics"
               title="Download privacy-safe diagnostics for support"
               disabled={!searchReady}
+              className="max-xl:hidden"
               onClick={() => downloadBetaDiagnostics()}
             >
               <Download className="size-4" />
@@ -357,9 +362,10 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
                 aria-label="Export session flight log"
                 title="Download local answer telemetry (debug)"
                 disabled={!searchReady}
+                className="max-2xl:hidden"
                 onClick={() => downloadFlightLog()}
               >
-                <Download className="size-4" />
+                <FileDown className="size-4" />
                 <span className="hidden lg:inline">Export log</span>
               </Button>
             ) : null}
@@ -377,8 +383,10 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
                 onKeys={() => setKeysOpen(true)}
               />
             </div>
+            {/* Holds every utility, so it stands in for the icon row (and the
+                header buttons that fold away) until the screen fits them all. */}
             <UtilityMenu
-              className="md:hidden"
+              className="2xl:hidden"
               overlay={overlay}
               demo={demo}
               playing={playing}
@@ -386,6 +394,10 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
               onReview={playing ? stopMeeting : playMeeting}
               onAudit={() => void openAudit()}
               onKeys={() => setKeysOpen(true)}
+              auditDisabled={!searchReady}
+              onReceipt={answerHistory.length > 0 ? () => setReceiptOpen(true) : undefined}
+              onDiagnostics={searchReady ? () => downloadBetaDiagnostics() : undefined}
+              onFlightLog={isFlightRecorder() && searchReady ? () => downloadFlightLog() : undefined}
             />
           </div>
           <FolderPickerFields
@@ -592,10 +604,11 @@ function AddMaterial({
         aria-haspopup="menu"
         aria-expanded={open}
         data-add-material="true"
+        className="whitespace-nowrap"
         onClick={() => setOpen((value) => !value)}
       >
         <Plus className="size-4" />
-        <span className="hidden md:inline">Add material</span>
+        <span className="hidden lg:inline">Add material</span>
         <ChevronDown className="size-3.5 shrink-0 text-faint" />
       </Button>
       {open ? (
@@ -706,7 +719,7 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
         onClick={() => setOpen((value) => !value)}
       >
         <FolderOpen className="size-4" />
-        <span className="hidden max-w-52 truncate md:inline">{label}</span>
+        <span className="hidden max-w-32 truncate md:inline lg:max-w-40 xl:max-w-52">{label}</span>
         <ChevronDown className="size-3.5 shrink-0 text-faint" />
       </Button>
       {open ? (
@@ -901,6 +914,10 @@ function UtilityMenu({
   onReview,
   onAudit,
   onKeys,
+  auditDisabled,
+  onReceipt,
+  onDiagnostics,
+  onFlightLog,
 }: {
   className?: string;
   overlay: boolean;
@@ -910,6 +927,11 @@ function UtilityMenu({
   onReview: () => void;
   onAudit: () => void;
   onKeys: () => void;
+  auditDisabled?: boolean;
+  /** The header buttons for these are hidden on phones; omit one to disable it. */
+  onReceipt?: () => void;
+  onDiagnostics?: () => void;
+  onFlightLog?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -993,7 +1015,8 @@ function UtilityMenu({
           <button
             type="button"
             role="menuitem"
-            className="context-option"
+            className="context-option disabled:opacity-40"
+            disabled={auditDisabled}
             onClick={() => {
               setOpen(false);
               onAudit();
@@ -1002,6 +1025,46 @@ function UtilityMenu({
             <ClipboardList className="size-3.5 shrink-0" />
             Audit this meeting
           </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option disabled:opacity-40"
+            disabled={!onReceipt}
+            onClick={() => {
+              setOpen(false);
+              onReceipt?.();
+            }}
+          >
+            <ReceiptText className="size-3.5 shrink-0" />
+            Session receipt
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="context-option disabled:opacity-40"
+            disabled={!onDiagnostics}
+            onClick={() => {
+              setOpen(false);
+              onDiagnostics?.();
+            }}
+          >
+            <Download className="size-3.5 shrink-0" />
+            Export diagnostics
+          </button>
+          {onFlightLog ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="context-option"
+              onClick={() => {
+                setOpen(false);
+                onFlightLog();
+              }}
+            >
+              <FileDown className="size-3.5 shrink-0" />
+              Export log
+            </button>
+          ) : null}
           <button
             type="button"
             role="menuitem"
@@ -1017,6 +1080,11 @@ function UtilityMenu({
           <div className="flex items-center justify-between gap-2 px-3 py-2">
             <span className="text-xs text-muted">Theme</span>
             <ThemeToggle className="size-11 rounded-sm" />
+          </div>
+          {/* The header's account chip sits in the utility row, which phones hide. */}
+          <div className="context-menu-rule" />
+          <div className="flex min-h-11 items-center px-3 py-1">
+            <AuthChrome />
           </div>
         </div>
       ) : null}
@@ -1817,8 +1885,8 @@ function CardPane({
           </span>
         </span>
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <div key={cardKey} className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-auto px-5 py-5">
+      <div className="answer-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <div key={cardKey} className="answer-main flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-auto px-5 py-5">
           {theySaid || speaking ? (
             <div className="answer-receipt">
               <div className="answer-receipt-body">

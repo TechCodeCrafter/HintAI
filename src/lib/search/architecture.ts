@@ -192,6 +192,10 @@ export function architectureCard(pack: RepoPack, query: string, latencyMs: numbe
     main ? humanize(main.dir) : "",
     ...(main ? [countWord(main.parts.length)] : []),
     ...(main?.parts ?? []),
+    // `capabilityList` counts the bullets it leaves out ("plus two more").
+    ...(listed && purpose.capabilities.length > spoken.length
+      ? [countWord(purpose.capabilities.length - spoken.length)]
+      : []),
   ];
   if (!verifyClaim(say, [span], structural).ok) {
     return silent(query, latencyMs, "Nothing in this material says what it does.");

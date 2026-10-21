@@ -1,6 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
+import { authMiddleware } from "../auth/middleware.ts";
+import { takeTranscribeQuota } from "./synthesis-rate-limit.server.ts";
 
 const MAX_BYTES = 1_500_000;
+// Base64 is 4 chars per 3 bytes; reject oversized payloads before decoding them.
+const MAX_BASE64_CHARS = Math.ceil(MAX_BYTES / 3) * 4 + 4;
 
 type Clip = {
   audio: string;
@@ -8,16 +12,34 @@ type Clip = {
   keyterms?: string[];
 };
 
+/** Accept `{ data: clip }` or the bare clip, and drop anything not shaped like one. */
+export function asClip(input: unknown): Clip {
+  const raw = (input && typeof input === "object" && "data" in input ? (input as { data: unknown }).data : input) as
+    | Record<string, unknown>
+    | null
+    | undefined;
+  const audio = typeof raw?.audio === "string" ? raw.audio : "";
+  const mime = typeof raw?.mime === "string" ? raw.mime : "";
+  const keyterms = Array.isArray(raw?.keyterms)
+    ? raw.keyterms.filter((term): term is string => typeof term === "string")
+    : undefined;
+  return { audio, mime, keyterms };
+}
+
 export const transcribeAvailable = createServerFn({ method: "GET" }).handler(async () =>
   Boolean(process.env.XAI_API_KEY),
 );
 
 export const transcribeClip = createServerFn({ method: "POST" })
-  .validator((input: Clip) => input)
-  .handler(async ({ data }): Promise<{ ok: true; text: string } | { ok: false; error: string }> => {
+  .middleware([authMiddleware])
+  .validator((input: Clip) => asClip(input))
+  .handler(async ({ data, context }): Promise<{ ok: true; text: string } | { ok: false; error: string }> => {
     const apiKey = process.env.XAI_API_KEY;
     if (!apiKey) {
       return { ok: false, error: "Dictate is not available here. Type or paste the question, then Search." };
+    }
+    if (data.audio.length > MAX_BASE64_CHARS) {
+      return { ok: false, error: "Keep the clip under 20 seconds." };
     }
 
     let bytes: Buffer;
@@ -31,6 +53,9 @@ export const transcribeClip = createServerFn({ method: "POST" })
     }
     if (bytes.length > MAX_BYTES) {
       return { ok: false, error: "Keep the clip under 20 seconds." };
+    }
+    if (!takeTranscribeQuota(context.userId)) {
+      return { ok: false, error: "Dictate is busy right now. Type the question, then Search." };
     }
 
     const form = new FormData();

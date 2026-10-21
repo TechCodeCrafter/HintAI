@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { FolderGit2, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
 import { MaterialUploadPanel } from "@/components/material-upload-panel";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
@@ -87,6 +87,25 @@ export function ContextDetail({ id }: { id: string }) {
   const [missing, setMissing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  // The router keeps this component mounted when only `id` changes. Start each
+  // space clean: not the previous one's sources, its "gone" screen, or an open
+  // delete confirmation that would now point at a different space.
+  const [shownId, setShownId] = useState(id);
+  if (shownId !== id) {
+    setShownId(id);
+    setSpace(null);
+    setSources([]);
+    setStatus("ready");
+    setMissing(false);
+    setConfirmDelete(false);
+  }
+
+  // Loads are async and can overlap (switching spaces, a reload after an
+  // upload). Only the newest load for the space on screen may apply.
+  const loadSeq = useRef(0);
+  const shownIdRef = useRef(id);
+  shownIdRef.current = id;
+
   const { ready: vaultReady } = useAccountVaultReady();
   const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
   const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
@@ -107,12 +126,17 @@ export function ContextDetail({ id }: { id: string }) {
   }, [sources]);
 
   async function load() {
+    // A load from an earlier render (an upload that finished after the user
+    // moved on) would fetch the old space; skip it rather than let it win.
+    if (id !== shownIdRef.current) return;
+    const seq = ++loadSeq.current;
+    const isCurrent = () => seq === loadSeq.current && id === shownIdRef.current;
     const repo = getContextRepository();
     let record = await repo.getSpace(id);
     if (!record) {
       const context = await repo.getContext(id);
       if (!context) {
-        setMissing(true);
+        if (isCurrent()) setMissing(true);
         return;
       }
       record =
@@ -133,6 +157,8 @@ export function ContextDetail({ id }: { id: string }) {
       : members.some((row) => row?.status === "indexing")
         ? "indexing"
         : "ready";
+    if (!isCurrent()) return;
+    setMissing(false);
     setSpace(record);
     setSources(memberSources);
     setStatus(nextStatus);
@@ -156,6 +182,10 @@ export function ContextDetail({ id }: { id: string }) {
   useEffect(() => {
     if (!vaultReady) return;
     void load();
+    // Leaving (or the vault closing) drops whatever load is still in flight.
+    return () => {
+      loadSeq.current += 1;
+    };
   }, [id, vaultReady]);
 
   if (missing) {
@@ -265,15 +295,17 @@ export function ContextDetail({ id }: { id: string }) {
               description="Add repos, folders, files, or PDFs. MeetHint indexes them locally for cited answers."
             />
           ) : (
-            <div className="ds-surface-elevated overflow-hidden">
+            // Type and Last synced give way on phones so Status stays on screen;
+            // anything still too wide scrolls instead of being cut off.
+            <div className="ds-surface-elevated overflow-x-auto">
               <table className="ds-table">
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Type</th>
+                    <th className="max-sm:hidden">Type</th>
                     <th>Files</th>
                     <th>Status</th>
-                    <th>Last synced</th>
+                    <th className="max-sm:hidden">Last synced</th>
                   </tr>
                 </thead>
                 <tbody data-testid="space-source-list">
@@ -285,7 +317,7 @@ export function ContextDetail({ id }: { id: string }) {
                           <p className="truncate text-xs text-muted">{row.path}</p>
                         </div>
                       </td>
-                      <td>
+                      <td className="max-sm:hidden">
                         <Badge variant="local">{row.sourceType === "pdf" ? "PDF" : "Repository"}</Badge>
                       </td>
                       <td className="tabular-nums text-fg">{row.fileCount}</td>
@@ -304,7 +336,7 @@ export function ContextDetail({ id }: { id: string }) {
                           {row.status}
                         </Badge>
                       </td>
-                      <td className="text-muted">{formatRelativeTime(row.updatedAt)}</td>
+                      <td className="max-sm:hidden text-muted">{formatRelativeTime(row.updatedAt)}</td>
                     </tr>
                   ))}
                 </tbody>

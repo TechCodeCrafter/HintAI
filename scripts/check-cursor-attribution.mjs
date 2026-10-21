@@ -9,7 +9,7 @@
  *
  * Env: CURSOR_ATTRIBUTION_BASE — override base ref (e.g. GITHUB_BASE_SHA in Actions)
  */
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { findCursorAttributionLines } from "./cursor-attribution.mjs";
 
 function parseBaseArg() {
@@ -19,13 +19,14 @@ function parseBaseArg() {
   return "origin/main";
 }
 
-function shellQuote(ref) {
-  return `'${String(ref).replace(/'/g, "'\\''")}'`;
+// Argument arrays, no shell: POSIX single quotes reach git literally under cmd.exe.
+function git(args, options = {}) {
+  return execFileSync("git", args, { encoding: "utf8", ...options });
 }
 
 function gitRevExists(ref) {
   try {
-    execSync(`git rev-parse --verify ${shellQuote(ref)}`, { stdio: "ignore" });
+    git(["rev-parse", "--verify", "--quiet", ref], { stdio: "ignore" });
     return true;
   } catch {
     return false;
@@ -36,15 +37,13 @@ function gitRevExists(ref) {
 function logRangeSince(base) {
   if (!gitRevExists(base)) return "HEAD";
   try {
-    const mergeBase = execSync(`git merge-base ${shellQuote(base)} HEAD`, {
-      encoding: "utf8",
-    }).trim();
+    const mergeBase = git(["merge-base", base, "HEAD"]).trim();
     if (mergeBase) return `${mergeBase}..HEAD`;
   } catch {
     /* unrelated histories — fall through */
   }
   try {
-    execSync(`git merge-base --is-ancestor ${shellQuote(base)} HEAD`, { stdio: "ignore" });
+    git(["merge-base", "--is-ancestor", base, "HEAD"], { stdio: "ignore" });
     return `${base}..HEAD`;
   } catch {
     return "HEAD";
@@ -55,19 +54,13 @@ function commitsSince(base) {
   const range = logRangeSince(base);
   let shas;
   try {
-    shas = execSync(`git log ${range} --format=%H`, { encoding: "utf8" })
-      .trim()
-      .split("\n")
-      .filter(Boolean);
+    shas = git(["log", range, "--format=%H"]).trim().split("\n").filter(Boolean);
   } catch {
-    shas = execSync("git log HEAD --format=%H", { encoding: "utf8" })
-      .trim()
-      .split("\n")
-      .filter(Boolean);
+    shas = git(["log", "HEAD", "--format=%H"]).trim().split("\n").filter(Boolean);
   }
   return shas.map((sha) => ({
     sha,
-    body: execSync(`git log -1 --format=%B ${sha}`, { encoding: "utf8" }),
+    body: git(["log", "-1", "--format=%B", sha]),
   }));
 }
 

@@ -32,6 +32,14 @@ const noDatabase = (where: string) => {
   return false;
 };
 
+/**
+ * A batch's writes stop (and roll back) at this deadline. The response gives up
+ * a little later, only to cover a connection that never answers; by then the
+ * deadline has passed, so nothing it left running can still commit a write.
+ */
+const UPLOAD_DEADLINE_MS = 20_000;
+const UPLOAD_RESPONSE_MS = 25_000;
+
 /** One batch of an upload session. Each call is one tick of the progress bar. */
 export const uploadBatch = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -42,17 +50,22 @@ export const uploadBatch = createServerFn({ method: "POST" })
     if (noDatabase("upload")) {
       return { ok: false, reason: "Server backup needs a database. Set DATABASE_URL and retry." };
     }
+    const deadline = Date.now() + UPLOAD_DEADLINE_MS;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       const { storeUploadBatch } = await import("./store.server");
+      const work = (async () => storeUploadBatch(await sql(), context.userId, data, { deadline }))();
       return await Promise.race([
-        storeUploadBatch(await sql(), context.userId, data),
+        work,
         new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("upload insert timed out")), 25_000);
+          timer = setTimeout(() => reject(new Error("upload insert timed out")), UPLOAD_RESPONSE_MS);
         }),
       ]);
     } catch (error) {
       console.error("[server-corpus] upload failed:", error);
       return { ok: false, reason: "Upload failed. Check your connection and retry." };
+    } finally {
+      clearTimeout(timer);
     }
   });
 

@@ -1,11 +1,13 @@
 import { llmDebug } from "../debug.ts";
 import { getDefaultModel, getModelById } from "../ai/models.ts";
 import type { SpaceMaterialView } from "../context/material-view.ts";
+import { completeChat } from "../ai/synthesis-client.ts";
+import { readClientKeys } from "../ai/client-keys.ts";
 import { enrichFileCitation, fileInMaterial, sourceLabel } from "../context/material-view.ts";
 import { isFileHit, type Citation, type Hit, type RepoPack } from "../repo/types.ts";
 import type { AnswerMode } from "./answer-mode.ts";
 import { provenanceLabel } from "./cite.ts";
-import { textEvidence, verifyClaim, type Evidence } from "./evidence.ts";
+import { corpusHasWord, textEvidence, verifyClaim, type Evidence } from "./evidence.ts";
 
 export type AnswerPolicy = "extract" | "synthesize";
 
@@ -40,22 +42,30 @@ export type SynthesisAsk = (payload: {
 const INSUFFICIENT = "INSUFFICIENT";
 const MARKER = /\[(\d+)\]/g;
 const CHUNK_CAP = 8;
-/** Trimmed from 1000 — source identity preserved in chunkHeader; lowers LLM input tokens. */
+/** Per-chunk text budget; source identity is preserved in chunkHeader. */
 const CHUNK_CHARS = 1200;
 const CHUNKS_PER_FILE = 4;
 
+// Every content word of the answer is checked against the cited chunks, so a
+// paraphrase ("send back", "phase") is rejected even when the fact is right.
+// Asking for the chunks' own wording is what lets correct answers through.
 const GROUNDED_INSTRUCTION = `Use ONLY the chunks below. Never use general knowledge.
 If insufficient, respond exactly: INSUFFICIENT
-Cite claims with [1] or [2]. Max 2 sentences.`;
+Answer in the chunks' own words: reuse their terms, names, and numbers; do not add words they do not contain.
+Cite every chunk you take words from, e.g. [1][2]. Max 2 sentences.`;
 
-/** Keep retrieval order but stop a single file from filling the prompt. */
+/**
+ * Keep retrieval order but stop a single file from filling the prompt. PDFs
+ * count per page (as in retrieval), or a one-PDF space could never fill it.
+ */
 export function hitsForPrompt(hits: Hit[], cap = CHUNK_CAP, perFile = CHUNKS_PER_FILE): Hit[] {
   const used = new Map<string, number>();
   const out: Hit[] = [];
   for (const hit of hits) {
-    const taken = used.get(hit.path) ?? 0;
+    const unit = hit.kind === "document" ? `${hit.path}#page=${hit.page}` : hit.path;
+    const taken = used.get(unit) ?? 0;
     if (taken >= perFile) continue;
-    used.set(hit.path, taken + 1);
+    used.set(unit, taken + 1);
     out.push(hit);
     if (out.length >= cap) break;
   }
@@ -151,6 +161,16 @@ export function citationIndexes(text: string): number[] {
 
 export function stripCitationMarkers(text: string): string {
   return text.replace(MARKER, "").replace(/\s+([.!?])/g, "$1").replace(/\s+/g, " ").trim();
+}
+
+/** First `max` sentences, punctuation kept; "..." marks a cut. */
+export function firstSentences(text: string, max = 2): string {
+  const sentences = text
+    .split(/(?<=[.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+  if (sentences.length <= max) return sentences.join(" ");
+  return `${sentences.slice(0, max).join(" ")}...`;
 }
 
 function isInsufficient(text: string): boolean {
@@ -250,8 +270,10 @@ function evidenceForMarkers(
   const evidence: Evidence[] = [];
   const citations: Citation[] = [];
   const seen = new Set<string>();
+  // [N] numbers the chunks as the prompt showed them, after per-file filtering.
+  const numbered = hitsForPrompt(hits);
   for (const index of citationIndexes(text)) {
-    const hit = hits[index - 1];
+    const hit = numbered[index - 1];
     if (!hit) continue;
     const span = evidenceFromHit(hit, pack, material);
     if (!span || seen.has(span.id)) continue;
@@ -260,6 +282,96 @@ function evidenceForMarkers(
     citations.push(citationFrom(hit, span, material));
   }
   return { evidence, citations };
+}
+
+type VerifiedEvidence = {
+  evidence: Evidence[];
+  citations: Citation[];
+  check: ReturnType<typeof verifyClaim> | null;
+};
+
+/**
+ * Verify against the chunks the model cited. Models routinely cite the chunk
+ * holding the fact ("2–2.5 hour test session") while taking the subject from a
+ * neighbouring chunk they were shown ("Beta testing session guide"). When the
+ * cited chunks alone fall short, prompt chunks that supply a missing word join
+ * the evidence and are cited too, so every spoken word still comes from the
+ * user's material and every chunk it came from is shown.
+ */
+function verifiedEvidence(
+  say: string,
+  text: string,
+  hits: Hit[],
+  pack?: RepoPack,
+  material?: SpaceMaterialView,
+): VerifiedEvidence {
+  const cited = evidenceForMarkers(text, hits, pack, material);
+  if (cited.evidence.length === 0) return { ...cited, check: null };
+  const first = verifyClaim(say, cited.evidence);
+  if (first.ok) return { ...cited, check: first };
+
+  const seen = new Set(cited.evidence.map((span) => span.id));
+  const evidence = [...cited.evidence];
+  const citations = [...cited.citations];
+  for (const hit of hitsForPrompt(hits)) {
+    const body = (hit.text ?? "").toLowerCase();
+    if (!first.missing.some((word) => corpusHasWord(body, word))) continue;
+    const span = evidenceFromHit(hit, pack, material);
+    if (!span || seen.has(span.id)) continue;
+    seen.add(span.id);
+    evidence.push(span);
+    citations.push(citationFrom(hit, span, material));
+  }
+  if (evidence.length === cited.evidence.length) return { ...cited, check: first };
+  return { evidence, citations, check: verifyClaim(say, evidence) };
+}
+
+/** Sentences of a raw reply, each keeping the [N] markers written after its full stop. */
+export function citedSentences(text: string): string[] {
+  return text
+    .split(/(?<=[.!?](?:\s*\[\d+\])*)\s+(?!\[\d+\])/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+/**
+ * The spoken line and the evidence behind it, or null for silence. The whole
+ * reply is checked first; failing that, each sentence is checked against its
+ * own citations and only the sentences that pass are kept, so one paraphrased
+ * sentence no longer silences a correct one beside it.
+ */
+function verifiedAnswer(
+  text: string,
+  hits: Hit[],
+  pack?: RepoPack,
+  material?: SpaceMaterialView,
+): { say: string; evidence: Evidence[]; citations: Citation[] } | null {
+  const say = firstSentences(stripCitationMarkers(text));
+  if (!say) return null;
+  const whole = verifiedEvidence(say, text, hits, pack, material);
+  if (whole.check?.ok && whole.check.checked > 0) {
+    return { say, evidence: whole.evidence, citations: whole.citations };
+  }
+
+  const kept: string[] = [];
+  const evidence: Evidence[] = [];
+  const citations: Citation[] = [];
+  const seen = new Set<string>();
+  for (const part of citedSentences(text).slice(0, 2)) {
+    const line = stripCitationMarkers(part);
+    if (!line) continue;
+    const verified = verifiedEvidence(line, part, hits, pack, material);
+    if (!verified.check?.ok || verified.check.checked === 0) continue;
+    kept.push(line);
+    verified.evidence.forEach((span, i) => {
+      if (seen.has(span.id)) return;
+      seen.add(span.id);
+      evidence.push(span);
+      const citation = verified.citations[i];
+      if (citation) citations.push(citation);
+    });
+  }
+  return kept.length > 0 ? { say: kept.join(" "), evidence, citations } : null;
 }
 
 async function defaultAsk(prompt: string, modelId: string, maxTokens?: number, policy: AnswerPolicy = "extract") {
@@ -349,22 +461,11 @@ export async function generateAnswer(
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  // Enforce max 2 sentences and prevent verbatim copying from chunks
-  let say = stripCitationMarkers(remote.text);
-  if (say) {
-    const sentenceEnd = /[.!?](?:\s|$)/;
-    const sentences = say.split(sentenceEnd).slice(0, 2);
-    say = sentences.join(" ") + (sentences.length < say.split(sentenceEnd).length ? "..." : "");
-  }
-  if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
-  if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
-  const check = verifyClaim(say, evidence);
+  const verified = verifiedAnswer(remote.text, hits, opts?.pack, opts?.material);
   const verifyMs = Math.round(performance.now() - verifyStart);
-  if (!check.ok || check.checked === 0) {
-    return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
-  }
+  if (!verified) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
+  const { say, evidence, citations } = verified;
   return {
     ok: true,
     answer: {
@@ -397,22 +498,11 @@ export async function synthesizeAnswer(
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  // Enforce max 2 sentences and prevent verbatim copying from chunks
-  let say = stripCitationMarkers(remote.text);
-  if (say) {
-    const sentenceEnd = /[.!?](?:\s|$)/;
-    const sentences = say.split(sentenceEnd).slice(0, 2);
-    say = sentences.join(" ") + (sentences.length < say.split(sentenceEnd).length ? "..." : "");
-  }
-  if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
-  if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
-  const check = verifyClaim(say, evidence);
+  const verified = verifiedAnswer(remote.text, hits, opts?.pack, opts?.material);
   const verifyMs = Math.round(performance.now() - verifyStart);
-  if (!check.ok || check.checked === 0) {
-    return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
-  }
+  if (!verified) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
+  const { say, evidence, citations } = verified;
   return {
     ok: true,
     answer: {
@@ -425,5 +515,40 @@ export async function synthesizeAnswer(
       answerMode: "synthesized",
     },
     timing: { llmMs, verifyMs },
+  };
+}
+
+/**
+ * General knowledge fallback: answers from the model's own knowledge when the
+ * loaded material does not support a confident answer. No citations, no
+ * evidence, no cite-or-silence contract — just a direct AI answer.
+ */
+export async function generateGeneralAnswer(
+  query: string,
+  t0: number,
+  opts?: GenerateOpts,
+): Promise<AnswerResult> {
+  const llmStart = performance.now();
+  const model = getModelById(opts?.modelId) ?? getDefaultModel();
+  const system =
+    "You are a helpful AI assistant. Answer the user's question directly, accurately, and concisely using your own knowledge. Do not cite sources or refer to uploaded documents.";
+  const keys = readClientKeys();
+  const remote = await completeChat(system, query, model, keys, 12000, opts?.maxTokens);
+  const llmMs = Math.round(performance.now() - llmStart);
+  if (!remote.raw) {
+    return { ok: false, reason: "error", message: remote.reason ?? "empty", timing: { llmMs, verifyMs: 0 } };
+  }
+  return {
+    ok: true,
+    answer: {
+      say: remote.raw,
+      usedEvidence: false,
+      citations: [],
+      evidence: [],
+      latencyMs: Math.round(performance.now() - t0),
+      modelName: model.name,
+      answerMode: "generated",
+    },
+    timing: { llmMs, verifyMs: 0 },
   };
 }

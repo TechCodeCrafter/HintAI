@@ -169,7 +169,10 @@ function claimsFor(hit: FileHit, pack: RepoPack, query: string, material?: Space
     out.push({ say: claim.say, generic: claim.generic, span, head: origin === "head" });
   };
 
-  consider({ path: hit.path, content: hit.text }, "span", hit.startOffset);
+  // Guard against undefined startOffset (some retrieval paths may not set it).
+  // Without a base offset, file-relative claims cannot be located correctly.
+  const spanBase = typeof hit.startOffset === "number" ? hit.startOffset : 0;
+  consider({ path: hit.path, content: hit.text }, "span", spanBase);
   const fromSpan = out[0]?.say;
   consider(file ?? null, "head", 0, fromSpan);
   return out;

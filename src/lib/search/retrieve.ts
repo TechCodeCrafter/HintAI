@@ -480,6 +480,7 @@ export function namedPaths(query: string): string[] {
 
 const MAX_PER_FILE = 3;
 const MAX_PER_FILE_KIND = 2;
+const MAX_PER_PAGE = 3;
 
 export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[] {
   const terms = tokenize(query);
@@ -572,7 +573,9 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     if (isTestEvidencePath(idx.path) && !asksAboutTests) {
       score -= RETRIEVAL_WEIGHTS.testPathPenalty;
     }
-    if (isAuthoritativePath(idx.path) && !asksAboutTests) {
+    // Only a tiebreak among chunks that already matched: applied to a zero
+    // score it turned every docs/README chunk into a hit for any question.
+    if (score > 0 && isAuthoritativePath(idx.path) && !asksAboutTests) {
       score += RETRIEVAL_WEIGHTS.authoritativePath;
     }
     if (score > 0) scored.push({ ...chunk, score });
@@ -606,28 +609,33 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   const top = files[0].score;
   const floor = Math.max(named.length > 0 || wantsApi ? 0.6 : 1.0, top * 0.12);
 
+  // A PDF is one "file" but many pages: capped like a code file it could give
+  // the model at most two passages, so a one-PDF space answered almost nothing.
+  // Its chunks are capped per page instead, and it may keep drawing (best
+  // first) after code files reach their cap.
+  const isDocument = (hits: Hit[]) => hits[0]?.kind === "document";
+  const kindKeyOf = (h: Hit) => (h.kind === "document" ? `${h.path}#page=${h.page}|document` : `${h.path}|${h.kind}`);
+  const kindCapOf = (h: Hit) => (h.kind === "document" ? MAX_PER_PAGE : MAX_PER_FILE_KIND);
+
   const out: Hit[] = [];
   const takenPerFile = new Map<string, number>();
   const takenPerKind = new Map<string, number>();
-  for (let round = 0; round < MAX_PER_FILE && out.length < limit; round += 1) {
+  for (let round = 0; out.length < limit; round += 1) {
+    let progressed = false;
     for (const file of files) {
       if (out.length >= limit) break;
       const used = takenPerFile.get(file.path) ?? 0;
-      if (used > round) continue;
-      const next = file.hits.find((h) => {
-        const kindKey = `${h.path}|${h.kind}`;
-        return (
-          !out.includes(h) &&
-          h.score >= floor &&
-          (takenPerKind.get(kindKey) ?? 0) < MAX_PER_FILE_KIND
-        );
-      });
+      if (used > round || used >= (isDocument(file.hits) ? limit : MAX_PER_FILE)) continue;
+      const next = file.hits.find(
+        (h) => !out.includes(h) && h.score >= floor && (takenPerKind.get(kindKeyOf(h)) ?? 0) < kindCapOf(h),
+      );
       if (!next) continue;
       out.push(next);
+      progressed = true;
       takenPerFile.set(file.path, used + 1);
-      const kindKey = `${next.path}|${next.kind}`;
-      takenPerKind.set(kindKey, (takenPerKind.get(kindKey) ?? 0) + 1);
+      takenPerKind.set(kindKeyOf(next), (takenPerKind.get(kindKeyOf(next)) ?? 0) + 1);
     }
+    if (!progressed) break;
   }
   // Diversity decides which chunks survive; score decides how they rank.
   return out.sort((a, b) => b.score - a.score);

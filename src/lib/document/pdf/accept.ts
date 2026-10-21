@@ -29,7 +29,13 @@ export async function looksLikePdf(blob: Blob): Promise<boolean> {
 
 export async function acceptPdfFile(
   file: File,
-  usage: { pdfCount: number; pdfBytes: number; replacingExisting: boolean },
+  usage: {
+    pdfCount: number;
+    pdfBytes: number;
+    replacingExisting: boolean;
+    /** Size of the existing PDF being replaced, so the swap can be netted out. */
+    replacingSize?: number;
+  },
   limits = PDF_LIMITS,
 ): Promise<PdfAcceptResult> {
   if (!hasPdfExtension(file.name)) {
@@ -44,7 +50,9 @@ export async function acceptPdfFile(
   if (!usage.replacingExisting && usage.pdfCount >= limits.maxPdfsPerContext) {
     return { ok: false, reason: "context-count", note: READINESS_NOTES.refusedContextCount };
   }
-  const nextBytes = usage.replacingExisting ? usage.pdfBytes : usage.pdfBytes + file.size;
+  const nextBytes = usage.replacingExisting
+    ? usage.pdfBytes - (usage.replacingSize ?? 0) + file.size
+    : usage.pdfBytes + file.size;
   if (nextBytes > limits.maxPdfBytesPerContext) {
     return { ok: false, reason: "context-bytes", note: READINESS_NOTES.refusedContextBytes };
   }

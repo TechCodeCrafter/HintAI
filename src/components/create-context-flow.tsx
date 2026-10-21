@@ -55,12 +55,10 @@ export function CreateContextFlow() {
   const chunks = useMeetHint((s) => s.chunks);
   const activeContextId = useMeetHint((s) => s.activeContextId);
 
-  const busy =
-    creating ||
-    loadingFolder ||
-    folderPicker.reading ||
-    contextStatus === "hydrating" ||
-    contextStatus === "booting";
+  // Not "booting": that is the store's initial status, and only the cockpit
+  // calls `boot()` to clear it. Nothing on this page boots, so treating it as
+  // busy kept the upload buttons disabled forever after a fresh load of /create.
+  const busy = creating || loadingFolder || folderPicker.reading || contextStatus === "hydrating";
   const symbolCount = useMemo(() => chunks.filter((chunk) => "symbol" in chunk && chunk.symbol).length, [chunks]);
   const sourceCount = sources.length;
   const workingId = contextId ?? activeContextId;

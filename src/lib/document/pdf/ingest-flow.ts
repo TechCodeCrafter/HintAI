@@ -81,38 +81,50 @@ export async function finishPdfIngest(
   const queue = pendingPdfSources(sources);
   let current = 0;
 
-  for (const source of queue) {
-    current += 1;
-    report("reading", current, markReading(sources, source.id));
-    await parseAndPersistPdf(repo, contextId, source);
-    sources = await repo.listSources(contextId);
-    if (options.isCancelled?.()) {
-      // Persist the rest so reload recovery is deterministic, but do not
-      // apply a runtime for a Context that is no longer on screen.
+  try {
+    for (const source of queue) {
+      current += 1;
+      report("reading", current, markReading(sources, source.id));
+      await parseAndPersistPdf(repo, contextId, source);
+      sources = await repo.listSources(contextId);
+      if (options.isCancelled?.()) {
+        // Persist the rest so reload recovery is deterministic, but do not
+        // apply a runtime for a Context that is no longer on screen.
+      }
     }
+
+    report("indexing", Math.max(current, 1), sources);
+    let first: IndexedRuntime;
+    try {
+      first = await indexContext(repo, contextId, {
+        isCancelled: options.isCancelled,
+      });
+    } finally {
+      // Always complete context activation so the context is never left half-activated,
+      // even if parsing or indexing throws.
+      await repo.completeContextActivation(contextId);
+    }
+
+    sources = await repo.listSources(contextId);
+
+    if (options.isCancelled?.() || first.cancelled) {
+      return { runtime: null, sources, cancelled: true };
+    }
+
+    const runtime = pdfWorkPending(sources)
+      ? first
+      : await indexContext(repo, contextId, { isCancelled: options.isCancelled });
+    sources = await repo.listSources(contextId);
+    if (options.isCancelled?.() || runtime.cancelled) {
+      return { runtime: null, sources, cancelled: true };
+    }
+
+    report("ready", queue.length, sources);
+    return { runtime, sources, cancelled: false };
+  } finally {
+    // Ensure context activation completes even if the outer flow throws.
+    await repo.completeContextActivation(contextId);
   }
-
-  report("indexing", Math.max(current, 1), sources);
-  const first = await indexContext(repo, contextId, {
-    isCancelled: options.isCancelled,
-  });
-  await repo.completeContextActivation(contextId);
-  sources = await repo.listSources(contextId);
-
-  if (options.isCancelled?.() || first.cancelled) {
-    return { runtime: null, sources, cancelled: true };
-  }
-
-  const runtime = pdfWorkPending(sources)
-    ? first
-    : await indexContext(repo, contextId, { isCancelled: options.isCancelled });
-  sources = await repo.listSources(contextId);
-  if (options.isCancelled?.() || runtime.cancelled) {
-    return { runtime: null, sources, cancelled: true };
-  }
-
-  report("ready", queue.length, sources);
-  return { runtime, sources, cancelled: false };
 }
 
 /**
