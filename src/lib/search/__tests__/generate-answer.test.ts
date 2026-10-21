@@ -11,6 +11,7 @@ import {
   buildWeakEvidencePrompt,
   citationIndexes,
   extractBestSentence,
+  firstSentences,
   generateAnswer,
   hitsForPrompt,
   synthesizeAnswer,
@@ -30,7 +31,6 @@ test("extract and weak synthesis both require citations or INSUFFICIENT", () => 
   assert.doesNotMatch(source, /buildAnswerPrompt/);
   assert.doesNotMatch(source, /export async function freelyAnswer/);
   assert.doesNotMatch(source, /export async function extractAnswer/);
-  assert.doesNotMatch(source, /generateGeneralAnswer/);
   assert.doesNotMatch(source, /buildGeneralPrompt/);
   const prompt = buildSynthesisPrompt("Why does that retry three times?", retryHits);
   assert.match(prompt, /If insufficient, respond exactly: INSUFFICIENT/);
@@ -47,10 +47,10 @@ test("extract and weak synthesis both require citations or INSUFFICIENT", () => 
   assert.match(source, /llmDebug\("\[ask\]/);
 });
 
-test("prompt composition keeps at most two chunks per source file", () => {
+test("prompt composition keeps at most four chunks per source file", () => {
   const seed = retryHits[0];
   assert.ok(seed);
-  const piled = Array.from({ length: 5 }, (_, i) => ({
+  const piled = Array.from({ length: 6 }, (_, i) => ({
     ...seed,
     id: `docs-${i}`,
     startLine: i + 1,
@@ -60,26 +60,55 @@ test("prompt composition keeps at most two chunks per source file", () => {
   const extra = { ...seed, id: "impl", path: "api/main.py", text: "Identity is the X-User-Email header." };
   const hits = [...piled, extra];
   const kept = hitsForPrompt(hits);
-  assert.equal(kept.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 2);
+  assert.equal(kept.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 4);
   assert.ok(kept.some((hit) => hit.path === "api/main.py"));
   const grounded = buildSynthesisPrompt("How does authentication work?", hits);
   const weak = buildWeakEvidencePrompt("How does authentication work?", hits);
   const docsChunks = grounded.match(/docs\/API_DOCUMENTATION\.md/g) ?? [];
-  assert.ok(docsChunks.length <= 2, grounded);
+  assert.ok(docsChunks.length <= 4, grounded);
   assert.match(grounded, /api\/main\.py/);
-  assert.ok(((weak.match(/docs\/API_DOCUMENTATION\.md/g) ?? []).length) <= 2);
+  assert.ok(((weak.match(/docs\/API_DOCUMENTATION\.md/g) ?? []).length) <= 4);
 });
 
-test("weak and grounded prompts share the same five-chunk cap", () => {
+test("weak and grounded prompts share the same eight-chunk cap", () => {
   const seed = retryHits[0];
   assert.ok(seed);
-  const hits = Array.from({ length: 8 }, (_, i) => ({ ...seed, path: `f${i}.ts` }));
+  const hits = Array.from({ length: 10 }, (_, i) => ({ ...seed, path: `f${i}.ts` }));
   const grounded = buildSynthesisPrompt("Why does that retry three times?", hits);
   const weak = buildWeakEvidencePrompt("full stack developer role", hits);
-  assert.match(grounded, /\[5\]/);
-  assert.doesNotMatch(grounded, /\[6\]/);
-  assert.match(weak, /\[5\]/);
-  assert.doesNotMatch(weak, /\[6\]/);
+  assert.match(grounded, /\[8\]/);
+  assert.doesNotMatch(grounded, /\[9\]/);
+  assert.match(weak, /\[8\]/);
+  assert.doesNotMatch(weak, /\[9\]/);
+});
+
+test("citation [N] resolves to the Nth chunk the prompt showed, not the Nth raw hit", async () => {
+  const seed = retryHits.find((hit) => /Attempts are capped at three/.test(hit.text));
+  assert.ok(seed);
+  // Five filler chunks from one file: the prompt keeps four, so the real chunk
+  // is [5] in the prompt but index 6 in the raw list.
+  const filler = Array.from({ length: 5 }, (_, i) => ({
+    ...seed,
+    id: `filler-${i}`,
+    path: "docs/FILLER.md",
+    text: `Unrelated filler paragraph ${i + 1}.`,
+  }));
+  const hits = [...filler, seed];
+  assert.equal(hitsForPrompt(hits).indexOf(seed), 4);
+  const generated = await generateAnswer("Why does that retry three times?", hits, 0, {
+    ask: ask("Attempts are capped at three because a fourth attempt duplicates the settlement file. [5]"),
+    pack: NORTHSTAR,
+  });
+  assert.ok(generated.ok);
+  const cite = generated.answer.citations.find((c) => c.kind === "file");
+  assert.ok(cite && cite.kind === "file");
+  assert.equal(cite.path, seed.path);
+});
+
+test("firstSentences keeps punctuation and only marks a real cut", () => {
+  assert.equal(firstSentences("One is here. Two is there."), "One is here. Two is there.");
+  assert.equal(firstSentences("One. Two! Three?"), "One. Two!...");
+  assert.equal(firstSentences("No terminal punctuation"), "No terminal punctuation");
 });
 
 test("INSUFFICIENT is silence", async () => {
@@ -92,7 +121,7 @@ test("INSUFFICIENT is silence", async () => {
 });
 
 test("a cited line the files can admit is returned with real citations", async () => {
-  const body = retryHits.findIndex((hit) => /Attempts are capped at three/.test(hit.text));
+  const body = hitsForPrompt(retryHits).findIndex((hit) => /Attempts are capped at three/.test(hit.text));
   assert.ok(body >= 0);
   const generated = await generateAnswer("Why does that retry three times?", retryHits, 0, {
     ask: ask(

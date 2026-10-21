@@ -16,20 +16,94 @@ import {
   type ServerUploadBatch,
 } from "./contract.ts";
 
-async function userPageTotal(sql: Sql, userId: string): Promise<number> {
-  const rows = await sql<{ pages: number }>`
-    select coalesce(sum(page_count), 0)::int as pages
-    from server_sources
-    where user_id = ${userId} and status = 'ready'
-  `;
+/**
+ * Pages the user is storing, in every state: an upload that never sends its
+ * last batch still occupies rows, so counting only `ready` let it bypass the
+ * budget. `except` leaves out the source being written, whose pages the caller
+ * counts itself.
+ */
+async function userPageTotal(sql: Sql, userId: string, except?: ServerDocMeta): Promise<number> {
+  const rows = except
+    ? await sql<{ pages: number }>`
+        select coalesce(sum(page_count), 0)::int as pages
+        from server_sources
+        where user_id = ${userId}
+          and not (space_id = ${except.spaceId} and source_id = ${except.sourceId}
+            and content_hash = ${except.contentHash})
+      `
+    : await sql<{ pages: number }>`
+        select coalesce(sum(page_count), 0)::int as pages
+        from server_sources
+        where user_id = ${userId}
+      `;
   return rows[0]?.pages ?? 0;
 }
 
+type UploadResult = { ok: true } | { ok: false; reason: string };
+
+/** Ends the transaction with a rollback, then becomes the batch's result. */
+class UploadRejected extends Error {
+  readonly reason: string;
+  constructor(reason: string) {
+    super(reason);
+    this.reason = reason;
+  }
+}
+
+export const UPLOAD_TIMED_OUT = "Upload timed out. Retry this batch.";
+
+/**
+ * `tx`, but every statement first checks the deadline. Past it, the next
+ * statement throws instead of running, so the transaction rolls back.
+ */
+function withDeadline(tx: Sql, deadline: number | undefined): Sql {
+  if (deadline === undefined) return tx;
+  const check = () => {
+    if (Date.now() >= deadline) throw new UploadRejected(UPLOAD_TIMED_OUT);
+  };
+  const guarded = (async (strings: TemplateStringsArray, ...values: unknown[]) => {
+    check();
+    return tx(strings, ...values);
+  }) as Sql;
+  guarded.query = async (text, params) => {
+    check();
+    return tx.query(text, params);
+  };
+  guarded.transaction = (fn) => fn(guarded);
+  return guarded;
+}
+
+/**
+ * Store one batch, all or nothing: every write runs in a single transaction, so
+ * a batch that fails, is rejected, or runs past `deadline` (epoch ms) leaves
+ * the source exactly as it was — counts and rows always agree. Retrying a batch
+ * is safe; it replaces its own rows.
+ */
 export async function storeUploadBatch(
   sql: Sql,
   userId: string,
   batch: ServerUploadBatch,
-): Promise<{ ok: true } | { ok: false; reason: string }> {
+  options: { deadline?: number } = {},
+): Promise<UploadResult> {
+  try {
+    return await sql.transaction(async (tx) => {
+      const db = withDeadline(tx, options.deadline);
+      if (options.deadline !== undefined) {
+        // Also bound each statement, so one slow query cannot run past the deadline.
+        const remaining = Math.max(1, options.deadline - Date.now());
+        await db`select set_config('statement_timeout', ${String(remaining)}, true)`;
+      }
+      const result = await writeUploadBatch(db, userId, batch);
+      if (!result.ok) throw new UploadRejected(result.reason);
+      return result;
+    });
+  } catch (error) {
+    if (error instanceof UploadRejected) return { ok: false, reason: error.reason };
+    throw error;
+  }
+}
+
+async function writeUploadBatch(sql: Sql, userId: string, batch: ServerUploadBatch): Promise<UploadResult> {
   const meta: ServerDocMeta = batch.meta;
   if (batch.batchIndex === 0) {
     // A re-upload of the same bytes resumes cleanly: drop the prior attempt.
@@ -56,29 +130,53 @@ export async function storeUploadBatch(
     `;
   }
 
-  const existing = await sql<{ page_count: number; chunk_count: number; status: string }>`
-    select page_count, chunk_count, status from server_sources
+  // `for update` holds the source row until commit, so two batches of one
+  // source take turns instead of both counting the rows before either writes.
+  const existing = await sql<{ status: string }>`
+    select status from server_sources
     where user_id = ${userId} and space_id = ${meta.spaceId}
       and source_id = ${meta.sourceId} and content_hash = ${meta.contentHash}
+    for update
   `;
-  const row = existing[0];
-  if (!row) return { ok: false, reason: "Upload session not started." };
-  const nextPages = row.page_count + batch.pages.length;
-  const nextChunks = row.chunk_count + batch.chunks.length;
+  if (!existing[0]) return { ok: false, reason: "Upload session not started." };
+
+  // A retried batch replaces its own pages and chunks rather than adding to
+  // them, so counts come from the rows outside this batch plus the batch.
+  const pageNumbers = [...new Set(batch.pages.map((page) => page.pageNumber))];
+  const chunkIds = [...new Set(batch.chunks.map((chunk) => chunk.id).filter((id) => typeof id === "string"))];
+  const [{ pages: otherPages } = { pages: 0 }] = await sql<{ pages: number }>`
+    select count(*)::int as pages from server_pages
+    where user_id = ${userId} and space_id = ${meta.spaceId}
+      and source_id = ${meta.sourceId} and content_hash = ${meta.contentHash}
+      and not (page_number = any(${pageNumbers}::int[]))
+  `;
+  const [{ chunks: otherChunks } = { chunks: 0 }] = await sql<{ chunks: number }>`
+    select count(*)::int as chunks from server_chunks
+    where user_id = ${userId} and space_id = ${meta.spaceId}
+      and source_id = ${meta.sourceId} and content_hash = ${meta.contentHash}
+      and not (coalesce(chunk->>'id', '') = any(${chunkIds}::text[]))
+  `;
+  const nextPages = otherPages + pageNumbers.length;
+  const nextChunks = otherChunks + batch.chunks.length;
   if (nextPages > SERVER_CORPUS_LIMITS.maxPagesPerSource) {
     return { ok: false, reason: "Source exceeds the per-document page limit." };
   }
   if (nextChunks > SERVER_CORPUS_LIMITS.maxChunksPerSource) {
     return { ok: false, reason: "Source exceeds the per-document chunk limit." };
   }
-  if (batch.isLast) {
-    const current = await userPageTotal(sql, userId);
-    // Pages already counted for a resumed re-upload of this source are
-    // replaced, not added — but v1 keeps the simple conservative check.
-    const quota = quotaAfterUpload(current, nextPages);
-    if (!quota.ok) return quota;
-  }
+  // Every batch, not just the last: a client that never sends `isLast` used
+  // to store without limit.
+  const quota = quotaAfterUpload(await userPageTotal(sql, userId, meta), nextPages);
+  if (!quota.ok) return quota;
 
+  if (chunkIds.length > 0) {
+    await sql`
+      delete from server_chunks
+      where user_id = ${userId} and space_id = ${meta.spaceId}
+        and source_id = ${meta.sourceId} and content_hash = ${meta.contentHash}
+        and chunk->>'id' = any(${chunkIds}::text[])
+    `;
+  }
   for (const page of batch.pages) {
     await sql`
       insert into server_pages

@@ -28,11 +28,10 @@ const WORD_NUMBERS: Record<string, string> = {
 };
 
 const VERSION_PATTERN = /\bv?\d+(?:\.\d+){1,3}\b/gi;
+// Ends on a lookahead, not `\b`: `\b` never matches after "%", so "5%" was not
+// read as a unit at all. Bare "s"/"h" cover the short forms ("10s", "2h").
 const UNIT_PATTERN =
-  /\b\d+(?:\.\d+)?\s*(?:ms|milliseconds?|seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?|kb|mb|gb|tb|percent|%|rps|qps)\b/gi;
-
-const CLAUSE_SPLIT =
-  /\s*;\s*|\s*,\s+(?=and\b|but\b|so\b|then\b|while\b|because\b)|\s+(?:and|but|so|then|while|because)\s+/i;
+  /\b\d+(?:\.\d+)?\s*(?:ms|milliseconds?|seconds?|secs?|s|minutes?|mins?|hours?|hrs?|h|days?|weeks?|months?|years?|kb|mb|gb|tb|percent|%|rps|qps)(?![a-z0-9_])/gi;
 
 function escapeRegex(token: string): string {
   return token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -49,7 +48,8 @@ function normalizeSurface(text: string): string {
 function extractNumbers(text: string): string[] {
   const lower = text.toLowerCase();
   const found: string[] = [];
-  for (const match of lower.matchAll(/\b\d+(?:\.\d+)?\b/g)) {
+  // A unit written flush ("10s", "2h", "120ms") still leaves its number readable.
+  for (const match of lower.matchAll(/\b\d+(?:\.\d+)?(?=(?:ms|secs?|s|mins?|hrs?|h|kb|mb|gb|tb)?(?![a-z0-9_]))/g)) {
     found.push(match[0]!);
   }
   for (const [word, digit] of Object.entries(WORD_NUMBERS)) {
@@ -58,8 +58,29 @@ function extractNumbers(text: string): string[] {
   return [...new Set(found)];
 }
 
+const UNIT_CANON: Array<[RegExp, string]> = [
+  [/^(?:ms|milliseconds?)$/, "ms"],
+  [/^(?:seconds?|secs?|s)$/, "s"],
+  [/^(?:minutes?|mins?)$/, "min"],
+  [/^(?:hours?|hrs?|h)$/, "h"],
+  [/^days?$/, "d"],
+  [/^weeks?$/, "w"],
+  [/^months?$/, "mo"],
+  [/^years?$/, "y"],
+  [/^(?:percent|%)$/, "%"],
+];
+
+/**
+ * Number + unit, canonical: "2.5 hours", "2.5 hour", and "2.5 hrs" are one
+ * quantity, as are "35 minutes" and "35 min". Only the spelling is folded —
+ * the number and the kind of unit still have to match.
+ */
 function extractUnits(text: string): string[] {
-  return [...text.toLowerCase().matchAll(UNIT_PATTERN)].map((m) => m[0]!.replace(/\s+/g, " "));
+  return [...text.toLowerCase().matchAll(UNIT_PATTERN)].map((m) => {
+    const [, num = "", unit = ""] = /^(\d+(?:\.\d+)?)\s*(.+)$/.exec(m[0]!) ?? [];
+    const canon = UNIT_CANON.find(([pattern]) => pattern.test(unit))?.[1] ?? unit;
+    return `${num} ${canon}`;
+  });
 }
 
 function extractVersions(text: string): string[] {
@@ -137,7 +158,7 @@ export function unwrapEvidenceText(text: string): string {
     .split(/\n/)
     .map((line) =>
       line
-        .replace(/^\s*[\*\/]+\s?/, "")
+        .replace(/^\s*[*/]+\s?/, "")
         .replace(/^\s*(\/\/|#)\s?/, "")
         .replace(/^\s*-\s+/, "")
         .trim(),
@@ -178,9 +199,10 @@ export function splitClaimClauses(claim: string): string[] {
   let parts = [trimmed];
   for (const splitter of [
     /\s*;\s*/,
+    /\s*:\s+/,
     /(?<=[.!?])\s+/,
     /\s*,\s+(?=and\b|but\b|so\b|then\b|while\b|because\b)/i,
-    /\s+and\s+(?=[a-z][a-z-]*\s+(?:are|is|was|were|has|have|require|run|process|support)\b)/i,
+    /\s+and\s+(?=(?:[a-z][\w-]*\s+){1,3}(?:are|is|was|were|has|have|require|run|process|support)\b)/i,
     /\s*,\s+/,
   ]) {
     parts = parts.flatMap((part) =>
@@ -241,13 +263,46 @@ export function numericsCompatible(claim: string, anchored: string, fullCorpus: 
   }
   const claimUnits = extractUnits(claim);
   const corpusUnits = extractUnits(fullCorpus);
+  // Both sides are canonical, so compare them directly. A raw substring test
+  // let "5 h" pass on "5 hosts".
   for (const unit of claimUnits) {
-    if (!corpusUnits.some((u) => u === unit || fullCorpus.includes(unit))) return false;
+    if (!corpusUnits.includes(unit)) return false;
   }
   const claimVersions = extractVersions(claim);
   const corpusVersions = extractVersions(fullCorpus);
   for (const version of claimVersions) {
     if (!corpusVersions.includes(version)) return false;
+  }
+  return true;
+}
+
+/**
+ * A number has to come from a passage about the same thing. The per-clause
+ * check falls back to the whole corpus when the anchored passage has no
+ * numbers, which let "The beta testing session takes ~35 min" pass on
+ * "Beta testing session guide" plus "Ask mode · ~35 min". Checked per sentence
+ * (a clause split at ":" can strand the number from its subject). Numbers in
+ * `freeText` — vocabulary the caller supplied from structure or metadata, such
+ * as the file tree or a commit's PR and date — are always allowed.
+ */
+export function numbersStayWithSubject(
+  say: string,
+  contentTokens: string[],
+  blocks: string[],
+  freeText = "",
+): boolean {
+  const freeNums = new Set(extractNumbers(freeText));
+  for (const sentence of say.split(/(?<=[.!?])\s+/)) {
+    const nums = extractNumbers(sentence).filter((num) => !freeNums.has(num));
+    if (nums.length === 0) continue;
+    const tokens = tokensInClause(sentence, contentTokens);
+    if (tokens.length === 0) continue;
+    const near = new Set(
+      blocks
+        .filter((block) => tokens.some((token) => blockIncludesToken(block, token)))
+        .flatMap((block) => extractNumbers(block)),
+    );
+    if (nums.some((num) => !near.has(num))) return false;
   }
   return true;
 }

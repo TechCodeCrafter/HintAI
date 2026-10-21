@@ -106,7 +106,14 @@ export function validateUploadBatch(
     }
   }
   for (const chunk of batch.chunks) {
-    if (!chunk || typeof chunk.text !== "string" || chunk.text.length > 20_000) {
+    if (
+      !chunk ||
+      typeof chunk.id !== "string" ||
+      chunk.id.length === 0 ||
+      chunk.id.length > 500 ||
+      typeof chunk.text !== "string" ||
+      chunk.text.length > 20_000
+    ) {
       return bad("Invalid chunk in batch.");
     }
     if (chunk.sourceId !== meta.sourceId) return bad("Chunk belongs to another source.");

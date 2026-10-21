@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import "@/lib/e2e-hooks";
-import { bindAccountId, LOCAL_DEV_ACCOUNT_ID } from "@/lib/auth/account-boundary";
+import { bindAccountId, LOCAL_DEV_ACCOUNT_ID, onAccountUnbind } from "@/lib/auth/account-boundary";
 import { authEnabled } from "@/lib/auth/client";
 import type { ContextRecord, ContextRuntimeStatus, StoredSource } from "@/lib/context/types";
 import { isPdfSource } from "@/lib/context/types";
@@ -58,7 +58,7 @@ import {
   writeSubscription,
   type SubscriptionTier,
 } from "@/lib/billing/subscription";
-import type { Card, DocumentCitation, HeardEvent, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
+import type { Card, DocumentCitation, HeardEvent, Hit, IndexedChunk, RepoPack, Utterance } from "@/lib/repo/types";
 import { buildSpaceMaterialView } from "@/lib/context/material-view";
 import {
   appendAnswerHistory,
@@ -282,12 +282,17 @@ const contextWriteLocks = new Map<string, Promise<unknown>>();
 
 function withContextWrite<T>(contextId: string, work: () => Promise<T>): Promise<T> {
   const previous = contextWriteLocks.get(contextId) ?? Promise.resolve();
-  const next = previous.catch(() => undefined).then(work);
+  const next = previous.then(work);
   contextWriteLocks.set(
     contextId,
     next.then(
       () => undefined,
-      () => undefined,
+      (err) => {
+        // Surface errors so callers can observe failed context writes instead
+        // of silently proceeding on stale state.
+        console.error(`[withContextWrite] context write failed for ${contextId}`, err);
+        throw err;
+      },
     ),
   );
   return next;
@@ -303,7 +308,8 @@ function bumpSpaceCatalog() {
 }
 
 function searchIsLive(): boolean {
-  return useMeetHint.getState().contextStatus === "ready";
+  const state = useMeetHint.getState();
+  return state.contextStatus === "ready" && !allSourcesExcluded(state.sources, state.pack.files, state.pack.excludePatterns);
 }
 
 function clearSessionOnSwitch(): Pick<
@@ -336,11 +342,11 @@ function clearSessionOnSwitch(): Pick<
 
 function applyCard(card: Card | null, openDocument: DocumentOpenTarget | null) {
   if (openDocument && !openDocument.evidenceId) {
-    syncViewerBlobPins(card, openDocument);
+    if (card) syncViewerBlobPins(card, openDocument);
     return { card, openDocument };
   }
   const next = card && openDocument && evidenceForOpenTarget(card, openDocument) ? openDocument : null;
-  syncViewerBlobPins(card, next);
+  if (card || next) syncViewerBlobPins(card, next);
   return { card, openDocument: next };
 }
 
@@ -1720,29 +1726,31 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       return;
     }
 
-    const retrieveT0 = performance.now();
-    const hits = await runSpaceScopedRetrieval({
-      query: canonical,
-      previousQuestion,
-      chunks: state.chunks,
-      pack: state.pack,
-      spaceState: state,
-      workspaceId,
-      vectorStore: getVectorStore(),
-      limit: 6,
-    });
-    const retrieveMs = Math.round(performance.now() - retrieveT0);
-    if (epoch !== searchEpoch) return;
+    let hits: Hit[] = [];
+    try {
+      const retrieveT0 = performance.now();
+      hits = await runSpaceScopedRetrieval({
+        query: canonical,
+        previousQuestion,
+        chunks: state.chunks,
+        pack: state.pack,
+        spaceState: state,
+        workspaceId,
+        vectorStore: getVectorStore(),
+        limit: 6,
+      });
+      const retrieveMs = Math.round(performance.now() - retrieveT0);
+      if (epoch !== searchEpoch) return;
 
-    const { context: cardContext, documentHydrateMs } = await hydratePdfDocumentsForHits(
-      getContextRepository(),
-      state.sources,
-      hits,
-      material,
-    );
-    if (epoch !== searchEpoch) return;
+      const { context: cardContext, documentHydrateMs } = await hydratePdfDocumentsForHits(
+        getContextRepository(),
+        state.sources,
+        hits,
+        material,
+      );
+      if (epoch !== searchEpoch) return;
 
-    const finish = (card: Card, remaining = get().extractRemaining) => {
+      const finish = (card: Card, remaining = get().extractRemaining) => {
       set((s) => {
         const telemetry = telemetryFromCard(card);
         const answerHistory = appendAnswerHistory(s.answerHistory, card, {
@@ -1863,7 +1871,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       citations: routed.card.citations,
       quotaRemaining: remaining,
     });
-  },
+  } catch (err) {
+    // Any failure in retrieval, hydration, or routing must not leave the UI
+    // stuck in "searching" state. Surface the error and recover.
+    set({ searching: false, refining: false });
+    throw err;
+  }
+},
 }));
 
 /** Apply localStorage prefs after hydration so SSR and the first client paint match. */
@@ -1876,6 +1890,10 @@ export function hydrateClientPrefs() {
 }
 
 if (typeof window !== "undefined") {
+  // Prefs are stored per account, and with auth on the account is bound only
+  // after the session resolves — later than the root's one-time hydrate. Re-read
+  // on every bind change, or the saved model and quota reset on each reload.
+  onAccountUnbind(hydrateClientPrefs);
   window.useMeetHint = useMeetHint as unknown as Window["useMeetHint"];
   window.__meethintSwitchAccount = async (accountId) => {
     const { switchAccount } = await import("@/lib/auth/account-session");

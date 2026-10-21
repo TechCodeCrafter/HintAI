@@ -7,7 +7,7 @@
  *   node scripts/check-branch-fresh.mjs
  *   node scripts/check-branch-fresh.mjs --base origin/main
  */
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { isMainModule } from "./with-app-env.mjs";
 
 function parseBase(argv) {
@@ -16,13 +16,10 @@ function parseBase(argv) {
   return process.env.BRANCH_FRESH_BASE ?? "origin/main";
 }
 
-function shellQuote(ref) {
-  return `'${String(ref).replace(/'/g, "'\\''")}'`;
-}
-
+// Argument arrays, no shell: POSIX single quotes reach git literally under cmd.exe.
 function gitRevExists(ref) {
   try {
-    execSync(`git rev-parse --verify ${shellQuote(ref)}`, { stdio: "ignore" });
+    execFileSync("git", ["rev-parse", "--verify", "--quiet", ref], { stdio: "ignore" });
     return true;
   } catch {
     return false;
@@ -31,7 +28,7 @@ function gitRevExists(ref) {
 
 function shortRef(ref) {
   try {
-    return execSync(`git rev-parse --short ${shellQuote(ref)}`, { encoding: "utf8" }).trim();
+    return execFileSync("git", ["rev-parse", "--short", ref], { encoding: "utf8" }).trim();
   } catch {
     return ref;
   }
@@ -47,7 +44,7 @@ export function assessBranchFreshness(base) {
   }
 
   try {
-    execSync(`git merge-base --is-ancestor ${shellQuote(base)} HEAD`, { stdio: "ignore" });
+    execFileSync("git", ["merge-base", "--is-ancestor", base, "HEAD"], { stdio: "ignore" });
     return { ok: true, base, head: shortRef("HEAD"), baseSha: shortRef(base) };
   } catch {
     return {

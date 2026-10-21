@@ -3,10 +3,11 @@ import { test } from "node:test";
 
 import { applyTheme, readTheme, THEME_BOOT } from "./theme.ts";
 
-test("boot script writes a stored light theme before paint", () => {
+test("boot script writes a stored theme before paint and defaults to light", () => {
   assert.match(THEME_BOOT, /meethint-theme/);
   assert.match(THEME_BOOT, /dataset\.theme/);
-  assert.match(THEME_BOOT, /prefers-color-scheme: light/);
+  assert.match(THEME_BOOT, /t="light"/);
+  assert.doesNotMatch(THEME_BOOT, /prefers-color-scheme/);
 });
 
 test("applyTheme persists and paints light tokens", () => {

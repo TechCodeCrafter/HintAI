@@ -10,8 +10,18 @@ function envKey(provider: ModelProvider): string | undefined {
 }
 
 function resolveKey(provider: ModelProvider, keys?: ProviderKeys): string | undefined {
-  const fromClient = keys?.[provider]?.trim();
+  const raw: unknown = keys?.[provider];
+  const fromClient = typeof raw === "string" ? raw.trim() : "";
   return fromClient || envKey(provider);
+}
+
+/**
+ * The model's own budget is the ceiling. `maxTokens` arrives from the browser,
+ * and an unbounded value multiplied the cost of a call on server-managed keys.
+ */
+export function clampMaxTokens(model: ModelOption, requested?: number): number {
+  if (typeof requested !== "number" || !Number.isFinite(requested) || requested < 1) return model.maxTokens;
+  return Math.min(Math.floor(requested), model.maxTokens);
 }
 
 function providerHttpReason(provider: ModelProvider, status: number): string {
@@ -84,7 +94,7 @@ export async function completeChat(
   llmDebug("[completeChat] provider:", model.provider, "apiKey present:", Boolean(apiKey));
   if (!user.trim()) return { raw: null as string | null, reason: "empty prompt" };
   if (!apiKey) return { raw: null as string | null, reason: "Add API key" };
-  const request = buildRequest(model, system, user, apiKey, maxTokens ?? model.maxTokens);
+  const request = buildRequest(model, system, user, apiKey, clampMaxTokens(model, maxTokens));
   try {
     const res = await fetch(request.url, {
       method: "POST",
@@ -98,8 +108,24 @@ export async function completeChat(
     }
     const raw = readCompletion(model.provider, await res.json());
     return { raw, reason: undefined };
-  } catch {
-    return { raw: null, reason: "timeout" };
+  } catch (err) {
+    // Distinguish timeouts from network/auth errors so callers can route
+    // appropriately (e.g. retry on transient failure, surface API key issues).
+    if (err instanceof Error && err.name === "AbortError") {
+      return { raw: null, reason: "timeout" };
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    const lower = message.toLowerCase();
+    if (lower.includes("401") || lower.includes("403") || lower.includes("api key")) {
+      return { raw: null, reason: "Add API key" };
+    }
+    if (lower.includes("429")) {
+      return { raw: null, reason: "rate limit" };
+    }
+    if (lower.includes("fetch") || lower.includes("network") || lower.includes("failed to fetch")) {
+      return { raw: null, reason: "network error" };
+    }
+    return { raw: null, reason: message || "error" };
   }
 }
 
@@ -195,8 +221,22 @@ async function completeOpenAiStream(
         completionMs: Math.round(performance.now() - started),
       },
     };
-  } catch {
-    return { raw: null, reason: "timeout" };
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      return { raw: null, reason: "timeout" };
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    const lower = message.toLowerCase();
+    if (lower.includes("401") || lower.includes("403") || lower.includes("api key")) {
+      return { raw: null, reason: "Add API key" };
+    }
+    if (lower.includes("429")) {
+      return { raw: null, reason: "rate limit" };
+    }
+    if (lower.includes("fetch") || lower.includes("network") || lower.includes("failed to fetch")) {
+      return { raw: null, reason: "network error" };
+    }
+    return { raw: null, reason: message || "error" };
   } finally {
     globalThis.clearTimeout(timer);
   }
@@ -213,7 +253,7 @@ export async function completeSynthesisDirect(
   const model = getModelById(data.modelId) ?? getDefaultModel();
   const user = data.prompt || data.query || "";
   const system = systemFor(data.policy ?? "extract");
-  const maxTokens = data.maxTokens ?? model.maxTokens;
+  const maxTokens = clampMaxTokens(model, data.maxTokens);
   const apiKey = resolveKey(model.provider, data.keys);
 
   if (data.measureStream && model.provider === "openai" && apiKey) {
@@ -225,7 +265,7 @@ export async function completeSynthesisDirect(
       : { text: null, reason: "empty", modelName: model.name, stream: streamed.stream };
   }
 
-  const { raw, reason } = await completeChat(system, user, model, data.keys, 12000, data.maxTokens);
+  const { raw, reason } = await completeChat(system, user, model, data.keys, 12000, maxTokens);
   if (raw == null) return { text: null, reason, modelName: model.name };
   const text = raw.replace(/\s+/g, " ").trim();
   return text ? { text: text.slice(0, 1800), modelName: model.name } : { text: null, reason: "empty", modelName: model.name };

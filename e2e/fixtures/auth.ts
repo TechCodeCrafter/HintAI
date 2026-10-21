@@ -42,7 +42,12 @@ export async function e2eSignIn(page: Page, user: E2eUser) {
 }
 
 export async function e2eSignOut(page: Page) {
-  await page.getByRole("button", { name: "Sign out" }).click();
+  const signOut = page.getByRole("button", { name: "Sign out" });
+  // In the live cockpit the account chip sits in the "More" menu below 1536px.
+  if (!(await signOut.isVisible().catch(() => false))) {
+    await page.getByRole("button", { name: "More" }).click();
+  }
+  await signOut.click();
   await page.waitForURL(/\/login/, { timeout: 15000 });
   await expect(page.getByTestId("login-page")).toBeVisible();
 }

@@ -5,7 +5,7 @@ import { persistPackAsContext, setContextRepository } from "../../../context/ser
 import { packFromFiles } from "../../../repo/folder.ts";
 import { createMemoryRepository } from "../../../context/memory.ts";
 import { commitStagedPdfs, pdfWorkPending } from "../../../context/source-write.ts";
-import { isPdfSource, isTextSource } from "../../../context/types.ts";
+import { isPdfSource, isTextSource, type PdfStoredSource } from "../../../context/types.ts";
 import { hashBlob } from "../../../context/hash.ts";
 import { indexContext } from "../../../context/chunk-index.ts";
 import { localCard } from "../../../search/local-card.ts";
@@ -397,4 +397,69 @@ test("context name helper uses the filename without extension", () => {
     ]),
     "Documents",
   );
+});
+
+test("replacement nets out old file size against the 40 MB context byte cap", async () => {
+  const existing: PdfStoredSource[] = [
+    {
+      id: "existing-a",
+      sourceId: "existing-a",
+      sourceType: "pdf",
+      displayName: "Existing",
+      pathPrefix: "",
+      path: "existing.pdf",
+      kind: "pdf",
+      mimeType: "application/pdf",
+      byteLength: 5 * 1024 * 1024,
+      contentHash: "hash-a",
+      readiness: "ready",
+      chunked: true,
+      createdAt: 1,
+      updatedAt: 1,
+    },
+    {
+      id: "existing-b",
+      sourceId: "existing-b",
+      sourceType: "pdf",
+      displayName: "Other",
+      pathPrefix: "",
+      path: "other.pdf",
+      kind: "pdf",
+      mimeType: "application/pdf",
+      byteLength: 30 * 1024 * 1024,
+      contentHash: "hash-b",
+      readiness: "ready",
+      chunked: true,
+      createdAt: 1,
+      updatedAt: 1,
+    },
+  ]; // total = 35 MB
+
+  // Replace "existing.pdf" (5 MB) with an 11 MB file → new total = 35 - 5 + 11 = 41 MB → over cap → rejected
+  const replacement = pdfFile("existing.pdf", EVAL_PDF_FIXTURES["lecture.pdf"]);
+  Object.defineProperty(replacement, "size", { value: 11 * 1024 * 1024 });
+  const plan = await planPdfBatch([replacement], existing);
+  assert.equal(plan.accepted.length, 0);
+  assert.equal(plan.rejected.length, 1);
+  assert.equal(plan.rejected[0].note, "This context is at its PDF size limit.");
+
+  // Replace "existing.pdf" (5 MB) with a 4 MB file → new total = 35 - 5 + 4 = 34 MB → accepted
+  const fits = pdfFile("existing.pdf", EVAL_PDF_FIXTURES["lecture.pdf"]);
+  Object.defineProperty(fits, "size", { value: 4 * 1024 * 1024 });
+  const plan2 = await planPdfBatch([fits], existing);
+  assert.equal(plan2.accepted.length, 1);
+  assert.equal(plan2.rejected.length, 0);
+
+  // Batch: replace "existing.pdf" (5 MB) with 6 MB, then add "new.pdf" (5 MB).
+  // With fix: 35 - 5 + 6 = 36 MB (accepted), then 36 + 5 = 41 MB (rejected).
+  // Without fix: 35 MB (accepted), then 35 + 5 = 40 MB (accepted — stale total).
+  const swap = pdfFile("existing.pdf", EVAL_PDF_FIXTURES["lecture.pdf"]);
+  Object.defineProperty(swap, "size", { value: 6 * 1024 * 1024 });
+  const extra = pdfFile("new.pdf", EVAL_PDF_FIXTURES["lecture.pdf"]);
+  Object.defineProperty(extra, "size", { value: 5 * 1024 * 1024 });
+  const plan3 = await planPdfBatch([swap, extra], existing);
+  assert.equal(plan3.accepted.length, 1);
+  assert.equal(plan3.rejected.length, 1);
+  assert.equal(plan3.rejected[0].note, "This context is at its PDF size limit.");
+  assert.equal(plan3.accepted[0]?.path, "existing.pdf");
 });

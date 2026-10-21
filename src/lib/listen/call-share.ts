@@ -131,6 +131,10 @@ const laneFrameHandlers = new Map<LaneName, (frame: Float32Array, playbackTime: 
  * two events. Never derived from the audio or the text.
  */
 let commitSeq = 0;
+/** Bumped by `release()`, so a start still awaiting permission prompts knows it was cancelled. */
+let hearSession = 0;
+/** The in-flight start and the session it belongs to. */
+let starting: { session: number; promise: Promise<void> } | null = null;
 
 export function markSpeechLive() {
   speechLiveAt = Date.now();
@@ -181,6 +185,7 @@ function stopGraph() {
 }
 
 function release() {
+  hearSession += 1;
   running = false;
   hasComputer = false;
   useXai = false;
@@ -517,9 +522,12 @@ function closeLane(lane: Lane, forced = false) {
     carryFrames: lane.carry.length,
   });
 
-  if (draftFrom && draftFrom !== name) return;
-  latestJob = null;
-  pumpSeq += 1;
+  // Another lane's preview is on screen: leave it running, but still transcribe
+  // this utterance. Returning here dropped it from the transcript entirely.
+  if (!draftFrom || draftFrom === name) {
+    latestJob = null;
+    pumpSeq += 1;
+  }
   if (!enough) {
     clearLaneDraft(name);
     return;
@@ -819,17 +827,69 @@ export function isSharingCall(): boolean {
   return running;
 }
 
-export async function startHear(): Promise<void> {
-  if (running) return;
+function stopStreams(streams: Array<MediaStream | null>) {
+  for (const stream of streams) {
+    stream?.getTracks().forEach((track) => {
+      try {
+        track.stop();
+      } catch {
+        /* ignore */
+      }
+    });
+  }
+}
+
+/**
+ * One start at a time. `running` only flips after the permission prompts, so a
+ * second click used to start a second capture whose streams overwrote `held`,
+ * leaving the first microphone open with nothing able to stop it.
+ */
+export function startHear(): Promise<void> {
+  if (running) return Promise.resolve();
+  if (starting && starting.session === hearSession) return starting.promise;
+  // The in-flight start was cancelled by a stop, so handing it back would start
+  // nothing. Begin a fresh one, but only after the cancelled one settles: it may
+  // still be waiting on a permission prompt, and its cleanup stops captions,
+  // which must not land on this session.
+  const previous = starting?.promise.catch(() => undefined) ?? Promise.resolve();
+  const session = hearSession;
+  const entry = {
+    session,
+    promise: previous
+      .then(() => beginHear(session))
+      .finally(() => {
+        if (starting === entry) starting = null;
+      }),
+  };
+  starting = entry;
+  return entry.promise;
+}
+
+async function beginHear(session: number): Promise<void> {
+  const cancelled = () => session !== hearSession;
+  // Stopped while waiting for an earlier, cancelled start to settle.
+  if (cancelled()) return;
   // Test-only: lets the harness sweep segmentation values without a rebuild.
   const override = (globalThis as { __GROUND_TUNING__?: Partial<SegmentTuning> }).__GROUND_TUNING__;
   if (override) configureSegmentation(override);
   armCapture();
   void warmupAsr();
   const speech = await import("@/lib/listen/speech");
+  if (cancelled()) return;
   if (speech.liveCaptionsOk()) speech.startCaptions();
   const mic = await openMic();
+  if (cancelled()) {
+    stopStreams([mic]);
+    speech.stopListeningAndMic();
+    return;
+  }
   const computer = tabAudioShareLikely() ? await openComputer() : null;
+  if (cancelled()) {
+    // Stopped while a permission prompt was open: release what it granted.
+    stopStreams([mic, computer]);
+    speech.stopListeningAndMic();
+    return;
+  }
   const streams = [mic, computer].filter((s): s is MediaStream => Boolean(s));
   if (streams.length === 0) {
     speech.stopListeningAndMic();
@@ -849,9 +909,12 @@ export async function startHear(): Promise<void> {
   try {
     await startGraph(mic, computer);
   } catch (error) {
+    // A stop during graph setup already released everything; that is not a failure.
+    if (cancelled()) return;
     release();
     throw error instanceof Error ? error : new Error("Could not start the audio worklet.");
   }
+  if (cancelled()) return;
   useMeetHint.getState().setSharingCall(true);
   useMeetHint.getState().arm();
   useMeetHint.getState().setListenError(null);
@@ -868,12 +931,14 @@ export async function startHear(): Promise<void> {
           : "Mic only — no shared tab, so your mic is carrying the room. Share the call tab to keep the two apart.";
   useMeetHint.getState().setAsrNote(what);
 
+  // `running` alone is not enough: after a stop and restart it is true again,
+  // and a late reply from the earlier session would set this one's flag.
   void transcribeAvailable()
     .then((ok) => {
-      if (running) useXai = Boolean(ok);
+      if (!cancelled() && running) useXai = Boolean(ok);
     })
     .catch(() => {
-      useXai = false;
+      if (!cancelled()) useXai = false;
     });
 }
 

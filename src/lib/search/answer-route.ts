@@ -10,6 +10,7 @@ import {
 import type { LocalCardContext } from "./local-card.ts";
 import {
   generateAnswer,
+  generateGeneralAnswer,
   synthesizeAnswer,
   type AnswerResult,
   type AnswerTiming,
@@ -48,7 +49,7 @@ function specificLocalReason(localReason?: string): string | undefined {
   return GENERIC_LOCAL_REASONS.has(localReason) ? undefined : localReason;
 }
 
-export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
+export type AnswerTier = "grounded" | "synthesis" | "localCard" | "general" | "silent";
 
 /** Backward-compatible latency object; extended stages are optional on older records. */
 export type SearchLatency = AnswerStageTimings;
@@ -269,6 +270,27 @@ export async function routeSearchAnswer(
     });
 
   if (shouldFailFastRetrieval(query, hits)) {
+    const general = await generateGeneralAnswer(query, t0, opts);
+    if (general.ok) {
+      const latency = latencyOf(t0, retrieveMs, general.timing, routeStages());
+      return {
+        consumeQuota: false,
+        tier: "general",
+        latency,
+        progressive: progressiveFor("general", latency.totalMs, general.answer.say),
+        card: {
+          say: general.answer.say,
+          citations: [],
+          evidence: [],
+          query,
+          latencyMs: general.answer.latencyMs,
+          source: "general",
+          answerMode: "generated",
+          usedEvidence: false,
+          modelName: general.answer.modelName,
+        },
+      };
+    }
     const latency = latencyOf(t0, retrieveMs, { llmMs: 0, verifyMs: 0 }, routeStages());
     return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
   }
@@ -356,6 +378,30 @@ export async function routeSearchAnswer(
         progressive: progressiveFor("localCard", local.latency.totalMs, local.card.say),
       };
     }
+  }
+
+  // General knowledge fallback — when the loaded material does not support a
+  // confident answer, answer from the model's own knowledge instead of staying silent.
+  const general = await generateGeneralAnswer(query, t0, opts);
+  if (general.ok) {
+    const latency = latencyOf(t0, retrieveMs, general.timing, routeStages());
+    return {
+      consumeQuota: false,
+      tier: "general",
+      latency,
+      progressive: progressiveFor("general", latency.totalMs, general.answer.say),
+      card: {
+        say: general.answer.say,
+        citations: [],
+        evidence: [],
+        query,
+        latencyMs: general.answer.latencyMs,
+        source: "general",
+        answerMode: "generated",
+        usedEvidence: false,
+        modelName: general.answer.modelName,
+      },
+    };
   }
 
   const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());

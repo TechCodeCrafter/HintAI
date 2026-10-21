@@ -161,7 +161,7 @@ export type Card = {
   modelName?: string;
   /** Flight-recorder id for thumbs-down feedback on this answer. */
   answerId?: string;
-  flightTier?: "grounded" | "synthesis" | "localCard" | "silent";
+  flightTier?: "grounded" | "synthesis" | "localCard" | "general" | "silent";
   flightLatencyMs?: number;
 };
 

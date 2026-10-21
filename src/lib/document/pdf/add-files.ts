@@ -48,6 +48,7 @@ export async function planPdfBatch(files: File[], existing: StoredSource[]): Pro
       pdfCount: plannedCount,
       pdfBytes: plannedBytes,
       replacingExisting,
+      replacingSize: replacingExisting && prior ? prior.byteLength : undefined,
     });
     if (!result.ok) {
       rejected.push({ file, path, note: result.note });
@@ -56,6 +57,10 @@ export async function planPdfBatch(files: File[], existing: StoredSource[]): Pro
     if (!replacingExisting) {
       plannedCount += 1;
       plannedBytes += file.size;
+    } else if (prior) {
+      // Netting out the replaced file keeps the running total accurate
+      // for subsequent files in the same batch.
+      plannedBytes = plannedBytes - prior.byteLength + file.size;
     }
     accepted.push({
       file,

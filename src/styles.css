@@ -410,6 +410,9 @@ html[data-theme="light"] .ground-panel {
 .answer-receipt {
   display: flex;
   min-width: 0;
+  /* `overflow: hidden` lets a flex item shrink below its content; in the
+     answer pane's scroll column that clipped the answer down to its label. */
+  flex-shrink: 0;
   flex-direction: column;
   overflow: hidden;
   border-radius: 12px;
@@ -1110,6 +1113,12 @@ html[data-theme="light"] .ground-chip {
   margin-left: 8px;
 }
 
+/* The phone Search button is `inline-flex`, so the rule above (unlayered)
+   overrode its `ml-auto` and it never reached the right edge. */
+.cockpit-brand .cockpit-search {
+  margin-left: auto;
+}
+
 .cockpit-mark {
   width: 2.75rem;
   height: 2.75rem;
@@ -1248,6 +1257,15 @@ html[data-theme="light"] .ground-chip {
   }
 }
 
+/* The utility icon row (and the account chip in it) needs about 1600px of
+   header alongside the session buttons; narrower, it was pushed off-screen and
+   squeezed the rest over the logo. The "More" menu holds every one of them. */
+@media (max-width: 1535px) {
+  .cockpit-utils {
+    display: none;
+  }
+}
+
 @media (max-width: 1200px) {
   .cockpit-grid {
     grid-template-columns: minmax(0, 0.26fr) minmax(0, 0.3fr) minmax(0, 0.44fr);
@@ -1305,7 +1323,13 @@ html[data-theme="light"] .ground-chip {
     overflow: hidden;
   }
 
-  .cockpit-pane {
+  /* The room/card selectors match the specificity of the base
+     `.cockpit-pane[data-pane="room"|"card"] { display: flex }` rule; without
+     them that rule won, both panes showed at once, and they were squashed into
+     the single grid row (the Room pane cut off mid-textbox). */
+  .cockpit-pane,
+  .cockpit-pane[data-pane="room"],
+  .cockpit-pane[data-pane="card"] {
     display: none;
     height: 100%;
     min-height: 0;
@@ -1340,6 +1364,52 @@ html[data-theme="light"] .ground-chip {
 
   .cockpit-utils {
     display: none;
+  }
+
+  /* One scroll for the whole answer pane: the answer first, then history and
+     the suggestion chips. A pinned footer took most of a phone's height and
+     left the answer itself almost no room. */
+  .answer-scroll {
+    overflow-y: auto;
+  }
+
+  .answer-scroll > .answer-main {
+    flex: none;
+    overflow: visible;
+  }
+
+  .ground-chip {
+    min-height: 40px;
+  }
+
+  /* Header menus open full width under their button. Anchored `right: 0` with
+     a 14rem minimum, a menu from a button near the left edge opened off-screen.
+     `top: auto` keeps the spot directly under the button. */
+  .cockpit-header .context-menu {
+    position: fixed;
+    top: auto;
+    left: 12px;
+    right: 12px;
+    min-width: 0;
+    max-height: 70dvh;
+    overflow-y: auto;
+  }
+
+  /* The pane scrolls as a whole here; a nested chip scroller sized for three
+     32px chips would cut the taller ones off. */
+  .card-chips {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* iOS Safari zooms the page whenever a text field under 16px gets focus, and
+   does not zoom back out. Unlayered so it beats `text-sm` utilities. */
+@media (max-width: 767px), (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]),
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 

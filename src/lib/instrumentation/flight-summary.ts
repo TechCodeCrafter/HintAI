@@ -50,6 +50,7 @@ const TIER_LABELS: Record<AnswerTier, string> = {
   grounded: "grounded",
   synthesis: "synthesis",
   localCard: "localCard",
+  general: "general",
   silent: "silent-reason",
 };
 

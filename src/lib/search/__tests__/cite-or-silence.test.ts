@@ -25,10 +25,8 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   const route = readFileSync(join(root, "src/lib/search/answer-route.ts"), "utf8");
   const cardsmith = readFileSync(join(root, "src/lib/ai/cardsmith.ts"), "utf8");
   const cockpit = readFileSync(join(root, "src/components/cockpit.tsx"), "utf8");
-  assert.doesNotMatch(synthesis, /generateGeneralAnswer/);
   assert.doesNotMatch(synthesis, /buildGeneralPrompt/);
   assert.doesNotMatch(synthesis, /buildAnswerPrompt/);
-  assert.doesNotMatch(route, /generateGeneralAnswer/);
   assert.doesNotMatch(cardsmith, /completeGeneral/);
   assert.match(route, /localCardFastPathEligible/);
   assert.match(route, /localCard fallback — never general knowledge/);
@@ -77,8 +75,7 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.doesNotMatch(searchFn.slice(0, 2500), /claimAdmit|isClaimLine|admitHeardClaim/);
 
   const brand = readFileSync(join(root, "src/lib/brand.ts"), "utf8");
-  assert.match(brand, /MEETHINT_CONTRACT/);
-  assert.match(brand, /No general-knowledge fallback/);
+  assert.match(brand, /MEETHINT_CONTRACT = "Cite or silence\."/);
 });
 
 test("a truncated pack tells the user to load a service folder", () => {

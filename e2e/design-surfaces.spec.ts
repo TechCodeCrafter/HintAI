@@ -72,8 +72,9 @@ for (const viewport of VIEWPORTS) {
 
     if (viewport.width < 1024) {
       await expect(page.getByRole("navigation", { name: "Cockpit panes" })).toBeVisible();
-      await expect(page.getByRole("button", { name: "Room" })).toBeVisible();
-      await expect(page.getByRole("button", { name: "Answer" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Room", exact: true })).toBeVisible();
+      // Exact: "Auto answer on" also contains "answer".
+      await expect(page.getByRole("button", { name: "Answer", exact: true })).toBeVisible();
     }
 
     await scanA11y(page, `cockpit ${viewport.name}`);

@@ -73,7 +73,8 @@ export function Keycap({ children, show }: { children: ReactNode; show: boolean 
   );
 }
 
-function isSocial() {
+/** True for the portrait/square compositions. A hook: call once at the top of a scene. */
+function useIsSocial() {
   const { width, height } = useVideoConfig();
   return height >= width;
 }
@@ -455,7 +456,7 @@ function SceneSearch({
   empty?: boolean;
 }) {
   const frame = useCurrentFrame();
-  const social = isSocial();
+  const social = useIsSocial();
   const pack = CASES[name];
   const query = empty ? "can we handle Stripe webhooks" : pack.query;
   const typed = typeChars(frame, 4, 2, query);
@@ -603,6 +604,7 @@ export function SceneHook() {
 
 export function SceneLoad() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   const opened = frame >= 18;
   const shown = opened ? Math.min(PACK_FILES.length, Math.floor((frame - 18) / 6) + 1) : 0;
   const cursorX = interpolate(frame, [0, 16], [1180, 1320], { extrapolateRight: "clamp" });
@@ -617,7 +619,7 @@ export function SceneLoad() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr)",
+            gridTemplateColumns: social ? "1fr" : "minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr)",
             gap: 16,
             minHeight: 620,
           }}
@@ -631,7 +633,7 @@ export function SceneLoad() {
               </p>
             )}
           </Panel>
-          {isSocial() ? null : (
+          {social ? null : (
             <>
               <Panel label="Room" status="Idle">
                 <p style={{ fontFamily: T.serif, fontSize: 18, fontStyle: "italic", color: T.body }}>
@@ -670,13 +672,14 @@ export function SceneEmpty() {
 
 export function ScenePromise() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   return (
     <Stage>
       <CockpitShell pack="the-folder" note="Cite or silence">
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
+            gridTemplateColumns: social ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
             gap: 16,
             minHeight: 620,
           }}
@@ -719,6 +722,7 @@ const AUDIT = [
 
 export function SceneAudit() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   const { fps } = useVideoConfig();
   const slide = spring({ frame: frame - 8, fps, config: { damping: 16, mass: 0.8 } });
   return (
@@ -727,7 +731,7 @@ export function SceneAudit() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 0.9fr) minmax(0, 1.2fr)",
+            gridTemplateColumns: social ? "1fr" : "minmax(0, 0.9fr) minmax(0, 1.2fr)",
             gap: 16,
             minHeight: 620,
           }}
@@ -776,6 +780,7 @@ export function SceneAudit() {
 
 export function SceneLive() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   const { fps } = useVideoConfig();
   const dock = spring({ frame: frame - 10, fps, config: { damping: 15, mass: 0.7 } });
   const wave = 0.3 + 0.45 * Math.abs(Math.sin(frame * 0.2));
@@ -791,7 +796,7 @@ export function SceneLive() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 0.42fr) minmax(0, 0.58fr)",
+              gridTemplateColumns: social ? "1fr" : "minmax(0, 0.42fr) minmax(0, 0.58fr)",
               gap: 16,
               minHeight: 560,
               opacity: dock,
@@ -1080,7 +1085,7 @@ export function SceneFear() {
 
 export function SceneMoment() {
   const frame = useCurrentFrame();
-  const social = isSocial();
+  const social = useIsSocial();
   const onTabs = frame >= 360;
   const x = interpolate(frame, [360, 470], [80, 1100], { extrapolateRight: "clamp" });
   if (!onTabs) {
@@ -1171,6 +1176,7 @@ export function SceneMoment() {
 
 export function SceneSave() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   const typed = typeChars(frame, 8, 2, RFC.query);
   const done = typed.length >= RFC.query.length;
   const clickAt = 70;
@@ -1182,12 +1188,12 @@ export function SceneSave() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr)",
+            gridTemplateColumns: social ? "1fr" : "minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr)",
             gap: 16,
-            minHeight: isSocial() ? 680 : 620,
+            minHeight: social ? 680 : 620,
           }}
         >
-          {isSocial() ? null : (
+          {social ? null : (
             <Panel label="Repo" status="8 files" active={frame >= cardAt}>
               <FileList shown={8} files={COURSE} active={frame >= cardAt ? "supplementary-reading/iot-protocols.pdf" : undefined} />
               {frame >= cardAt ? <CodeView lines={RFC.lines} from={RFC.from} hi={RFC.hi} /> : null}
@@ -1223,6 +1229,7 @@ export function SceneSave() {
 
 export function SceneChenEmpty() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   const query = "will this be on the final";
   const typed = typeChars(frame, 6, 2, query);
   const cardAt = 70;
@@ -1232,7 +1239,7 @@ export function SceneChenEmpty() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
+            gridTemplateColumns: social ? "1fr" : "minmax(0, 1fr) minmax(0, 1.15fr)",
             gap: 16,
             minHeight: 620,
           }}
@@ -1310,6 +1317,7 @@ const BROADER = [
 
 export function SceneBroader() {
   const frame = useCurrentFrame();
+  const social = useIsSocial();
   const beat = Math.min(2, Math.floor(frame / 90));
   const item = BROADER[beat];
   return (
@@ -1318,7 +1326,7 @@ export function SceneBroader() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isSocial() ? "1fr" : "minmax(0, 1fr) minmax(0, 1.2fr)",
+            gridTemplateColumns: social ? "1fr" : "minmax(0, 1fr) minmax(0, 1.2fr)",
             gap: 16,
             minHeight: 560,
           }}

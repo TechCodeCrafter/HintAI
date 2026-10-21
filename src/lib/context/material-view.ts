@@ -19,7 +19,7 @@ export type MaterialFile = {
   path: string;
   language: string;
   content: string;
-  sourceId: string;
+  sourceId?: string;
   contextId: string;
   displayName: string;
   contentHash: string;
@@ -82,15 +82,20 @@ function indexFiles(pack: RepoPack, sources: StoredSource[]): {
       path: file.path,
       language: file.language,
       content: file.content,
-      sourceId: row?.sourceId ?? file.path,
+      sourceId: row?.sourceId ?? undefined,
       contextId: row?.contextId ?? "",
       displayName: row?.displayName ?? pack.name,
       contentHash: row?.contentHash ?? hashText(file.content),
     };
     filesByPath.set(file.path, material);
-    const bucket = filesBySourceId.get(material.sourceId) ?? [];
-    bucket.push(material);
-    filesBySourceId.set(material.sourceId, bucket);
+    // Only index under filesBySourceId when there is a real source row.
+    // Files without a matching source are still searchable via filesByPath
+    // but should not pollute sourceId-scoped lookups.
+    if (material.sourceId) {
+      const bucket = filesBySourceId.get(material.sourceId) ?? [];
+      bucket.push(material);
+      filesBySourceId.set(material.sourceId, bucket);
+    }
   }
 
   return { filesByPath, filesBySourceId };
@@ -142,7 +147,7 @@ export function enrichFileCitation(
     return sourceId ? { ...cite, sourceId } : cite;
   }
   const file = fileInMaterial(view, cite.path, sourceId ?? cite.sourceId);
-  const ref = file ? sourceRefInMaterial(view, file.sourceId) : undefined;
+  const ref = file && file.sourceId ? sourceRefInMaterial(view, file.sourceId) : undefined;
   return {
     ...cite,
     sourceId: file?.sourceId ?? cite.sourceId ?? sourceId,
