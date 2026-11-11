@@ -44,6 +44,19 @@ export async function openAudioCockpit(page: Page) {
 
 /** Whisper worker must finish booting before Listen can transcribe. */
 export async function waitForAsrWarmup(page: Page) {
+  // Boot the Whisper worker now and wait for model download plus the first
+  // decode, instead of paying for both inside the first spoken line.
+  const hook = page.waitForFunction(
+    () => typeof (window as Window & { __meethintAsrWarmup?: unknown }).__meethintAsrWarmup === "function",
+    undefined,
+    { timeout: 30000 },
+  );
+  if (await hook.then(() => true, () => false)) {
+    const booted = await page.evaluate(() =>
+      (window as Window & { __meethintAsrWarmup?: () => Promise<boolean> }).__meethintAsrWarmup!(),
+    );
+    expect(booted, "local Whisper captions failed to boot").toBe(true);
+  }
   await expect(async () => {
     const body = await page.getByTestId("cockpit").innerText();
     expect(body).not.toMatch(/Loading captions|Downloading captions/i);

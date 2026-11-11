@@ -115,6 +115,12 @@ export function warmupAsr(): Promise<boolean> {
   return ensureWorker();
 }
 
+// E2E builds expose the warm-up so the real-audio specs can wait for the model
+// (download plus first decode) before clicking Listen.
+if (import.meta.env.VITE_E2E === "true" && typeof window !== "undefined") {
+  (window as Window & { __meethintAsrWarmup?: () => Promise<boolean> }).__meethintAsrWarmup = warmupAsr;
+}
+
 /**
  * `final` marks the line that will be committed to the transcript. Those are
  * queued and always answered; previews are disposable and a newer one cancels

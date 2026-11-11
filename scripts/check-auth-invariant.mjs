@@ -25,7 +25,8 @@
 import { APP_ENV_ROUTE } from "./app-env-plugin.mjs";
 import { isMainModule, mergeAppEnv, projectRoot, readAppEnv } from "./with-app-env.mjs";
 
-const DEFAULT_DEV_URL = "http://127.0.0.1:8080";
+// Matches the port in package.json "dev".
+const DEFAULT_DEV_URL = "http://127.0.0.1:3001";
 
 /** The predicate `src/lib/auth/{client,server}.ts` apply to the flag. */
 export function authEnabledFromEnvValue(value) {

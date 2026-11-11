@@ -61,6 +61,14 @@ async function boot() {
   const { env, pipeline } = await import("@huggingface/transformers");
   tune(env);
   transcriber = await loadModel(pipeline as never);
+  // The first decode compiles the graph and is several times slower than the
+  // rest. Pay that on a second of silence now, so the first spoken line does
+  // not run past the caption timeout and get dropped.
+  try {
+    await transcriber(new Float32Array(16_000), { return_timestamps: false });
+  } catch {
+    /* warm-up is best effort */
+  }
 }
 
 async function decode(pcm: Float32Array) {

@@ -14,7 +14,7 @@ import {
 
 test.describe("real audio path", () => {
   test("spoken question flows through VAD, gate, and answer", async ({ page }) => {
-    test.setTimeout(180000);
+    test.setTimeout(300000);
 
     await openAudioCockpit(page);
     await waitForAsrWarmup(page);
@@ -47,7 +47,7 @@ test.describe("real audio path", () => {
   });
 
   test("silence must not trigger a card or flight answer record", async ({ page }) => {
-    test.setTimeout(180000);
+    test.setTimeout(300000);
 
     await openAudioCockpit(page);
     await waitForAsrWarmup(page);
@@ -65,7 +65,7 @@ test.describe("real audio path", () => {
   });
 
   test("noise must not trigger cards, hallucinations, or ungated utterances", async ({ page }) => {
-    test.setTimeout(180000);
+    test.setTimeout(300000);
 
     await openAudioCockpit(page);
     await waitForAsrWarmup(page);
