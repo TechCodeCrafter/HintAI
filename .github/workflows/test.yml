@@ -73,7 +73,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # The Ubuntu mirror sometimes fails on optional font packages; retry,
+      # then fall back to the browser alone, which the runner image can run.
+      - name: Install Playwright Chromium
+        run: |
+          for attempt in 1 2; do
+            timeout 600 npx playwright install --with-deps chromium && exit 0
+            echo "install with system deps failed (attempt $attempt)"
+            sleep 15
+          done
+          npx playwright install chromium
       - run: npm run test:e2e
 
   design-detect:
