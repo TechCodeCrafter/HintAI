@@ -52,10 +52,30 @@ export async function waitForAsrWarmup(page: Page) {
     { timeout: 30000 },
   );
   if (await hook.then(() => true, () => false)) {
+    const problems: string[] = [];
+    const onConsole = (msg: { type(): string; text(): string }) => {
+      if (msg.type() === "error" || msg.type() === "warning") problems.push(msg.text().slice(0, 300));
+    };
+    const onFailed = (req: { url(): string; failure(): { errorText: string } | null }) => {
+      problems.push(`request failed ${req.url().slice(0, 160)} ${req.failure()?.errorText ?? ""}`);
+    };
+    const onResponse = (res: { url(): string; status(): number }) => {
+      if (res.status() >= 400) problems.push(`HTTP ${res.status()} ${res.url().slice(0, 160)}`);
+    };
+    page.on("console", onConsole);
+    page.on("requestfailed", onFailed);
+    page.on("response", onResponse);
     const booted = await page.evaluate(() =>
       (window as Window & { __meethintAsrWarmup?: () => Promise<boolean> }).__meethintAsrWarmup!(),
     );
-    expect(booted, "local Whisper captions failed to boot").toBe(true);
+    page.off("console", onConsole);
+    page.off("requestfailed", onFailed);
+    page.off("response", onResponse);
+    const note = booted ? "" : await page.getByTestId("cockpit").innerText().catch(() => "");
+    expect(
+      booted,
+      `local Whisper captions failed to boot\n${problems.slice(-15).join("\n")}\n${note.slice(0, 400)}`,
+    ).toBe(true);
   }
   await expect(async () => {
     const body = await page.getByTestId("cockpit").innerText();

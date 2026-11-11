@@ -53,8 +53,11 @@ function vadAssetsPlugin(): Plugin {
   };
   return {
     name: "meethint-vad-assets",
+    // `config` runs before Vite indexes public/. Copying in configureServer was
+    // too late on a fresh checkout: the dev server 404'd every /vad/ file, so
+    // Silero VAD and the Whisper engine could not load (CI, new clones).
+    config: copy,
     buildStart: copy,
-    configureServer: copy,
   };
 }
 
