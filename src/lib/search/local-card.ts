@@ -26,10 +26,12 @@ import { isArchitectureQuery } from "./question.ts";
 import { FAST_PATH_MIN_SCORE } from "./answer-fast-path.ts";
 import { isTestEvidencePath } from "./retrieve.ts";
 import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
-import { admissible, explain, mentions, provenanceOf, subjectTerms } from "./subject.ts";
+import { admissible, explain, fileFrequency, mentions, provenanceOf, subjectTerms } from "./subject.ts";
 import { type Prose, type ProseSpan, capabilityList, plain, proseOf } from "./prose.ts";
 import { sayable } from "./say.ts";
 import { covers, locateInCode } from "./code-locator.ts";
+import { quotesWholeSentences } from "./claim-verify.ts";
+import { type SectionAnswer, sectionAnswer } from "./doc-section.ts";
 
 /**
  * A claim, and the exact evidence it was read from. The claim is always a
@@ -449,6 +451,135 @@ function hitFromFile(file: { path: string; content: string }): FileHit {
   };
 }
 
+/**
+ * The support check for a doc answer. A lead-in joined to the block after it
+ * ("They're read only on the server: A, B and C.") is stitched from verbatim
+ * pieces, which the paraphrase heuristics (ordering, negation) misread as
+ * reworded prose. It passes when every spoken word is in the cited spans and
+ * every piece appears word for word in them. Lists from the code locator are
+ * held to the same rule, one entry line per piece.
+ */
+function supportedByParts(answer: {
+  say: string;
+  spans: TextEvidence[];
+  structural: string[];
+  parts?: string[];
+  /** Doc answers only: they have their own relevance gate, so a whole quoted sentence stands. */
+  quoteOk?: boolean;
+}): boolean {
+  const check = verifyClaim(answer.say, answer.spans, answer.structural);
+  if (check.ok) return true;
+  const semanticOnly = check.missing.every((tag) => tag === "negation" || tag === "phrase_order");
+  if (!semanticOnly) return false;
+  if (answer.quoteOk && quotesWholeSentences(answer.say, answer.spans.map((span) => span.text).join("\n"))) return true;
+  if (!answer.parts?.length) return false;
+  const flat = (text: string) => text.toLowerCase().replace(/\s+/g, " ").trim();
+  // Markdown links and emphasis are read as their text, as the parts were.
+  const corpus = answer.spans.map((span) => `${flat(span.text)}\n${flat(plain(span.text))}`).join("\n");
+  return answer.parts.every((part) => corpus.includes(flat(part)));
+}
+
+function docSupported(doc: SectionAnswer): boolean {
+  return supportedByParts({ ...doc, quoteOk: true });
+}
+
+/**
+ * "Index of the recent question this one duplicates, or -1." documents what a
+ * function returns. It answers "what does findDuplicate return?", not "how are
+ * duplicates handled?", so on a tie the README's description of the behaviour wins.
+ */
+function describesReturnValue(say: string): boolean {
+  return /^\s*(?:returns?\b|index of\b|true (?:if|when)\b|whether\b|the (?:index|number|count|list|set|map) of\b|\d+\.\.\d+\b)/i.test(say);
+}
+
+const WORD_CACHE = new WeakMap<RepoPack, Map<string, boolean>>();
+
+/**
+ * Question terms the material never uses as a word. Substring counts are too
+ * generous here: "board" is inside "dashboard", "leave" inside "cleave". A term
+ * that starts no word anywhere in the pack is what the question is about and
+ * the material is not.
+ */
+/** Whether the unknown terms outweigh what the answer covers. */
+function strangersWin(strangers: string[], covered: number): boolean {
+  return strangers.length > 0 && strangers.length >= covered;
+}
+
+/** Generic words a question can use without the pack ever naming them. */
+const FILLER_TERMS = new Set([
+  "time", "times", "way", "ways", "thing", "things", "stuff", "kind", "kinds",
+  "part", "parts", "lot", "lots", "case", "cases", "actually", "exactly", "really",
+  "basically", "currently", "right", "work", "works", "working", "happen", "happens",
+  "touch", "touched", "touches", "change", "changed", "changes", "wrote", "written",
+  "write", "added", "made", "make", "makes", "built", "build", "handle", "handled",
+  "handles", "used", "uses", "using", "done", "last", "first", "after", "before",
+  // Generic software vocabulary a correct answer often paraphrases.
+  "export", "exports", "logic", "flow", "flows", "feature", "features", "code",
+  "function", "functions", "module", "modules", "system", "process", "implemented",
+  "implementation", "mechanism", "behavior", "behaviour",
+]);
+
+/** The word stem a question term should meet at the start of some pack word. */
+function termStem(term: string): string {
+  const bare = term.replace(/(?:ing|ed|es|s)$/, "");
+  const stem = bare.length >= 4 ? bare : term;
+  return stem.length >= 6 ? stem.slice(0, Math.max(5, stem.length - 2)) : stem;
+}
+
+function strangerTerms(terms: string[], pack: RepoPack): string[] {
+  let cache = WORD_CACHE.get(pack);
+  if (!cache) {
+    cache = new Map();
+    WORD_CACHE.set(pack, cache);
+  }
+  const known = cache;
+  return terms.filter((term) => {
+    if (term.length < 4 || FILLER_TERMS.has(term)) return false;
+    let seen = known.get(term);
+    if (seen === undefined) {
+      const stem = termStem(term);
+      const re = new RegExp(`(?:^|[^a-z0-9])${stem.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i");
+      seen =
+        pack.files.some((file) => re.test(file.path) || re.test(file.content)) ||
+        pack.commits.some((commit) => re.test(commit.message) || re.test(commit.author ?? ""));
+      known.set(term, seen);
+    }
+    return !seen;
+  });
+}
+
+/** A Card spoken from a README or docs section (see doc-section.ts). */
+function docSectionCard(
+  query: string,
+  doc: SectionAnswer,
+  latencyMs: number,
+  material: SpaceMaterialView | undefined,
+  terms: string[],
+  pack: RepoPack,
+): Card | null {
+  // "What is the vacation policy?" against a README that mentions a retry
+  // policy: the word the question is about appears nowhere in the material, so
+  // the line that matched the rest of it is about something else.
+  const unknown = strangerTerms(terms, pack);
+  // A section titled after the covered term ("## License" for "what license
+  // is it under?") is about it, whatever the filler word was.
+  if (!doc.headingMatch && strangersWin(unknown, doc.coverage)) return null;
+  if (!docSupported(doc)) return null;
+  noteAttempt({
+    query, path: doc.spans[0]!.path, line: doc.spans[0]!.startLine, origin: "span",
+    candidate: doc.say, generic: false, relevance: doc.coverage, score: doc.coverage, accepted: true, reject: null,
+  });
+  closeDecision(query, true);
+  return {
+    say: doc.say,
+    citations: citationsFor([doc.spans[0]!], doc.hit, material) ?? [citationOfHit(doc.hit, material)],
+    evidence: doc.spans,
+    query,
+    latencyMs,
+    source: "local",
+  };
+}
+
 function looksSpoken(text: string): boolean {
   const words = text.split(/\s+/).filter(Boolean);
   if (words.length < 4) return false;
@@ -499,6 +630,16 @@ function genericLocalCard(
   const seeded = usable.length === 0 && named ? [hitFromFile(named)] : usable;
   const top = seeded[0];
   const minScore = minEvidenceScore(pack);
+  if (seeded.length > 0 && !named && (top?.score ?? 0) < minScore && shapeOf(canonical) !== "why" && shapeOf(canonical) !== "who") {
+    // Retrieval ranked the README low, but a section titled after the question
+    // ("## Self-host" for "how do I self-host it?") is still the answer.
+    const files = new Map(pack.files.map((file) => [file.path, file.content]));
+    const doc = sectionAnswer(canonical, contentWords(canonical), seeded, (path) => files.get(path));
+    if (doc?.headingMatch) {
+      const card = docSectionCard(query, doc, latencyMs, material, contentWords(canonical), pack);
+      if (card) return card;
+    }
+  }
   if (seeded.length === 0 || (!named && (top?.score ?? 0) < minScore)) {
     noteAttempt({
       query,
@@ -646,8 +787,31 @@ function genericLocalCard(
         claim?.decl !== located.name &&
         covers(claim?.say ?? "", terms) < located.score,
     );
-    const better = located && (!say || located.kind === "value" || whereNamed);
-    if (located && better && verifyClaim(located.say, located.spans, located.structural).ok) {
+    // A list or field is read from the data itself; it answers by construction.
+    const readsData = located?.kind === "value" || located?.kind === "list" || located?.kind === "field";
+    const better = located && (!say || readsData || whereNamed);
+    // README and docs: a section whose heading or lines cover the question
+    // better than the code comment that won. Product questions ("how do I
+    // self-host it?", "what license?") live there, not in docstrings.
+    const doc = sectionAnswer(canonical, terms, seeded, (path) => files.get(path));
+    const claimCover = say ? covers(say, terms) : -1;
+    const locatorWins = Boolean(
+      located && better && (!doc || located.score > doc.coverage || (readsData && located.score >= doc.coverage)),
+    );
+    const docWins =
+      doc &&
+      !locatorWins &&
+      (doc.coverage > claimCover ||
+        (doc.coverage === claimCover &&
+          (doc.headingMatch ||
+            Boolean(claim?.decl) ||
+            Boolean(claim?.generic) ||
+            (describesReturnValue(say ?? "") && !/\breturns?\b/i.test(canonical)))));
+    if (doc && docWins) {
+      const card = docSectionCard(query, doc, latencyMs, material, contentWords(canonical), pack);
+      if (card) return card;
+    }
+    if (located && better && locatorWins && supportedByParts(located)) {
       noteAttempt({
         query, path: located.span.path, line: located.span.startLine, origin: "span",
         candidate: located.say, generic: false, relevance: located.score, score: located.score, accepted: true, reject: null,
@@ -671,6 +835,26 @@ function genericLocalCard(
       say: null,
       reason: "Found the file, but nothing in it I would say out loud.",
       citations: [fallback],
+      query,
+      latencyMs,
+      source: "local",
+    };
+  }
+
+  // "When is the next board meeting?" matched a sentence about meetings, but
+  // "board" is not a word anywhere in the material: it is about something else.
+  // Silent when the question is mostly about things the pack never names
+  // ("next board meeting" only meets "dashboard"). Filler words such as
+  // "times" in "retry three times" never count as unknown.
+  const askedTerms = contentWords(canonical);
+  const strangers = strangerTerms(askedTerms, pack);
+  if (strangersWin(strangers, covers(say, askedTerms))) {
+    overrideDecision(query, "NO_EVIDENCE");
+    closeDecision(query, false);
+    return {
+      say: null,
+      reason: "Nothing in this pack cites that.",
+      citations: [],
       query,
       latencyMs,
       source: "local",
@@ -1039,6 +1223,16 @@ export function localCard(
   const canonical = normalizeSpokenQuestion(query).canonical;
   const composeHits = hits.filter(isFileHit);
   if (shapeOf(canonical) === "absence") {
+    // Retrieved prose cannot settle "is there X?" by mentioning X nearby. A
+    // README line that names every part of the question can ("No login, no
+    // database, no history"; "the app doesn't connect to GitHub at all"), so
+    // that one case is answered, from markdown only, and quoted as written.
+    const files = new Map(pack.files.map((file) => [file.path, file.content]));
+    const stated = sectionAnswer(canonical, contentWords(canonical), composeHits, (path) => files.get(path), {
+      requireAll: true,
+    });
+    const card = stated ? docSectionCard(query, stated, latencyMs, context?.material, contentWords(canonical), pack) : null;
+    if (card) return card;
     overrideDecision(query, "WRONG_SHAPE");
     const top = composeHits[0] ?? hits[0];
     return {

@@ -195,7 +195,14 @@ export function splitClaimClauses(claim: string): string[] {
 
 function tokensInClause(clause: string, orderingTokens: string[]): string[] {
   const lower = clause.toLowerCase();
-  return orderingTokens.filter((token) => blockIncludesToken(lower, token));
+  const present = orderingTokens.filter((token) => blockIncludesToken(lower, token));
+  // "meethint-mvp" inside "https://github.com/x/meethint-mvp" is the URL, not
+  // a second word to order: a token nested in a longer one is checked with it.
+  return present.filter(
+    (token) =>
+      !present.some((other) => other !== token && other.includes(token)) ||
+      lower.replace(new RegExp(present.filter((o) => o !== token && o.includes(token)).map(escapeRegex).join("|"), "g"), " ").includes(token),
+  );
 }
 
 function anchorBlock(blocks: string[], tokens: string[]): string {
@@ -273,6 +280,31 @@ export function extractiveMatch(claim: string, corpus: string): boolean {
   const normCorpus = normalizeSurface(corpus);
   if (!normClaim || normClaim.length < 12) return false;
   return normCorpus.includes(normClaim);
+}
+
+/**
+ * True when every sentence of the claim is a whole sentence of the corpus,
+ * word for word. Quoting a complete sentence cannot invert it, so a caller
+ * with its own relevance gate (README section answers) may skip the negation
+ * and ordering heuristics, which were built to catch paraphrase drift. Not
+ * applied globally: on other paths those heuristics also screen off-topic
+ * prose. A fragment never qualifies: "cached" lifted from "never cached" is
+ * not a whole sentence.
+ */
+export function quotesWholeSentences(claim: string, corpus: string): boolean {
+  const sentences = claim.split(/(?<=[.!?])\s+/).map(normalizeSurface).filter(Boolean);
+  if (sentences.length === 0) return false;
+  const source = new Set(
+    corpus
+      .split(/(?<=[.!?])\s+|\n+/)
+      .flatMap((part) => {
+        const bare = part.replace(/^\s*(?:[-*+]|\d+[.)])\s+/, "");
+        // "**Label:** text" is quoted with or without its label.
+        return [bare, bare.replace(/^\*\*[^*]+\*\*\s*/, "")].map(normalizeSurface);
+      })
+      .filter(Boolean),
+  );
+  return sentences.every((sentence) => sentence.split(" ").length >= 4 && source.has(sentence));
 }
 
 export type SemanticVerifyResult = {

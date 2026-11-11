@@ -18,7 +18,7 @@
 import type { FileHit } from "../repo/types.ts";
 import { type TextEvidence, textEvidence } from "./evidence.ts";
 
-export type LocatorKind = "handler" | "value" | "route";
+export type LocatorKind = "handler" | "value" | "route" | "list" | "field";
 
 export type CodeLocation = {
   kind: LocatorKind;
@@ -34,6 +34,8 @@ export type CodeLocation = {
   score: number;
   /** Words the locator template adds, for the support check. */
   structural: string[];
+  /** Verbatim pieces a list answer was joined from (one per entry line). */
+  parts?: string[];
 };
 
 const DECLS: RegExp[] = [
@@ -64,11 +66,25 @@ const VALUE_Q =
 const LIST_VALUE =
   /^\s*(?:export\s+)?(?:const|let|var)?\s*([A-Za-z_][\w.]*)\s*(?::[^=]+)?=\s*(?:new\s+Set\(\s*|frozenset\(\s*|\(\s*)?\[[^\[\]\n]{3,160}\]\s*\)?\s*(?:as\s+const)?\s*[,;]?\s*$/;
 
+/** "Which providers are supported?", "what models are available?", "list the X". */
+const LIST_Q =
+  /^\s*(?:which|what)\b(?:\s+[\w-]+){1,3}\s+(?:are|is)\s+(?:supported|available|there|allowed|included|configured|offered)\b|^\s*(?:which|what)\s+(?:[\w-]+\s+){0,2}(?:do|does|can)\s+(?:we|you|it|i)\s+(?:support|offer|allow)\b|\blist (?:the|all|every)\b/i;
+
+/** `export const PROVIDERS = {` or `= [` opening a multi-line collection. */
+const COLLECTION_OPEN = /^\s*(?:export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*(?::[^=]+)?=\s*([[{])\s*$/;
+/** An entry: `openai: { label: "OpenAI", ... },` or `"OpenAI",`. */
+const ENTRY_KEY = /^\s*["']?([A-Za-z_$][\w$-]*)["']?\s*:\s*\{(.*)\}\s*,?\s*$/;
+const ENTRY_STRING = /^\s*["'`]([^"'`\n]{1,60})["'`]\s*,?\s*$/;
+/** `field: "value"` or `field: 12` pairs inside a one-line object. */
+const FIELD_PAIR = /([A-Za-z_$][\w$]*)\s*:\s*(["'`][^"'`\n]{1,80}["'`]|-?\d[\d_.]*)/g;
+/** Fields whose value is the display name of an entry. */
+const LABEL_FIELDS = ["label", "name", "title", "displayName"];
+
 /** A one-line comment directly above a line: `/** ... *\/`, `// ...`, `# ...`. */
 const LINE_DOC = /^\s*(?:\/\*\*?\s*(.+?)\s*\*\/|\/\/\s*(.+?)|#\s*(.+?))\s*$/;
 
 /** Words the templates below add. Listed once so the support check can see them. */
-const TEMPLATE_WORDS = ["that's", "current", "value", "route", "function", "class", "calls", "then"];
+const TEMPLATE_WORDS = ["that's", "current", "value", "route", "function", "class", "calls", "then", "lists"];
 
 export function identWords(name: string): string {
   return name
@@ -91,7 +107,13 @@ export function covers(text: string, terms: string[]): number {
   const words = text.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3).map(stem);
   return terms.filter((term) => {
     const t = stem(term);
-    return words.some((w) => w === t || (t.length >= 4 && w.length >= 4 && (w.startsWith(t) || t.startsWith(w))));
+    // A prefix counts when the rest is a suffix ("install" ~ "installation"),
+    // not a different word ("author" is not "authorization").
+    return words.some(
+      (w) =>
+        w === t ||
+        (t.length >= 4 && w.length >= 4 && Math.abs(w.length - t.length) <= 6 && (w.startsWith(t) || t.startsWith(w))),
+    );
   }).length;
 }
 
@@ -108,6 +130,11 @@ type Candidate = {
   /** A one-line comment directly above, when there is one. */
   doc?: { text: string; start: number };
 };
+
+/** Source files only: README and docs hits are read by doc-section.ts and must not use up the four slots. */
+function isSourceHit(hit: FileHit): boolean {
+  return hit.kind === "code" && !/\.(md|mdx|markdown|txt|rst|adoc)$/i.test(hit.path);
+}
 
 function lineOffsets(text: string): number[] {
   const out = [0];
@@ -130,7 +157,7 @@ export function locateInCode(
   const candidates: Candidate[] = [];
 
   hits
-    .filter((hit) => hit.kind === "code")
+    .filter(isSourceHit)
     .slice(0, 4)
     .forEach((hit, rank) => {
       const content = fileContent(hit.path);
@@ -172,12 +199,23 @@ export function locateInCode(
           return;
         }
         const scalar = SCALAR_VALUE.exec(line) ?? LIST_VALUE.exec(line);
-        if (scalar) push("value", scalar[1], covers(identWords(scalar[1]), terms));
+        if (scalar) {
+          // `methods: '...'` inside `var defaults = {` answers "what methods by default?".
+          const owner = enclosingName(lines, i);
+          const ownerCover = owner ? covers(identWords(owner), terms) : 0;
+          push("value", scalar[1], covers(identWords(scalar[1]), terms) + ownerCover);
+        }
       });
     });
 
+  const collection = locateCollection(canonical, terms, hits, fileContent);
+  const field = locateField(terms, hits, fileContent);
+  const structured = [collection, field]
+    .filter((row): row is CodeLocation => row !== null)
+    .sort((a, b) => b.score - a.score)[0];
+
   const usable = candidates.filter((c) => c.score >= 1);
-  if (usable.length === 0) return null;
+  if (usable.length === 0) return structured ?? null;
   // Value questions want a value; everything else wants the thing that does it.
   const preferKind = (c: Candidate) =>
     wantsValue ? (c.kind === "value" ? 2 : 0) : c.kind === "handler" ? 1 : c.kind === "route" ? 0.5 : 0;
@@ -186,6 +224,9 @@ export function locateInCode(
     const sb = b.score + preferKind(b) - b.rank * 0.25;
     return sb > sa ? b : a;
   });
+  // A list or a field read straight from the data beats a name that merely
+  // matches the question.
+  if (structured && structured.score >= best.score) return structured;
   if (wantsValue && best.kind !== "value") {
     // A value question answered with a function name is a different answer.
     // Fall back to the handler only when it covers the question better.
@@ -301,4 +342,182 @@ function routeBody(
 /** "`a`, then `b`, then `c`": one clause per call, each backed by its own line. */
 function listCode(names: string[]): string {
   return names.map((name) => `\`${name}\``).join(", then ");
+}
+
+function offsetsOfLine(content: string, at: number): { start: number; end: number; text: string } {
+  const lineStart = content.lastIndexOf("\n", at - 1) + 1;
+  const rawEnd = content.indexOf("\n", at);
+  const lineEnd = rawEnd < 0 ? content.length : rawEnd;
+  const text = content.slice(lineStart, lineEnd);
+  return { start: lineStart + (text.length - text.trimStart().length), end: lineStart + text.trimEnd().length, text };
+}
+
+function spanOfLine(hit: FileHit, content: string, start: number, end: number): TextEvidence | null {
+  return textEvidence({
+    path: hit.path,
+    content,
+    start,
+    end,
+    normalizedText: content.slice(start, end).replace(/\s+/g, " ").trim(),
+    sourceId: hit.sourceId,
+  });
+}
+
+function unquote(value: string): string {
+  return value.replace(/^["'`]|["'`]$/g, "");
+}
+
+/** "A, B and C". */
+function joinNames(names: string[]): string {
+  return names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+}
+
+/**
+ * "Which AI providers are supported?" answered from the collection that
+ * enumerates them: `export const PROVIDERS = { openai: { label: "OpenAI" }, ... }`
+ * becomes "`PROVIDERS` lists OpenAI, Anthropic, xAI (Grok) and Groq." Each
+ * entry is read from its own line, and that line is its evidence. Only for
+ * list-shaped questions, and only when the collection's name is a question term.
+ */
+function locateCollection(
+  canonical: string,
+  terms: string[],
+  hits: FileHit[],
+  fileContent: (path: string) => string | undefined,
+): CodeLocation | null {
+  if (!LIST_Q.test(canonical)) return null;
+  const seen = new Set<string>();
+  for (const hit of hits.filter(isSourceHit).slice(0, 4)) {
+    if (seen.has(hit.path)) continue;
+    seen.add(hit.path);
+    const content = fileContent(hit.path);
+    if (!content) continue;
+    const lines = content.split("\n");
+    let offset = 0;
+    for (let i = 0; i < lines.length; i += 1) {
+      const lineStart = offset;
+      offset += lines[i]!.length + 1;
+      const open = COLLECTION_OPEN.exec(lines[i]!);
+      if (!open) continue;
+      const nameCover = covers(identWords(open[1]!), terms);
+      if (nameCover === 0) continue;
+      const closer = open[2] === "{" ? "}" : "]";
+      const names: string[] = [];
+      const entrySpans: TextEvidence[] = [];
+      let at = offset;
+      let closed = false;
+      for (let j = i + 1; j < lines.length && j <= i + 40; j += 1) {
+        const line = lines[j]!;
+        const here = at;
+        at += line.length + 1;
+        if (new RegExp(`^\\s*\\${closer}`).test(line)) {
+          closed = true;
+          break;
+        }
+        if (!line.trim() || /^\s*(?:\/\/|\/\*|\*)/.test(line)) continue;
+        let label: string | null = null;
+        const keyed = ENTRY_KEY.exec(line);
+        if (keyed) {
+          const fields = new Map([...keyed[2]!.matchAll(FIELD_PAIR)].map((m) => [m[1]!, unquote(m[2]!)]));
+          label = LABEL_FIELDS.map((f) => fields.get(f)).find(Boolean) ?? keyed[1]!;
+        } else {
+          label = ENTRY_STRING.exec(line)?.[1] ?? null;
+        }
+        if (!label) {
+          names.length = 0;
+          break;
+        }
+        const row = offsetsOfLine(content, here);
+        const span = spanOfLine(hit, content, row.start, row.end);
+        if (!span) continue;
+        names.push(label);
+        entrySpans.push(span);
+      }
+      if (!closed || names.length < 2 || names.length > 12) continue;
+      const head = spanOfLine(hit, content, lineStart + (lines[i]!.length - lines[i]!.trimStart().length), lineStart + lines[i]!.trimEnd().length);
+      if (!head) continue;
+      return {
+        kind: "list",
+        name: open[1]!,
+        say: `\`${open[1]}\` lists ${joinNames(names)}.`,
+        span: head,
+        spans: [head, ...entrySpans],
+        hit,
+        // Naming the collection and enumerating it answers the whole question.
+        score: nameCover + 1,
+        structural: [...TEMPLATE_WORDS, open[1]!.toLowerCase()],
+        parts: [open[1]!, ...names],
+      };
+    }
+  }
+  return null;
+}
+
+/**
+ * "What model does the OpenAI provider use?" answered from the entry for it:
+ * `openai: { ..., model: "gpt-5-mini" }` becomes "The `openai` model is
+ * `gpt-5-mini`." Both the entry key and the field name must be question terms.
+ */
+function locateField(
+  terms: string[],
+  hits: FileHit[],
+  fileContent: (path: string) => string | undefined,
+): CodeLocation | null {
+  let best: CodeLocation | null = null;
+  const seen = new Set<string>();
+  for (const hit of hits.filter(isSourceHit).slice(0, 4)) {
+    if (seen.has(hit.path)) continue;
+    seen.add(hit.path);
+    const content = fileContent(hit.path);
+    if (!content) continue;
+    let offset = 0;
+    for (const line of content.split("\n")) {
+      const here = offset;
+      offset += line.length + 1;
+      if (line.length > 240) continue;
+      const keyed = ENTRY_KEY.exec(line);
+      if (!keyed) continue;
+      const keyCover = covers(identWords(keyed[1]!), terms);
+      if (keyCover === 0) continue;
+      for (const m of keyed[2]!.matchAll(FIELD_PAIR)) {
+        const fieldName = m[1]!;
+        if (LABEL_FIELDS.includes(fieldName)) continue;
+        const fieldCover = covers(identWords(fieldName), terms);
+        if (fieldCover === 0) continue;
+        // "the OpenAI provider" prefers providers.ts over stt.ts's openai entry.
+        const fileCover = covers(identWords(hit.path.split("/").pop()!.replace(/\.\w+$/, "")), terms);
+        const score = keyCover + fieldCover + 0.5 + fileCover * 0.5;
+        if (best && best.score >= score) continue;
+        const row = offsetsOfLine(content, here);
+        const span = spanOfLine(hit, content, row.start, row.end);
+        if (!span) continue;
+        const value = unquote(m[2]!);
+        best = {
+          kind: "field",
+          name: `${keyed[1]}.${fieldName}`,
+          say: `The \`${keyed[1]}\` ${identWords(fieldName)} is \`${value}\`.`,
+          span,
+          spans: [span],
+          hit,
+          score,
+          structural: [...TEMPLATE_WORDS, keyed[1]!.toLowerCase(), fieldName.toLowerCase()],
+        };
+      }
+    }
+  }
+  return best;
+}
+
+/** The name of the object literal a line sits directly inside, if any. */
+function enclosingName(lines: string[], index: number): string | null {
+  const indent = (lines[index]!.match(/^\s*/)?.[0] ?? "").length;
+  for (let j = index - 1; j >= 0 && j >= index - 30; j -= 1) {
+    const line = lines[j]!;
+    if (!line.trim()) continue;
+    const lead = (line.match(/^\s*/)?.[0] ?? "").length;
+    if (lead >= indent) continue;
+    const open = /^\s*(?:export\s+)?(?:(?:const|let|var)\s+)?([A-Za-z_$][\w$]*)\s*(?::[^=]+)?[:=]\s*\{\s*$/.exec(line);
+    return open ? open[1]! : null;
+  }
+  return null;
 }
