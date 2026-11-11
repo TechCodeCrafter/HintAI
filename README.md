@@ -101,7 +101,7 @@ Thread context (`thread.ts`) resolves follow-ups (“and after that?”) without
 
 Two PCM lanes at 16 kHz: shared tab audio (them) and mic (you, or them when no tab). Energy VAD with pre-roll ring buffer, fragment merge, and force-commit at 7 s.
 
-Default transcription: **Whisper in a Web Worker** (`@xenova/transformers`, ONNX/WASM). Browser `SpeechRecognition` runs in parallel on supported engines. Optional server path exists but is off without `XAI_API_KEY`.
+Default transcription: **Whisper in a Web Worker** (`@huggingface/transformers`, ONNX/WASM). Browser `SpeechRecognition` runs in parallel on supported engines. Optional server path (xAI STT) needs `XAI_API_KEY` and a signed-in user, with a per-user hourly limit (`TRANSCRIBE_RATE_LIMIT_PER_HOUR`, default 240).
 
 Details: ARCHITECTURE §4.
 
@@ -147,13 +147,13 @@ Key search modules: `retrieve.ts` · `hybrid.ts` · `semantic-retrieve.ts` · `v
 ```bash
 npm i
 cp .env.example .env
-npm run dev          # http://localhost:8080
+npm run dev          # http://localhost:3001
 ```
 
 ```bash
 npm test             # 780+ unit tests (src + scripts)
 npm run typecheck
-npm run test:e2e     # 15 Playwright specs (needs: npx playwright install chromium)
+npm run test:e2e     # 25 Playwright specs (needs: npx playwright install chromium)
 ```
 
 Load a **service folder** (`src/`, not the repo root) for best recall.
@@ -176,7 +176,7 @@ Suggested demo questions are prefilled; answers use the same pipeline as your fi
 
 TanStack Start · React 19 · Tailwind v4 · zustand · Dexie · Vite · Nitro (Vercel preset) · Node 22
 
-Optional: `@xenova/transformers` (local ASR + embeddings), provider API keys in-browser for cited synthesis only.
+Optional: `@huggingface/transformers` (local ASR + embeddings), provider API keys in-browser for cited synthesis only.
 
 ---
 

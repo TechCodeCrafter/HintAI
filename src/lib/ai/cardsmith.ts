@@ -4,7 +4,7 @@ import { getDefaultModel, getModelById, type ProviderKeys } from "@/lib/ai/model
 import { authMiddleware } from "../auth/middleware.ts";
 import { llmDebug } from "../debug.ts";
 import type { Hit } from "../repo/types.ts";
-import { checkSynthesisRateLimit } from "./synthesis-rate-limit.server.ts";
+import { enforceSynthesisRateLimit } from "./synthesis-rate-limit.server.ts";
 import {
   redactSynthesisForLog,
   requireSynthesisUserId,
@@ -94,7 +94,7 @@ export const completeSynthesis = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const userId = requireSynthesisUserId(context.userId);
     validateSynthesisPayload(data);
-    checkSynthesisRateLimit(userId);
+    await enforceSynthesisRateLimit(userId);
     return completeSynthesisDirect(data);
   });
 

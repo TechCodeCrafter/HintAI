@@ -138,9 +138,19 @@ export async function finishDictate(keyterms: string[] = []): Promise<string> {
   if (blob.size < 800) throw new Error("That clip was empty. Tap Dictate and ask the question.");
   const wav = await blobToWav(blob);
   const audio = await toBase64(wav);
-  const result = await transcribeClip({
-    data: { audio, mime: "audio/wav", keyterms: keyterms.slice(0, 8) },
-  });
+  let result: Awaited<ReturnType<typeof transcribeClip>>;
+  try {
+    result = await transcribeClip({
+      data: { audio, mime: "audio/wav", keyterms: keyterms.slice(0, 8) },
+    });
+  } catch (err) {
+    const signedOut = err instanceof Error && err.message === "Unauthorized";
+    throw new Error(
+      signedOut
+        ? "Sign in to use Dictate, or type the question, then Search."
+        : "Dictate is not available right now. Type the question, then Search.",
+    );
+  }
   if (!result.ok) throw new Error(result.error);
   return result.text;
 }

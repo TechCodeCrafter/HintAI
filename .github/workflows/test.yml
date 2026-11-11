@@ -5,7 +5,18 @@ on:
   pull_request:
 
 jobs:
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Runs before any npm install, so a poisoned lifecycle script never executes.
+      - run: node scripts/check-supply-chain.mjs
+
   unit:
+    needs: supply-chain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
