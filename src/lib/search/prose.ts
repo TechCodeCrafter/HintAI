@@ -215,6 +215,8 @@ export type Prose = {
   capabilities: ProseSpan[];
   /** The line introducing those bullets, e.g. "This API provides endpoints for". */
   listLead: ProseSpan | null;
+  /** Further descriptive sentences after the first, each sayable on its own. */
+  more?: ProseSpan[];
 };
 
 /**
@@ -228,10 +230,11 @@ export function proseOf(source: Source): Prose | null {
     .map(trimMapped)
     .filter((line) => line.text.length > 0);
 
-  const descriptive = paragraphs(block)
+  const sentences = paragraphs(block)
     .filter((unit) => !isHeading(unit.text) && !BULLET.test(unit.text) && !unit.text.endsWith(":"))
     .flatMap(sentencesIn)
-    .find((sentence) => isDescriptive(sentence.text));
+    .filter((sentence) => isDescriptive(sentence.text));
+  const descriptive = sentences[0];
 
   // Never truncate: a sentence too long to say is dropped, not clipped.
   const candidate = descriptive ? proseSpan(descriptive) : null;
@@ -261,7 +264,11 @@ export function proseOf(source: Source): Prose | null {
   }
 
   if (!description && capabilities.length < 2) return null;
-  return { description, capabilities, listLead };
+  const more = sentences
+    .slice(1, 4)
+    .map((sentence) => proseSpan(sentence))
+    .filter((span): span is ProseSpan => span !== null && span.text.length <= 240);
+  return { description, capabilities, listLead, more };
 }
 
 /** Drops the trailing colon from a list lead-in, keeping its coordinates. */

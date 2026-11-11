@@ -286,6 +286,24 @@ export async function routeSearchAnswer(
     if (routed) return routed;
   }
 
+  // The offline composer's answer, when it has one. Used as the last resort
+  // and, crucially, when the model cannot be reached at all (no key, network
+  // down): a cited answer from the files beats "API key required".
+  const localFallback = () => {
+    if (!localAttempt) return null;
+    const local = localCardRouteFromAttempt(
+      query,
+      t0,
+      retrieveMs,
+      localAttempt,
+      routeStages(),
+      progressiveFor("localCard", Math.round(performance.now() - t0), localAttempt.say),
+    );
+    return local
+      ? { ...local, progressive: progressiveFor("localCard", local.latency.totalMs, local.card.say) }
+      : null;
+  };
+
   const groundedStart = performance.now();
   const grounded = await generateAnswer(query, hits, t0, opts);
   groundedMs = Math.round(performance.now() - groundedStart);
@@ -307,6 +325,8 @@ export async function routeSearchAnswer(
   }
   firstError = noteError(firstError, grounded);
   if (isTransportError(grounded)) {
+    const local = localFallback();
+    if (local) return local;
     const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
     return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
   }
@@ -336,27 +356,15 @@ export async function routeSearchAnswer(
     }
     firstError = noteError(firstError, synthesized);
     if (isTransportError(synthesized)) {
+      const local = localFallback();
+      if (local) return local;
       const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
       return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
     }
   }
 
-  if (localAttempt) {
-    const local = localCardRouteFromAttempt(
-      query,
-      t0,
-      retrieveMs,
-      localAttempt,
-      routeStages(),
-      progressiveFor("localCard", Math.round(performance.now() - t0), localAttempt.say),
-    );
-    if (local) {
-      return {
-        ...local,
-        progressive: progressiveFor("localCard", local.latency.totalMs, local.card.say),
-      };
-    }
-  }
+  const local = localFallback();
+  if (local) return local;
 
   const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
   // The composer already decided why it cannot speak — surface that reason

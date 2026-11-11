@@ -181,7 +181,11 @@ function scorePath(path: string): number {
   if (isTestPath(p)) {
     score -= 10;
   }
-  if (/(^|\/)(migrations|fixtures|snapshots|__snapshots__)(\/|$)/.test(p)) score -= 6;
+  // Schema files answer "which table holds X?", the most common data question
+  // in a meeting, so a migration is material, not noise.
+  if (/\.sql$/.test(p)) score += 6;
+  else if (/(^|\/)migrations(\/|$)/.test(p)) score -= 6;
+  if (/(^|\/)(fixtures|snapshots|__snapshots__)(\/|$)/.test(p)) score -= 6;
   if (/(jenkins|_scm_|github\/workflows|environment-mapping|site-packages|dist-packages|deno-deck-venv)/.test(p)) {
     score -= 40;
   }

@@ -55,12 +55,9 @@ export function CreateContextFlow() {
   const chunks = useMeetHint((s) => s.chunks);
   const activeContextId = useMeetHint((s) => s.activeContextId);
 
-  const busy =
-    creating ||
-    loadingFolder ||
-    folderPicker.reading ||
-    contextStatus === "hydrating" ||
-    contextStatus === "booting";
+  // "booting" is the store's initial state and only the cockpit runs boot(),
+  // so a fresh account would sit on it forever. Only real work blocks uploads.
+  const busy = creating || loadingFolder || folderPicker.reading || contextStatus === "hydrating";
   const symbolCount = useMemo(() => chunks.filter((chunk) => "symbol" in chunk && chunk.symbol).length, [chunks]);
   const sourceCount = sources.length;
   const workingId = contextId ?? activeContextId;
@@ -219,7 +216,8 @@ export function CreateContextFlow() {
                 <div className="ds-metric-grid" data-testid="index-stats">
                   <MetricCard label="Sources" value={sourceCount} />
                   <MetricCard label="Evidence spans" value={chunks.length} />
-                  <MetricCard label="Code symbols" value={symbolCount} />
+                  {/* Symbol chunks are off by default; a permanent 0 reads as a fault. */}
+                  {symbolCount > 0 ? <MetricCard label="Code symbols" value={symbolCount} /> : null}
                   <MetricCard label="Progress" value={`${progress}%`} />
                 </div>
                 {folderError ? (

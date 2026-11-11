@@ -29,13 +29,123 @@ import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
 import { admissible, explain, mentions, provenanceOf, subjectTerms } from "./subject.ts";
 import { type Prose, type ProseSpan, capabilityList, plain, proseOf } from "./prose.ts";
 import { sayable } from "./say.ts";
+import { covers, locateInCode } from "./code-locator.ts";
 
 /**
  * A claim, and the exact evidence it was read from. The claim is always a
  * sentence the evidence already wrote — never a sequence this code inferred —
  * and the span is how that is proven rather than asserted.
  */
-type Claim = { say: string; span: TextEvidence; generic: boolean; head: boolean };
+type Claim = {
+  say: string;
+  span: TextEvidence;
+  generic: boolean;
+  head: boolean;
+  /** The function, class or constant the comment documents, when it sits directly above one. */
+  decl?: string;
+  /** A later sentence of its comment rather than the opening one. */
+  follow?: boolean;
+};
+
+/** A doc comment in a file, in file offsets, and the declaration it documents. */
+type DocBlock = { start: number; end: number; decl: string | null };
+
+const DECL_PATTERNS: RegExp[] = [
+  /^\s*(?:export\s+)?(?:default\s+)?(?:async\s+)?function\s*\*?\s*([A-Za-z_$][\w$]*)/,
+  /^\s*(?:export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)/,
+  /^\s*(?:export\s+)?(?:default\s+)?(?:abstract\s+)?class\s+([A-Za-z_$][\w$]*)/,
+  /^\s*(?:export\s+)?(?:interface|type|enum)\s+([A-Za-z_$][\w$]*)/,
+  /^\s*(?:async\s+)?def\s+([A-Za-z_]\w*)/,
+  /^\s*(?:pub\s+)?(?:async\s+)?fn\s+([A-Za-z_]\w*)/,
+  /^\s*func\s+(?:\([^)]*\)\s*)?([A-Za-z_]\w*)/,
+  /^\s*(?:(?:public|private|protected|static|async|readonly|override)\s+)+([A-Za-z_$][\w$]*)\s*[(=:<]/,
+];
+const NOT_DECL = new Set(["if", "for", "while", "switch", "catch", "return", "else", "new", "await"]);
+
+function declOn(line: string | undefined): string | null {
+  if (!line) return null;
+  for (const re of DECL_PATTERNS) {
+    const m = re.exec(line);
+    if (m?.[1] && !NOT_DECL.has(m[1])) return m[1];
+  }
+  return null;
+}
+
+/** Splits an identifier into the words it is made of: chargeWithRetry -> "charge with retry". */
+function identWords(name: string): string {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_$]+/g, " ")
+    .toLowerCase();
+}
+
+/**
+ * Every doc comment that overlaps [from, to] in a file: JSDoc blocks, Python
+ * docstrings and runs of line comments. `proseOf` only reads the first block of
+ * whatever it is handed, so a function's own docstring further down a file used
+ * to be invisible — the answer to "how does X work" sat one comment below the
+ * one that got spoken.
+ */
+function docBlocksNear(content: string, from: number, to: number): DocBlock[] {
+  const lo = Math.max(0, from);
+  const hi = Math.min(content.length, to);
+  const blocks: DocBlock[] = [];
+  const lineAfter = (end: number) =>
+    content
+      .slice(end)
+      .split("\n")
+      .slice(1)
+      .find((line) => line.trim().length > 0);
+  const lineBefore = (start: number) => {
+    const head = content.slice(0, start).split("\n");
+    head.pop();
+    for (let i = head.length - 1; i >= 0; i -= 1) if (head[i].trim()) return head[i];
+    return undefined;
+  };
+  for (const m of content.matchAll(/\/\*\*?[\s\S]*?\*\//g)) {
+    const start = m.index ?? 0;
+    const end = start + m[0].length;
+    if (end < lo || start > hi) continue;
+    blocks.push({ start, end, decl: declOn(lineAfter(end)) });
+  }
+  for (const m of content.matchAll(/("""|''')[\s\S]*?\1/g)) {
+    const start = m.index ?? 0;
+    const end = start + m[0].length;
+    if (end < lo || start > hi) continue;
+    blocks.push({ start, end, decl: declOn(lineBefore(start)) });
+  }
+  // Runs of // or # comments, at most six lines each.
+  const lines = content.split("\n");
+  let offset = 0;
+  let runStart = -1;
+  let runEnd = -1;
+  let runLines = 0;
+  const flush = (nextLine: string | undefined) => {
+    if (runStart >= 0 && runEnd >= lo && runStart <= hi) {
+      blocks.push({ start: runStart, end: runEnd, decl: declOn(nextLine) });
+    }
+    runStart = -1;
+    runLines = 0;
+  };
+  for (const line of lines) {
+    const isComment = /^\s*(\/\/(?!\/)|#(?![!\[]|include\b))/.test(line);
+    if (isComment && runLines < 6) {
+      if (runStart < 0) runStart = offset;
+      runEnd = offset + line.length;
+      runLines += 1;
+    } else if (runStart >= 0) {
+      flush(isComment ? undefined : line);
+      if (isComment) {
+        runStart = offset;
+        runEnd = offset + line.length;
+        runLines = 1;
+      }
+    }
+    offset += line.length + 1;
+  }
+  flush(undefined);
+  return blocks.sort((a, b) => a.start - b.start);
+}
 
 /** A lead-in ending in a preposition flows into its list; a noun needs the colon. */
 const DANGLING = /\b(for|to|of|with|including|includes|in|on|by|from|are|is|does)$/i;
@@ -118,10 +228,31 @@ function claimsFor(hit: FileHit, pack: RepoPack, query: string, material?: Space
     origin: "span" | "head",
     base: number,
     duplicateOf?: string,
+    decl?: string | null,
   ) => {
     if (!source) return;
     const prose = proseOf(source);
-    const claim = prose ? claimFrom(prose) : null;
+    const first = prose ? claimFrom(prose) : null;
+    // Later sentences of the same comment compete too: "what happens after the
+    // last retry" is answered by the second line of a docstring, not the first.
+    const later = (prose?.more ?? [])
+      .map((sentence) => claimFrom({ description: sentence, capabilities: [], listLead: null }))
+      .filter((c): c is NonNullable<typeof c> => Boolean(c) && !c!.generic);
+    if (!prose || !first) return take(source, origin, base, duplicateOf, decl, prose, first);
+    take(source, origin, base, duplicateOf, decl, prose, first);
+    for (const claim of later) take(source, origin, base, duplicateOf, decl, prose, claim, true);
+  };
+
+  const take = (
+    source: { path: string; content: string },
+    origin: "span" | "head",
+    base: number,
+    duplicateOf: string | undefined,
+    decl: string | null | undefined,
+    prose: ReturnType<typeof proseOf>,
+    claim: ReturnType<typeof claimFrom> | null,
+    follow = false,
+  ) => {
     const note = (reject: RejectCode | null, line: number, candidate = claim?.say ?? "") =>
       noteAttempt({
         query,
@@ -166,12 +297,31 @@ function claimsFor(hit: FileHit, pack: RepoPack, query: string, material?: Space
     if (!verified.ok) {
       return note(verified.reason === "STALE" ? "STALE_EVIDENCE" : "NO_EVIDENCE_SPAN", span.startLine);
     }
-    out.push({ say: claim.say, generic: claim.generic, span, head: origin === "head" });
+    if (out.some((c) => c.say === claim.say && c.span.startLine === span.startLine)) return;
+    out.push({ say: claim.say, generic: claim.generic, span, head: origin === "head", decl: decl ?? undefined, follow });
   };
 
   consider({ path: hit.path, content: hit.text }, "span", hit.startOffset);
   const fromSpan = out[0]?.say;
   consider(file ?? null, "head", 0, fromSpan);
+  // Every other doc comment in or just above the retrieved lines, each with the
+  // declaration it documents, so a function's own docstring can compete.
+  // Only when the hit still matches the file: offsets from a stale index point
+  // at different text, and reading around them would speak unindexed material.
+  const current = file ? file.content.slice(hit.startOffset, hit.startOffset + hit.text.length) === hit.text : false;
+  if (file && current && hit.kind === "code") {
+    const from = hit.startOffset - 600;
+    const to = hit.startOffset + hit.text.length;
+    for (const block of docBlocksNear(file.content, from, to)) {
+      consider(
+        { path: file.path, content: file.content.slice(block.start, block.end) },
+        "span",
+        block.start,
+        undefined,
+        block.decl,
+      );
+    }
+  }
   return out;
 }
 
@@ -199,6 +349,17 @@ function bestClaim(
       // A module docstring describes the whole thing; a docstring buried
       // mid-file describes one function. Prefer purpose when they tie.
       let score = relevance - (claim.generic ? 2 : 0) + (claim.head ? 1 : 0);
+      // A docstring on a declaration whose name matches the question describes
+      // the thing that was asked about, not a neighbour of it.
+      if (claim.decl) score += Math.min(2, overlap(identWords(claim.decl), terms)) * 1.5;
+      // Inflections the substring match misses ("fails" vs "failed attempts").
+      score += Math.max(0, covers(claim.say, terms) - overlap(claim.say, terms)) * 0.5;
+      // "What happens after/when/if X" is answered by a sentence about that moment.
+      if (/\bwhat happens\b|\b(?:after|once|when|if)\b/i.test(canonical) && /^(?:after|once|when|if)\b/i.test(claim.say)) {
+        score += 1.5;
+      }
+      // The opening sentence states purpose; a later one has to earn its place.
+      if (claim.follow) score -= 0.75;
       // Defense in depth for the test-file bias: even when retrieval ranked a
       // test file first, its claim describes what the suite *covers*, not what
       // the system *does*. A test claim may only win when it is the sole source
@@ -459,6 +620,43 @@ function genericLocalCard(
         say = spoken;
         evidence = [commitFrom(why, spoken)];
       }
+    }
+  }
+
+  // Code as the answer. When the prose is silent, or the question asks for a
+  // value the comment only describes, answer from the code itself: the name or
+  // line is copied from the file, and the support check sees only the template
+  // words as extra vocabulary. The file and line stay on the citation chip.
+  if (shapeOf(canonical) !== "who" && shapeOf(canonical) !== "why") {
+    const terms = contentWords(canonical);
+    const files = new Map(pack.files.map((file) => [file.path, file.content]));
+    const located = locateInCode(canonical, terms, codeHits, (path) => files.get(path));
+    // A value question wants the value; the locator quotes the comment with it.
+    // "Where is X implemented?" wants the thing that implements X, when its
+    // name covers the question better than the comment that won.
+    const whereNamed = Boolean(
+      located &&
+        located.kind !== "value" &&
+        shapeOf(canonical) === "where" &&
+        located.score >= 2 &&
+        claim?.decl !== located.name &&
+        covers(claim?.say ?? "", terms) < located.score,
+    );
+    const better = located && (!say || located.kind === "value" || whereNamed);
+    if (located && better && verifyClaim(located.say, located.spans, located.structural).ok) {
+      noteAttempt({
+        query, path: located.span.path, line: located.span.startLine, origin: "span",
+        candidate: located.say, generic: false, relevance: located.score, score: located.score, accepted: true, reject: null,
+      });
+      closeDecision(query, true);
+      return {
+        say: located.say,
+        citations: citationsFor([located.span], located.hit, material) ?? [citationOfHit(located.hit, material)],
+        evidence: located.spans,
+        query,
+        latencyMs,
+        source: "local",
+      };
     }
   }
 
