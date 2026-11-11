@@ -41,8 +41,8 @@ test("beta gate: authenticated users cannot access each other's private workspac
     },
   ]);
   await waitForIndexing(page);
+  // Done opens the live cockpit directly (#73).
   await page.getByTestId("indexing-done").click();
-  await page.getByTestId("start-live").click();
   await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", {
     timeout: 30000,
   });

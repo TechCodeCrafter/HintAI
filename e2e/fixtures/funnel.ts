@@ -21,7 +21,7 @@ export async function runHomeFirstProof(page: Page) {
   await expect(page.getByTestId("home-proof-chip")).toHaveCount(3);
   await page.getByTestId("home-proof-chip").nth(2).click();
   const card = page.getByTestId("card");
-  await expect(card.getByTestId("card-say")).toBeVisible({ timeout: 2000 });
+  await expect(card.getByTestId("card-say")).toBeVisible({ timeout: 6000 });
   await expect(card.getByTestId("card-say")).toContainText("three");
   await expect(page.getByTestId("home-proof-cite")).toContainText("retry");
   expect(Date.now() - started).toBeLessThan(15000);

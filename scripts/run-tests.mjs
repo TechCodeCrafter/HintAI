@@ -40,16 +40,21 @@ function tally(output) {
 const results = [];
 for (const group of GROUPS) {
   console.log(`\n${"=".repeat(72)}\n${group.name} (${group.args.length - 2} files)\n${"=".repeat(72)}`);
-  const run = spawnSync(group.command, group.args, { cwd: root, encoding: "utf8" });
+  // 256 MB: the src group prints well over the 1 MB default, and an overflow
+  // kills the child with no summary.
+  const run = spawnSync(group.command, group.args, { cwd: root, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
   const output = `${run.stdout ?? ""}${run.stderr ?? ""}`;
   process.stdout.write(output);
-  results.push({ name: group.name, code: run.status ?? 1, ...tally(output) });
+  const failing = [...output.matchAll(/^not ok \d+ - (.+)$/gm)].map((m) => m[1]);
+  if (run.error) failing.push(`runner error: ${run.error.message}`);
+  results.push({ name: group.name, code: run.status ?? 1, failing, ...tally(output) });
 }
 
 console.log(`\n${"=".repeat(72)}\nTEST SUMMARY\n${"=".repeat(72)}`);
 for (const r of results) {
   const counts = r.tests === null ? "no summary" : `${r.pass}/${r.tests} passed, ${r.fail} failed`;
   console.log(`  ${r.code === 0 ? "PASS" : "FAIL"}  ${r.name.padEnd(40)} ${counts}`);
+  for (const name of r.failing) console.log(`        not ok  ${name}`);
 }
 
 const failed = results.filter((r) => r.code !== 0);
@@ -58,4 +63,6 @@ console.log(
     ? `\nAGGREGATE  FAIL — ${failed.map((r) => r.name).join(", ")}`
     : "\nAGGREGATE  PASS",
 );
-process.exit(failed.length ? 1 : 0);
+// exitCode, not exit(): on a pipe (CI) stdout is async, and exit() drops
+// whatever has not flushed yet, which is how the summary went missing.
+process.exitCode = failed.length ? 1 : 0;

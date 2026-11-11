@@ -68,6 +68,7 @@ import { inferProductStateFromReason, productState } from "@/lib/product-states"
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
+import { isConfigHeavy } from "@/lib/repo/folder";
 
 type MobilePane = "repo" | "room" | "card";
 
@@ -1162,8 +1163,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
           (item.kind === "file" && (item.sha === c.sha || item.pr === c.pr)),
       ) ?? false,
   );
-  const codeCount = pack.files.filter((f) => /\.(ts|tsx|js|jsx|go|py|java|rs|kt)$/i.test(f.path)).length;
-  const weak = pack.id !== "northstar-payments" && pack.files.length > 0 && codeCount < 3;
+  const weak = pack.id !== "northstar-payments" && isConfigHeavy(pack.files.map((f) => f.path));
   const visible = pack.files.filter((f) => !filter || f.path.toLowerCase().includes(filter.toLowerCase()));
   const visiblePdfs = pdfs.filter((source) => !filter || source.path.toLowerCase().includes(filter.toLowerCase()));
   const sourceCount = pack.files.length + pdfs.length;

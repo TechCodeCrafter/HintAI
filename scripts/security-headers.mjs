@@ -83,6 +83,9 @@ export function buildAppCsp() {
     "https://api.x.ai",
     "https://huggingface.co",
     "https://cdn-lfs.huggingface.co",
+    // Model weights now redirect to Hugging Face's Xet CDN (us.aws.cdn.hf.co,
+    // cas-bridge.xethub.hf.co). Without this, local captions can never boot.
+    "https://*.hf.co",
   ];
   const directives = [
     "default-src 'self'",

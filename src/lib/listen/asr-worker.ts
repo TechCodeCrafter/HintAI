@@ -29,13 +29,19 @@ function tune(env: any) {
   if (env.backends?.onnx?.wasm) {
     env.backends.onnx.wasm.numThreads = 1;
     env.backends.onnx.wasm.proxy = false;
+    // transformers.js defaults to cdn.jsdelivr.net for the ONNX Runtime engine,
+    // which the CSP blocks on purpose. The same files are copied to /vad/ for
+    // the Silero VAD (vite.config.ts vadAssetsPlugin), so load them from there.
+    env.backends.onnx.wasm.wasmPaths = `${self.location.origin}/vad/`;
   }
 }
 
 async function loadModel(
   pipeline: (task: string, id: string, opts?: Record<string, unknown>) => Promise<Transcriber>,
 ) {
-  const ids = ["Xenova/distil-whisper-small.en", "Xenova/whisper-tiny.en"];
+  // Xenova/distil-whisper-small.en no longer resolves (401), so every boot
+  // paid a failed round trip before falling back to tiny.en.
+  const ids = ["Xenova/whisper-tiny.en"];
   let last: unknown = null;
   for (const id of ids) {
     try {

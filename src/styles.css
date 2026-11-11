@@ -1087,9 +1087,10 @@ html[data-theme="light"] .ground-chip {
 
 .cockpit-header {
   display: flex;
+  flex-wrap: wrap;
   min-width: 0;
   align-items: center;
-  gap: 20px;
+  gap: 8px 20px;
   width: 100%;
   max-width: 1600px;
   min-height: 72px;
@@ -1127,10 +1128,14 @@ html[data-theme="light"] .ground-chip {
 
 .cockpit-pack {
   display: flex;
+  flex-wrap: wrap;
   min-width: 0;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
+  /* When the session cluster and pack controls don't fit on one row, the pack
+     drops to its own row, right-aligned, instead of running off-screen. */
+  margin-left: auto;
 }
 
 .cockpit-utils {

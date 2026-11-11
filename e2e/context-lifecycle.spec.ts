@@ -41,8 +41,8 @@ export const MAX_ATTEMPTS = 3;
   await expect(page.getByTestId("index-stats")).toContainText("1");
   await expect(page.getByTestId("index-stats")).toContainText("Sources");
 
+  // Done opens the live cockpit directly (#73).
   await page.getByTestId("indexing-done").click();
-  await page.getByTestId("start-live").click();
   await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", {
     timeout: 20000,
   });

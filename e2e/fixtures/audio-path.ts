@@ -13,6 +13,8 @@ export const WHY_RETRY_WAV = path.join(FIXTURES_DIR, "why-retry.wav");
 export async function installAudioPath(page: Page) {
   await page.addInitScript(() => {
     window.__MEETHINT_E2E__ = true;
+    // Local Whisper captions are off by default; these specs need them.
+    (window as Window & { __MEETHINT_LOCAL_ASR__?: boolean }).__MEETHINT_LOCAL_ASR__ = true;
     Object.defineProperty(window, "SpeechRecognition", { value: undefined, configurable: true });
     Object.defineProperty(window, "webkitSpeechRecognition", { value: undefined, configurable: true });
     Object.defineProperty(window, "showDirectoryPicker", { value: undefined, configurable: true });

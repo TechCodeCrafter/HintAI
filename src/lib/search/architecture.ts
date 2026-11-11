@@ -151,14 +151,20 @@ export function architectureCard(pack: RepoPack, query: string, latencyMs: numbe
 
   const framework = frameworkOf(pack);
   const kind = framework ? `${framework} service` : "service";
-  let say = `${pack.name} is a ${kind} — ${trimTail(purpose.description.text)}`;
+  // Mid-sentence after the dash, so "This service…" reads "this service…";
+  // acronyms such as "REST API…" keep their case.
+  const described = trimTail(purpose.description.text).replace(/^[A-Z](?=[a-z])/, (c) => c.toLowerCase());
+  let say = `${pack.name} is a ${kind} — ${described}`;
   // Bulleted capabilities only enrich a thin description; they never replace it.
   const spoken = purpose.capabilities.slice(0, 4);
   const listed = purpose.capabilities.length >= 2 && purpose.description.text.length < 60;
-  if (listed) {
-    say += `: ${capabilityList(purpose.capabilities.map((c) => c.text))}`;
-  }
+  // The list is its own sentence: the description and the bullets usually sit
+  // in different paragraphs, and one clause spanning both fails the order check.
+  const remainder = Math.max(0, purpose.capabilities.length - spoken.length);
   say += ".";
+  if (listed) {
+    say += ` It covers ${capabilityList(purpose.capabilities.map((c) => c.text))}.`;
+  }
 
   // Structure is a second clause only, and only after purpose is established.
   const main = topDirs(pack)
@@ -186,6 +192,8 @@ export function architectureCard(pack: RepoPack, query: string, latencyMs: numbe
   // names are declared here so the support check can tell a directory this pack
   // actually contains from a word the composer invented.
   const structural = [
+    ...(listed ? ["covers"] : []),
+    ...(listed && remainder > 0 ? [`plus ${countWord(remainder)} more`] : []),
     pack.name,
     kind,
     framework ?? "",

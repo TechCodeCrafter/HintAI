@@ -40,3 +40,35 @@ export function asrFinalTimeoutMs(): number {
 export function asrPreviewTimeoutMs(): number {
   return isMobileTouch() ? 10_000 : 7000;
 }
+
+/** Reads globalThis so the probe also works in tests without a window. */
+function hasSpeechRecognition(): boolean {
+  const g = globalThis as typeof globalThis & { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown };
+  return Boolean(g.SpeechRecognition ?? g.webkitSpeechRecognition);
+}
+
+function framed(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Browser speech captions alongside Whisper. Desktop Chrome/Edge/Safari;
+ * iOS uses on-device Whisper only (webkit STT is too flaky in continuous mode).
+ * Brave exposes the API then fails with network — excluded.
+ */
+export function liveCaptionsOk(): boolean {
+  if (typeof navigator === "undefined") return false;
+  if (!hasSpeechRecognition()) return false;
+  if (framed()) return false;
+  if (isBrave()) return false;
+  if (isIOS()) return false;
+  const ua = navigator.userAgent;
+  if (/OPR|Opera/.test(ua)) return false;
+  if (/Chrome|Chromium|Edg\//.test(ua)) return true;
+  return isSafari();
+}

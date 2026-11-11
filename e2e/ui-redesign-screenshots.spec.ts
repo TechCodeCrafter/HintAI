@@ -50,7 +50,11 @@ test.describe("UI redesign screenshots", () => {
       },
     ]);
     await page.getByTestId("indexing-complete").waitFor({ timeout: 60000 });
+    // Done opens the live cockpit directly (#73); the space page is one level up.
     await page.getByTestId("indexing-done").click();
+    await expect(page.getByTestId("cockpit")).toBeVisible();
+    const spaceUrl = page.url().replace(/\/live(?:[?#].*)?$/, "");
+    await page.goto(spaceUrl);
     await expect(page.getByTestId("space-detail")).toBeVisible();
     await page.screenshot({ path: `${OUT}/knowledge-space.png`, fullPage: true });
 

@@ -9,6 +9,8 @@ import { isFileHit } from "../../repo/types.ts";
 import {
   buildSynthesisPrompt,
   buildWeakEvidencePrompt,
+  CHUNK_CAP,
+  CHUNKS_PER_FILE,
   citationIndexes,
   extractBestSentence,
   generateAnswer,
@@ -47,10 +49,10 @@ test("extract and weak synthesis both require citations or INSUFFICIENT", () => 
   assert.match(source, /llmDebug\("\[ask\]/);
 });
 
-test("prompt composition keeps at most two chunks per source file", () => {
+test("prompt composition caps chunks per source file", () => {
   const seed = retryHits[0];
   assert.ok(seed);
-  const piled = Array.from({ length: 5 }, (_, i) => ({
+  const piled = Array.from({ length: CHUNKS_PER_FILE + 3 }, (_, i) => ({
     ...seed,
     id: `docs-${i}`,
     startLine: i + 1,
@@ -60,26 +62,28 @@ test("prompt composition keeps at most two chunks per source file", () => {
   const extra = { ...seed, id: "impl", path: "api/main.py", text: "Identity is the X-User-Email header." };
   const hits = [...piled, extra];
   const kept = hitsForPrompt(hits);
-  assert.equal(kept.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, 2);
+  assert.equal(kept.filter((hit) => hit.path === "docs/API_DOCUMENTATION.md").length, CHUNKS_PER_FILE);
   assert.ok(kept.some((hit) => hit.path === "api/main.py"));
   const grounded = buildSynthesisPrompt("How does authentication work?", hits);
   const weak = buildWeakEvidencePrompt("How does authentication work?", hits);
   const docsChunks = grounded.match(/docs\/API_DOCUMENTATION\.md/g) ?? [];
-  assert.ok(docsChunks.length <= 2, grounded);
+  assert.ok(docsChunks.length <= CHUNKS_PER_FILE, grounded);
   assert.match(grounded, /api\/main\.py/);
-  assert.ok(((weak.match(/docs\/API_DOCUMENTATION\.md/g) ?? []).length) <= 2);
+  assert.ok(((weak.match(/docs\/API_DOCUMENTATION\.md/g) ?? []).length) <= CHUNKS_PER_FILE);
 });
 
-test("weak and grounded prompts share the same five-chunk cap", () => {
+test("weak and grounded prompts share the same chunk cap", () => {
   const seed = retryHits[0];
   assert.ok(seed);
-  const hits = Array.from({ length: 8 }, (_, i) => ({ ...seed, path: `f${i}.ts` }));
+  const hits = Array.from({ length: CHUNK_CAP + 3 }, (_, i) => ({ ...seed, path: `f${i}.ts` }));
   const grounded = buildSynthesisPrompt("Why does that retry three times?", hits);
   const weak = buildWeakEvidencePrompt("full stack developer role", hits);
-  assert.match(grounded, /\[5\]/);
-  assert.doesNotMatch(grounded, /\[6\]/);
-  assert.match(weak, /\[5\]/);
-  assert.doesNotMatch(weak, /\[6\]/);
+  const last = new RegExp(`\\[${CHUNK_CAP}\\]`);
+  const over = new RegExp(`\\[${CHUNK_CAP + 1}\\]`);
+  assert.match(grounded, last);
+  assert.doesNotMatch(grounded, over);
+  assert.match(weak, last);
+  assert.doesNotMatch(weak, over);
 });
 
 test("INSUFFICIENT is silence", async () => {

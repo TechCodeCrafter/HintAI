@@ -206,15 +206,27 @@ export function preferredOpenFile(pack: RepoPack): string | null {
   return ranked[0]?.path ?? null;
 }
 
+const CODE_FILE = /\.(ts|tsx|js|jsx|go|py|java|rs|kt)$/i;
+const OFFICE_FILE = /\.(docx|xlsx|csv|ppt|pptx|pdf|md)$/i;
+
+/**
+ * A pack is "mostly CI/config" only when config files outnumber the few code
+ * files. One or two source files on their own are a small pack, not a weak one.
+ */
+export function isConfigHeavy(paths: string[]): boolean {
+  const code = paths.filter((p) => CODE_FILE.test(p)).length;
+  const docs = paths.filter((p) => OFFICE_FILE.test(p)).length;
+  const other = paths.length - code - docs;
+  return paths.length > 0 && code < 3 && docs === 0 && other > code;
+}
+
 export function prunePack(pack: RepoPack): { pack: RepoPack; weak: boolean; dropped: number } {
   const kept = pack.files
     .filter((f) => !SKIP_DIR.test(f.path) && scorePath(f.path) >= 2)
     .sort((a, b) => scorePath(b.path) - scorePath(a.path) || a.path.localeCompare(b.path));
   const dropped = pack.files.length - kept.length;
-  const code = kept.filter((f) => /\.(ts|tsx|js|jsx|go|py|java|rs|kt)$/i.test(f.path)).length;
-  const office = kept.filter((f) => /\.(docx|xlsx|csv|ppt|pptx)$/i.test(f.path)).length;
   const next = kept.length > 0 ? { ...pack, files: kept, description: `Local folder · ${kept.length} files` } : pack;
-  return { pack: next, dropped, weak: code < 3 && office === 0 };
+  return { pack: next, dropped, weak: isConfigHeavy(kept.map((f) => f.path)) };
 }
 
 export function repoRelativePath(file: File): string {

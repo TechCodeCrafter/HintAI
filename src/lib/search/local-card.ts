@@ -614,7 +614,11 @@ function genericLocalCard(
     // code chunk that happened to rank alongside it — that chunk does not
     // contain the sentence, and citing it was a claim the file could not back.
     const message = plain(why.message);
-    if (looksSpoken(message)) {
+    // The message has to be about the question. Ranking next to a hit is not
+    // enough: "What is our parental leave policy?" used to be answered with
+    // an unrelated ADR commit title.
+    const onTopic = covers(message, contentWords(canonical)) > 0;
+    if (onTopic && looksSpoken(message)) {
       const spoken = sayable(twoSentences(message) ?? "");
       if (spoken) {
         say = spoken;

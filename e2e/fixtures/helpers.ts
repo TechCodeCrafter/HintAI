@@ -15,8 +15,18 @@ export async function openCockpit(page: Page) {
 
 export async function typeQuestion(page: Page, text: string) {
   const input = page.getByTestId("search-input");
-  await fillControlledInput(input, text);
-  await input.press("Enter");
+  const epoch = () =>
+    page.evaluate(() => (window.useMeetHint?.getState() as { hydrationEpoch?: number } | undefined)?.hydrationEpoch ?? 0);
+  // A route change can re-hydrate the space just after "ready" and drop a
+  // search already in flight. Retry only when that re-hydration happened.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", { timeout: 20000 });
+    const before = await epoch();
+    await fillControlledInput(input, text);
+    await input.press("Enter");
+    await page.waitForTimeout(300);
+    if ((await epoch()) === before) return;
+  }
 }
 
 export async function askQuestion(page: Page, text: string) {

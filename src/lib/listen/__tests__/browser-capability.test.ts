@@ -42,7 +42,7 @@ test("tabAudioShareLikely is false on mobile and true on desktop Chrome", async 
 });
 
 test("liveCaptionsOk includes desktop Safari but not iOS", async () => {
-  const { liveCaptionsOk } = await import("../speech.ts");
+  const { liveCaptionsOk } = await import("../browser-capability.ts");
   class FakeRec {}
   const w = globalThis as typeof globalThis & { webkitSpeechRecognition?: typeof FakeRec };
   const prev = w.webkitSpeechRecognition;

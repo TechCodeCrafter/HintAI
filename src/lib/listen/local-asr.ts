@@ -14,7 +14,14 @@ type Waiter = {
 // Off by default behind VITE_LOCAL_ASR=1. Until it is enabled, transcription
 // falls back to the browser SpeechRecognition path in speech.ts, which needs
 // no worker.
-const LOCAL_ASR_ENABLED = import.meta.env.VITE_LOCAL_ASR === "1";
+// E2E builds also let a test opt in per page (window.__MEETHINT_LOCAL_ASR__),
+// so the real-audio specs can exercise Whisper without every other spec
+// downloading a model.
+function localAsrEnabled(): boolean {
+  if (import.meta.env.VITE_LOCAL_ASR === "1") return true;
+  if (import.meta.env.VITE_E2E !== "true" || typeof window === "undefined") return false;
+  return (window as Window & { __MEETHINT_LOCAL_ASR__?: boolean }).__MEETHINT_LOCAL_ASR__ === true;
+}
 
 let worker: Worker | null = null;
 let ready: Promise<boolean> | null = null;
@@ -70,7 +77,7 @@ function ensureWorker(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(false);
   // Spawning the worker when it cannot boot produced a CSP violation on every
   // attempt plus a store write per attempt, which re-rendered the transcript.
-  if (!LOCAL_ASR_ENABLED) return Promise.resolve(false);
+  if (!localAsrEnabled()) return Promise.resolve(false);
   if (ready) return ready;
   ready = new Promise((resolve) => {
     try {

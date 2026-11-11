@@ -180,7 +180,7 @@ export function splitClaimClauses(claim: string): string[] {
     /\s*;\s*/,
     /(?<=[.!?])\s+/,
     /\s*,\s+(?=and\b|but\b|so\b|then\b|while\b|because\b)/i,
-    /\s+and\s+(?=[a-z][a-z-]*\s+(?:are|is|was|were|has|have|require|run|process|support)\b)/i,
+    /\s+and\s+(?=(?:[a-z][a-z0-9_-]*\s+){1,3}(?:are|is|was|were|has|have|require|run|process|support)\b)/i,
     /\s*,\s+/,
   ]) {
     parts = parts.flatMap((part) =>

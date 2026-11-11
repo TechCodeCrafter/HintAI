@@ -1480,6 +1480,22 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     if (state.subscription === "free") return;
     const live = state.currentMeeting;
     if (live && live.endedAt == null) return;
+    // After a reload the store can be empty even though the open meeting is
+    // still saved. Resume it instead of starting a second, empty audit.
+    if (!live) {
+      const saved = await loadMeetings().catch(() => [] as Awaited<ReturnType<typeof loadMeetings>>);
+      const open = saved.find((row) => row.endedAt == null);
+      if (open && !get().currentMeeting) {
+        set({
+          currentMeeting: open,
+          meetingHistory: saved.filter((row) => row.id !== open.id),
+          selectedClaimId: null,
+          claimReport: null,
+        });
+        return;
+      }
+      if (get().currentMeeting) return;
+    }
     const startedAt = Date.now();
     const meeting = newMeetingRecord(meetingTitle(get().pack, startedAt), startedAt);
     set({ currentMeeting: meeting, selectedClaimId: null, claimReport: null });

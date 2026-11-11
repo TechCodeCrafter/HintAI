@@ -32,8 +32,8 @@ async function loadPrivateRepo(page: Page, user = USER_A) {
     },
   ]);
   await waitForIndexing(page);
+  // Done opens the live cockpit directly (#73).
   await page.getByTestId("indexing-done").click();
-  await page.getByTestId("start-live").click();
   await expect(page.getByTestId("cockpit")).toHaveAttribute("data-context-status", "ready", {
     timeout: 20000,
   });

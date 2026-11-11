@@ -39,10 +39,10 @@ export type SynthesisAsk = (payload: {
 
 const INSUFFICIENT = "INSUFFICIENT";
 const MARKER = /\[(\d+)\]/g;
-const CHUNK_CAP = 8;
+export const CHUNK_CAP = 8;
 /** Trimmed from 1000 — source identity preserved in chunkHeader; lowers LLM input tokens. */
 const CHUNK_CHARS = 1200;
-const CHUNKS_PER_FILE = 4;
+export const CHUNKS_PER_FILE = 4;
 
 const GROUNDED_INSTRUCTION = `Use ONLY the chunks below. Never use general knowledge.
 If insufficient, respond exactly: INSUFFICIENT
@@ -137,6 +137,21 @@ export function extractBestSentence(text: string, query: string): string {
 }
 
 /** 1-based chunk indexes cited as [N], in first-seen order. */
+/**
+ * At most two sentences, punctuation kept. The old split/join dropped every
+ * period, so "A. B. C." was spoken as "A B...". Decimals such as "1.5" and
+ * versions such as "v2.1" are not sentence ends.
+ */
+export function firstTwoSentences(text: string): string {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return "";
+  // A sentence ends at . ! or ? followed by a space or the end of the text.
+  const ends = [...clean.matchAll(/[.!?]+(?=\s|$)/g)];
+  if (ends.length <= 2) return clean;
+  const second = ends[1]!;
+  return clean.slice(0, second.index! + second[0].length).trim();
+}
+
 export function citationIndexes(text: string): number[] {
   const found: number[] = [];
   const seen = new Set<number>();
@@ -250,8 +265,11 @@ function evidenceForMarkers(
   const evidence: Evidence[] = [];
   const citations: Citation[] = [];
   const seen = new Set<string>();
+  // [n] numbers the chunks as the prompt showed them, after the per-file and
+  // total caps, so resolve them against that same list rather than raw hits.
+  const shown = hitsForPrompt(hits);
   for (const index of citationIndexes(text)) {
-    const hit = hits[index - 1];
+    const hit = shown[index - 1];
     if (!hit) continue;
     const span = evidenceFromHit(hit, pack, material);
     if (!span || seen.has(span.id)) continue;
@@ -349,13 +367,7 @@ export async function generateAnswer(
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  // Enforce max 2 sentences and prevent verbatim copying from chunks
-  let say = stripCitationMarkers(remote.text);
-  if (say) {
-    const sentenceEnd = /[.!?](?:\s|$)/;
-    const sentences = say.split(sentenceEnd).slice(0, 2);
-    say = sentences.join(" ") + (sentences.length < say.split(sentenceEnd).length ? "..." : "");
-  }
+  const say = firstTwoSentences(stripCitationMarkers(remote.text));
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
@@ -397,13 +409,7 @@ export async function synthesizeAnswer(
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  // Enforce max 2 sentences and prevent verbatim copying from chunks
-  let say = stripCitationMarkers(remote.text);
-  if (say) {
-    const sentenceEnd = /[.!?](?:\s|$)/;
-    const sentences = say.split(sentenceEnd).slice(0, 2);
-    say = sentences.join(" ") + (sentences.length < say.split(sentenceEnd).length ? "..." : "");
-  }
+  const say = firstTwoSentences(stripCitationMarkers(remote.text));
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
   if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
