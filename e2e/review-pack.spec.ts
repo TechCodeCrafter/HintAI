@@ -32,3 +32,21 @@ test("folder upload reviews the pack before indexing", async ({ page }) => {
   await waitForIndexing(page);
   await expect(page.getByTestId("index-stats")).toContainText("1");
 });
+
+test("clicking Add local folder opens the folder chooser and reviews the pack", async ({ page }) => {
+  await installE2eMocks(page);
+  await e2eSignIn(page, USER_A);
+  await page.goto("/create");
+  await fillCreateContextIdentity(page, "Folder Click");
+  const folder = join(tmpdir(), `hint-folder-click-${Date.now()}`);
+  mkdirSync(folder);
+  writeFileSync(join(folder, "limits.ts"), "export const MAX_UPLOAD_MB = 25;\n");
+
+  // Browsers without showDirectoryPicker (Safari, Firefox) take this path.
+  const chooser = page.waitForEvent("filechooser", { timeout: 5000 });
+  await page.getByTestId("upload-folder-button").click();
+  await (await chooser).setFiles(folder);
+
+  await expect(page.getByTestId("review-pack-dialog")).toBeVisible();
+  await expect(page.getByTestId("review-pack-summary")).toContainText("1 file will be indexed");
+});

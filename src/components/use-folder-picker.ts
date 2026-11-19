@@ -22,21 +22,27 @@ export function useFolderPicker() {
   async function offerFolder() {
     if (canPickDirectory()) {
       setReading(true);
+      let result;
       try {
-        const next = await pickFolderScan();
-        if (next && next.selected > 0) setScan(next);
+        result = await pickFolderScan();
       } finally {
         setReading(false);
       }
-      return;
+      if (result.status === "cancelled") return;
+      // An empty folder still opens the review dialog, which says why
+      // nothing can be indexed instead of leaving the click unanswered.
+      if (result.status === "picked") {
+        setScan(result.scan);
+        return;
+      }
     }
-    // Directory picker not available - no fallback since inputRef is not connected.
-    // The showDirectoryPicker API is the primary method for folder selection.
-    return;
+    // Safari, Firefox, embedded frames and refused pickers use the
+    // webkitdirectory input that FolderPickerFields mounts.
+    inputRef.current?.click();
   }
 
   function acceptList(list: FileList | File[] | null) {
-    if (!list || list.length === 0) return;
+    if (!list) return;
     setScan(scanFileList(list));
   }
 
