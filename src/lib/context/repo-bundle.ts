@@ -69,7 +69,16 @@ export async function upsertRepoBundle(
     nextBundleFiles.push(row);
   }
 
-  const removedFileIds = priorBundle.filter((row) => !nextPaths.has(row.path)).map((row) => row.id);
+  // A file added again at the same path replaces the older copy, even when the
+  // older copy came in with an earlier add (another bundle). Newest wins in
+  // storage, the source list, and search; two rows with one path would make
+  // indexing pick one of them by list order.
+  const superseded = otherBundles.filter((row) => nextPaths.has(row.path));
+  const keptOtherBundles = otherBundles.filter((row) => !nextPaths.has(row.path));
+  const removedFileIds = [
+    ...priorBundle.filter((row) => !nextPaths.has(row.path)).map((row) => row.id),
+    ...superseded.map((row) => row.id),
+  ];
   const unchanged =
     removedFileIds.length === 0 &&
     nextBundleFiles.length === priorBundle.length &&
@@ -78,7 +87,7 @@ export async function upsertRepoBundle(
       return prior && prior.contentHash === row.contentHash && prior.content === row.content;
     });
 
-  const sources = [...pdfs, ...otherBundles, ...nextBundleFiles].sort((a, b) =>
+  const sources = [...pdfs, ...keptOtherBundles, ...nextBundleFiles].sort((a, b) =>
     a.path.localeCompare(b.path),
   );
 

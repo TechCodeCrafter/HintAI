@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isPdfFile, splitMaterialFiles } from "../material-upload.ts";
+import { isPdfFile, MATERIAL_FILE_ACCEPT, splitMaterialFiles } from "../material-upload.ts";
 
 test("splitMaterialFiles separates PDFs from other uploads", () => {
   const pdfs = [new File(["a"], "guide.pdf", { type: "application/pdf" })];
@@ -14,4 +14,11 @@ test("splitMaterialFiles separates PDFs from other uploads", () => {
 
 test("isPdfFile accepts extension-only PDF names", () => {
   assert.equal(isPdfFile(new File(["a"], "scan.PDF", { type: "" })), true);
+});
+
+test("the upload chooser advertises supported text and source formats", () => {
+  const accept = MATERIAL_FILE_ACCEPT.split(",");
+  for (const ext of [".html", ".sh", ".sql", ".toml", ".rst", ".ipynb", ".scss", ".csv"]) {
+    assert.ok(accept.includes(ext), `chooser does not advertise ${ext}`);
+  }
 });

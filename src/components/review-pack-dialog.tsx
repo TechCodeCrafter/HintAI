@@ -2,17 +2,20 @@ import { useEffect, useId } from "react";
 import { createPortal } from "react-dom";
 import type { FolderPickerState } from "@/components/use-folder-picker";
 import { useClientMounted } from "@/lib/use-client-mounted";
-import type { FolderLoadOptions, FolderPreview } from "@/lib/repo/folder";
+import { emptySelectionMessage, SKIP_LABEL, type FolderLoadOptions, type FolderPreview } from "@/lib/repo/folder";
 
 export function ReviewPackDialog({
   preview,
   includeTests,
+  capped = false,
   onIncludeTests,
   onCancel,
   onIndex,
 }: {
   preview: FolderPreview | null;
   includeTests: boolean;
+  /** The dropped folder was larger than one scan reads. */
+  capped?: boolean;
   onIncludeTests: (value: boolean) => void;
   onCancel: () => void;
   onIndex: () => void;
@@ -43,7 +46,14 @@ export function ReviewPackDialog({
 
   if (!preview || !mounted) return null;
 
-  const empty = preview.keep === 0;
+  const empty = preview.keep === 0 && preview.pdfs === 0;
+  // The choice is offered only when the folder holds tests to include.
+  const hasTests = includeTests || preview.skipLabels.includes(SKIP_LABEL.tests);
+  const counted = [
+    preview.keep > 0 ? `${preview.keep.toLocaleString()} file${preview.keep === 1 ? "" : "s"}` : null,
+    preview.pdfs > 0 ? `${preview.pdfs.toLocaleString()} PDF${preview.pdfs === 1 ? "" : "s"}` : null,
+  ].filter(Boolean);
+  const summary = empty ? "0 files will be indexed" : `${counted.join(" and ")} will be indexed`;
 
   return createPortal(
     <div
@@ -64,7 +74,7 @@ export function ReviewPackDialog({
           Review your pack
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-body" data-testid="review-pack-summary">
-          {preview.keep.toLocaleString()} file{preview.keep === 1 ? "" : "s"} will be indexed
+          {summary}
           {preview.skipped > 0 ? `, ${preview.skipped.toLocaleString()} skipped` : ""}. Stays local.
         </p>
         {preview.keepSample.length > 0 ? (
@@ -81,25 +91,33 @@ export function ReviewPackDialog({
         ) : null}
         {preview.truncated ? (
           <p className="mt-4 text-sm text-warn">
-            Capped at 500 files. For best results, load a service folder (src/) rather than the repo
-            root.
+            Some files are over this folder's size or file-count limit. For best results, load a
+            service folder (src/) rather than the repo root.
+          </p>
+        ) : null}
+        {capped ? (
+          <p className="mt-4 text-sm text-warn" data-testid="review-pack-capped">
+            That drop holds more files than one scan reads, so part of it is missing here. Drop
+            a smaller folder, such as src/, to be sure everything is included.
           </p>
         ) : null}
         {empty ? (
           <p className="mt-4 text-sm text-warn">
-            No readable source files in that selection. Pick source, markdown, text, or office files.
+            {emptySelectionMessage(preview)}
           </p>
         ) : null}
-        <label className="mt-5 flex min-h-11 items-center gap-3 text-sm text-body">
-          <input
-            type="checkbox"
-            className="size-4"
-            checked={includeTests}
-            data-testid="review-pack-include-tests"
-            onChange={(event) => onIncludeTests(event.target.checked)}
-          />
-          Include tests
-        </label>
+        {hasTests ? (
+          <label className="mt-5 flex min-h-11 items-center gap-3 text-sm text-body">
+            <input
+              type="checkbox"
+              className="size-4"
+              checked={includeTests}
+              data-testid="review-pack-include-tests"
+              onChange={(event) => onIncludeTests(event.target.checked)}
+            />
+            Include tests
+          </label>
+        ) : null}
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <button
             type="button"
@@ -130,7 +148,8 @@ export function FolderPickerFields({
   onIndex,
 }: {
   picker: FolderPickerState;
-  onIndex: (files: File[], options: FolderLoadOptions) => void;
+  /** `files` is empty when the folder held only PDFs; `pdfs` go to the PDF indexer. */
+  onIndex: (files: File[], options: FolderLoadOptions, pdfs: File[]) => void;
 }) {
   return (
     <>
@@ -153,12 +172,13 @@ export function FolderPickerFields({
       <ReviewPackDialog
         preview={picker.preview}
         includeTests={picker.includeTests}
+        capped={picker.capped}
         onIncludeTests={picker.setIncludeTests}
         onCancel={picker.cancelReview}
         onIndex={() => {
           const next = picker.confirmFiles();
           if (!next) return;
-          onIndex(next.files, next.options);
+          onIndex(next.files, next.options, next.pdfs);
         }}
       />
     </>

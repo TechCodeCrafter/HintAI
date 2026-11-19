@@ -2,8 +2,10 @@ import {
   isOfficeExt,
   isOfficeLockName,
   officeReadError,
+  parseCsvText,
   parseOfficeBuffer,
 } from "../document/parsers/office-parsers.ts";
+import { isPdfFile, MATERIAL_EXTENSIONS } from "../material-upload.ts";
 import type { RepoFile, RepoPack } from "./types";
 
 const SKIP_DIR =
@@ -19,79 +21,56 @@ function isOfficeLockPath(path: string): boolean {
 }
 
 const SKIP_EXT =
-  /\.(lock|min\.js|map|png|jpe?g|gif|webp|ico|woff2?|ttf|eot|mp4|mp3|wav|zip|gz|tgz|wasm|pdf|bin|exe|dmg|svg|avif)$/i;
+  /\.(png|jpe?g|gif|webp|ico|woff2?|ttf|eot|mp4|mp3|wav|zip|gz|tgz|wasm|bin|exe|dmg|svg|avif)$/i;
+const GENERATED_EXT = /\.(min\.js|map)$/i;
 
-const ALLOW_EXT = new Set([
-  "ts",
-  "tsx",
-  "js",
-  "jsx",
-  "mjs",
-  "cjs",
-  "py",
-  "go",
-  "rs",
-  "java",
-  "kt",
-  "kts",
-  "md",
-  "mdx",
-  "json",
-  "css",
-  "scss",
-  "sql",
-  "yml",
-  "yaml",
-  "toml",
-  "rb",
-  "php",
-  "swift",
-  "cs",
-  "vue",
-  "svelte",
-  "graphql",
-  "gql",
-  "proto",
-  "c",
-  "h",
-  "cc",
-  "cpp",
-  "hpp",
-  "txt",
-  "docx",
-  "xlsx",
-  "csv",
-  "ppt",
-  "pptx",
-]);
+const ALLOW_EXT = new Set<string>(MATERIAL_EXTENSIONS);
+const ALLOW_NAME = /^(README|LICENSE|LICENCE|COPYING|CHANGELOG|AUTHORS|CONTRIBUTING|NOTICE|Dockerfile|Containerfile|Makefile|Gemfile|Rakefile|Procfile)$/i;
 
 const MAX_FILES = 500;
 const MAX_FILE_BYTES = 150_000;
 const OFFICE_MAX_FILE_BYTES = 4_000_000;
 const MAX_TOTAL_BYTES = 8_000_000;
+export const GROUPED_DROP_ROOT = "Dropped material";
+const GROUPED_DROP_STORAGE_PREFIX = `${GROUPED_DROP_ROOT.toLowerCase().replaceAll(" ", "-")}/`;
+const groupedDropFiles = new WeakSet<File>();
+
+/** A shared virtual root preserves selected folder names without filtering them as descendants. */
+export function markGroupedDropFile(file: File): void {
+  groupedDropFiles.add(file);
+}
+
+export function shouldSkipDirectory(relativePath: string): boolean {
+  return SKIP_DIR.test(relativePath);
+}
 
 export type FolderLoadOptions = {
   includeTests?: boolean;
   selectedCount?: number;
+  skipLabels?: string[];
 };
 
 export type FolderCandidate = {
   file: File;
   path: string;
   score: number;
+  pathForRules?: string;
 };
 
 export type FolderScan = {
   selected: number;
   folderName: string;
   candidates: FolderCandidate[];
+  pdfs: File[];
   skipLabels: string[];
+  failed: string[];
 };
 
 export type FolderPreview = {
   folderName: string;
   selected: number;
   keep: number;
+  pdfs: number;
   skipped: number;
   truncated: boolean;
   includeTests: boolean;
@@ -101,9 +80,11 @@ export type FolderPreview = {
 
 export type FolderLoad = {
   pack: RepoPack;
+  selected: number;
   skipped: number;
   truncated: boolean;
   failed: string[];
+  skipLabels: string[];
 };
 
 export type FsEntry =
@@ -119,6 +100,7 @@ export { officeReadError };
 
 export const SKIP_LABEL = {
   vendor: "vendor and build folders",
+  generated: "generated files",
   lockfiles: "lockfiles",
   binaries: "binaries and media",
   types: "unsupported types",
@@ -126,7 +108,56 @@ export const SKIP_LABEL = {
   json: "large JSON",
   tests: "tests",
   cap: "over the 500-file cap",
+  total: "over the total size limit",
+  empty: "files with no text",
+  failed: "files we could not read",
 } as const;
+
+export function emptySelectionMessage(
+  { selected, skipLabels, failed = [] }: Pick<FolderLoad, "selected" | "skipLabels"> & Partial<Pick<FolderLoad, "failed">>,
+): string {
+  const chooseFiles = "Choose code, Markdown, text, PDF, Word, Excel, or PowerPoint files.";
+  if (!selected && skipLabels.length === 0) return `No files were selected. ${chooseFiles}`;
+  const reasons = new Set(skipLabels);
+  const explanations = {
+    [SKIP_LABEL.vendor]: ["were in build or dependency folders", "was in a build or dependency folder"],
+    [SKIP_LABEL.generated]: ["were generated files", "was a generated file"],
+    [SKIP_LABEL.lockfiles]: ["were lock files", "was a lock file"],
+    [SKIP_LABEL.binaries]: ["were images, archives, or other non-text files", "was an image, archive, or other non-text file"],
+    [SKIP_LABEL.types]: ["were in unsupported formats", "was in an unsupported format"],
+    [SKIP_LABEL.size]: ["were too large", "was too large"],
+    [SKIP_LABEL.json]: ["were large JSON files", "was a large JSON file"],
+    [SKIP_LABEL.tests]: ["were excluded tests", "was an excluded test"],
+    [SKIP_LABEL.empty]: ["had no readable text", "had no readable text"],
+    [SKIP_LABEL.failed]: ["could not be opened", "could not be opened"],
+  } as const;
+  const singular = selected === 1 && reasons.size === 1;
+  const details = Object.entries(explanations)
+    .filter(([reason]) => reasons.has(reason))
+    .map(([, detail]) => detail[singular ? 1 : 0]);
+  const intro = selected <= 1 ? "The selected file" : `All ${selected.toLocaleString()} selected files`;
+  let summary = selected === 0 || (selected === 1 && !singular && details.length > 1)
+    ? "Nothing in that selection could be indexed"
+    : `${intro} could not be indexed`;
+  if (selected > 0 && details.length === 1) {
+    summary = `${intro} ${details[0]}`;
+  } else if (selected === 0 && details.length === 1) {
+    summary += `: files ${details[0]}`;
+  } else if (details.length > 1) {
+    const list = new Intl.ListFormat("en", { type: "disjunction" }).format(details);
+    summary += `: some files ${list}`;
+  }
+
+  let next = chooseFiles;
+  if (reasons.has(SKIP_LABEL.tests)) next = "Turn on Include tests or choose different material.";
+  else if (reasons.has(SKIP_LABEL.json)) next = "Use Add files to select the JSON files directly.";
+  else if (reasons.has(SKIP_LABEL.size)) next = "Choose smaller files or split the larger ones.";
+  else if (reasons.has(SKIP_LABEL.failed)) next = failed.length === 1
+    ? `Check that ${failed[0]} opens, or choose different material.`
+    : "Check that you can open the files, or choose different material.";
+  else if (reasons.has(SKIP_LABEL.vendor) || reasons.has(SKIP_LABEL.generated)) next = "Choose the source folder or the original files.";
+  return `${summary}. ${next}`;
+}
 
 export function truncationNotice(fileCount: number): string {
   return `Loaded ${fileCount} files. Some files were skipped due to size limits. For best results, load a service folder (src/) rather than the full repo root.`;
@@ -156,15 +187,22 @@ export function isTestPath(path: string): boolean {
   return /\.(spec|test|e2e)\./.test(p) || /(^|\/)(__tests__|testdata|fixtures|mocks|stories|e2e)(\/|$)/.test(p);
 }
 
-function looksText(bytes: string): boolean {
+function looksText(text: string): boolean {
+  if (text.includes("\0")) return false;
   let weird = 0;
-  const n = Math.min(bytes.length, 800);
+  const n = Math.min(text.length, 800);
   for (let i = 0; i < n; i += 1) {
-    const c = bytes.charCodeAt(i);
-    if (c === 0) return false;
-    if (c < 9 || (c > 13 && c < 32)) weird += 1;
+    const c = text.charCodeAt(i);
+    if (c < 9 || (c > 13 && c < 32) || c === 0xfffd) weird += 1;
   }
   return weird / Math.max(n, 1) < 0.08;
+}
+
+function decodeFileText(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  if (bytes[0] === 0xff && bytes[1] === 0xfe) return new TextDecoder("utf-16le").decode(bytes);
+  if (bytes[0] === 0xfe && bytes[1] === 0xff) return new TextDecoder("utf-16be").decode(bytes);
+  return new TextDecoder("utf-8").decode(bytes);
 }
 
 function scorePath(path: string): number {
@@ -222,16 +260,26 @@ export function isConfigHeavy(paths: string[]): boolean {
 
 export function prunePack(pack: RepoPack): { pack: RepoPack; weak: boolean; dropped: number } {
   const kept = pack.files
-    .filter((f) => !SKIP_DIR.test(f.path) && scorePath(f.path) >= 2)
+    .filter((f) => {
+      // Each first segment within a grouped drop was explicitly selected, not
+      // discovered inside another folder (including names like "build").
+      const pathForRules = f.path.startsWith(GROUPED_DROP_STORAGE_PREFIX)
+        ? dropFirstPathSegment(f.path.slice(GROUPED_DROP_STORAGE_PREFIX.length))
+        : f.path;
+      return !shouldSkipDirectory(pathForRules) && scorePath(pathForRules) >= 2;
+    })
     .sort((a, b) => scorePath(b.path) - scorePath(a.path) || a.path.localeCompare(b.path));
   const dropped = pack.files.length - kept.length;
   const next = kept.length > 0 ? { ...pack, files: kept, description: `Local folder · ${kept.length} files` } : pack;
   return { pack: next, dropped, weak: isConfigHeavy(kept.map((f) => f.path)) };
 }
 
+function dropFirstPathSegment(path: string): string {
+  return path.slice(path.indexOf("/") + 1);
+}
+
 export function repoRelativePath(file: File): string {
-  const rel = relativePath(file);
-  return rel.includes("/") ? rel.split("/").slice(1).join("/") : rel;
+  return dropFirstPathSegment(relativePath(file));
 }
 
 export function folderNameFromList(list: FileList | File[]): string {
@@ -240,58 +288,68 @@ export function folderNameFromList(list: FileList | File[]): string {
   return first.includes("/") ? first.split("/")[0] : "local-repo";
 }
 
-export function pathSkipReason(path: string): string | null {
-  if (!path || SKIP_DIR.test(path)) return SKIP_LABEL.vendor;
-  if (isOfficeLockPath(path) || SKIP_NAME.test(path)) return SKIP_LABEL.lockfiles;
+export function pathSkipReason(path: string, project = true): string | null {
+  const directory = path.slice(0, Math.max(0, path.lastIndexOf("/")));
+  if (!path || shouldSkipDirectory(directory)) return SKIP_LABEL.vendor;
+  if (isOfficeLockPath(path) || SKIP_NAME.test(path) || /\.lock$/i.test(path)) return SKIP_LABEL.lockfiles;
   if (SKIP_EXT.test(path)) return SKIP_LABEL.binaries;
-  if (!ALLOW_EXT.has(extOf(path))) return SKIP_LABEL.types;
+  if (project && GENERATED_EXT.test(path)) return SKIP_LABEL.generated;
+  if (extOf(path) === "pdf") return null;
+  if (!ALLOW_EXT.has(extOf(path)) && !ALLOW_NAME.test(path.split("/").pop() ?? "")) return SKIP_LABEL.types;
   return null;
 }
 
-export function sizeSkipReason(path: string, size: number): string | null {
+export function sizeSkipReason(path: string, size: number, project = true): string | null {
   const ext = extOf(path);
+  if (size === 0) return SKIP_LABEL.empty;
   if (size > (isOfficeExt(ext) ? OFFICE_MAX_FILE_BYTES : MAX_FILE_BYTES)) return SKIP_LABEL.size;
-  if (ext === "json" && size > 12_000 && !/(^|\/)(package\.json|tsconfig.*\.json)$/i.test(path)) return SKIP_LABEL.json;
+  if (project && ext === "json" && size > 12_000 && !/(^|\/)(package\.json|tsconfig.*\.json)$/i.test(path)) return SKIP_LABEL.json;
   return null;
 }
 
-export function scanFileList(list: FileList | File[]): FolderScan {
+export function scanFileList(list: FileList | File[], options?: Pick<FolderLoadOptions, "skipLabels">): FolderScan {
   const files = Array.from(list);
-  const skipLabels = new Set<string>();
+  const skipLabels = new Set(options?.skipLabels);
   const candidates: FolderCandidate[] = [];
+  const pdfs: File[] = [];
   for (const file of files) {
     const path = repoRelativePath(file);
-    const reason = pathSkipReason(path) ?? sizeSkipReason(path, file.size);
-    if (reason) {
-      skipLabels.add(reason);
+    const grouped = groupedDropFiles.has(file);
+    const project = grouped ? path.includes("/") : Boolean(file.webkitRelativePath);
+    const pathForRules = grouped ? dropFirstPathSegment(path) : path;
+    const pathReason = pathSkipReason(pathForRules, project);
+    if ((!pathReason || pathReason === SKIP_LABEL.types) && isPdfFile(file)) {
+      pdfs.push(file);
       continue;
     }
-    candidates.push({ file, path, score: scorePath(path) });
+    const skip = pathReason ?? sizeSkipReason(pathForRules, file.size, project);
+    if (skip) {
+      skipLabels.add(skip);
+      continue;
+    }
+    candidates.push({ file, path, pathForRules, score: scorePath(pathForRules) });
   }
   return {
     selected: files.length,
     folderName: folderNameFromList(files),
     candidates,
+    pdfs,
     skipLabels: [...skipLabels],
+    failed: [],
   };
 }
 
 export function previewScan(scan: FolderScan, options?: FolderLoadOptions): FolderPreview {
   const includeTests = options?.includeTests ?? true;
-  const ranked = [...scan.candidates]
-    .filter((item) => includeTests || !isTestPath(item.path))
-    .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
-  const skipLabels = new Set(scan.skipLabels);
-  if (!includeTests && scan.candidates.some((item) => isTestPath(item.path))) {
-    skipLabels.add(SKIP_LABEL.tests);
-  }
+  const { candidates, skipLabels } = rankedCandidates(scan, includeTests);
+  const keep: FolderCandidate[] = [];
   let total = 0;
   let truncated = false;
-  const keep: FolderCandidate[] = [];
-  for (const item of ranked) {
-    if (keep.length >= MAX_FILES || total + item.file.size > MAX_TOTAL_BYTES) {
+  for (const item of candidates) {
+    const reason = capReason(keep.length, total, item.file.size);
+    if (reason) {
       truncated = true;
-      skipLabels.add(SKIP_LABEL.cap);
+      skipLabels.add(reason);
       continue;
     }
     total += item.file.size;
@@ -301,7 +359,8 @@ export function previewScan(scan: FolderScan, options?: FolderLoadOptions): Fold
     folderName: scan.folderName,
     selected: scan.selected,
     keep: keep.length,
-    skipped: Math.max(0, scan.selected - keep.length),
+    pdfs: scan.pdfs.length,
+    skipped: Math.max(0, scan.selected - scan.pdfs.length - keep.length),
     truncated,
     includeTests,
     skipLabels: [...skipLabels],
@@ -337,13 +396,15 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
   const folderName = handle.name || "local-repo";
   const skipLabels = new Set<string>();
   const candidates: FolderCandidate[] = [];
+  const pdfs: File[] = [];
+  const failed: string[] = [];
   let selected = 0;
 
   async function walk(dir: DirectoryLike, prefix: string): Promise<void> {
     for await (const entry of dir.values()) {
       const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
       if (entry.kind === "directory") {
-        if (SKIP_DIR.test(rel)) {
+        if (shouldSkipDirectory(rel)) {
           skipLabels.add(SKIP_LABEL.vendor);
           selected += await countDirectoryFiles(entry);
           continue;
@@ -353,14 +414,25 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
       }
       selected += 1;
       const pathReason = pathSkipReason(rel);
-      if (pathReason) {
+      if (pathReason && pathReason !== SKIP_LABEL.types) {
         skipLabels.add(pathReason);
         continue;
       }
-      const file = fileWithRelativePath(await entry.getFile(), `${folderName}/${rel}`);
-      const sizeReason = sizeSkipReason(rel, file.size);
-      if (sizeReason) {
-        skipLabels.add(sizeReason);
+      let file: File;
+      try {
+        file = fileWithRelativePath(await entry.getFile(), `${folderName}/${rel}`);
+      } catch {
+        skipLabels.add(SKIP_LABEL.failed);
+        failed.push(entry.name);
+        continue;
+      }
+      if (isPdfFile(file)) {
+        pdfs.push(file);
+        continue;
+      }
+      const reason = pathReason ?? sizeSkipReason(rel, file.size);
+      if (reason) {
+        skipLabels.add(reason);
         continue;
       }
       candidates.push({ file, path: rel, score: scorePath(rel) });
@@ -368,45 +440,63 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
   }
 
   await walk(handle, "");
-  return { selected, folderName, candidates, skipLabels: [...skipLabels] };
+  return { selected, folderName, candidates, pdfs, skipLabels: [...skipLabels], failed };
+}
+
+function capReason(count: number, totalBytes: number, nextBytes: number): string | null {
+  if (count >= MAX_FILES) return SKIP_LABEL.cap;
+  if (totalBytes + nextBytes > MAX_TOTAL_BYTES) return SKIP_LABEL.total;
+  return null;
+}
+
+function rankedCandidates(scan: FolderScan, includeTests: boolean): { candidates: FolderCandidate[]; skipLabels: Set<string> } {
+  const candidates = [...scan.candidates]
+    .filter((item) => includeTests || !isTestPath(item.pathForRules ?? item.path))
+    .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
+  const skipLabels = new Set(scan.skipLabels);
+  if (!includeTests && candidates.length < scan.candidates.length) skipLabels.add(SKIP_LABEL.tests);
+  return { candidates, skipLabels };
 }
 
 export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions): Promise<FolderLoad> {
-  const includeTests = options?.includeTests ?? true;
+  const { candidates, skipLabels } = rankedCandidates(scan, options?.includeTests ?? true);
+  for (const label of options?.skipLabels ?? []) skipLabels.add(label);
   const selected = options?.selectedCount ?? scan.selected;
-  const candidates = [...scan.candidates]
-    .filter((item) => includeTests || !isTestPath(item.path))
-    .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
-
   const packFiles: RepoFile[] = [];
-  const failed: string[] = [];
+  const failed = [...scan.failed];
   let total = 0;
   let truncated = false;
   for (const item of candidates) {
-    if (packFiles.length >= MAX_FILES) {
+    const reason = capReason(packFiles.length, total, item.file.size);
+    if (reason) {
       truncated = true;
+      skipLabels.add(reason);
       continue;
     }
-    if (total + item.file.size > MAX_TOTAL_BYTES) {
-      truncated = true;
-      continue;
-    }
-    if (isOfficeLockName(item.path)) continue;
     const ext = extOf(item.path);
     let content = "";
     try {
-      if (isOfficeExt(ext)) {
-        content = await parseOfficeBuffer(ext, await item.file.arrayBuffer());
+      const buffer = await item.file.arrayBuffer();
+      if (isOfficeExt(ext) && ext !== "csv") {
+        content = await parseOfficeBuffer(ext, buffer);
       } else {
-        content = await item.file.text();
-        if (!looksText(content)) continue;
+        content = decodeFileText(buffer);
+        if (!looksText(content)) {
+          skipLabels.add(SKIP_LABEL.binaries);
+          continue;
+        }
+        if (ext === "csv") content = parseCsvText(content);
       }
     } catch (error) {
       console.warn(`Could not read ${item.path}`, error);
       failed.push(item.path.split("/").pop() ?? item.path);
+      skipLabels.add(SKIP_LABEL.failed);
       continue;
     }
-    if (!content.trim()) continue;
+    if (!content.trim()) {
+      skipLabels.add(SKIP_LABEL.empty);
+      continue;
+    }
     total += item.file.size;
     packFiles.push({ path: item.path, language: langOf(item.path), content });
   }
@@ -419,9 +509,11 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
       files: packFiles,
       commits: [],
     },
-    skipped: Math.max(0, selected - packFiles.length),
+    selected,
+    skipped: Math.max(0, selected - scan.pdfs.length - packFiles.length),
     truncated,
     failed,
+    skipLabels: [...skipLabels],
   };
 }
 

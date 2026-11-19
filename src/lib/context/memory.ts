@@ -158,6 +158,22 @@ export function createMemoryRepository(): MemoryRepository {
       return finishWrite(contextId, existing, now);
     },
 
+    async deleteSources(contextId, ids) {
+      const existing = contexts.get(contextId);
+      if (!existing) throw new ContextNotFoundError(contextId);
+      const drop = new Set(ids.filter((id) => sources.get(id)?.contextId === contextId));
+      if (drop.size === 0) return sourcesFor(contextId);
+      for (const id of drop) sources.delete(id);
+      dropIndexed(contextId, [...drop]);
+      for (const [key, row] of blobs) {
+        if (row.contextId === contextId && drop.has(row.sourceId)) blobs.delete(key);
+      }
+      for (const [key, row] of documents) {
+        if (row.contextId === contextId && drop.has(row.document.sourceId)) documents.delete(key);
+      }
+      return finishWrite(contextId, existing, Date.now());
+    },
+
     async upsertSources(contextId, drafts: UpsertDraft[]) {
       const existing = contexts.get(contextId);
       if (!existing) throw new ContextNotFoundError(contextId);

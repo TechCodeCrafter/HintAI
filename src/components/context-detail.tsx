@@ -1,10 +1,17 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { FolderGit2, Trash2 } from "lucide-react";
+import { FolderGit2, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import {
+  combineAddOutcomes,
+  describeAddStep,
+  marksFromSources,
+  type AddOutcome,
+} from "@/components/add-material-outcome";
 import { ContextShell } from "@/components/context-shell";
 import { MaterialUploadPanel } from "@/components/material-upload-panel";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
+import type { FolderLoadOptions } from "@/lib/repo/folder";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MetricCard } from "@/components/ui/metric-card";
@@ -86,6 +93,8 @@ export function ContextDetail({ id }: { id: string }) {
   const [status, setStatus] = useState<"ready" | "indexing" | "error">("ready");
   const [missing, setMissing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [notice, setNotice] = useState<AddOutcome | null>(null);
 
   const { ready: vaultReady } = useAccountVaultReady();
   const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
@@ -106,14 +115,14 @@ export function ContextDetail({ id }: { id: string }) {
     return { repoCount: repoIds.size, docCount: sources.filter(isPdfSource).length };
   }, [sources]);
 
-  async function load() {
+  async function load(): Promise<StoredSource[] | null> {
     const repo = getContextRepository();
     let record = await repo.getSpace(id);
     if (!record) {
       const context = await repo.getContext(id);
       if (!context) {
         setMissing(true);
-        return;
+        return null;
       }
       record =
         (await repo.getSpace(context.id)) ??
@@ -137,20 +146,90 @@ export function ContextDetail({ id }: { id: string }) {
     setSources(memberSources);
     setStatus(nextStatus);
     persistActiveSpaceId(record.id);
+    return memberSources;
   }
 
-  async function ingestFiles(files: File[]) {
-    await attachFolderToContext(primaryContextId, files);
-    await load();
-  }
-
-  async function ingestPdfs(files: File[]) {
-    const state = useMeetHint.getState();
-    if (space && state.activeContextId !== primaryContextId) {
-      await state.activateSpace(space.id);
+  /**
+   * Runs one add step and judges it by what changed in this space's stored
+   * sources. The store's `contextStatus` stays "ready" after a failed add to a
+   * space that already has material, so it cannot tell success from failure;
+   * `folderError` is the store's only failure signal and is read right after
+   * the step, before a later step can overwrite it.
+   */
+  async function runStep(kind: "files" | "pdfs", before: StoredSource[], action: () => Promise<unknown>) {
+    const contextErrorBefore = useMeetHint.getState().contextError;
+    let threw = false;
+    try {
+      await action();
+    } catch {
+      threw = true;
     }
-    await addPdfFiles(files);
-    await load();
+    const state = useMeetHint.getState();
+    const folderError = state.folderError;
+    const contextError = state.contextError !== contextErrorBefore ? state.contextError : null;
+    const after = (await load().catch(() => null)) ?? before;
+    return {
+      after,
+      outcome: describeAddStep({
+        kind,
+        before: marksFromSources(before),
+        after: marksFromSources(after),
+        folderError,
+        contextError,
+        threw,
+      }),
+    };
+  }
+
+  async function addFilesStep(files: File[], before: StoredSource[], options?: FolderLoadOptions) {
+    return runStep("files", before, () => attachFolderToContext(primaryContextId, files, options));
+  }
+
+  async function addPdfStep(files: File[], before: StoredSource[]) {
+    return runStep("pdfs", before, async () => {
+      const state = useMeetHint.getState();
+      if (space && state.activeContextId !== primaryContextId) {
+        await state.activateSpace(space.id);
+      }
+      // addPdfFiles targets whichever space is active. If this one could not be
+      // opened, stop rather than add the PDFs to a different space.
+      if (useMeetHint.getState().activeContextId !== primaryContextId) {
+        useMeetHint.setState({ folderError: "Could not open this Knowledge Space. Reload the page and try again." });
+        return;
+      }
+      // Clear any earlier note (e.g. "no sources yet") so only this step's result is read.
+      useMeetHint.setState({ folderError: null });
+      await addPdfFiles(files);
+    });
+  }
+
+  async function addMaterial(files: File[], pdfs: File[], options?: FolderLoadOptions) {
+    if (adding || (files.length === 0 && pdfs.length === 0)) return;
+    setAdding(true);
+    setNotice(null);
+    const outcomes: AddOutcome[] = [];
+    try {
+      let current = sources;
+      if (files.length > 0) {
+        const step = await addFilesStep(files, current, options);
+        outcomes.push(step.outcome);
+        current = step.after;
+      }
+      if (pdfs.length > 0) {
+        const step = await addPdfStep(pdfs, current);
+        outcomes.push(step.outcome);
+        current = step.after;
+      }
+      const combined = combineAddOutcomes(outcomes);
+      if (combined?.tone === "ok") {
+        const count = rowsFromSources(current).reduce((sum, row) => sum + row.fileCount, 0);
+        setNotice({ tone: "ok", text: `Material added. ${count} file${count === 1 ? "" : "s"} in this space.` });
+      } else {
+        setNotice(combined);
+      }
+    } finally {
+      setAdding(false);
+    }
   }
 
   useEffect(() => {
@@ -229,11 +308,43 @@ export function ContextDetail({ id }: { id: string }) {
         </div>
 
         <MaterialUploadPanel
+          disabled={adding}
           folderReading={folderPicker.reading}
           onFolderClick={() => void folderPicker.offerFolder()}
-          onFiles={(files) => ingestFiles(files)}
-          onPdfs={(files) => ingestPdfs(files)}
+          onFiles={(files) => addMaterial(files, [])}
+          onPdfs={(files) => addMaterial([], files)}
+          onAdd={(files, pdfs) => addMaterial(files, pdfs)}
+          onFolderDrop={(files, detail) => folderPicker.acceptList(files, detail)}
         />
+
+        {adding ? (
+          <p role="status" data-testid="space-adding" className="text-sm text-muted">
+            Adding material…
+          </p>
+        ) : notice ? (
+          <div
+            role={notice.tone === "error" ? "alert" : "status"}
+            data-testid="space-add-notice"
+            data-tone={notice.tone}
+            className={
+              notice.tone === "ok"
+                ? "flex items-start justify-between gap-3 rounded-md border border-line px-4 py-3 text-sm text-fg"
+                : notice.tone === "warn"
+                  ? "flex items-start justify-between gap-3 rounded-md border border-warn/50 bg-warn/10 px-4 py-3 text-sm text-fg"
+                  : "flex items-start justify-between gap-3 rounded-md border border-bad/50 bg-bad/10 px-4 py-3 text-sm text-fg"
+            }
+          >
+            <p>{notice.text}</p>
+            <button
+              type="button"
+              aria-label="Dismiss"
+              className="shrink-0 text-muted hover:text-fg"
+              onClick={() => setNotice(null)}
+            >
+              <X className="size-4" aria-hidden />
+            </button>
+          </div>
+        ) : null}
 
         <div className="ds-metric-grid">
           <MetricCard label="Total files" value={totalFiles} detail="Indexed on this device" />
@@ -241,7 +352,15 @@ export function ContextDetail({ id }: { id: string }) {
           <MetricCard
             label="Status"
             value={spaceStatusLabel(status)}
-            detail={status === "ready" ? "All sources indexed" : "Indexing in progress"}
+            detail={
+              status === "ready"
+                ? sourceRows.length > 0
+                  ? "All sources indexed"
+                  : "Nothing indexed yet"
+                : status === "indexing"
+                  ? "Indexing in progress"
+                  : "Some material could not be indexed"
+            }
           />
           <MetricCard
             label="Last updated"
@@ -347,8 +466,8 @@ export function ContextDetail({ id }: { id: string }) {
 
         <FolderPickerFields
           picker={folderPicker}
-          onIndex={(files, options) => {
-            void attachFolderToContext(primaryContextId, files, options).then(() => load());
+          onIndex={(files: File[], options: FolderLoadOptions, pdfs?: File[]) => {
+            void addMaterial(files, pdfs ?? [], options);
           }}
         />
       </main>

@@ -36,6 +36,12 @@ import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { ClaimMonitor } from "@/components/claim-monitor";
 import { ModelPicker } from "@/components/ModelPicker";
 import { UpgradeModal } from "@/components/UpgradeModal";
+import {
+  combineAddOutcomes,
+  describeAddStep,
+  marksFromSources,
+  type AddOutcome,
+} from "@/components/add-material-outcome";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
 import { MeetHintMark } from "@/components/meethint-mark";
@@ -68,7 +74,7 @@ import { inferProductStateFromReason, productState } from "@/lib/product-states"
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
-import { isConfigHeavy } from "@/lib/repo/folder";
+import { isConfigHeavy, type FolderLoadOptions } from "@/lib/repo/folder";
 
 type MobilePane = "repo" | "room" | "card";
 
@@ -91,12 +97,8 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const setOverlay = useMeetHint((s) => s.setOverlay);
   const autoAnswer = useMeetHint((s) => s.autoAnswer);
   const setAutoAnswer = useMeetHint((s) => s.setAutoAnswer);
-  const loadFolder = useMeetHint((s) => s.loadFolder);
-  const attachFolderToContext = useMeetHint((s) => s.attachFolderToContext);
   const activeSpaceId = useMeetHint((s) => s.activeSpaceId);
-  const activeContextId = useMeetHint((s) => s.activeContextId);
   const authorizedSourceIds = useMeetHint((s) => s.authorizedSourceIds);
-  const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const contextError = useMeetHint((s) => s.contextError);
   const contextUpdating = useMeetHint((s) => s.contextUpdating);
@@ -120,6 +122,13 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const [keysOpen, setKeysOpen] = useState(false);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
+  const [adding, setAdding] = useState(false);
+  // Until boot finishes, the store may still hold the demo pack or the last
+  // space, so an add would land in the wrong place.
+  const [booted, setBooted] = useState(false);
+  const [addNotice, setAddNotice] = useState<AddOutcome | null>(null);
+  /** Which menu opened the folder picker: Add material adds to this space, Open new folder makes one. */
+  const folderIntent = useRef<"add" | "new">("add");
   const live = (armed && !playing && !listenError) || sharingCall;
   // Deliberately does NOT read `s.liveDraft`. That value is rewritten on every
   // interim caption (`speech.ts:103`) and oscillates between "" and partial text
@@ -146,7 +155,78 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
       : contextUpdating
         ? "Updating…"
         : null;
-  const statusNote = contextError ?? ingestNote ?? (folderError && !listenError ? folderError : null);
+  // While an add-material notice is up it already carries folderError, in a
+  // banner that is visible at every width; the header note only shows at xl.
+  const statusNote =
+    contextError ?? ingestNote ?? (folderError && !listenError && !addNotice && !adding ? folderError : null);
+
+  useEffect(() => {
+    if (addNotice?.tone !== "ok") return;
+    const timer = window.setTimeout(() => setAddNotice(null), 6000);
+    return () => window.clearTimeout(timer);
+  }, [addNotice]);
+
+  /**
+   * One add, judged by what changed in the active space's sources, not by
+   * `contextStatus`: after a failed add the store leaves the space "ready"
+   * with its material and reports the failure only in `folderError`.
+   */
+  async function runAddStep(kind: "files" | "pdfs", action: () => Promise<unknown>): Promise<AddOutcome> {
+    const before = useMeetHint.getState();
+    let threw = false;
+    try {
+      await action();
+    } catch {
+      threw = true;
+    }
+    const after = useMeetHint.getState();
+    return describeAddStep({
+      kind,
+      before: marksFromSources(before.sources),
+      after: marksFromSources(after.sources),
+      folderError: after.folderError,
+      contextError: after.contextError !== before.contextError ? after.contextError : null,
+      threw,
+    });
+  }
+
+  async function addMaterial(
+    files: File[],
+    pdfs: File[],
+    options: { intent: "add" | "new"; folder?: FolderLoadOptions },
+  ) {
+    if (adding || !booted || (files.length === 0 && pdfs.length === 0)) return;
+    setAdding(true);
+    setAddNotice(null);
+    const outcomes: AddOutcome[] = [];
+    try {
+      const state = useMeetHint.getState();
+      // The demo pack is not a stored space; adding to it starts a real one.
+      const target = state.pack.id === "northstar-payments" ? null : state.activeContextId;
+      const newSpace = options.intent === "new" || !target;
+      let filesOk = false;
+      if (files.length > 0) {
+        const outcome = await runAddStep("files", async () => {
+          const result = newSpace
+            ? await state.loadFolder(files, options.folder)
+            : await state.attachFolderToContext(target!, files, options.folder);
+          filesOk = result.ok;
+        });
+        outcomes.push(outcome);
+      }
+      if (pdfs.length > 0) {
+        // After a new folder loaded, its space is active, so the folder's PDFs
+        // join it. If the folder's files failed, the old space is still active;
+        // the PDFs then start their own space rather than land in that one.
+        const pdfNewSpace = newSpace && !filesOk;
+        useMeetHint.setState({ folderError: null });
+        outcomes.push(await runAddStep("pdfs", () => useMeetHint.getState().addPdfFiles(pdfs, { newSpace: pdfNewSpace })));
+      }
+      setAddNotice(combineAddOutcomes(outcomes));
+    } finally {
+      setAdding(false);
+    }
+  }
 
   useLiveListen();
 
@@ -160,7 +240,8 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
     const params = new URLSearchParams(window.location.search);
     if (params.get("overlay") === "1") setOverlay(true);
     if (!vaultReady) return;
-    void useMeetHint.getState().boot(spaceId).then(() => {
+    setBooted(false);
+    void useMeetHint.getState().boot(spaceId).finally(() => setBooted(true)).then(() => {
       if (params.get("viewerqa") === "1") {
         void import("@/lib/document/viewer/qa-boot").then((mod) => mod.bootCockpitViewerQa());
       }
@@ -245,6 +326,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
       data-space-id={activeSpaceId ?? undefined}
       data-source-count={authorizedSourceIds.length || undefined}
       data-context-updating={contextUpdating ? "true" : undefined}
+      data-booted={booted ? "true" : undefined}
     >
       <header className="cockpit-glass-bar shrink-0 px-5 md:px-8">
         <div className="cockpit-header">
@@ -366,8 +448,21 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             ) : null}
           </div>
           <div className="cockpit-pack">
-            <SpaceSwitcher onOpenFolder={() => void folderPicker.offerFolder()} />
-            <AddMaterial onOpenFolder={() => void folderPicker.offerFolder()} filesRef={filesRef} pdfRef={pdfRef} />
+            <SpaceSwitcher
+              onOpenFolder={() => {
+                folderIntent.current = "new";
+                void folderPicker.offerFolder();
+              }}
+            />
+            <AddMaterial
+              busy={adding || !booted || folderPicker.reading}
+              onOpenFolder={() => {
+                folderIntent.current = "add";
+                void folderPicker.offerFolder();
+              }}
+              filesRef={filesRef}
+              pdfRef={pdfRef}
+            />
             <div className="cockpit-utils">
               <UtilityLinks
                 overlay={overlay}
@@ -391,8 +486,8 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
           </div>
           <FolderPickerFields
             picker={folderPicker}
-            onIndex={(files, options) => {
-              void loadFolder(files, options);
+            onIndex={(files: File[], options: FolderLoadOptions, pdfs?: File[]) => {
+              void addMaterial(files, pdfs ?? [], { intent: folderIntent.current, folder: options });
             }}
           />
           <input
@@ -408,9 +503,9 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             onChange={(e) => {
               const files = e.target.files;
               if (!files || files.length === 0) return;
-              if (activeContextId) void attachFolderToContext(activeContextId, files);
-              else void loadFolder(files);
+              const list = [...files];
               e.target.value = "";
+              void addMaterial(list, [], { intent: "add" });
             }}
           />
           <input
@@ -425,8 +520,10 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             suppressHydrationWarning
             onChange={(e) => {
               const files = e.target.files;
-              if (files && files.length > 0) void addPdfFiles(files);
+              if (!files || files.length === 0) return;
+              const list = [...files];
               e.target.value = "";
+              void addMaterial([], list, { intent: "add" });
             }}
           />
         </div>
@@ -442,6 +539,37 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             type="button"
             className="shrink-0 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
             onClick={dismissPackNotice}
+          >
+            Dismiss
+          </button>
+        </div>
+      ) : null}
+
+      {adding ? (
+        <div
+          role="status"
+          data-testid="add-material-busy"
+          className="border-b border-line px-4 py-3 text-sm text-body md:px-8"
+        >
+          Adding material…
+        </div>
+      ) : addNotice ? (
+        <div
+          role={addNotice.tone === "error" ? "alert" : "status"}
+          data-testid="add-material-notice"
+          data-tone={addNotice.tone}
+          className={cn(
+            "flex items-start justify-between gap-3 border-b px-4 py-3 text-sm text-fg md:px-8",
+            addNotice.tone === "ok" && "border-line",
+            addNotice.tone === "warn" && "border-warn/40 bg-warn/10",
+            addNotice.tone === "error" && "border-bad/40 bg-bad/10",
+          )}
+        >
+          <p>{addNotice.text}</p>
+          <button
+            type="button"
+            className="shrink-0 text-xs text-body underline-offset-4 hover:text-fg hover:underline"
+            onClick={() => setAddNotice(null)}
           >
             Dismiss
           </button>
@@ -557,10 +685,12 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
 }
 
 function AddMaterial({
+  busy,
   onOpenFolder,
   filesRef,
   pdfRef,
 }: {
+  busy: boolean;
   onOpenFolder: () => void;
   filesRef: RefObject<HTMLInputElement | null>;
   pdfRef: RefObject<HTMLInputElement | null>;
@@ -589,9 +719,10 @@ function AddMaterial({
       <Button
         variant="quiet"
         size="sm"
-        aria-label="Add material"
+        aria-label={busy ? "Adding material" : "Add material"}
         aria-haspopup="menu"
         aria-expanded={open}
+        disabled={busy}
         data-add-material="true"
         onClick={() => setOpen((value) => !value)}
       >
@@ -649,6 +780,7 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
   const pack = useMeetHint((s) => s.pack);
   const activeSpaceId = useMeetHint((s) => s.activeSpaceId);
   const authorizedSourceIds = useMeetHint((s) => s.authorizedSourceIds);
+  const storedSourceCount = useMeetHint((s) => s.sources.length);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const loadingFolder = useMeetHint((s) => s.loadingFolder);
   const activateSpace = useMeetHint((s) => s.activateSpace);
@@ -660,10 +792,11 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
   const [removeId, setRemoveId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const hydrating = contextStatus === "booting" || contextStatus === "hydrating" || loadingFolder;
-  const sourceNote =
-    authorizedSourceIds.length > 0
-      ? `${authorizedSourceIds.length} source${authorizedSourceIds.length === 1 ? "" : "s"}`
-      : null;
+  // Files added together share one retrieval id, so counting those ids showed
+  // "2 sources" for a space every other screen called three. Stored rows are
+  // what the person added; the demo pack has none and keeps the id count.
+  const sourceCount = storedSourceCount || authorizedSourceIds.length;
+  const sourceNote = sourceCount > 0 ? `${sourceCount} source${sourceCount === 1 ? "" : "s"}` : null;
   const label = hydrating ? "Loading…" : sourceNote ? `${pack.name} · ${sourceNote}` : pack.name;
 
   useEffect(() => {

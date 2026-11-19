@@ -47,7 +47,7 @@ export async function parseXlsx(arrayBuffer: ArrayBuffer): Promise<string> {
   const bytes = new Uint8Array(arrayBuffer);
   const isZip = bytes.length >= 2 && bytes[0] === 0x50 && bytes[1] === 0x4b;
   if (!isZip) {
-    return formatSpreadsheetRows(splitCsvRows(new TextDecoder().decode(bytes)));
+    return parseCsvText(new TextDecoder().decode(bytes));
   }
   // Node (tests/SSR) has no DOMParser, which the read-excel-file browser
   // build needs — and its /node entry drags fs/stream/unzipper into the
@@ -64,6 +64,10 @@ export async function parseXlsx(arrayBuffer: ArrayBuffer): Promise<string> {
     parts.push(`--- Sheet: ${sheetName} ---`, formatSpreadsheetRows(rows));
   }
   return parts.join("\n");
+}
+
+export function parseCsvText(text: string): string {
+  return formatSpreadsheetRows(splitCsvRows(text));
 }
 
 /** Quote-aware CSV split: commas inside "quoted" cells are not separators. */
@@ -320,7 +324,11 @@ export async function parsePowerPointBuffer(arrayBuffer: ArrayBuffer): Promise<s
 export async function parseOfficeBuffer(ext: string, arrayBuffer: ArrayBuffer): Promise<string> {
   const kind = ext.toLowerCase();
   if (kind === "docx") return parseDocx(arrayBuffer);
-  if (kind === "xlsx" || kind === "csv") return await parseXlsx(arrayBuffer);
+  if (kind === "xlsx") {
+    if (!isZipArchive(new Uint8Array(arrayBuffer))) throw new Error("Invalid XLSX archive");
+    return parseXlsx(arrayBuffer);
+  }
+  if (kind === "csv") return parseXlsx(arrayBuffer);
   if (kind === "ppt" || kind === "pptx") return parsePowerPointBuffer(arrayBuffer);
   throw new Error(`Unsupported office type: .${kind}`);
 }

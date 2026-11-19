@@ -35,6 +35,11 @@ export type ContextRepository = {
   /** Add or update one repo bundle without removing other bundles in the context. */
   upsertRepoBundle(contextId: string, bundle: RepoBundleInput): Promise<StoredSource[]>;
   upsertSources(contextId: string, drafts: UpsertDraft[]): Promise<StoredSource[]>;
+  /**
+   * Remove single source rows with their indexed chunks, blobs, and parsed
+   * documents, and recount the context. Unknown ids are ignored.
+   */
+  deleteSources(contextId: string, ids: string[]): Promise<StoredSource[]>;
   listSources(contextId: string): Promise<StoredSource[]>;
   countSources(contextId: string): Promise<number>;
   deleteContext(id: string): Promise<void>;

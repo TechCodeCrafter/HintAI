@@ -405,6 +405,31 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
       return loadSources(contextId);
     },
 
+    async deleteSources(contextId, ids) {
+      await db.transaction("rw", contextStoreNames, async () => {
+        const existing = await db.contexts.get(contextId);
+        if (!existing) throw new ContextNotFoundError(contextId);
+        const rows = await db.sources.bulkGet(ids);
+        const drop = rows.filter((row): row is SourceRow => row?.contextId === contextId).map((row) => row.id);
+        if (drop.length === 0) return;
+        await deleteIndexed(contextId, drop);
+        for (const sourceId of drop) {
+          await db.sourceBlobs.where("[contextId+sourceId]").equals([contextId, sourceId]).delete();
+          const docs = await db.normalizedDocuments.where("sourceId").equals(sourceId).toArray();
+          for (const doc of docs) if (doc.contextId === contextId) await db.normalizedDocuments.delete(doc.id);
+        }
+        await db.sources.bulkDelete(drop);
+        const remaining = await db.sources.where("contextId").equals(contextId).toArray();
+        await db.contexts.put({
+          ...existing,
+          sourceCount: remaining.length,
+          status: contextStatusFor(remaining as StoredSource[]),
+          updatedAt: Date.now(),
+        });
+      });
+      return loadSources(contextId);
+    },
+
     async upsertSources(contextId, drafts: UpsertDraft[]) {
       const existing = await db.contexts.get(contextId);
       if (!existing) throw new ContextNotFoundError(contextId);

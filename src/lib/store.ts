@@ -80,7 +80,15 @@ import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
 import { recordAnswerFlight } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
-import { officeReadError, packFromFiles, truncationNotice, type FolderLoadOptions } from "@/lib/repo/folder";
+import {
+  emptySelectionMessage,
+  officeReadError,
+  packFromFiles,
+  SKIP_LABEL,
+  truncationNotice,
+  type FolderLoad,
+  type FolderLoadOptions,
+} from "@/lib/repo/folder";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
@@ -130,6 +138,20 @@ function packWarning(weak: boolean, files: number): string | null {
   return weak && files > 0 ? WEAK_PACK : null;
 }
 
+function endFolderLoad(token: number, patch: Partial<MeetHintState> = {}) {
+  if (token !== folderLoadSeq) return;
+  useMeetHint.setState({ loadingFolder: false, ...patch });
+}
+
+/** Why a selection produced nothing to index, in words the person can act on. */
+function emptyLoadError(load: FolderLoad): string {
+  // Name the files only when failing to open was the whole story; with other
+  // reasons in the mix, one unreadable file must not hide the rest.
+  const onlyFailures = load.skipLabels.every((label) => label === SKIP_LABEL.failed);
+  const named = load.failed.length > 0 && onlyFailures ? officeReadError(load.failed) : null;
+  return named ?? emptySelectionMessage(load);
+}
+
 function noticesFromFolderLoad(args: {
   failed: string[];
   skipped: number;
@@ -144,7 +166,7 @@ function noticesFromFolderLoad(args: {
       (args.weak
         ? WEAK_PACK
         : args.skipped && !args.truncated
-          ? `Skipped ${args.skipped} files that are not source or text.`
+          ? `Skipped ${args.skipped} ${args.skipped === 1 ? "file that is" : "files that are"} not source or text.`
           : null),
     packNotice: args.truncated ? truncationNotice(args.fileCount) : null,
   };
@@ -155,6 +177,12 @@ if (typeof window !== "undefined" && !authEnabled) {
 }
 
 export type { SubscriptionTier };
+
+/**
+ * How adding files ended. `ok` is false when nothing was indexed, in which
+ * case the store is left exactly as it was apart from `folderError`.
+ */
+export type IngestResult = { ok: boolean; contextId: string | null };
 
 type MeetHintState = {
   pack: RepoPack;
@@ -236,7 +264,11 @@ type MeetHintState = {
   /** Compatibility — resolves the member space and activates it. */
   activateContext: (contextId: string) => Promise<void>;
   createNamedContext: (input: CreateContextInput) => Promise<string>;
-  attachFolderToContext: (contextId: string, list: FileList | File[], options?: FolderLoadOptions) => Promise<void>;
+  attachFolderToContext: (
+    contextId: string,
+    list: FileList | File[],
+    options?: FolderLoadOptions,
+  ) => Promise<IngestResult>;
   deleteStoredContext: (id: string) => Promise<void>;
   refreshContexts: () => Promise<void>;
   hydratePack: (pack: RepoPack) => void;
@@ -252,8 +284,14 @@ type MeetHintState = {
   heard: (event: HeardEvent) => void;
   clearThem: () => void;
   lastWindow: (ms?: number) => string;
-  loadFolder: (list: FileList | File[], options?: FolderLoadOptions) => Promise<void>;
-  addPdfFiles: (list: FileList | File[]) => Promise<void>;
+  loadFolder: (list: FileList | File[], options?: FolderLoadOptions) => Promise<IngestResult>;
+  /** `newSpace` puts the PDFs in a space of their own instead of the active one. */
+  addPdfFiles: (list: FileList | File[], options?: { newSpace?: boolean }) => Promise<void>;
+  /**
+   * Remove single sources from a context, with their indexed chunks. If the
+   * context belongs to the active space, its material is reloaded.
+   */
+  removeSources: (contextId: string, ids: string[]) => Promise<void>;
   setPackExclusions: (patterns: string[]) => Promise<void>;
   includeAllSourcesInSearch: () => Promise<void>;
   togglePackExclusion: (path: string) => Promise<void>;
@@ -278,6 +316,9 @@ type MeetHintState = {
 const playTimeouts: number[] = [];
 let searchEpoch = 0;
 let hydrationEpoch = 0;
+// Only the most recent folder load may clear the busy flag, so a load that
+// was superseded can neither leave it stuck on nor switch off a newer one's.
+let folderLoadSeq = 0;
 const contextWriteLocks = new Map<string, Promise<unknown>>();
 
 function withContextWrite<T>(contextId: string, work: () => Promise<T>): Promise<T> {
@@ -707,6 +748,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const context = await repo.createContext(input);
     persistActiveSpaceId(context.id);
     const contexts = await listStoredContexts();
+    // A new space starts empty. Leaving the previous pack loaded under the new
+    // id made the create screen count its spans and let Search answer from it.
+    nextHydrationEpoch();
+    folderLoadSeq += 1;
+    searchEpoch += 1;
     set({
       contexts,
       activeSpaceId: context.id,
@@ -714,6 +760,25 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       memberContextIds: [context.id],
       authorizedSourceIds: [],
       sources: [],
+      pack: {
+        id: context.id,
+        name: context.name,
+        description: context.description ?? "No sources yet",
+        files: [],
+        commits: [],
+      },
+      chunks: [],
+      vocab: new Set(),
+      folderError: null,
+      packNotice: null,
+      contextError: null,
+      contextUpdating: false,
+      // Any load this replaced was cancelled by the new epoch, so the flags
+      // it would have cleared are settled here.
+      contextStatus: "ready",
+      loadingFolder: false,
+      hydrationEpoch,
+      ...clearSessionOnSwitch(),
     });
     recordBetaEventOnce("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
     recordBetaEvent("SPACE_CREATED", { workspaceId: currentWorkspaceId() ?? defaultWorkspaceId(), spaceId: context.id });
@@ -721,45 +786,68 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     return context.id;
   },
   attachFolderToContext: async (contextId, list, options) => {
+    // Read first. Until there is something to index, nothing about the active
+    // space, its material or the session changes, so a selection with no
+    // readable files cannot blank a space or pass for a finished index.
+    const none: IngestResult = { ok: false, contextId: null };
+    const token = ++folderLoadSeq;
+    const startedAt = hydrationEpoch;
+    set({ loadingFolder: true, folderError: null, packNotice: null });
+    let load: FolderLoad;
+    try {
+      load = await packFromFiles(list, options);
+    } catch {
+      endFolderLoad(token, { folderError: "Could not read those files. Nothing was added." });
+      return none;
+    }
+    // Another space, or another account, was opened while the files were
+    // being read. That request wins; this one is dropped without a trace.
+    if (startedAt !== hydrationEpoch) {
+      endFolderLoad(token);
+      return none;
+    }
+    const { pack: raw, skipped, truncated, failed } = load;
+    if (raw.files.length === 0) {
+      endFolderLoad(token, { folderError: emptyLoadError(load), packNotice: null });
+      return none;
+    }
+    const before = get();
+    const sameSpace = before.activeContextId === contextId;
+    const keepsMaterial = sameSpace && before.contextStatus === "ready" && before.sources.length > 0;
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
-      loadingFolder: true,
-      folderError: null,
-      packNotice: null,
       contextStatus: "hydrating",
       contextError: null,
       hydrationEpoch: epoch,
       activeContextId: contextId,
       activeSpaceId: contextId,
-      ...clearSessionOnSwitch(),
+      // Adding to the space already in use keeps the answer on screen and
+      // the history; only moving to another space starts a clean session.
+      ...(sameSpace ? { ingestProgress: null } : clearSessionOnSwitch()),
     });
     persistActiveSpaceId(contextId);
     try {
-      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list, options);
-      if (raw.files.length === 0) {
-        if (epoch !== hydrationEpoch) return;
-        set({
-          loadingFolder: false,
-          contextStatus: "ready",
-          folderError: failed.length
-            ? officeReadError(failed)
-            : "No readable source files in that selection. Pick source, markdown, text, or office files.",
-          packNotice: null,
-        });
-        return;
-      }
       const repo = getContextRepository();
       const { context } = await persistPackAsContext(raw, repo, { contextId });
-      if (epoch !== hydrationEpoch) return;
+      if (epoch !== hydrationEpoch) {
+        endFolderLoad(token);
+        return none;
+      }
       const space = await resolveSpaceForActivation(repo, context.id);
       const hydrated = await indexSpace(repo, space.id, {
         isCancelled: () => epoch !== hydrationEpoch,
       });
-      if (epoch !== hydrationEpoch || hydrated.cancelled) return;
+      if (epoch !== hydrationEpoch || hydrated.cancelled) {
+        endFolderLoad(token);
+        return none;
+      }
       persistActiveSpaceId(space.id);
       const contexts = await listStoredContexts();
-      if (epoch !== hydrationEpoch) return;
+      if (epoch !== hydrationEpoch) {
+        endFolderLoad(token);
+        return none;
+      }
       set({
         contexts,
         ...patchFromSpaceRuntime(space, hydrated),
@@ -781,13 +869,20 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       recordBetaEventOnce("INDEX_READY", { workspaceId: ws, spaceId: space.id });
       recordBetaEvent("INDEX_READY", { workspaceId: ws, spaceId: space.id });
       bumpSpaceCatalog();
+      return { ok: true, contextId: context.id };
     } catch {
-      if (epoch !== hydrationEpoch) return;
+      if (epoch !== hydrationEpoch) {
+        endFolderLoad(token);
+        return none;
+      }
+      // Material that was already loaded and searchable still is.
       set({
         loadingFolder: false,
-        contextStatus: "error",
-        contextError: "Could not save that material.",
-        folderError: "Could not read those files.",
+        contextStatus: keepsMaterial ? "ready" : "error",
+        contextError: keepsMaterial ? null : "Could not save that material.",
+        folderError: keepsMaterial
+          ? "Could not save that material. Your existing material is unchanged."
+          : "Could not save that material.",
         packNotice: null,
       });
       recordBetaEvent("SOURCE_CONNECTED", {
@@ -795,6 +890,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         spaceId: contextId,
         meta: { errorCode: "source-index-failure" },
       });
+      return none;
     }
   },
   deleteStoredContext: async (id) => {
@@ -1140,42 +1236,57 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     })),
   lastWindow: (ms = 15000) => windowText(get().utterances, ms),
   loadFolder: async (list, options) => {
+    // Same order as attachFolderToContext: read first, switch only when
+    // there is something to index.
+    const none: IngestResult = { ok: false, contextId: null };
+    const token = ++folderLoadSeq;
+    const startedAt = hydrationEpoch;
+    set({ loadingFolder: true, folderError: null, packNotice: null });
+    let load: FolderLoad;
+    try {
+      load = await packFromFiles(list, options);
+    } catch {
+      endFolderLoad(token, { folderError: "Could not read that folder. Nothing was added." });
+      return none;
+    }
+    if (startedAt !== hydrationEpoch) {
+      endFolderLoad(token);
+      return none;
+    }
+    const { pack: raw, skipped, truncated, failed } = load;
+    if (raw.files.length === 0) {
+      endFolderLoad(token, { folderError: emptyLoadError(load), packNotice: null });
+      return none;
+    }
     const epoch = nextHydrationEpoch();
     searchEpoch += 1;
     set({
-      loadingFolder: true,
-      folderError: null,
-      packNotice: null,
       contextStatus: "hydrating",
       contextError: null,
       hydrationEpoch: epoch,
       ...clearSessionOnSwitch(),
     });
     try {
-      const { pack: raw, skipped, truncated, failed } = await packFromFiles(list, options);
-      if (raw.files.length === 0) {
-        if (epoch !== hydrationEpoch) return;
-        set({
-          loadingFolder: false,
-          contextStatus: "ready",
-          folderError: failed.length
-            ? officeReadError(failed)
-            : "No readable source files in that folder. Pick src or a service folder, not CI or dist.",
-          packNotice: null,
-        });
-        return;
-      }
       const repo = getContextRepository();
       const { context } = await persistPackAsContext(raw, repo);
-      if (epoch !== hydrationEpoch) return;
+      if (epoch !== hydrationEpoch) {
+        endFolderLoad(token);
+        return none;
+      }
       const space = await resolveSpaceForActivation(repo, context.id);
       const hydrated = await indexSpace(repo, space.id, {
         isCancelled: () => epoch !== hydrationEpoch,
       });
-      if (epoch !== hydrationEpoch || hydrated.cancelled) return;
+      if (epoch !== hydrationEpoch || hydrated.cancelled) {
+        endFolderLoad(token);
+        return none;
+      }
       persistActiveSpaceId(space.id);
       const contexts = await listStoredContexts();
-      if (epoch !== hydrationEpoch) return;
+      if (epoch !== hydrationEpoch) {
+        endFolderLoad(token);
+        return none;
+      }
       const sample = hydrated.pack.files
         .slice(0, 3)
         .map((f) => f.path)
@@ -1206,22 +1317,86 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             ? truncationNotice(hydrated.pack.files.length)
             : `Loaded ${hydrated.pack.name} — ${hydrated.pack.files.length} files${skipped ? `, skipped ${skipped}` : ""}. ${sample ? `Keeping ${sample}. ` : ""}Share the call or type a question — the Card is what you say.`,
       });
+      return { ok: true, contextId: context.id };
     } catch {
-      if (epoch !== hydrationEpoch) return;
+      if (epoch !== hydrationEpoch) {
+        endFolderLoad(token);
+        return none;
+      }
       set({
         loadingFolder: false,
         contextStatus: "error",
         contextError: "Could not save that folder.",
-        folderError: "Could not read that folder.",
+        folderError: "Could not save that folder.",
         packNotice: null,
       });
+      return none;
     }
   },
-  addPdfFiles: async (list) => {
+  removeSources: async (contextId, ids) => {
+    if (ids.length === 0) return;
+    const repo = getContextRepository();
+    // No new epoch: this is not a switch, and another load that starts while
+    // this runs wins.
+    const epoch = hydrationEpoch;
+    await withContextWrite(contextId, () => repo.deleteSources(contextId, ids));
+    const contexts = await listStoredContexts();
+    set({ contexts });
+    bumpSpaceCatalog();
+    const current = get();
+    if (epoch !== hydrationEpoch) return;
+    if (current.activeContextId !== contextId && !current.memberContextIds.includes(contextId)) return;
+    const space = await resolveSpaceForActivation(repo, current.activeSpaceId ?? contextId);
+    const allSources = await listAllSpaceSources(repo, space.memberContextIds);
+    if (epoch !== hydrationEpoch) return;
+    searchEpoch += 1;
+    if (allSources.length === 0) {
+      const record = await repo.getContext(space.primaryContextId);
+      if (epoch !== hydrationEpoch) return;
+      set({
+        ...patchFromSpaceRuntime(space, {
+          memberContextIds: space.memberContextIds,
+          allSources: [],
+          pack: {
+            id: space.id,
+            name: space.name,
+            description: record?.description ?? "No sources yet",
+            files: [],
+            commits: [],
+          },
+          chunks: [],
+          vocab: new Set(),
+          openFile: null,
+        }),
+        contextStatus: "ready",
+        contextUpdating: false,
+        ingestProgress: null,
+        folderError: null,
+        packNotice: null,
+      });
+      return;
+    }
+    const runtime = await indexSpace(repo, space.id, {
+      isCancelled: () => epoch !== hydrationEpoch,
+    });
+    if (epoch !== hydrationEpoch || runtime.cancelled) return;
+    set({
+      ...patchFromSpaceRuntime(space, runtime),
+      openFile: get().openDocument ? get().openFile : runtime.openFile,
+      contextStatus: "ready",
+      contextUpdating: false,
+      ingestProgress: null,
+      folderError: packWarning(runtime.weak, runtime.pack.files.length),
+    });
+  },
+  addPdfFiles: async (list, options) => {
     const files = [...list];
     if (files.length === 0) return;
     const repo = getContextRepository();
-    const existingId = get().activeContextId;
+    // The demo pack is not a stored space, so PDFs added on top of it (or
+    // asked to start a space of their own) create one.
+    const activeId = get().activeContextId;
+    const existingId = options?.newSpace || activeId === NORTHSTAR.id ? null : activeId;
     const existingSources = existingId ? await repo.listSources(existingId) : [];
     const preview = await planPdfBatch(files, existingSources);
     const rejectNote = preview.rejected.map((item) => `${item.path}: ${item.note}`).join(" ");
@@ -1260,7 +1435,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       set({
         contextUpdating: hadSnapshot,
         contextStatus: hadSnapshot ? "ready" : "hydrating",
-        folderError: rejectNote || get().folderError,
+        // A note left by earlier work is not about this selection.
+        folderError: rejectNote || null,
       });
     }
 
@@ -1286,7 +1462,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           folderError: "Could not save that PDF. Existing material is unchanged.",
           contextUpdating: false,
           ingestProgress: null,
-          contextStatus: outcome.hadSnapshot ? "ready" : get().contextStatus,
+          // Without earlier material there is nothing to serve, and leaving
+          // "hydrating" behind would show work in progress forever.
+          contextStatus: outcome.hadSnapshot ? "ready" : "error",
+          contextError: outcome.hadSnapshot ? null : "Could not save that PDF.",
         });
         return;
       }
@@ -1297,12 +1476,26 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       if (get().activeContextId && get().activeContextId !== targetId) return;
 
       if (!finished?.runtime) {
+        // Every PDF was stored but none could be read, so there is nothing
+        // to index. The work is over either way: leaving "hydrating" behind
+        // kept the upload controls and Search disabled for good.
+        const name = get().contexts.find((context) => context.id === targetId)?.name ?? preview.contextName;
         set({
           activeContextId: targetId,
           sources: finished?.sources ?? [],
           contexts,
           contextUpdating: false,
           ingestProgress: null,
+          contextStatus: "ready",
+          // A space made for these PDFs has nothing of its own yet, so the
+          // pack that was open before must not stay loaded under its id.
+          ...(created
+            ? {
+                pack: { id: targetId, name, description: "No sources yet", files: [], commits: [] },
+                chunks: [],
+                vocab: new Set<string>(),
+              }
+            : {}),
         });
         return;
       }

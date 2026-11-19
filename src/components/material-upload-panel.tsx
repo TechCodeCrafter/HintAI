@@ -2,13 +2,22 @@ import { FolderOpen, Upload } from "lucide-react";
 import { useRef, type DragEvent } from "react";
 import { DropzoneCard } from "@/components/ui/dropzone-card";
 import { MATERIAL_FILE_ACCEPT, splitMaterialFiles } from "@/lib/material-upload";
+import { readDrop } from "@/lib/repo/drop-entries";
 
 type MaterialUploadPanelProps = {
   disabled?: boolean;
   folderReading?: boolean;
   onFolderClick: () => void;
-  onFiles: (files: File[]) => void | Promise<void>;
-  onPdfs: (files: File[]) => void | Promise<void>;
+  onFiles: (files: File[]) => unknown;
+  onPdfs: (files: File[]) => unknown;
+  /**
+   * Takes a mixed selection in one call, so the caller can treat it as a
+   * single piece of work. Used instead of onFiles then onPdfs when given.
+   */
+  onAdd?: (files: File[], pdfs: File[]) => unknown;
+  /** A folder dropped on the panel, walked into its files, for review. */
+  /** `capped` means the drop was larger than one scan reads, so part of it is missing. */
+  onFolderDrop?: (files: File[], detail: { capped: boolean; skipLabels: string[] }) => void;
   testId?: string;
 };
 
@@ -18,6 +27,8 @@ export function MaterialUploadPanel({
   onFolderClick,
   onFiles,
   onPdfs,
+  onAdd,
+  onFolderDrop,
   testId = "material-upload",
 }: MaterialUploadPanelProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +36,10 @@ export function MaterialUploadPanel({
   async function ingest(list: FileList | File[] | null) {
     if (!list || list.length === 0) return;
     const { pdfs, other } = splitMaterialFiles(list);
+    if (onAdd) {
+      await onAdd(other, pdfs);
+      return;
+    }
     if (other.length > 0) await onFiles(other);
     if (pdfs.length > 0) await onPdfs(pdfs);
   }
@@ -32,7 +47,13 @@ export function MaterialUploadPanel({
   function onDrop(event: DragEvent<HTMLDivElement>) {
     event.preventDefault();
     if (disabled || folderReading) return;
-    void ingest(event.dataTransfer.files);
+    // Entries have to be taken from the event now; it is emptied once this returns.
+    const dropped = readDrop(event.dataTransfer);
+    void dropped.then(({ folder, files, capped, skipLabels }) => {
+      // A dropped folder goes through the same review as a chosen one.
+      if (folder && onFolderDrop) onFolderDrop(files, { capped, skipLabels });
+      else void ingest(files);
+    });
   }
 
   return (

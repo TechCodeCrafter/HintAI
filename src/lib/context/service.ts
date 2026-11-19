@@ -1,7 +1,7 @@
 import { contextDatabaseName, onAccountUnbind, requireBoundAccountId } from "../auth/account-boundary.ts";
 import type { RepoPack } from "../repo/types.ts";
 import { draftsFromPack, fingerprintPack, fingerprintsMatch, hydrateContext, packFromSources } from "./hydrate.ts";
-import { upsertRepoBundle, verifyRepoBundleFiles } from "./repo-bundle.ts";
+import { textSourcesInBundle, upsertRepoBundle, verifyRepoBundleFiles } from "./repo-bundle.ts";
 import { sanitizePathPrefix } from "./source-identity.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import type { SpaceRecord } from "./space-types.ts";
@@ -76,11 +76,15 @@ export async function persistPackAsContext(
   if (!context) throw new Error("Could not create a context");
   try {
     const pathPrefix = sanitizePathPrefix(pack.name);
+    // Each write is its own repo bundle. Naming it up front lets the check
+    // below look at exactly these rows, not other bundles already in the context.
+    const bundleSourceId = crypto.randomUUID();
     await repo.upsertRepoBundle(context.id, {
       displayName: pack.name,
+      bundleSourceId,
       files: draftsFromPack(pack),
     });
-    const stored = await verifyPersistedPack(repo, context.id, pack, pathPrefix);
+    const stored = await verifyPersistedPack(repo, context.id, pack, pathPrefix, bundleSourceId);
     const ready = (await repo.getContext(context.id)) ?? { ...context, sourceCount: stored.files.length, status: "ready" as const };
     return { context: ready, pack: stored };
   } catch (error) {
@@ -151,14 +155,17 @@ export async function verifyPersistedPack(
   contextId: string,
   expected: RepoPack,
   pathPrefix?: string,
+  /** Verify only this bundle; other bundles in the context are left alone. */
+  bundleSourceId?: string,
 ): Promise<RepoPack> {
   const context = await repo.getContext(contextId);
   if (!context) throw new Error("Context disappeared after write");
   const sources = await repo.listSources(contextId);
   const reconstructed = packFromSources(context, sources);
   const prefix = pathPrefix ?? sanitizePathPrefix(expected.name);
+  const text = sources.filter(isTextSource);
   const bundleOk = await verifyRepoBundleFiles(
-    sources.filter(isTextSource),
+    bundleSourceId ? textSourcesInBundle(text, bundleSourceId) : text,
     draftsFromPack(expected),
     prefix,
   );

@@ -19,7 +19,8 @@ export async function e2eSignIn(page: Page, user: E2eUser) {
     await page.goto("/home");
     return;
   }
-  await expect(page.getByTestId("login-page")).toBeVisible();
+  // The first test of a run can meet a server that is still warming up.
+  await expect(page.getByTestId("login-page")).toBeVisible({ timeout: 30000 });
   const form = page.getByTestId("login-email-form");
   await expect(form).toBeVisible();
 
