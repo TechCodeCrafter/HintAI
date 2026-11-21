@@ -232,7 +232,7 @@ export function LoginPage() {
             </h1>
             <p className="login2-sub">
               MeetHint listens to technical conversations and surfaces answers from your company’s
-              actual knowledge — with the evidence to back them up.
+              actual knowledge, with the evidence to back them up.
             </p>
           </div>
 
