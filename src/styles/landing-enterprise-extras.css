@@ -29,6 +29,12 @@
   content: "";
 }
 
+@media (max-width: 520px) {
+  .mhv2-trust-inline span::before {
+    content: none;
+  }
+}
+
 .mhv2-step-icon {
   display: none !important;
 }

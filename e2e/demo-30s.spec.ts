@@ -16,3 +16,9 @@ test("public demo cites a chip without login or a microphone prompt", async ({ p
   expect(await mic).toBeNull();
   expect(Date.now() - started).toBeLessThan(30_000);
 });
+
+test("trying your own files leaves the public demo and asks for sign-in", async ({ page }) => {
+  await page.goto("/demo");
+  await page.getByTestId("demo-own-files").click();
+  await expect(page).toHaveURL(AUTH_ROUTES);
+});
