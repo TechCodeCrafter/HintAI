@@ -23,10 +23,10 @@
  * `compareAuthInvariant()` rather than re-deriving it.
  */
 import { APP_ENV_ROUTE } from "./app-env-plugin.mjs";
+import { DEV_PORT } from "./ports.mjs";
 import { isMainModule, mergeAppEnv, projectRoot, readAppEnv } from "./with-app-env.mjs";
 
-// Matches the port in package.json "dev".
-const DEFAULT_DEV_URL = "http://127.0.0.1:3001";
+const DEFAULT_DEV_URL = `http://127.0.0.1:${DEV_PORT}`;
 
 /** The predicate `src/lib/auth/{client,server}.ts` apply to the flag. */
 export function authEnabledFromEnvValue(value) {

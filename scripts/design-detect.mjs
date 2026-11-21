@@ -2,7 +2,7 @@
 /**
  * Run Impeccable detect against rendered MeetHint surfaces on the e2e preview server.
  *
- * Uses the same preview URL as Playwright (127.0.0.1:4173). In CI, Playwright boots
+ * Uses the same preview URL as Playwright (scripts/ports.mjs). In CI, Playwright boots
  * the server; locally run `npm run build && npm run preview:e2e` or `npm run design:detect`
  * which starts preview when nothing is listening.
  */
