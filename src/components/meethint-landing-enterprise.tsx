@@ -296,7 +296,7 @@ export function MeetHintLandingEnterprise() {
 
           <div className="mhv2-nav-actions">
             <a href="/login" className="mhv2-nav-signin">Sign in</a>
-            <a href="/home" className="mhv2-button mhv2-button-primary">
+            <a href="/demo" className="mhv2-button mhv2-button-primary">
               Try {MEETHINT_MARK}
               <ArrowRight aria-hidden />
             </a>
@@ -326,7 +326,7 @@ export function MeetHintLandingEnterprise() {
                 If your material doesn't support the answer, it doesn't make one up.
               </p>
               <div className="mhv2-hero-actions">
-                <a href="/home" className="mhv2-button mhv2-button-primary mhv2-button-large">
+                <a href="/demo" className="mhv2-button mhv2-button-primary mhv2-button-large">
                   Try {MEETHINT_MARK}
                   <ArrowRight aria-hidden />
                 </a>
