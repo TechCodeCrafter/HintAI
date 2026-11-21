@@ -17,6 +17,7 @@ import {
 import { semanticRetrieve } from "./semantic-retrieve.ts";
 import type { VectorStore } from "./vector-store.ts";
 import { getVectorStore } from "./vector-access.ts";
+import { isProjectOverviewQuery } from "./question.ts";
 
 const STOP = new Set([
   "a",
@@ -495,6 +496,7 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     /\barchitecture\b|\bstructure\b|\boverview\b|how is (?:this|the|it) (?:built|organized|structured)|what does (?:this|the|our) (?:app|application|service|project|repo|codebase|product|platform|tool|system) do/.test(
       q,
     );
+  const wantsOverview = isProjectOverviewQuery(query);
   // "Why seven lambdas?" used to rank a "7)" step list inside one function.
   const wantsLambdaFleet =
     /\b(?:\d+|two|three|four|five|six|seven|eight|nine|ten) lambdas?\b|\bwhy (?:are |do )?(?:there |you doing |we (?:have |use )?)?\w* ?lambdas\b/.test(
@@ -542,6 +544,9 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     }
     if (wantsLambdaFleet && /container-lambdas\//.test(idx.path)) {
       score += RETRIEVAL_WEIGHTS.apiShapePath;
+    }
+    if (wantsOverview && /^readme\.(md|mdx|rst|txt)$/i.test(idx.path)) {
+      score += RETRIEVAL_WEIGHTS.pathMatch;
     }
     if ((named.length > 0 || wantsShape || wantsLambdaFleet) && chunk.kind === "code" && chunk.startLine <= 8) {
       score += RETRIEVAL_WEIGHTS.fileHead;
