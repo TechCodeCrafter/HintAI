@@ -36,8 +36,9 @@ jobs:
           DEV_PID=$!
           trap 'kill $DEV_PID 2>/dev/null || true' EXIT
           ready=0
+          PORT=$(node --input-type=module -e "import { DEV_PORT } from './scripts/ports.mjs'; process.stdout.write(String(DEV_PORT))")
           for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:3001/__app-env >/dev/null; then
+            if curl --fail --silent "http://127.0.0.1:${PORT}/__app-env" >/dev/null; then
               ready=1
               break
             fi
@@ -74,9 +75,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # The Ubuntu mirror sometimes fails on optional font packages; retry,
-      # then fall back to the browser alone, which the runner image can run.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      # Apt mirrors flake. Install system libraries only when the browser
+      # cache missed. A hit skips this step; the browser bytes are already local.
       - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: |
           for attempt in 1 2; do
             timeout 600 npx playwright install --with-deps chromium && exit 0
@@ -84,6 +92,9 @@ jobs:
             sleep 15
           done
           npx playwright install chromium
+      - name: Confirm cached Playwright browser
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: test -d "$HOME/.cache/ms-playwright"
       - run: npm run test:e2e
 
   design-detect:

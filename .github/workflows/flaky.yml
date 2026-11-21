@@ -1,0 +1,29 @@
+name: flaky
+
+# Quarantine. Specs whose names include @flaky run here and do not block merge.
+# test.yml does not run this pattern. There are no quarantined specs today:
+# the recurring environment failures (apt mirror, auth probe port) are fixed
+# in the blocking workflow instead of being moved aside.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  quarantined:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run @flaky specs only
+        run: |
+          files=$(git grep -l "@flaky" -- '*.test.ts' '*.test.mjs' || true)
+          if [ -z "$files" ]; then
+            echo "No @flaky specs. The blocking suite is test.yml."
+            exit 0
+          fi
+          node --experimental-strip-types --test --test-name-pattern "@flaky" $files
