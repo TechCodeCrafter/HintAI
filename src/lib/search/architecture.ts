@@ -130,6 +130,131 @@ function silent(query: string, latencyMs: number, reason: string): Card {
   return { say: null, reason, citations: [], query, latencyMs, source: "local" };
 }
 
+const ROOT_README = /^readme\.(md|mdx|rst|txt)$/i;
+const ARCHITECTURE_DOC = /^(?:docs\/)?architecture\.md$/i;
+
+function briefingSpans(file: RepoFile, limit: number): ProseSpan[] {
+  const prose = proseOf(file);
+  if (!prose?.description) return [];
+  return [prose.description, ...(prose.more ?? [])].slice(0, limit);
+}
+
+const MD_LINK = /\[[^\]]+\]\(([^)\s]+)\)/g;
+
+/** The first in-repo doc a README names. Web links and files already opened are skipped. */
+function linkedDoc(readme: RepoFile, pack: RepoPack, opened: Set<string>): RepoFile | null {
+  for (const match of readme.content.matchAll(MD_LINK)) {
+    const path = match[1].split("#")[0].replace(/^\.\//, "");
+    if (!path || /^https?:/i.test(path)) continue;
+    const file = pack.files.find((item) => item.path === path);
+    if (!file || opened.has(file.path)) continue;
+    return file;
+  }
+  return null;
+}
+
+/**
+ * Body rows of a Tools table, spoken as the cells the file wrote.
+ * A heading row and the separator are not claims.
+ */
+function toolRows(file: RepoFile, limit: number): ProseSpan[] {
+  const rows: ProseSpan[] = [];
+  let offset = 0;
+  let inTools = false;
+  for (const line of file.content.split("\n")) {
+    const start = offset;
+    offset += line.length + 1;
+    if (/^##\s+tools\b/i.test(line)) {
+      inTools = true;
+      continue;
+    }
+    if (inTools && /^#{1,6}\s+/.test(line)) break;
+    if (!inTools || !line.startsWith("|")) continue;
+    if (/^\|\s*[-: ]+\|/.test(line) || /^\|\s*tool\s*\|/i.test(line)) continue;
+    const cells = line
+      .split("|")
+      .map((cell) => cell.replace(/`/g, "").trim())
+      .filter((cell) => cell.length > 0 && !/^tier\s*\d*$/i.test(cell) && cell !== "-");
+    if (cells.length < 2) continue;
+    const text = `${cells[0]}. ${cells[cells.length - 1]}`;
+    if (text.length < 12 || text.length > 220) continue;
+    rows.push({ raw: line, text, start, end: start + line.length });
+    if (rows.length >= limit) break;
+  }
+  return rows;
+}
+
+/**
+ * The files Cursor opens for "what is this project": the root README, then the
+ * architecture doc. Each spoken sentence is one the file already wrote.
+ * A nested inventory that merely contains the word "project" does not get a turn.
+ * Silence when the root README does not state what the project is.
+ */
+export function readmeOverviewCard(pack: RepoPack, query: string, latencyMs: number): Card {
+  const readme = pack.files.find((item) => ROOT_README.test(item.path));
+  const readmeSpans = readme ? briefingSpans(readme, 3) : [];
+  if (!readme || readmeSpans.length === 0) {
+    return silent(query, latencyMs, "Nothing in this material says what it does.");
+  }
+  const architecture = pack.files.find((item) => ARCHITECTURE_DOC.test(item.path));
+  const pieces: Array<{ file: RepoFile; span: ProseSpan }> = readmeSpans.map((span) => ({ file: readme, span }));
+  const opened = new Set<string>([readme.path]);
+  if (architecture) {
+    opened.add(architecture.path);
+    for (const span of briefingSpans(architecture, 2)) pieces.push({ file: architecture, span });
+  }
+  const linked = linkedDoc(readme, pack, opened);
+  if (linked) {
+    opened.add(linked.path);
+    for (const span of briefingSpans(linked, 1)) pieces.push({ file: linked, span });
+  }
+  for (const span of toolRows(readme, 4)) pieces.push({ file: readme, span });
+
+  for (let count = pieces.length; count >= 1; count -= 1) {
+    const chosen = pieces.slice(0, count);
+    const say = sayable(chosen.map((piece) => piece.span.text).join(" "));
+    if (!say) continue;
+    const evidence = [];
+    const citations: Citation[] = [];
+    let built = true;
+    const byFile = new Map<string, { file: RepoFile; start: number; end: number }>();
+    for (const piece of chosen) {
+      const current = byFile.get(piece.file.path);
+      if (!current) {
+        byFile.set(piece.file.path, { file: piece.file, start: piece.span.start, end: piece.span.end });
+      } else {
+        current.start = Math.min(current.start, piece.span.start);
+        current.end = Math.max(current.end, piece.span.end);
+      }
+    }
+    for (const group of byFile.values()) {
+      const span = textEvidence({
+        path: group.file.path,
+        content: group.file.content,
+        start: group.start,
+        end: group.end,
+        normalizedText: say,
+      });
+      if (!span) {
+        built = false;
+        break;
+      }
+      evidence.push(span);
+      citations.push({
+        kind: "file",
+        path: group.file.path,
+        line: span.startLine,
+        endLine: span.endLine,
+        evidenceId: span.id,
+        ...provenance(pack, group.file.path),
+      });
+    }
+    if (!built || !verifyClaim(say, evidence).ok) continue;
+    return { say, citations, evidence, query, latencyMs, source: "local" };
+  }
+  return silent(query, latencyMs, "Nothing in this material says what it does.");
+}
+
 /**
  * Structural answers are grounded in the file tree itself, not in lexical hits:
  * "what is this" is answered by the shape of the loaded material, and every

@@ -7,7 +7,7 @@ import type { NormalizedDocument } from "../document/types.ts";
 import { documentCard, documentFitsShape } from "./document-card.ts";
 import { buildQuestionContract, contractBlocksAll, sourceHitEligible } from "./question-contract.ts";
 import type { ThreadContext } from "./thread.ts";
-import { architectureCard } from "./architecture.ts";
+import { architectureCard, readmeOverviewCard } from "./architecture.ts";
 import { type RejectCode, closeDecision, noteAttempt, overrideDecision } from "./claim-trace.ts";
 import { provenanceLabel } from "./cite.ts";
 import {
@@ -22,7 +22,7 @@ import {
 } from "./evidence.ts";
 import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
-import { isArchitectureQuery } from "./question.ts";
+import { isArchitectureQuery, isProjectOverviewQuery } from "./question.ts";
 import { FAST_PATH_MIN_SCORE } from "./answer-fast-path.ts";
 import { isTestEvidencePath } from "./retrieve.ts";
 import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
@@ -1305,6 +1305,9 @@ function compose(
   openFile?: string | null,
   context?: LocalCardContext,
 ): Card {
+  if (isProjectOverviewQuery(canonical)) {
+    return readmeOverviewCard(pack, query, latencyMs);
+  }
   if (isArchitectureQuery(canonical)) {
     const structural = architectureCard(pack, query, latencyMs);
     if (structural.say) return structural;

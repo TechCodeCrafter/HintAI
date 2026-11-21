@@ -179,6 +179,18 @@ export function isArchitectureQuery(query: string): boolean {
 }
 
 /**
+ * "Tell me about the project" asks what the repo is, not for whichever file
+ * happens to contain the word "project". The noun has to be the whole question.
+ * "What is this project's terraform" is a different question and must not match.
+ */
+export function isProjectOverviewQuery(query: string): boolean {
+  const q = query.trim().replace(/[?!.]+$/g, "").trim();
+  return /^(?:(?:can|could|would) you |please )?(?:tell me about|what(?: is|'s)|what does|how does|describe|explain|walk me through|give me (?:an? )?overview of) (?:this |the |our )?(?:project|repo|repository|codebase|application|app|service|system)(?: do| work| about)?$/i.test(
+    q,
+  );
+}
+
+/**
  * Content words only. Deliberately not retrieval's tokenizer: that one expands
  * query synonyms, which would make overlap with the material easier to fake.
  */

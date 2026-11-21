@@ -24,6 +24,90 @@ function arch(pack: RepoPack, query: string) {
   return architectureCard(pack, query, 0);
 }
 
+test("a project overview quotes the root README, not another file that says project", () => {
+  const pack: RepoPack = {
+    id: "windchill",
+    name: "rdb-windchill-mcp",
+    description: "",
+    commits: [],
+    files: [
+      {
+        path: "README.md",
+        language: "markdown",
+        content: [
+          "# Windchill MCP Server",
+          "",
+          "Shared MCP endpoint deployed on Amazon Bedrock AgentCore **Runtime** with **Entra ID JWT Bearer Token** authentication.",
+          "",
+          "Seven tools (full reference in [docs/tools.md](docs/tools.md)). Every tool takes a mandatory nullable user_email argument for audit.",
+          "",
+          "## Tools",
+          "",
+          "| Tool | Description |",
+          "|------|-------------|",
+          "| `get_document_url` | Fetch a Windchill document by number, returns a presigned S3 URL |",
+          "| `search_vectors` | Hybrid vector and lexical search over the indexed corpus |",
+        ].join("\n"),
+      },
+      {
+        path: "docs/tools.md",
+        language: "markdown",
+        content: ["# Tools", "", "Each tool is invoked over MCP Streamable HTTP."].join("\n"),
+      },
+      {
+        path: "docs/architecture.md",
+        language: "markdown",
+        content: [
+          "# Architecture",
+          "",
+          "The Windchill MCP server now runs on Amazon Bedrock AgentCore Runtime.",
+          "There is no Gateway, no SigV4 proxy, and no client-side AWS credentials.",
+          "Clients talk to the Runtime over MCP Streamable HTTP using a Microsoft Entra access token.",
+        ].join("\n"),
+      },
+      {
+        path: "docs/account-migration-resource-inventory.md",
+        language: "markdown",
+        content: [
+          "# Account migration resource inventory",
+          "",
+          "## 1. Resources CREATED and OWNED by this project's Terraform",
+          "",
+          "Defined in `infrastructure/terraform/`. A terraform apply in the new account recreates these.",
+        ].join("\n"),
+      },
+    ],
+  };
+  const askOverview = (query: string) => localCard(query, retrieve(query, buildChunks(pack)), pack, 0, null);
+  for (const query of [
+    "Can you tell me about the project?",
+    "What is this project?",
+    "What is this repo?",
+    "Walk me through the project",
+  ]) {
+    const card = askOverview(query);
+    assert.ok(card.say, query);
+    assert.match(card.say, /Shared MCP endpoint deployed on Amazon Bedrock AgentCore Runtime/);
+    assert.match(card.say, /user_email argument for audit/);
+    assert.match(card.say, /no Gateway, no SigV4 proxy/);
+    assert.match(card.say, /get_document_url/);
+    assert.match(card.say, /invoked over MCP Streamable HTTP/);
+    assert.ok(filePaths(card).includes("README.md"));
+    assert.ok(filePaths(card).includes("docs/architecture.md"));
+    assert.ok(filePaths(card).includes("docs/tools.md"));
+    assert.doesNotMatch(card.say, /terraform/i);
+  }
+
+  const bare: RepoPack = {
+    ...pack,
+    files: pack.files.map((file) =>
+      file.path === "README.md" ? { ...file, content: "# Notes\n\n## Setup\n" } : file,
+    ),
+  };
+  const silent = localCard("What is this project?", retrieve("What is this project?", buildChunks(bare)), bare, 0, null);
+  assert.equal(silent.say, null);
+});
+
 test("an off-topic question produces no Card", () => {
   // Incidental word overlap ("policy") still scores, so the relevance floor —
   // not the presence of hits — is what has to hold the line here.
