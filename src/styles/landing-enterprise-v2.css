@@ -130,8 +130,8 @@
   height: 16px;
 }
 
-.mhv2-button:hover {
-  transform: translateY(-1px);
+.mhv2-button:active {
+  transform: scale(0.98);
 }
 
 .mhv2-button-primary {
@@ -541,7 +541,11 @@
   background: #f1fbf7;
   color: #566071;
   font-size: 9px;
-  cursor: default;
+  cursor: pointer;
+}
+
+a.mhv2-citation:hover {
+  background: #e7f6ef;
 }
 
 .mhv2-citation > span {
@@ -1608,6 +1612,25 @@
   letter-spacing: 0.08em;
   text-align: center;
   text-transform: uppercase;
+}
+
+.mhv2-final-sample {
+  margin: 14px 0 0;
+  text-align: center;
+}
+
+.mhv2-final-sample a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5145c7;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.mhv2-final-sample svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* FOOTER */

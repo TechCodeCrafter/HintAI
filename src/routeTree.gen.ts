@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -47,6 +48,11 @@ const ContactRoute = ContactRouteImport.update({
 const CreateRoute = CreateRouteImport.update({
   id: '/create',
   path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRoute
   '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
+  '/demo': typeof DemoRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppRoute
   '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
+  '/demo': typeof DemoRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/app': typeof AppRoute
   '/contact': typeof ContactRoute
   '/create': typeof CreateRoute
+  '/demo': typeof DemoRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/contact'
     | '/create'
+    | '/demo'
     | '/home'
     | '/login'
     | '/privacy'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/contact'
     | '/create'
+    | '/demo'
     | '/home'
     | '/login'
     | '/privacy'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/contact'
     | '/create'
+    | '/demo'
     | '/home'
     | '/login'
     | '/privacy'
@@ -258,6 +270,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRoute
   ContactRoute: typeof ContactRoute
   CreateRoute: typeof CreateRoute
+  DemoRoute: typeof DemoRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -300,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/create'
       fullPath: '/create'
       preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -431,6 +451,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRoute,
   ContactRoute: ContactRoute,
   CreateRoute: CreateRoute,
+  DemoRoute: DemoRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,

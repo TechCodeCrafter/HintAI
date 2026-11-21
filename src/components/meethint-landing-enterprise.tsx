@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { MeetHintMark } from "@/components/meethint-mark";
 import { MEETHINT_DOMAIN, MEETHINT_MARK, MEETHINT_NAME, MEETHINT_REPO } from "@/lib/brand";
@@ -178,64 +178,55 @@ function WaitlistForm() {
 
 function HeroProduct() {
   return (
-    <div className="mhv2-product-shell" aria-label="MeetHint cited answer preview">
+    <div className="mhv2-product-shell" aria-label="Sample answer from the payments repository">
       <div className="mhv2-product-topbar">
         <div className="mhv2-product-status">
           <span className="mhv2-live-dot" aria-hidden />
-          Live session
+          Sample
         </div>
-        <span className="mhv2-product-meta">47 files indexed</span>
+        <span className="mhv2-product-meta">Payments repository</span>
       </div>
 
       <div className="mhv2-product-layout">
         <aside className="mhv2-product-sources">
           <div className="mhv2-mini-heading">Sources</div>
           <div className="mhv2-source active">
-            <div><strong>security-architecture.pdf</strong><span>42 pages</span></div>
+            <div><strong>retry.ts</strong><span>src/exporter · lines 4-6</span></div>
           </div>
           <div className="mhv2-source">
-            <div><strong>enterprise.pdf</strong><span>18 pages</span></div>
+            <div><strong>README.md</strong><span>Repository</span></div>
           </div>
           <div className="mhv2-source">
-            <div><strong>architecture.md</strong><span>Repository</span></div>
-          </div>
-          <div className="mhv2-source">
-            <div><strong>customer-contract.pdf</strong><span>31 pages</span></div>
+            <div><strong>auth.ts</strong><span>src/auth</span></div>
           </div>
         </aside>
 
         <div className="mhv2-product-room">
           <div className="mhv2-question-bubble">
             <span className="mhv2-question-label">They asked</span>
-            <p>“Do we support Canadian data residency?”</p>
+            <p>“Why does that retry three times?”</p>
           </div>
 
           <div className="mhv2-answer-card">
             <div className="mhv2-answer-head">
-              <span>Answer ready</span>
-
-            </div>
-            <div className="mhv2-product-signals" aria-hidden="true">
-              <span className="mhv2-product-signal">Question detected during the call</span>
-              <span className="mhv2-product-signal">Evidence attached automatically</span>
+              <span>From the sample</span>
             </div>
             <p className="mhv2-answer-copy">
-              Yes. Canadian data residency is available for Enterprise deployments.
+              Attempts are capped at three because the payment gateway stalls rather than failing fast, so a fourth attempt duplicates the settlement file instead of recovering it.
             </p>
-            <button type="button" className="mhv2-citation">
+            <a href="/demo" className="mhv2-citation">
               <span className="mhv2-verified">Verified</span>
-              <span>security-architecture.pdf</span>
-              <span></span>
-              <ChevronRight aria-hidden />
-            </button>
+              <span>src/exporter/retry.ts</span>
+              <span>lines 4-6</span>
+            </a>
           </div>
         </div>
       </div>
 
       <div className="mhv2-product-foot">
-        <span>Your material only</span>
+        <span>No account</span>
         <span>Source attached</span>
-        <span>No unsupported fallback</span>
+        <span>Quiet when unsupported</span>
       </div>
     </div>
   );
@@ -296,7 +287,7 @@ export function MeetHintLandingEnterprise() {
 
           <div className="mhv2-nav-actions">
             <a href="/login" className="mhv2-nav-signin">Sign in</a>
-            <a href="/home" className="mhv2-button mhv2-button-primary">
+            <a href="/demo" className="mhv2-button mhv2-button-primary">
               Try {MEETHINT_MARK}
               <ArrowRight aria-hidden />
             </a>
@@ -326,8 +317,8 @@ export function MeetHintLandingEnterprise() {
                 If your material doesn't support the answer, it doesn't make one up.
               </p>
               <div className="mhv2-hero-actions">
-                <a href="/home" className="mhv2-button mhv2-button-primary mhv2-button-large">
-                  Try {MEETHINT_MARK}
+                <a href="/demo" className="mhv2-button mhv2-button-primary mhv2-button-large">
+                  Ask the sample
                   <ArrowRight aria-hidden />
                 </a>
                 <a href="#demo" className="mhv2-button mhv2-button-secondary mhv2-button-large">
@@ -335,7 +326,7 @@ export function MeetHintLandingEnterprise() {
                 </a>
               </div>
               <div className="mhv2-trust-inline">
-                <span>Your files only</span>
+                <span>No account</span>
                 <span>Cited answers</span>
                 <span>Quiet when unsupported</span>
               </div>
@@ -619,6 +610,12 @@ export function MeetHintLandingEnterprise() {
               <div className="mhv2-final-form">
                 <WaitlistForm />
                 <p className="mhv2-final-tagline">Cite it, or stay silent.</p>
+                <p className="mhv2-final-sample">
+                  <a href="/demo">
+                    Ask the sample first
+                    <ArrowRight aria-hidden />
+                  </a>
+                </p>
               </div>
             </div>
           </div>

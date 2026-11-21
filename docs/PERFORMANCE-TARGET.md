@@ -17,6 +17,14 @@ See [archive/PERFORMANCE-MILESTONE-2.md](./archive/PERFORMANCE-MILESTONE-2.md) f
 
 This is a measurement baseline — not a CI gate and not a fake pass/fail test.
 
+## Public demo answer step
+
+`npm run demo:timing` times five in-process answers to "Why does that retry three times?" on the built-in payments pack. CI fails that command when the slowest of those runs exceeds 2 seconds, or when the answer has no citation.
+
+That number is the cite step only. It is not a cold browser load from the landing page to the first card. The page that runs this step with no account and no microphone is `/demo`.
+
+Measured on a developer machine on 2026-11-20: p95 25.3 ms over 5 runs, cited. CI remeasures on every `test.yml` run.
+
 Use:
 
 ```bash

@@ -563,7 +563,7 @@ export function MeetHintLanding() {
               <a href="/login" className="hidden text-[15px] text-[var(--hint-muted)] hover:text-[var(--hint-text)] sm:inline">
                 Sign in
               </a>
-              <a href="/home" className="hint-btn hint-btn-primary !text-white">
+              <a href="/demo" className="hint-btn hint-btn-primary !text-white">
                 Try {MEETHINT_MARK}
               </a>
             </div>
@@ -587,7 +587,7 @@ export function MeetHintLanding() {
               If your material doesn&apos;t support the answer, {MEETHINT_MARK} stays silent.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row">
-              <a href="/home" className="hint-btn hint-btn-primary !text-white [&_svg]:text-white">
+              <a href="/demo" className="hint-btn hint-btn-primary !text-white [&_svg]:text-white">
                 Try {MEETHINT_MARK}
                 <ArrowRight aria-hidden className="size-4 shrink-0" />
               </a>

@@ -817,6 +817,16 @@
     animation: listen-ring 2s ease-in-out infinite;
   }
 
+  .demo-arrive {
+    animation: pane-rise 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-arrive {
+      animation: none;
+    }
+  }
+
   @keyframes listen-ring {
     0%,
     100% {
