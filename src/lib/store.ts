@@ -74,7 +74,8 @@ import {
   recordBetaEvent,
   recordBetaEventOnce,
 } from "@/lib/instrumentation/beta-telemetry";
-import { isFlightRecorder } from "@/lib/debug";
+import { isFlightRecorder, isSearchDebug } from "@/lib/debug";
+import { reportSearchDebug, SEARCH_DEBUG_TOP, stageOfTier } from "@/lib/search/search-debug";
 import { hydratePdfDocumentsForHits } from "@/lib/search/live-card-context";
 import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
@@ -1926,6 +1927,17 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         ...applyCard(blocked, get().openDocument),
       });
       persist({ card: blocked, armed: get().armed, listening: get().listening, searching: false });
+      reportSearchDebug({
+        query,
+        chunks: state.chunks,
+        excludePatterns: state.pack.excludePatterns,
+        filesLoaded: state.pack.files.length,
+        ranked: [],
+        sent: [],
+        stage: "silence",
+        reason: blocked.reason,
+        totalMs: blocked.latencyMs,
+      });
       return;
     }
 
@@ -2072,6 +2084,35 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       citations: routed.card.citations,
       quotaRemaining: remaining,
     });
+    if (isSearchDebug()) {
+      // The card is already on screen. The answer stages were sent the top 6;
+      // the log lists the top 10, so retrieval is run once more for the log
+      // only. It does not change the card, the quota, or the timings above.
+      void runSpaceScopedRetrieval({
+        query: canonical,
+        previousQuestion,
+        chunks: state.chunks,
+        pack: state.pack,
+        spaceState: state,
+        workspaceId,
+        vectorStore: getVectorStore(),
+        limit: SEARCH_DEBUG_TOP,
+      })
+        .then((ranked) =>
+          reportSearchDebug({
+            query,
+            chunks: state.chunks,
+            excludePatterns: state.pack.excludePatterns,
+            filesLoaded: state.pack.files.length,
+            ranked,
+            sent: hits,
+            stage: stageOfTier(routed.tier),
+            reason: routed.card.reason,
+            totalMs: latency.totalMs,
+          }),
+        )
+        .catch((error) => console.warn("[search] debug log failed:", error));
+    }
   },
 }));
 

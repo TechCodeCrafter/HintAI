@@ -8,6 +8,15 @@ export function isLlmDebug(): boolean {
   return flag("VITE_DEBUG_LLM") || flag("DEBUG_LLM");
 }
 
+/**
+ * Per-search debug record: files and chunks indexed, the top hits with their
+ * scores, and which stage answered. Off unless VITE_DEBUG_SEARCH or
+ * DEBUG_SEARCH is "true". See `search/search-debug.ts`.
+ */
+export function isSearchDebug(): boolean {
+  return flag("VITE_DEBUG_SEARCH") || flag("DEBUG_SEARCH");
+}
+
 /** Phase 0 meeting flight recorder. Off unless VITE_DEBUG_FLIGHT or DEBUG_FLIGHT is "true". */
 export function isFlightRecorder(): boolean {
   return flag("VITE_DEBUG_FLIGHT") || flag("DEBUG_FLIGHT") || flag("VITE_E2E");
