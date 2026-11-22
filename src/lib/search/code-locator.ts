@@ -10,6 +10,8 @@
  * says three kinds of things:
  *   - a declaration name, copied from the line that declares it;
  *   - a configuration line, copied verbatim, with the comment above it.
+ * In a configuration file every line is a setting, so a key the question names
+ * is an answer there whether or not the question asked for "a value".
  * The file and line go on the citation chip, never into the sentence.
  * The connecting words ("That's the ... function", "The current value is") come from
  * a fixed list passed to the support check as structural vocabulary, so every
@@ -36,6 +38,11 @@ export type CodeLocation = {
   structural: string[];
   /** Verbatim pieces a list answer was joined from (one per entry line). */
   parts?: string[];
+  /**
+   * A setting read from a configuration file for a question that did not ask
+   * for a value. It can fill a silence. It does not displace written prose.
+   */
+  inferred?: boolean;
 };
 
 const DECLS: RegExp[] = [
@@ -55,7 +62,34 @@ const PY_ROUTE = /^\s*@(?:app|router|bp|api)\.(get|post|put|patch|delete|route)\
 const OBJECT_VALUE = /^\s*([A-Za-z_]\w*)\s*:\s*\{[^{}\n]{3,100}\}\s*,?\s*$/;
 /** `export const MAX_RETRIES = 4;`, `timeout: 30_000,`, `RETRY_DELAY_MS = 2_000` */
 const SCALAR_VALUE =
-  /^\s*(?:export\s+)?(?:const\s+|let\s+|var\s+)?([A-Za-z_][\w.]*)\s*(?::\s*[\w<>[\]| ]+)?\s*[:=]\s*(-?\d[\d_.]*(?:\s*[*x]\s*\d[\d_.]*)*|true|false|['"`][^'"`\n]{1,60}['"`])\s*[,;]?\s*(?:\/\/.*|#.*)?$/;
+  /^\s*(?:export\s+)?(?:const\s+|let\s+|var\s+)?["']?([A-Za-z_][\w.-]*)["']?\s*(?::\s*[\w<>[\]| ]+)?\s*[:=]\s*(-?\d[\d_.]*(?:\s*[*x]\s*\d[\d_.]*)*|true|false|['"`][^'"`\n]{1,60}['"`])\s*[,;]?\s*(?:\/\/.*|#.*)?$/;
+
+/**
+ * JSON, YAML, TOML and INI files, tool configs (`vite.config.ts`) and rc files.
+ * Environment files are left out on purpose: they hold credentials.
+ */
+const CONFIG_PATH =
+  /\.(?:json|jsonc|json5|ya?ml|toml|ini|cfg|conf|properties)$|(?:^|\/)[\w.-]+\.config\.[cm]?[jt]s$|(?:^|\/)\.[\w-]+rc$/i;
+
+export function isConfigPath(path: string): boolean {
+  return CONFIG_PATH.test(path);
+}
+
+/** `driver: redis`, `region = us-east-1`: a bare value, as YAML, TOML and INI write it. */
+const BARE_VALUE = /^\s*(?:-\s+)?["']?([A-Za-z_][\w.-]*)["']?\s*[:=]\s*([A-Za-z0-9][\w./:@+-]{0,60})\s*(?:#.*)?$/;
+
+/**
+ * A setting whose value must never be read out. The Card is shown to a room,
+ * so a credential is not an answer whatever the question was. Judged by the
+ * words of the name (`maxTokens` is a limit, `authToken` is a credential) and,
+ * failing that, by a value that is one long unbroken key.
+ */
+const SECRET_WORDS = /\b(?:secrets?|passwords?|passwd|passphrase|credentials?)\b|\b(?:api|private|access|signing|encryption|client) key\b|\btoken$/;
+const SECRET_VALUE = /^["'`]?[A-Za-z0-9+/_=-]{32,}["'`]?$/;
+
+function looksSecret(name: string, value: string): boolean {
+  return SECRET_WORDS.test(identWords(name).trim()) || SECRET_VALUE.test(value.trim());
+}
 
 const NOT_NAME = new Set(["if", "for", "while", "switch", "catch", "return", "function", "else", "constructor", "super", "new", "await"]);
 
@@ -90,7 +124,7 @@ export function identWords(name: string): string {
   return name
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
-    .replace(/[_$.]+/g, " ")
+    .replace(/[_$.-]+/g, " ")
     .toLowerCase();
 }
 
@@ -129,6 +163,8 @@ type Candidate = {
   score: number;
   /** A one-line comment directly above, when there is one. */
   doc?: { text: string; start: number };
+  /** Admitted because the file is configuration, not because the question asked for a value. */
+  inferred?: boolean;
 };
 
 /** Source files only: README and docs hits are read by doc-section.ts and must not use up the four slots. */
@@ -162,6 +198,9 @@ export function locateInCode(
     .forEach((hit, rank) => {
       const content = fileContent(hit.path);
       if (!content || content.slice(hit.startOffset, hit.startOffset + hit.text.length) !== hit.text) return;
+      const config = isConfigPath(hit.path);
+      // Unquoted values are YAML, TOML and INI syntax. In a script they are code.
+      const bare = config && !/\.[cm]?[jt]s$/i.test(hit.path);
       const starts = lineOffsets(hit.text);
       const lines = hit.text.split("\n");
       lines.forEach((line, i) => {
@@ -174,10 +213,11 @@ export function locateInCode(
         const doc = docText
           ? { text: docText, start: hit.startOffset + starts[i - 1] + (lines[i - 1].length - lines[i - 1].trimStart().length) }
           : undefined;
-        const push = (kind: LocatorKind, name: string, nameScore: number) =>
+        const push = (kind: LocatorKind, name: string, nameScore: number, inferred = false) =>
           candidates.push({
             kind, hit, rank, start, end, lineText: line.trim(), name, doc,
             score: nameScore + (doc ? covers(doc.text, terms) * 0.5 : 0),
+            ...(inferred ? { inferred } : {}),
           });
 
         const route = ROUTE.exec(line) ?? PY_ROUTE.exec(line);
@@ -192,18 +232,23 @@ export function locateInCode(
             return;
           }
         }
-        if (!wantsValue) return;
+        if (!wantsValue && !config) return;
         const obj = OBJECT_VALUE.exec(line);
-        if (obj && /\d/.test(line)) {
+        if (wantsValue && obj && /\d/.test(line)) {
           push("value", obj[1], covers(identWords(obj[1]), terms) + 0.5);
           return;
         }
-        const scalar = SCALAR_VALUE.exec(line) ?? LIST_VALUE.exec(line);
+        const scalar = SCALAR_VALUE.exec(line) ?? LIST_VALUE.exec(line) ?? (bare ? BARE_VALUE.exec(line) : null);
         if (scalar) {
+          if (looksSecret(scalar[1], scalar[2] ?? "")) return;
           // `methods: '...'` inside `var defaults = {` answers "what methods by default?".
           const owner = enclosingName(lines, i);
           const ownerCover = owner ? covers(identWords(owner), terms) : 0;
-          push("value", scalar[1], covers(identWords(scalar[1]), terms) + ownerCover);
+          const keyCover = covers(identWords(scalar[1]), terms);
+          // Outside a value question the key itself has to be what was asked
+          // about. A section name alone would make every line under it an answer.
+          if (!wantsValue && keyCover === 0) return;
+          push("value", scalar[1], keyCover + ownerCover, !wantsValue);
         }
       });
     });
@@ -292,6 +337,7 @@ export function locateInCode(
     hit: best.hit,
     score: best.score,
     structural: [...TEMPLATE_WORDS, best.name.toLowerCase()],
+    ...(best.inferred ? { inferred: true } : {}),
   };
 }
 
@@ -516,7 +562,9 @@ function enclosingName(lines: string[], index: number): string | null {
     if (!line.trim()) continue;
     const lead = (line.match(/^\s*/)?.[0] ?? "").length;
     if (lead >= indent) continue;
-    const open = /^\s*(?:export\s+)?(?:(?:const|let|var)\s+)?([A-Za-z_$][\w$]*)\s*(?::[^=]+)?[:=]\s*\{\s*$/.exec(line);
+    const open =
+      /^\s*(?:export\s+)?(?:(?:const|let|var)\s+)?["']?([A-Za-z_$][\w$-]*)["']?\s*(?::[^=]+)?[:=]\s*\{\s*$/.exec(line) ??
+      /^\s*["']?([A-Za-z_][\w.-]*)["']?:\s*(?:#.*)?$/.exec(line);
     return open ? open[1]! : null;
   }
   return null;
