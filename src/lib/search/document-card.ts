@@ -5,6 +5,7 @@ import type { Card, DocumentHit } from "../repo/types.ts";
 import type { DocumentEvidence, SourceLookup } from "./evidence.ts";
 import { evidenceIsCurrent, verifyClaim } from "./evidence.ts";
 import { type Shape, evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
+import { SILENCE, type Silence, notStated } from "./silence.ts";
 import { type RejectCode, closeDecision, noteAttempt, overrideDecision } from "./claim-trace.ts";
 import { contentWords } from "./spoken.ts";
 import { isFieldLine, sayable } from "./say.ts";
@@ -79,7 +80,7 @@ export function documentCard(
     supportMs: 0,
     totalMs: 0,
   };
-  const silent = (reason: string, reject: RejectCode): Card => {
+  const silent = (why: Silence, reject: RejectCode): Card => {
     timings.totalMs = nowMs() - started;
     lastTimings = timings;
     noteAttempt({
@@ -97,7 +98,8 @@ export function documentCard(
     closeDecision(query, false);
     return {
       say: null,
-      reason,
+      reason: why.reason,
+      silence: why.kind,
       citations: [],
       query,
       latencyMs,
@@ -109,22 +111,25 @@ export function documentCard(
   const shape = shapeOf(canonical);
   if (shape === "absence") {
     overrideDecision(query, "WRONG_SHAPE");
-    return silent(shapeGap("absence"), "WRONG_SHAPE");
+    return silent(notStated(shapeGap("absence")), "WRONG_SHAPE");
   }
-  if (!document || document.sourceId !== hit.sourceId || document.contentHash !== hit.contentHash) {
-    return silent("That material is no longer available.", "STALE_EVIDENCE");
+  if (!document || document.sourceId !== hit.sourceId) {
+    return silent(SILENCE.gone, "STALE_EVIDENCE");
+  }
+  if (document.contentHash !== hit.contentHash) {
+    return silent(SILENCE.stale, "STALE_EVIDENCE");
   }
   if (document.parserVersion !== PDF_PARSER_VERSION || document.normalizerVersion !== DOCUMENT_NORMALIZER_VERSION) {
-    return silent("That material changed since I read it.", "STALE_EVIDENCE");
+    return silent(SILENCE.outdatedIndex, "STALE_EVIDENCE");
   }
   const page = document.pages.find((entry) => entry.pageNumber === hit.page);
-  if (!page) return silent("Nothing in this pack cites that.", "NO_EVIDENCE_SPAN");
+  if (!page) return silent(SILENCE.stale, "NO_EVIDENCE_SPAN");
   if (page.text.slice(hit.startOffset, hit.endOffset) !== hit.text) {
-    return silent("That material changed since I read it.", "STALE_EVIDENCE");
+    return silent(SILENCE.stale, "STALE_EVIDENCE");
   }
 
   if (contract && !sourceHitEligible(hit.sourceId, contract)) {
-    return silent("Nothing loaded answers that.", "NO_SUBJECT_COVERAGE");
+    return silent(SILENCE.offSubject, "NO_SUBJECT_COVERAGE");
   }
 
   const extractStart = nowMs();
@@ -132,20 +137,21 @@ export function documentCard(
   const subject = documentSubjectTerms(terms, documents);
   const claim = extractDocumentClaim(hit.text, terms, subject, documents, contract);
   timings.extractMs = nowMs() - extractStart;
-  if (!claim) return silent("Nothing in it I would say out loud.", "NO_SPEAKABLE_SENTENCE");  if (contract) {
+  if (!claim) return silent(SILENCE.notStated, "NO_SPEAKABLE_SENTENCE");
+  if (contract) {
     if (!claimFitsContract(claim.text, contract, hit.text)) {
-      return silent("Nothing loaded answers that.", "NO_SUBJECT_COVERAGE");
+      return silent(SILENCE.offSubject, "NO_SUBJECT_COVERAGE");
     }
   } else if (!documentClaimAdmissible(claim.text, subject, documents)) {
-    return silent("Nothing loaded answers that.", "NO_SUBJECT_COVERAGE");
+    return silent(SILENCE.offSubject, "NO_SUBJECT_COVERAGE");
   }
   if (!documentFitsShape(shape, claim.text)) {
     overrideDecision(query, "WRONG_SHAPE");
-    return silent(shapeGap(shape), "WRONG_SHAPE");
+    return silent(notStated(shapeGap(shape)), "WRONG_SHAPE");
   }
 
   const spoken = sayable(claim.text, contract ? isFieldContract(contract) : false);
-  if (!spoken) return silent("Nothing in it I would say out loud.", "NO_SPEAKABLE_SENTENCE");
+  if (!spoken) return silent(SILENCE.notStated, "NO_SPEAKABLE_SENTENCE");
 
   const normStart = hit.startOffset + claim.start;
   const normEnd = hit.startOffset + claim.end;
@@ -158,17 +164,17 @@ export function documentCard(
     spokenText: spoken,
   });
   timings.mapMs = nowMs() - mapStart;
-  if (!evidence) return silent("Nothing in this pack cites that.", "NO_EVIDENCE_SPAN");
+  if (!evidence) return silent(SILENCE.noSpan, "NO_EVIDENCE_SPAN");
 
   const currentStart = nowMs();
   const current = evidenceIsCurrent(evidence, lookupOf(document));
   timings.currentMs = nowMs() - currentStart;
-  if (!current) return silent("That material changed since I read it.", "STALE_EVIDENCE");
+  if (!current) return silent(SILENCE.stale, "STALE_EVIDENCE");
 
   const supportStart = nowMs();
   const support = verifyClaim(spoken, [evidence]);
   timings.supportMs = nowMs() - supportStart;
-  if (!support.ok) return silent("I could not back every word of that from the file.", "UNSUPPORTED_CLAIM");
+  if (!support.ok) return silent(SILENCE.unsupported, "UNSUPPORTED_CLAIM");
 
   timings.totalMs = nowMs() - started;
   lastTimings = timings;

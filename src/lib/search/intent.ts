@@ -165,6 +165,6 @@ export function shapeGap(shape: Shape): string {
     case "who":
       return "The material says what this does, not who owns it.";
     default:
-      return "Nothing loaded answers that.";
+      return "Found related material, but nothing in it answers that directly.";
   }
 }

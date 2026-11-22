@@ -313,6 +313,7 @@ export function withdrawReplay(card: Card, thread: ThreadContext | null, resolve
   return {
     ...card,
     say: null,
-    reason: "That is the same answer I just gave — nothing loaded takes it further.",
+    reason: "That is the same answer I just gave. Nothing loaded takes it further.",
+    silence: "not-stated",
   };
 }

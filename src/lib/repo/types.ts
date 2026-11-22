@@ -1,5 +1,6 @@
 import type { DocumentChunk } from "@/lib/document/types";
 import type { Evidence } from "@/lib/search/evidence";
+import type { SilenceKind } from "@/lib/search/silence";
 import type { SymbolKind } from "./parser";
 
 export type { DocumentChunk };
@@ -142,7 +143,10 @@ export type Citation = FileCitation | CommitCitation | DocumentCitation;
 
 export type Card = {
   say: string | null;
+  /** Why the Card is silent, as one sentence the room can read. Set whenever `say` is null. */
   reason?: string;
+  /** The cause behind `reason`, so the UI can offer the right next step. */
+  silence?: SilenceKind;
   citations: Citation[];
   /**
    * The exact evidence behind `say`. Non-empty whenever a Card speaks from the

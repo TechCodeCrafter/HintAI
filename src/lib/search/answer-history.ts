@@ -1,6 +1,7 @@
 import type { Card, Citation } from "@/lib/repo/types";
 import { sourceIdsFromCitations, sourceIdsFromEvidence } from "../context/material-view.ts";
 import type { AnswerMode } from "./answer-mode";
+import type { SilenceKind } from "./silence.ts";
 
 export const ANSWER_HISTORY_LIMIT = 50;
 
@@ -24,10 +25,16 @@ export type AnswerHistoryItem = {
   evidenceCount?: number;
   query: string;
   say: string | null;
+  /** Why a silent answer was silent. Absent on spoken answers and on items saved before this was recorded. */
+  reason?: string;
+  silence?: SilenceKind;
   badge: AnswerHistoryBadge | null;
   citations: Citation[];
   timestamp: number;
 };
+
+/** Shown for a silent item saved before its reason was recorded. */
+export const UNRECORDED_SILENCE_REASON = "No cited answer. The reason was not recorded for this question.";
 
 export function badgeFromAnswerMode(mode?: AnswerMode, usedEvidence?: boolean): AnswerHistoryBadge | null {
   if (mode === "synthesized" && usedEvidence === false) return "generated";
@@ -69,6 +76,7 @@ export function historyItemFromCard(
     evidenceCount: telemetry.evidenceCount,
     query: card.query,
     say: card.say,
+    ...(card.say ? {} : { reason: card.reason, silence: card.silence }),
     badge:
       badgeFromAnswerMode(card.answerMode, card.usedEvidence ?? card.citations.length > 0) ??
       (card.say ? "from-docs" : null),
@@ -89,7 +97,8 @@ export function appendAnswerHistory(
 export function cardFromHistory(item: AnswerHistoryItem): Card {
   return {
     say: item.say,
-    reason: item.say ? undefined : "No cited answer.",
+    reason: item.say ? undefined : item.reason?.trim() || UNRECORDED_SILENCE_REASON,
+    silence: item.say ? undefined : item.silence,
     citations: item.citations,
     query: item.query,
     latencyMs: 0,

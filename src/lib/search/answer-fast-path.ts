@@ -1,4 +1,5 @@
 import type { Card, Hit } from "../repo/types.ts";
+import type { FailFastCause } from "./silence.ts";
 import { contentWords } from "./spoken.ts";
 
 /** Minimum top retrieval score for a verified localCard to bypass LLM (matches local-card NO_EVIDENCE gate). */
@@ -14,23 +15,31 @@ const OFF_TOPIC = /\b(weather|stock price|world series|capital of france|bake so
  * Uses existing retrieval scores and query/hit overlap, not a hallucination-prone confidence model.
  */
 export function shouldFailFastRetrieval(query: string, hits: Hit[]): boolean {
-  if (hits.length === 0) return true;
-  if (OFF_TOPIC.test(query)) return true;
+  return failFastCause(query, hits) !== null;
+}
+
+/**
+ * Why retrieval cannot support an answer, or null when the answer stages
+ * should run. The cause is what the silent Card tells the room: no hits and
+ * weak hits are different facts about their files and read differently.
+ */
+export function failFastCause(query: string, hits: Hit[]): FailFastCause | null {
+  if (hits.length === 0) return "no-hits";
+  if (OFF_TOPIC.test(query)) return "off-topic";
 
   const scores = hits.map((hit) => hit.score ?? 0);
   const maxScore = Math.max(...scores);
-  if (maxScore >= FAST_PATH_MIN_SCORE) return false;
-  if (maxScore > FAIL_FAST_MAX_SCORE) return false;
+  if (maxScore > FAIL_FAST_MAX_SCORE) return null;
 
   const terms = contentWords(query);
-  if (terms.length === 0) return maxScore <= FAIL_FAST_MAX_SCORE;
+  if (terms.length === 0) return "weak";
 
   const corpus = hits
     .map((hit) => hit.text ?? "")
     .join(" ")
     .toLowerCase();
   const overlap = terms.filter((term) => corpus.includes(term)).length;
-  return overlap === 0;
+  return overlap === 0 ? "weak" : null;
 }
 
 function citedSourceIds(card: Card): Set<string> {

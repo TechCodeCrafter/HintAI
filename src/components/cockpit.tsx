@@ -70,7 +70,7 @@ import { isFlightRecorder } from "@/lib/debug";
 import { downloadBetaDiagnostics } from "@/lib/instrumentation/beta-diagnostics";
 import { recordBetaEventOnce, noteBetaSessionStart } from "@/lib/instrumentation/beta-telemetry";
 import { downloadFlightLog } from "@/lib/instrumentation/flight-recorder";
-import { inferProductStateFromReason, productState } from "@/lib/product-states";
+import { productStateForSilence } from "@/lib/product-states";
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
@@ -1925,11 +1925,7 @@ function CardPane({
     !generated && card && card.citations.length > 0 ? (
       <VerifiedCitations citations={card.citations} overlay={overlay} onOpenCited={onOpenCited} />
     ) : null;
-  const productAlert =
-    !speaking && card?.reason
-      ? inferProductStateFromReason(card.reason) ??
-        (needsApiKey(card.reason) ? productState("missing-api-key") : productState("unsupported-answer"))
-      : null;
+  const productAlert = !speaking && card?.reason ? productStateForSilence(card) : null;
 
   return (
     <section className="ground-panel answer-panel" data-testid="card">

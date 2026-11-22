@@ -1,5 +1,7 @@
 /** User-facing product states — no stack traces or developer jargon. */
 
+import type { SilenceKind } from "./search/silence.ts";
+
 export type ProductStateCode =
   | "indexing"
   | "no-knowledge"
@@ -9,6 +11,7 @@ export type ProductStateCode =
   | "missing-api-key"
   | "microphone-unavailable"
   | "source-index-failure"
+  | "index-unavailable"
   | "session-not-authenticated";
 
 export type ProductState = {
@@ -40,7 +43,7 @@ const STATES: Record<ProductStateCode, Omit<ProductState, "code">> = {
   },
   "provider-failure": {
     title: "Model provider unavailable",
-    message: "Hint could not reach your configured model provider. Check your connection and try again.",
+    message: "Hint did not get a usable response from your model provider. The reason is below.",
   },
   "missing-api-key": {
     title: "API key required",
@@ -55,6 +58,10 @@ const STATES: Record<ProductStateCode, Omit<ProductState, "code">> = {
     title: "Source could not be indexed",
     message: "One or more files failed to index. Other sources in this Knowledge Space may still work.",
   },
+  "index-unavailable": {
+    title: "Index needs attention",
+    message: "Hint could not search a current index of this Knowledge Space. The reason is below.",
+  },
   "session-not-authenticated": {
     title: "Sign in required",
     message: "Sign in to use your Knowledge Spaces on this device.",
@@ -64,6 +71,22 @@ const STATES: Record<ProductStateCode, Omit<ProductState, "code">> = {
 
 export function productState(code: ProductStateCode): ProductState {
   return { code, ...STATES[code] };
+}
+
+/**
+ * The banner above a silent Card. The Card's own `silence` kind decides it, so
+ * a timeout is never shown as "your material does not support an answer". Text
+ * sniffing is only the fallback for Cards that carry no kind (store-level
+ * states, history saved before kinds existed).
+ */
+export function productStateForSilence(card: { reason?: string | null; silence?: SilenceKind }): ProductState {
+  const reason = card.reason ?? "";
+  if (card.silence === "transport") {
+    return productState(/api key/i.test(reason) ? "missing-api-key" : "provider-failure");
+  }
+  if (card.silence === "index") return productState("index-unavailable");
+  if (card.silence) return productState("unsupported-answer");
+  return inferProductStateFromReason(reason) ?? productState("unsupported-answer");
 }
 
 export function inferProductStateFromReason(reason: string | null | undefined): ProductState | null {
