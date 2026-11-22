@@ -93,6 +93,7 @@ test("a folder that cannot be listed yields no files rather than throwing", asyn
   assert.equal(dropped.folder, true);
   assert.deepEqual(dropped.files, []);
   assert.deepEqual(dropped.skipLabels, [SKIP_LABEL.failed]);
+  assert.deepEqual(dropped.skippedFiles, [{ path: "locked/", reason: SKIP_LABEL.failed }]);
 });
 
 test("nested build output cannot consume the walk cap, even in a root named build", async () => {
@@ -112,6 +113,9 @@ test("nested build output cannot consume the walk cap, even in a root named buil
   assert.equal(buildReads, 0);
   assert.equal(dropped.capped, false);
   assert.deepEqual(dropped.skipLabels, [SKIP_LABEL.vendor]);
+  // The folder that was not opened is named, and the name survives the scan.
+  assert.deepEqual(dropped.skippedFiles, [{ path: "site/BUILD/", reason: SKIP_LABEL.vendor }]);
+  assert.deepEqual(scanFileList(dropped.files, dropped).skippedFiles, dropped.skippedFiles);
   assert.deepEqual(scanFileList(dropped.files).candidates.map(({ path }) => path), ["main.ts"]);
 });
 

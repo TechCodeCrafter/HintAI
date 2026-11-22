@@ -23,6 +23,12 @@ export type BuildChunksOptions = {
   structured?: boolean;
   chunkScope?: ChunkIdentityScope;
   sourceId?: string;
+  /**
+   * Maps a stored path to the path the evidence rules judge. Stored paths
+   * start with the name of the folder the person chose; without this, a
+   * folder named `build` or `out` had every file treated as build output.
+   */
+  pathForRules?: (path: string) => string;
 };
 
 export function sanitizePathPrefix(displayName: string): string {

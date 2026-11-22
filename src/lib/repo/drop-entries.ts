@@ -5,7 +5,7 @@
  * the same `webkitRelativePath` a folder chooser would give them.
  */
 
-import { GROUPED_DROP_ROOT, markGroupedDropFile, shouldSkipDirectory, SKIP_LABEL } from "./folder.ts";
+import { GROUPED_DROP_ROOT, markGroupedDropFile, shouldSkipDirectory, SKIP_LABEL, type SkippedFile } from "./folder.ts";
 
 type DropFileEntry = {
   isFile: true;
@@ -44,6 +44,8 @@ export type DroppedMaterial = {
   files: File[];
   capped: boolean;
   skipLabels: string[];
+  /** Folders that were not opened and files that could not be read, with reasons. */
+  skippedFiles: SkippedFile[];
 };
 
 const MAX_WALKED_FILES = 20_000;
@@ -93,6 +95,7 @@ function entryOf(item: DropItem): DropEntry | undefined {
 export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
   const files: File[] = [];
   const skipLabels = new Set<string>();
+  const skippedFiles: SkippedFile[] = [];
   let folder = false;
   let capped = false;
 
@@ -110,7 +113,7 @@ export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
       }
     }
     if (entries.length === 0 && loose.length === 0) {
-      return { folder, files: tryRead(() => Array.from(source.files ?? [])) ?? [], capped, skipLabels: [] };
+      return { folder, files: tryRead(() => Array.from(source.files ?? [])) ?? [], capped, skipLabels: [], skippedFiles };
     }
     folder = entries.some((entry) => entry.isDirectory);
     const grouped = folder && entries.length + loose.length > 1;
@@ -133,6 +136,7 @@ export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
         const file = await safeCallback<File>((ok, fail) => entry.file(ok, fail));
         if (!file) {
           skipLabels.add(SKIP_LABEL.failed);
+          skippedFiles.push({ path: pathWithinRoot || entry.name, reason: SKIP_LABEL.failed });
           return;
         }
         const path = rootPrefix ? `${rootPrefix}/${pathWithinRoot}` : grouped ? `${GROUPED_DROP_ROOT}/${file.name}` : "";
@@ -141,11 +145,14 @@ export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
       }
       if (pathWithinRoot && shouldSkipDirectory(pathWithinRoot)) {
         skipLabels.add(SKIP_LABEL.vendor);
+        // Not opened, so how many files it holds is not known here.
+        skippedFiles.push({ path: `${pathWithinRoot}/`, reason: SKIP_LABEL.vendor });
         return;
       }
       const reader = tryRead(() => entry.createReader());
       if (!reader) {
         skipLabels.add(SKIP_LABEL.failed);
+        skippedFiles.push({ path: `${pathWithinRoot || entry.name}/`, reason: SKIP_LABEL.failed });
         return;
       }
       // Reading one batch at a time prevents a huge directory from having to
@@ -154,6 +161,7 @@ export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
         const batch = await safeCallback<DropEntry[]>((ok, fail) => reader.readEntries(ok, fail));
         if (!batch) {
           skipLabels.add(SKIP_LABEL.failed);
+          skippedFiles.push({ path: `${pathWithinRoot || entry.name}/`, reason: SKIP_LABEL.failed });
           return;
         }
         if (batch.length === 0) return;
@@ -183,5 +191,5 @@ export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
     // unexpected browser error and show that part of the selection was unreadable.
     skipLabels.add(SKIP_LABEL.failed);
   }
-  return { folder, files, capped, skipLabels: [...skipLabels] };
+  return { folder, files, capped, skipLabels: [...skipLabels], skippedFiles };
 }

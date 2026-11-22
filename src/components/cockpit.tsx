@@ -74,7 +74,9 @@ import { inferProductStateFromReason, productState } from "@/lib/product-states"
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
-import { isConfigHeavy, type FolderLoadOptions } from "@/lib/repo/folder";
+import { isWeakPack, type FolderLoadOptions } from "@/lib/repo/folder";
+import { IndexSummaryNote } from "@/components/index-summary-note";
+import { useIndexedFileCount } from "@/components/use-indexed-file-count";
 
 type MobilePane = "repo" | "room" | "card";
 
@@ -1296,7 +1298,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
           (item.kind === "file" && (item.sha === c.sha || item.pr === c.pr)),
       ) ?? false,
   );
-  const weak = pack.id !== "northstar-payments" && isConfigHeavy(pack.files.map((f) => f.path));
+  const weak = pack.id !== "northstar-payments" && isWeakPack(pack.files.map((f) => f.path));
   const visible = pack.files.filter((f) => !filter || f.path.toLowerCase().includes(filter.toLowerCase()));
   const visiblePdfs = pdfs.filter((source) => !filter || source.path.toLowerCase().includes(filter.toLowerCase()));
   const sourceCount = pack.files.length + pdfs.length;
@@ -1364,6 +1366,9 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
       </div>
       <div className="grid min-h-0 min-w-0 flex-1 grid-rows-[minmax(16rem,0.55fr)_minmax(0,1fr)] gap-4 overflow-hidden px-4 pb-4">
         <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+          {/* Inside the file-list cell, so it takes its line from the list and
+              the code viewer below keeps its height. */}
+          <IndexSummaryNote className="mb-2 shrink-0" />
           <label className="relative mb-3 block shrink-0">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
             <input
@@ -1885,6 +1890,7 @@ function CardPane({
   const searchReady = useMeetHint((s) => s.contextStatus === "ready");
   const activeSpaceId = useMeetHint((s) => s.activeSpaceId);
   const sources = useMeetHint((s) => s.sources);
+  const indexedFileCount = useIndexedFileCount();
   const heardQuestion = useMeetHint((s) => s.heardQuestion);
   const theySaid = card?.query || heardQuestion;
   const chips = useMemo(
@@ -2042,7 +2048,7 @@ function CardPane({
           <AnswerHistory onOpenCited={onOpenCited} overlay={overlay} />
         </div>
         <div className="shrink-0 space-y-3 px-5 py-4">
-          <BetaSearchScopeNote spaceName={pack.name} sourceCount={sources.length} ready={searchReady} />
+          <BetaSearchScopeNote spaceName={pack.name} sourceCount={indexedFileCount} ready={searchReady} />
           {chips.length > 0 ? (
             <>
               <p className="ground-hint">Try another question</p>

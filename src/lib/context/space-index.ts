@@ -9,6 +9,7 @@ import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { SpaceNotFoundError } from "./space-types.ts";
 import type { StoredSource } from "./types.ts";
 import { emptyIndexStats, type IndexReport } from "./index-types.ts";
+import { mergeIndexSummaries, type IndexSummary } from "./index-summary.ts";
 
 export type IndexedSpaceRuntime = IndexedRuntime & {
   memberContextIds: string[];
@@ -64,6 +65,7 @@ export async function indexSpace(
   const allChunks: IndexedRuntime["chunks"] = [];
   const allSources: StoredSource[] = [];
   const reports: IndexReport[] = [];
+  const summaries: IndexSummary[] = [];
   let weak = false;
   let openFile: string | null = null;
   const files: RepoFile[] = [];
@@ -90,6 +92,7 @@ export async function indexSpace(
     weak = weak || runtime.weak;
     openFile = openFile ?? runtime.openFile;
     reports.push(runtime.report);
+    summaries.push(runtime.summary);
   }
 
   const primary = await repo.getContext(space.primaryContextId);
@@ -112,7 +115,8 @@ export async function indexSpace(
     commits: [],
     excludePatterns: excludePatterns ?? primaryPack.excludePatterns,
   };
-  const { pack: pruned, weak: pruneWeak } = prunePack(unionPack);
+  const prefixByPath = new Map(allSources.map((source) => [source.path, source.pathPrefix]));
+  const { pack: pruned, weak: pruneWeak } = prunePack(unionPack, (path) => prefixByPath.get(path) ?? "");
   const use = pruned.files.length > 0 ? pruned : unionPack;
   const scopedChunks = tagChunksForScope(allChunks, {
     workspaceId: space.workspaceId ?? defaultWorkspaceId(),
@@ -130,6 +134,9 @@ export async function indexSpace(
     openFile: openFile ?? preferredOpenFile(use) ?? use.files[0]?.path ?? null,
     weak: weak || pruneWeak,
     report,
+    // Per-context summaries are added up rather than recounted from the union,
+    // so each context's own exclusions decide the reason shown for its files.
+    summary: mergeIndexSummaries(summaries),
     cancelled: false,
     memberContextIds: members,
     allSources,

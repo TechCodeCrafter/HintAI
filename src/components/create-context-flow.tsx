@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
+import { IndexSummaryNote } from "@/components/index-summary-note";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
 import { MaterialUploadPanel } from "@/components/material-upload-panel";
@@ -373,6 +374,7 @@ export function CreateContextFlow() {
                   {symbolCount > 0 ? <MetricCard label="Code symbols" value={symbolCount} /> : null}
                   <MetricCard label="Progress" value={`${progress}%`} />
                 </div>
+                {indexingDone ? <IndexSummaryNote /> : null}
                 {filesNote ? (
                   <p className="text-sm text-warn" role="status" data-testid="indexing-files-note">
                     {filesNote}

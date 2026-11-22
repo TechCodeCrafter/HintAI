@@ -6,6 +6,16 @@ export const CHUNKER_VERSION = 2;
 /**
  * Structured symbol chunks are implemented but off. Do not bump
  * CHUNKER_VERSION until this flips — cached window rows stay valid.
+ *
+ * Off for a measured reason. The structured chunker emits one chunk per
+ * parsed symbol and nothing for the text between symbols, and the regex
+ * parser ends some symbols early. Over `src/lib/search` and `src/lib/context`
+ * (70 files) 67% of non-blank lines fell inside a chunk; the rest, including
+ * about 2,800 lines of code that are not imports, comments or closing braces,
+ * were in no chunk and could not be searched or cited. Line windows cover
+ * every line. Before this flips, the gaps between symbols need their own
+ * chunks and answer quality needs an eval; it also makes about 3.6 times as
+ * many chunks to embed.
  */
 export const USE_STRUCTURED_CHUNKER = false;
 /**

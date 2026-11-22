@@ -5,6 +5,7 @@ import {
   type FolderLoadOptions,
   type FolderPreview,
   type FolderScan,
+  type SkippedFile,
 } from "@/lib/repo/folder";
 import { canPickDirectory, pickFolderScan } from "@/lib/repo/pick-folder";
 
@@ -44,9 +45,12 @@ export function useFolderPicker() {
     inputRef.current?.click();
   }
 
-  function acceptList(list: FileList | File[] | null, detail?: { capped?: boolean; skipLabels?: string[] }) {
+  function acceptList(
+    list: FileList | File[] | null,
+    detail?: { capped?: boolean; skipLabels?: string[]; skippedFiles?: SkippedFile[] },
+  ) {
     if (!list) return;
-    setScan(scanFileList(list, { skipLabels: detail?.skipLabels }));
+    setScan(scanFileList(list, { skipLabels: detail?.skipLabels, skippedFiles: detail?.skippedFiles }));
     setCapped(Boolean(detail?.capped));
   }
 
@@ -71,6 +75,7 @@ export function useFolderPicker() {
       includeTests,
       selectedCount: scan.selected - pdfs.length,
       skipLabels: scan.skipLabels,
+      skippedFiles: scan.skippedFiles,
     };
     cancelReview();
     return { files, pdfs, options };

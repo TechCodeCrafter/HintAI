@@ -3,13 +3,14 @@ import { deriveDocumentStructure } from "../document/structure.ts";
 import { PDF_LIMITS } from "../document/pdf/limits.ts";
 import { READINESS_NOTES } from "../document/pdf/notes.ts";
 import { pathExcluded } from "./exclusions.ts";
-import { preferredOpenFile, prunePack } from "../repo/folder.ts";
+import { preferredOpenFile, prunePack, storedPathForRules } from "../repo/folder.ts";
 import type { Chunk, IndexedChunk, RepoFile, RepoPack } from "../repo/types.ts";
 import { isDocumentChunk } from "../repo/types.ts";
 import { defaultWorkspaceId } from "../auth/workspace.ts";
 import { tagChunksForScope } from "../search/retrieval-scope.ts";
-import { buildChunks, packVocabulary } from "../search/retrieve.ts";
+import { buildChunks, isEvidencePath, packVocabulary } from "../search/retrieve.ts";
 import type { HydratedRuntime } from "./hydrate.ts";
+import { summarizeIndex, type IndexSummary } from "./index-summary.ts";
 import { packFromSources } from "./hydrate.ts";
 import {
   documentLedgerKey,
@@ -41,8 +42,9 @@ export type IndexOptions = {
   normalizerVersion?: number;
   structureVersion?: number;
   /**
-   * Keep every persisted source. Folder import still prunes; the bench uses
-   * this so a 1,000-file Context is actually 1,000 files.
+   * Keep every persisted source, including ones in vendor and build folders,
+   * in stored order. The bench uses this so a 1,000-file Context is actually
+   * 1,000 files.
    */
   skipPrune?: boolean;
   /** When this returns true, persist may still finish; the caller must not apply. */
@@ -56,6 +58,8 @@ export type IndexOptions = {
 
 export type IndexedRuntime = HydratedRuntime & {
   report: IndexReport;
+  /** Files and chunks actually searchable, and every stored file that is not. */
+  summary: IndexSummary;
   cancelled: boolean;
 };
 
@@ -124,7 +128,26 @@ export function chunksFromFile(
       files: [file],
       commits: [],
     },
-    { ...options, chunkScope, sourceId: source.sourceId },
+    {
+      ...options,
+      chunkScope,
+      sourceId: source.sourceId,
+      pathForRules: (path) => storedPathForRules(path, source.pathPrefix),
+    },
+  );
+}
+
+/**
+ * A cached "no chunks" row for a file that should have chunks is not reused.
+ * Rows like that were written while the folder's own name was judged (a
+ * folder called `build`), and would otherwise keep the file unsearchable
+ * until its content changed.
+ */
+function staleEmptyLedger(ledger: IndexedSourceRecord, source: TextStoredSource): boolean {
+  return (
+    ledger.chunkCount === 0 &&
+    source.content.trim().length > 0 &&
+    isEvidencePath(storedPathForRules(source.path, source.pathPrefix))
   );
 }
 
@@ -297,7 +320,8 @@ export async function indexContext(
   if (!context) throw new ContextNotFoundError(contextId);
   const sources = await repo.listSources(contextId);
   const pack = packFromSources(context, sources);
-  const { pack: pruned, weak } = prunePack(pack);
+  const byPath = new Map(sources.map((source) => [source.path, source]));
+  const { pack: pruned, weak } = prunePack(pack, (path) => byPath.get(path)?.pathPrefix ?? "");
   const use = options.skipPrune ? pack : pruned.files.length > 0 ? pruned : pack;
   timings.hydrateMs = nowMs() - hydrateStart;
 
@@ -308,7 +332,6 @@ export async function indexContext(
     stats.deletedSourceCount += excludedIds.length;
   }
 
-  const byPath = new Map(sources.map((source) => [source.path, source]));
   const active = use.files
     .map((file) => {
       const source = byPath.get(file.path);
@@ -339,7 +362,7 @@ export async function indexContext(
     if (options.isCancelled?.()) break;
     const ledger = ledgerBySource.get(source.id);
     const known = Boolean(ledger);
-    if (ledger && ledgerValid(ledger, source, chunkerVersion, indexVersion)) {
+    if (ledger && ledgerValid(ledger, source, chunkerVersion, indexVersion) && !staleEmptyLedger(ledger, source)) {
       const readStart = nowMs();
       const cached = await repo.readIndexedChunks(contextId, source.id);
       timings.cacheReadMs += nowMs() - readStart;
@@ -412,6 +435,7 @@ export async function indexContext(
     openFile: preferredOpenFile(use) ?? use.files[0]?.path ?? null,
     weak,
     report,
+    summary: summarizeIndex(sources, scopedChunks, exclude),
     cancelled,
   };
 }

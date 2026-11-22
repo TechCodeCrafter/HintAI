@@ -219,7 +219,7 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
   const useStructured = options?.structured ?? USE_STRUCTURED_CHUNKER;
   const chunks: Chunk[] = [];
   for (const file of pack.files) {
-    if (!isEvidencePath(file.path)) continue;
+    if (!isEvidencePath(options?.pathForRules ? options.pathForRules(file.path) : file.path)) continue;
     if (pathExcluded(file.path, pack.excludePatterns)) continue;
     if (useStructured) {
       try {
@@ -344,6 +344,15 @@ function toWords(source: string): string[] {
   // Keep snake_case identifiers whole so query tokens like smoke_gate_91626 match code.
   for (const match of lowered.match(/[a-z0-9]+(?:_[a-z0-9]+)+/g) ?? []) {
     if (match.length > 2) out.push(match);
+  }
+  // `tokenize` keeps a typed "dead-letter" or "runExporter" as one term
+  // ("dead-letter", "runexporter"). Without the whole form here that term
+  // matched nothing: the text only held "dead", "letter", "run", "exporter".
+  for (const match of lowered.match(/[a-z0-9]+(?:-[a-z0-9]+)+/g) ?? []) {
+    out.push(match);
+  }
+  for (const match of source.match(/[A-Za-z0-9]*[a-z0-9][A-Z][A-Za-z0-9]*/g) ?? []) {
+    out.push(match.toLowerCase());
   }
   return out;
 }
@@ -577,6 +586,7 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   const phrase = terms.join(" ");
 
   const scored: Hit[] = [];
+  const lastResort: Hit[] = [];
   for (const chunk of chunks) {
     const idx = indexOf(chunk);
     let score = 0;
@@ -642,6 +652,9 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     // directory.
     const asksAboutTests = queryAsksAboutTests(query);
     if (isTestEvidencePath(idx.path) && !asksAboutTests) {
+      // The penalty is a demotion. Where it would erase the match, keep the
+      // chunk aside: it is used only if nothing else in the material matches.
+      if (score > 0 && score <= RETRIEVAL_WEIGHTS.testPathPenalty) lastResort.push({ ...chunk, score });
       score -= RETRIEVAL_WEIGHTS.testPathPenalty;
     }
     if (isAuthoritativePath(idx.path) && !asksAboutTests) {
@@ -653,6 +666,10 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     }
     if (score > 0) scored.push({ ...chunk, score });
   }
+  // A string that exists only in a test file used to be unsearchable: the
+  // penalty took its score below zero. The weight's own rule is that a test
+  // file wins "when nothing else matches at all", so that is when these count.
+  if (scored.length === 0) scored.push(...lastResort);
   if (scored.length === 0) return [];
 
   // Rank files by their best chunk, with a modest bonus for corroborating

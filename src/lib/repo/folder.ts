@@ -44,10 +44,18 @@ export function shouldSkipDirectory(relativePath: string): boolean {
   return SKIP_DIR.test(relativePath);
 }
 
+/**
+ * One file left out of the index, and why. `count` is set when the entry is a
+ * folder that was not opened, and is the number of files inside it.
+ */
+export type SkippedFile = { path: string; reason: string; count?: number };
+
 export type FolderLoadOptions = {
   includeTests?: boolean;
   selectedCount?: number;
   skipLabels?: string[];
+  /** Files an earlier step (folder review, drag and drop) already left out. */
+  skippedFiles?: SkippedFile[];
 };
 
 export type FolderCandidate = {
@@ -64,6 +72,8 @@ export type FolderScan = {
   pdfs: File[];
   skipLabels: string[];
   failed: string[];
+  /** Every file this scan left out, with the reason. Absent on older callers. */
+  skippedFiles?: SkippedFile[];
 };
 
 export type FolderPreview = {
@@ -85,6 +95,8 @@ export type FolderLoad = {
   truncated: boolean;
   failed: string[];
   skipLabels: string[];
+  /** Every selected file that is not in `pack`, with the reason. */
+  skippedFiles: SkippedFile[];
 };
 
 export type FsEntry =
@@ -258,20 +270,64 @@ export function isConfigHeavy(paths: string[]): boolean {
   return paths.length > 0 && code < 3 && docs === 0 && other > code;
 }
 
-export function prunePack(pack: RepoPack): { pack: RepoPack; weak: boolean; dropped: number } {
+/**
+ * The path the folder rules judge: the path inside what the person selected.
+ *
+ * Each first segment within a grouped drop was explicitly selected, not
+ * discovered inside another folder (including names like "build"), so it is
+ * not part of what the rules look at. The same holds for `pathPrefix`, the
+ * selected folder's own name, which every stored path starts with. Judging it
+ * made a folder named `build`, `out`, `dist` or `vendor` load in full and
+ * index nothing.
+ */
+export function storedPathForRules(path: string, pathPrefix = ""): string {
+  if (path.startsWith(GROUPED_DROP_STORAGE_PREFIX)) {
+    return dropFirstPathSegment(path.slice(GROUPED_DROP_STORAGE_PREFIX.length));
+  }
+  return pathPrefix && path.startsWith(pathPrefix) ? path.slice(pathPrefix.length) : path;
+}
+
+/** True when a stored file sits in a vendor or build folder and is never indexed. */
+export function inSkippedFolder(path: string, pathPrefix = ""): boolean {
+  return shouldSkipDirectory(storedPathForRules(path, pathPrefix));
+}
+
+/** Files that look like source or documents, by the same score the 500-file cap ranks on. */
+function looksLikeMaterial(path: string): boolean {
+  return scorePath(storedPathForRules(path)) >= 2;
+}
+
+/**
+ * "Mostly CI/config" is judged on the files that look like source or
+ * documents. Config that sits beside real code is not a warning.
+ */
+export function isWeakPack(paths: string[]): boolean {
+  return isConfigHeavy(paths.filter(looksLikeMaterial));
+}
+
+/**
+ * Orders a pack best-first and removes vendor and build folders.
+ *
+ * It used to also remove every file whose path scored under 2: any YAML or
+ * JSON outside `src/`, every test, and any file in a language or folder the
+ * score does not know (`plugins/tax/VatRates.php`, `web/forms/Amount.vue`).
+ * Those files had passed the load filters and were stored, then were never
+ * chunked, and nothing said so. The score now only orders files and ranks
+ * them for the 500-file cap; it does not decide what is searchable.
+ *
+ * `prefixOf` returns the selected folder's prefix for a stored path, so the
+ * folder's own name is not judged. Packs that were never stored have none.
+ */
+export function prunePack(
+  pack: RepoPack,
+  prefixOf: (path: string) => string = () => "",
+): { pack: RepoPack; weak: boolean; dropped: number } {
   const kept = pack.files
-    .filter((f) => {
-      // Each first segment within a grouped drop was explicitly selected, not
-      // discovered inside another folder (including names like "build").
-      const pathForRules = f.path.startsWith(GROUPED_DROP_STORAGE_PREFIX)
-        ? dropFirstPathSegment(f.path.slice(GROUPED_DROP_STORAGE_PREFIX.length))
-        : f.path;
-      return !shouldSkipDirectory(pathForRules) && scorePath(pathForRules) >= 2;
-    })
+    .filter((f) => !inSkippedFolder(f.path, prefixOf(f.path)))
     .sort((a, b) => scorePath(b.path) - scorePath(a.path) || a.path.localeCompare(b.path));
   const dropped = pack.files.length - kept.length;
   const next = kept.length > 0 ? { ...pack, files: kept, description: `Local folder · ${kept.length} files` } : pack;
-  return { pack: next, dropped, weak: isConfigHeavy(kept.map((f) => f.path)) };
+  return { pack: next, dropped, weak: isWeakPack(kept.map((f) => f.path)) };
 }
 
 function dropFirstPathSegment(path: string): string {
@@ -307,9 +363,13 @@ export function sizeSkipReason(path: string, size: number, project = true): stri
   return null;
 }
 
-export function scanFileList(list: FileList | File[], options?: Pick<FolderLoadOptions, "skipLabels">): FolderScan {
+export function scanFileList(
+  list: FileList | File[],
+  options?: Pick<FolderLoadOptions, "skipLabels" | "skippedFiles">,
+): FolderScan {
   const files = Array.from(list);
   const skipLabels = new Set(options?.skipLabels);
+  const skippedFiles: SkippedFile[] = [...(options?.skippedFiles ?? [])];
   const candidates: FolderCandidate[] = [];
   const pdfs: File[] = [];
   for (const file of files) {
@@ -325,6 +385,7 @@ export function scanFileList(list: FileList | File[], options?: Pick<FolderLoadO
     const skip = pathReason ?? sizeSkipReason(pathForRules, file.size, project);
     if (skip) {
       skipLabels.add(skip);
+      skippedFiles.push({ path, reason: skip });
       continue;
     }
     candidates.push({ file, path, pathForRules, score: scorePath(pathForRules) });
@@ -336,6 +397,7 @@ export function scanFileList(list: FileList | File[], options?: Pick<FolderLoadO
     pdfs,
     skipLabels: [...skipLabels],
     failed: [],
+    skippedFiles,
   };
 }
 
@@ -398,6 +460,7 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
   const candidates: FolderCandidate[] = [];
   const pdfs: File[] = [];
   const failed: string[] = [];
+  const skippedFiles: SkippedFile[] = [];
   let selected = 0;
 
   async function walk(dir: DirectoryLike, prefix: string): Promise<void> {
@@ -406,7 +469,10 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
       if (entry.kind === "directory") {
         if (shouldSkipDirectory(rel)) {
           skipLabels.add(SKIP_LABEL.vendor);
-          selected += await countDirectoryFiles(entry);
+          // Not opened: one line for the folder, with how many files it held.
+          const count = await countDirectoryFiles(entry);
+          selected += count;
+          if (count > 0) skippedFiles.push({ path: `${rel}/`, reason: SKIP_LABEL.vendor, count });
           continue;
         }
         await walk(entry, rel);
@@ -416,6 +482,7 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
       const pathReason = pathSkipReason(rel);
       if (pathReason && pathReason !== SKIP_LABEL.types) {
         skipLabels.add(pathReason);
+        skippedFiles.push({ path: rel, reason: pathReason });
         continue;
       }
       let file: File;
@@ -424,6 +491,7 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
       } catch {
         skipLabels.add(SKIP_LABEL.failed);
         failed.push(entry.name);
+        skippedFiles.push({ path: rel, reason: SKIP_LABEL.failed });
         continue;
       }
       if (isPdfFile(file)) {
@@ -433,6 +501,7 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
       const reason = pathReason ?? sizeSkipReason(rel, file.size);
       if (reason) {
         skipLabels.add(reason);
+        skippedFiles.push({ path: rel, reason });
         continue;
       }
       candidates.push({ file, path: rel, score: scorePath(rel) });
@@ -440,7 +509,7 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
   }
 
   await walk(handle, "");
-  return { selected, folderName, candidates, pdfs, skipLabels: [...skipLabels], failed };
+  return { selected, folderName, candidates, pdfs, skipLabels: [...skipLabels], failed, skippedFiles };
 }
 
 function capReason(count: number, totalBytes: number, nextBytes: number): string | null {
@@ -449,18 +518,32 @@ function capReason(count: number, totalBytes: number, nextBytes: number): string
   return null;
 }
 
-function rankedCandidates(scan: FolderScan, includeTests: boolean): { candidates: FolderCandidate[]; skipLabels: Set<string> } {
+function rankedCandidates(
+  scan: FolderScan,
+  includeTests: boolean,
+): { candidates: FolderCandidate[]; skipLabels: Set<string>; skippedFiles: SkippedFile[] } {
+  const skippedFiles = [...(scan.skippedFiles ?? [])];
   const candidates = [...scan.candidates]
-    .filter((item) => includeTests || !isTestPath(item.pathForRules ?? item.path))
+    .filter((item) => {
+      if (includeTests || !isTestPath(item.pathForRules ?? item.path)) return true;
+      skippedFiles.push({ path: item.path, reason: SKIP_LABEL.tests });
+      return false;
+    })
     .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
   const skipLabels = new Set(scan.skipLabels);
   if (!includeTests && candidates.length < scan.candidates.length) skipLabels.add(SKIP_LABEL.tests);
-  return { candidates, skipLabels };
+  return { candidates, skipLabels, skippedFiles };
 }
 
 export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions): Promise<FolderLoad> {
-  const { candidates, skipLabels } = rankedCandidates(scan, options?.includeTests ?? true);
+  const { candidates, skipLabels, skippedFiles } = rankedCandidates(scan, options?.includeTests ?? true);
   for (const label of options?.skipLabels ?? []) skipLabels.add(label);
+  // Every `continue` below records the file it leaves out. A file must not
+  // disappear between the selection and the index without a line here.
+  const seen = new Set(skippedFiles.map((item) => item.path));
+  for (const item of options?.skippedFiles ?? []) {
+    if (!seen.has(item.path)) skippedFiles.push(item);
+  }
   const selected = options?.selectedCount ?? scan.selected;
   const packFiles: RepoFile[] = [];
   const failed = [...scan.failed];
@@ -471,6 +554,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     if (reason) {
       truncated = true;
       skipLabels.add(reason);
+      skippedFiles.push({ path: item.path, reason });
       continue;
     }
     const ext = extOf(item.path);
@@ -483,6 +567,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
         content = decodeFileText(buffer);
         if (!looksText(content)) {
           skipLabels.add(SKIP_LABEL.binaries);
+          skippedFiles.push({ path: item.path, reason: SKIP_LABEL.binaries });
           continue;
         }
         if (ext === "csv") content = parseCsvText(content);
@@ -491,10 +576,12 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
       console.warn(`Could not read ${item.path}`, error);
       failed.push(item.path.split("/").pop() ?? item.path);
       skipLabels.add(SKIP_LABEL.failed);
+      skippedFiles.push({ path: item.path, reason: SKIP_LABEL.failed });
       continue;
     }
     if (!content.trim()) {
       skipLabels.add(SKIP_LABEL.empty);
+      skippedFiles.push({ path: item.path, reason: SKIP_LABEL.empty });
       continue;
     }
     total += item.file.size;
@@ -514,6 +601,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     truncated,
     failed,
     skipLabels: [...skipLabels],
+    skippedFiles,
   };
 }
 

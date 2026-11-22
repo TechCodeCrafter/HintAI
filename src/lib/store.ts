@@ -89,7 +89,9 @@ import {
   truncationNotice,
   type FolderLoad,
   type FolderLoadOptions,
+  type SkippedFile,
 } from "@/lib/repo/folder";
+import { reportIndexSummary, type IndexSummary } from "@/lib/context/index-summary";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
@@ -229,6 +231,12 @@ type MeetHintState = {
   listenBlocked: "iframe" | "denied" | "missing" | "speech" | null;
   folderError: string | null;
   packNotice: string | null;
+  /**
+   * Files the last folder or file selection left out before storing, with
+   * reasons, and the space it was loaded into. They were never stored, so
+   * this is known for this session only.
+   */
+  loadSkipped: { spaceId: string; files: SkippedFile[] } | null;
   utterances: Utterance[];
   typedQuery: string;
   heardQuestion: string | null;
@@ -497,7 +505,9 @@ function patchFromSpaceRuntime(
   runtime: Pick<
     IndexedSpaceRuntime,
     "memberContextIds" | "allSources" | "pack" | "chunks" | "vocab" | "openFile"
-  >,
+  > & { summary?: IndexSummary },
+  /** Files a folder load left out before storing, for the debug line only. */
+  notLoaded: SkippedFile[] = [],
 ): Pick<
   MeetHintState,
   | "activeSpaceId"
@@ -510,6 +520,9 @@ function patchFromSpaceRuntime(
   | "vocab"
   | "openFile"
 > {
+  // Every index pass that reaches the screen goes through here, so this is
+  // the one place the "Indexed X files, Y chunks" debug line is written.
+  if (runtime.summary) reportIndexSummary(space.name, runtime.summary, notLoaded);
   return {
     activeSpaceId: space.id,
     activeContextId: space.primaryContextId,
@@ -562,6 +575,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   listenBlocked: null,
   folderError: null,
   packNotice: null,
+  loadSkipped: null,
   currentMeeting: null,
   meetingHistory: [],
   selectedClaimId: null,
@@ -851,7 +865,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       }
       set({
         contexts,
-        ...patchFromSpaceRuntime(space, hydrated),
+        ...patchFromSpaceRuntime(space, hydrated, load.skippedFiles),
         loadingFolder: false,
         contextStatus: "ready",
         contextUpdating: false,
@@ -864,6 +878,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           weak: hydrated.weak,
           fileCount: hydrated.pack.files.length,
         }),
+        loadSkipped: { spaceId: space.id, files: load.skippedFiles },
       });
       const ws = currentWorkspaceId() ?? defaultWorkspaceId();
       recordBetaEvent("SOURCE_CONNECTED", { workspaceId: ws, spaceId: space.id, meta: { fileCount: hydrated.pack.files.length } });
@@ -1294,7 +1309,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         .join(", ");
       set({
         contexts,
-        ...patchFromSpaceRuntime(space, hydrated),
+        ...patchFromSpaceRuntime(space, hydrated, load.skippedFiles),
         loadingFolder: false,
         contextStatus: "ready",
         contextUpdating: false,
@@ -1307,6 +1322,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           weak: hydrated.weak,
           fileCount: hydrated.pack.files.length,
         }),
+        loadSkipped: { spaceId: space.id, files: load.skippedFiles },
       });
       get().appendUtterance({
         at: Date.now(),

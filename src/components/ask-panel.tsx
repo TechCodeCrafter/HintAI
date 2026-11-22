@@ -4,6 +4,7 @@ import { AnswerFeedback } from "@/components/answer-feedback";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
+import { useIndexedFileCount } from "@/components/use-indexed-file-count";
 import { ContextShell } from "@/components/context-shell";
 import { ProductStateAlert } from "@/components/product-state-alert";
 import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
@@ -48,6 +49,8 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
 
   const ready = contextStatus === "ready" && activeSpaceId === spaceId;
   const sourceCount = useMeetHint((s) => s.sources.length);
+  // The note says "indexed", so it counts files search can reach, not files stored.
+  const indexedFileCount = useIndexedFileCount();
 
   useEffect(() => {
     if (!ready) return;
@@ -68,7 +71,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
         <div className="space-y-2">
           <p className="mh-eyebrow">Ask</p>
           <h1 className="mh-display text-4xl sm:text-5xl">{pack.name}</h1>
-          <BetaSearchScopeNote spaceName={pack.name} sourceCount={sourceCount} ready={ready} />
+          <BetaSearchScopeNote spaceName={pack.name} sourceCount={indexedFileCount} ready={ready} />
           <p className="text-xs text-muted">Test search here — Live is the core experience during your call.</p>
         </div>
         {indexing ? <ProductStateAlert state={productState("indexing")} /> : null}
