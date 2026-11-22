@@ -524,7 +524,9 @@ export function namedPaths(query: string): string[] {
   return (query.match(/[A-Za-z0-9_./-]+\.[A-Za-z0-9]+/g) ?? []).map((p) => p.toLowerCase());
 }
 
-const MAX_PER_FILE = 3;
+// Same cap as the fused hybrid ranking (`capPerFile` in hybrid.ts), so a
+// question gets the same spread of files with or without embeddings.
+const MAX_PER_FILE = RETRIEVAL_WEIGHTS.maxChunksPerFile;
 const MAX_PER_FILE_KIND = 2;
 
 export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[] {
@@ -787,12 +789,15 @@ export async function hybridRetrieve(
   const { vectorCacheKey } = await import("./retrieval-scope.ts");
   const cached = await vectorStore.get(chunks.map((chunk) => vectorCacheKey(chunk)));
   const lexicalHits = retrieve(query, chunks, limit * 2);
-  const { retrieveStructural } = await import("./hybrid.ts");
-  const structuralHits = retrieveStructural(query, chunks, limit * 2);
+  const { candidatesForCap, capPerFile, retrieveStructural } = await import("./hybrid.ts");
+  // These two channels rank chunks, not files, so each is asked for everything
+  // it scored and `candidatesForCap` picks the window: the top `limit * 2` as
+  // before, plus the chunks from other files the per-file cap would promote.
+  const structuralHits = candidatesForCap(retrieveStructural(query, chunks, chunks.length), limit * 2);
   let semanticHits: Hit[] = [];
   if (cached.size > 0) {
     try {
-      semanticHits = await semanticRetrieve(query, chunks, vectorStore, limit * 2);
+      semanticHits = candidatesForCap(await semanticRetrieve(query, chunks, vectorStore, chunks.length), limit * 2);
     } catch {
       llmDebug("[retrieve] semantic skipped: embed failed");
     }
@@ -801,6 +806,7 @@ export async function hybridRetrieve(
   }
 
   if (semanticHits.length === 0 && structuralHits.length === 0) {
+    // `retrieve` has already applied the per-file cap.
     const lexical = lexicalHits.slice(0, limit);
     return finishTraces(
       query,
@@ -847,7 +853,11 @@ export async function hybridRetrieve(
     })),
   );
   combined.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
-  return combined.slice(0, limit);
+  // Each channel ranks on its own, and the semantic and structural channels
+  // have no per-file limit, so the union can be one file several times over.
+  // This is the last step before the hits reach routeSearchAnswer, localCard
+  // or generateAnswer: cap per file first, then take the top `limit`.
+  return capPerFile(combined, limit);
 }
 
 function finishTraces(query: string, hits: Hit[]): Hit[] {

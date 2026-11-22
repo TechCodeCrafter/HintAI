@@ -57,6 +57,12 @@ export const RETRIEVAL_WEIGHTS = {
   documentDefinition: 2.8,
   semanticFloor: 0.3,
   semanticScale: 10,
+  /**
+   * Hard cap on chunks from one file in the results handed to the composer and
+   * the model. One long file (usually the README) cannot fill the top-k and
+   * leave no room for the file that holds the detail. See `capPerFile`.
+   */
+  maxChunksPerFile: 2,
 };
 
 export function combineScores(lexical: number, semantic: number, structural = 0): number {
