@@ -23,6 +23,7 @@ import {
 import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
 import { SILENCE, type Silence, notStated, silent, unknownTerms } from "./silence.ts";
+import { withConsidered } from "./considered.ts";
 import { asksAboutWholeApp, isArchitectureQuery, isProjectOverviewQuery } from "./question.ts";
 import { FAST_PATH_MIN_SCORE } from "./answer-fast-path.ts";
 import { isTestEvidencePath } from "./retrieve.ts";
@@ -1207,7 +1208,24 @@ function holdToShape(card: Card, hits: FileHit[], canonical: string): Card {
  * either cites a ranked hit or falls through. Specific answers are tried before
  * structural ones, so a broad phrasing cannot outrank real evidence.
  */
+/**
+ * The offline composer's Card, with the other loaded files retrieval ranked
+ * for the question attached. The list is built here, after composition, so no
+ * compose path can forget it and none can mistake it for evidence.
+ */
 export function localCard(
+  query: string,
+  hits: Hit[],
+  pack: RepoPack,
+  latencyMs: number,
+  openFile?: string | null,
+  context?: LocalCardContext,
+): Card {
+  const card = composeLocalCard(query, hits, pack, latencyMs, openFile, context);
+  return withConsidered(card, hits, { pack, material: context?.material, document: context?.document });
+}
+
+function composeLocalCard(
   query: string,
   hits: Hit[],
   pack: RepoPack,

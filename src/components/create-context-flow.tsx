@@ -12,6 +12,7 @@ import {
 import { useMemo, useRef, useState } from "react";
 import { ContextShell } from "@/components/context-shell";
 import { IndexSummaryNote } from "@/components/index-summary-note";
+import { activityFraction } from "@/lib/context/index-status";
 import { FolderPickerFields } from "@/components/review-pack-dialog";
 import { useFolderPicker } from "@/components/use-folder-picker";
 import { MaterialUploadPanel } from "@/components/material-upload-panel";
@@ -69,6 +70,7 @@ export function CreateContextFlow() {
   const addPdfFiles = useMeetHint((s) => s.addPdfFiles);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const ingestProgress = useMeetHint((s) => s.ingestProgress);
+  const indexActivity = useMeetHint((s) => s.indexActivity);
   const loadingFolder = useMeetHint((s) => s.loadingFolder);
   const folderError = useMeetHint((s) => s.folderError);
   const contextError = useMeetHint((s) => s.contextError);
@@ -110,12 +112,21 @@ export function CreateContextFlow() {
           : indexingDone
             ? "Choose Done to start a live session, or add more material first."
             : "Indexing runs on this device. Keep this page open until it finishes.";
+  // The bar follows the reader and the indexer when they are reporting. It is
+  // held under 100 until the flow itself has judged the result. Before either
+  // reports it starts empty, so it never runs backward. The one placeholder
+  // left is an index pass over several contexts, which has no total to measure.
+  const measured = working ? activityFraction(indexActivity) : null;
   const progress = indexingDone
     ? 100
-    : ingestProgress && ingestProgress.total > 0
+    : measured !== null
+      ? Math.min(99, Math.round(measured * 100))
+      : ingestProgress && ingestProgress.total > 0
       ? Math.min(99, Math.round((ingestProgress.current / ingestProgress.total) * 100))
       : working
-        ? 55
+        ? indexActivity
+          ? 55
+          : 0
         : 8;
 
   async function continueToMaterial() {
@@ -374,7 +385,7 @@ export function CreateContextFlow() {
                   {symbolCount > 0 ? <MetricCard label="Code symbols" value={symbolCount} /> : null}
                   <MetricCard label="Progress" value={`${progress}%`} />
                 </div>
-                {indexingDone ? <IndexSummaryNote /> : null}
+                <IndexSummaryNote working={!indexingDone} bar={false} />
                 {filesNote ? (
                   <p className="text-sm text-warn" role="status" data-testid="indexing-files-note">
                     {filesNote}

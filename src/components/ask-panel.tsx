@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnswerFeedback } from "@/components/answer-feedback";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
@@ -10,6 +10,8 @@ import { ProductStateAlert } from "@/components/product-state-alert";
 import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
 import { allSourcesExcluded } from "@/lib/context/exclusions";
 import { VerifiedCitations } from "@/components/verified-citations";
+import { ConsideredSources } from "@/components/considered-sources";
+import { stillLoaded } from "@/lib/search/considered";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { productState, productStateForSilence } from "@/lib/product-states";
@@ -33,6 +35,12 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
   const liveDraft = useMeetHint((s) => s.liveDraft);
   const [query, setQuery] = useState("");
+  const loadedPaths = useMemo(() => new Set(pack.files.map((file) => file.path)), [pack.files]);
+  const loadedSourceIds = useMemo(() => new Set(sources.map((source) => source.sourceId)), [sources]);
+  const considered = useMemo(
+    () => stillLoaded(card?.considered, { paths: loadedPaths, sourceIds: loadedSourceIds }),
+    [card?.considered, loadedPaths, loadedSourceIds],
+  );
   const userEditedRef = useRef(false);
 
   // Put live speech into the box as real text (unless the person is typing).
@@ -164,11 +172,14 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             ) : null}
             <VerifiedCitations
               citations={card.citations}
+              loadedPaths={ready ? loadedPaths : undefined}
               onOpenCited={(cite) => {
                 if (cite.kind === "file") setOpenFile(cite.path);
                 if (cite.kind === "document") openDocumentCitation(cite);
               }}
             />
+            {/* This page has no file viewer, so the list states the files and offers no dead click. */}
+            <ConsideredSources sources={considered} silent={!card.say} />
           </article>
         ) : null}
       </main>

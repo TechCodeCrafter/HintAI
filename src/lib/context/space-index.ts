@@ -1,6 +1,6 @@
 import { assertWorkspaceMatch, defaultWorkspaceId } from "../auth/workspace.ts";
 import { packFromSources } from "./hydrate.ts";
-import { indexContext, type IndexedRuntime, type IndexOptions } from "./chunk-index.ts";
+import { indexContext, type IndexedRuntime, type IndexOptions, type IndexProgress } from "./chunk-index.ts";
 import { tagChunksForScope } from "../search/retrieval-scope.ts";
 import { packVocabulary } from "../search/retrieve.ts";
 import { preferredOpenFile, prunePack } from "../repo/folder.ts";
@@ -70,6 +70,21 @@ export async function indexSpace(
   let openFile: string | null = null;
   const files: RepoFile[] = [];
   let excludePatterns: string[] | undefined;
+  // Progress across member contexts is cumulative. The total is only known
+  // up front when there is one context; with several it would have to be
+  // guessed, so it is reported as unknown.
+  const finished = { files: 0, chunks: 0 };
+  let latest: IndexProgress = { filesDone: 0, filesTotal: 0, chunks: 0 };
+  const onProgress = options.onProgress
+    ? (progress: IndexProgress) => {
+        latest = progress;
+        options.onProgress?.({
+          filesDone: finished.files + progress.filesDone,
+          filesTotal: members.length === 1 ? progress.filesTotal : null,
+          chunks: finished.chunks + progress.chunks,
+        });
+      }
+    : undefined;
 
   for (const contextId of members) {
     if (options.isCancelled?.()) break;
@@ -78,7 +93,10 @@ export async function indexSpace(
     if (!excludePatterns && context.excludePatterns?.length) {
       excludePatterns = context.excludePatterns;
     }
-    const runtime = await indexContext(repo, contextId, options);
+    const runtime = await indexContext(repo, contextId, { ...options, onProgress });
+    finished.files += latest.filesDone;
+    finished.chunks += latest.chunks;
+    latest = { filesDone: 0, filesTotal: 0, chunks: 0 };
     if (runtime.cancelled) {
       return {
         ...runtime,

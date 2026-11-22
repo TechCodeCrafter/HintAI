@@ -93,6 +93,8 @@ import {
   type SkippedFile,
 } from "@/lib/repo/folder";
 import { reportIndexSummary, type IndexSummary } from "@/lib/context/index-summary";
+import type { IndexActivity } from "@/lib/context/index-status";
+import type { IndexOptions } from "@/lib/context/chunk-index";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
 import { applyHeard, newestFrom } from "@/lib/listen/transcript-events";
@@ -144,7 +146,53 @@ function packWarning(weak: boolean, files: number): string | null {
 
 function endFolderLoad(token: number, patch: Partial<MeetHintState> = {}) {
   if (token !== folderLoadSeq) return;
-  useMeetHint.setState({ loadingFolder: false, ...patch });
+  useMeetHint.setState({ loadingFolder: false, indexActivity: null, ...patch });
+}
+
+/** At most one status update per interval, so a 500-file load does not render 500 times. */
+const ACTIVITY_INTERVAL_MS = 60;
+
+/**
+ * Writes load progress to `indexActivity`. Updates are dropped once the load
+ * they belong to is no longer the current one, and thinned to one per
+ * interval unless `force` marks a first or last step.
+ */
+function activityReporter(isCurrent: () => boolean) {
+  let last = 0;
+  return (activity: IndexActivity, force = false) => {
+    if (!isCurrent()) return;
+    const now = Date.now();
+    if (!force && now - last < ACTIVITY_INTERVAL_MS) return;
+    last = now;
+    useMeetHint.setState({ indexActivity: activity });
+  };
+}
+
+/**
+ * `indexSpace`, with the indexer's own file and chunk counts published while
+ * it runs. A finished pass clears them through `patchFromSpaceRuntime`, in
+ * the same update that puts the result on screen; a failed one clears them here.
+ */
+async function indexSpaceWithProgress(
+  repo: ContextRepository,
+  spaceId: string,
+  options: IndexOptions,
+): Promise<IndexedSpaceRuntime> {
+  const current = () => !options.isCancelled?.();
+  const report = activityReporter(current);
+  try {
+    return await indexSpace(repo, spaceId, {
+      ...options,
+      onProgress: (progress) =>
+        report(
+          { phase: "indexing", done: progress.filesDone, total: progress.filesTotal, chunks: progress.chunks },
+          progress.filesDone === 0 || progress.filesDone === progress.filesTotal,
+        ),
+    });
+  } catch (error) {
+    if (current()) useMeetHint.setState({ indexActivity: null });
+    throw error;
+  }
 }
 
 /** Why a selection produced nothing to index, in words the person can act on. */
@@ -206,6 +254,12 @@ type MeetHintState = {
   sources: StoredSource[];
   contextUpdating: boolean;
   ingestProgress: IngestProgress | null;
+  /**
+   * What the load in progress is doing, with counts from the reader and the
+   * indexer. Null when no load is running. Never the source of the finished
+   * "Indexed X files, Y chunks": that is counted from the chunks.
+   */
+  indexActivity: IndexActivity | null;
   /** Words the loaded material contains. Drives the question gate. */
   vocab: Set<string>;
   armed: boolean;
@@ -246,7 +300,8 @@ type MeetHintState = {
   card: Card | null;
   openFile: string | null;
   openDocument: DocumentOpenTarget | null;
-  openPdfSource: (sourceId: string) => void;
+  /** Open a loaded PDF in the viewer, at `page` when given (default: the first page). */
+  openPdfSource: (sourceId: string, page?: number) => void;
   answerHistory: AnswerHistoryItem[];
   /** Structured context for the open thread. See thread.ts. */
   thread: ThreadContext | null;
@@ -520,11 +575,14 @@ function patchFromSpaceRuntime(
   | "chunks"
   | "vocab"
   | "openFile"
+  | "indexActivity"
 > {
   // Every index pass that reaches the screen goes through here, so this is
-  // the one place the "Indexed X files, Y chunks" debug line is written.
+  // the one place the "Indexed X files, Y chunks" debug line is written, and
+  // the one place a finished pass stops reporting progress.
   if (runtime.summary) reportIndexSummary(space.name, runtime.summary, notLoaded);
   return {
+    indexActivity: null,
     activeSpaceId: space.id,
     activeContextId: space.primaryContextId,
     memberContextIds: runtime.memberContextIds,
@@ -552,6 +610,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   sources: [],
   contextUpdating: false,
   ingestProgress: null,
+  indexActivity: null,
   vocab: packVocabulary(NORTHSTAR_CHUNKS),
   armed: false,
   listening: false,
@@ -642,14 +701,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       syncViewerBlobPins(s.card, target);
       return { openDocument: target };
     }),
-  openPdfSource: (sourceId) =>
+  openPdfSource: (sourceId, page) =>
     set((s) => {
       const source = s.sources.find((row) => row.id === sourceId);
       if (!source || !isPdfSource(source)) return s;
       const target = {
         sourceId: source.id,
         contentHash: source.contentHash,
-        page: 1,
+        page: page && Number.isInteger(page) && page > 0 ? page : 1,
         evidenceId: "",
       };
       syncViewerBlobPins(s.card, target);
@@ -808,10 +867,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const none: IngestResult = { ok: false, contextId: null };
     const token = ++folderLoadSeq;
     const startedAt = hydrationEpoch;
-    set({ loadingFolder: true, folderError: null, packNotice: null });
+    set({ loadingFolder: true, folderError: null, packNotice: null, indexActivity: null });
+    const report = activityReporter(() => token === folderLoadSeq);
     let load: FolderLoad;
     try {
-      load = await packFromFiles(list, options);
+      load = await packFromFiles(list, {
+        ...options,
+        onRead: (done, total) => report({ phase: "reading", done, total }, done === 0 || done === total),
+      });
     } catch {
       endFolderLoad(token, { folderError: "Could not read those files. Nothing was added." });
       return none;
@@ -844,6 +907,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     });
     persistActiveSpaceId(contextId);
     try {
+      report({ phase: "saving", total: raw.files.length }, true);
       const repo = getContextRepository();
       const { context } = await persistPackAsContext(raw, repo, { contextId });
       if (epoch !== hydrationEpoch) {
@@ -851,7 +915,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         return none;
       }
       const space = await resolveSpaceForActivation(repo, context.id);
-      const hydrated = await indexSpace(repo, space.id, {
+      const hydrated = await indexSpaceWithProgress(repo, space.id, {
         isCancelled: () => epoch !== hydrationEpoch,
       });
       if (epoch !== hydrationEpoch || hydrated.cancelled) {
@@ -895,6 +959,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       // Material that was already loaded and searchable still is.
       set({
         loadingFolder: false,
+        indexActivity: null,
         contextStatus: keepsMaterial ? "ready" : "error",
         contextError: keepsMaterial ? null : "Could not save that material.",
         folderError: keepsMaterial
@@ -1010,7 +1075,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         const pending = pdfWorkPending(primarySources);
 
         if (serveNow) {
-          const runtime = await indexSpace(repo, space.id, {
+          const runtime = await indexSpaceWithProgress(repo, space.id, {
             isCancelled: () => epoch !== hydrationEpoch,
           });
           if (epoch !== hydrationEpoch || runtime.cancelled) return;
@@ -1061,7 +1126,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           });
           return;
         }
-        const runtime = await indexSpace(repo, space.id, {
+        const runtime = await indexSpaceWithProgress(repo, space.id, {
           isCancelled: () => epoch !== hydrationEpoch,
         });
         if (epoch !== hydrationEpoch || runtime.cancelled) return;
@@ -1258,10 +1323,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const none: IngestResult = { ok: false, contextId: null };
     const token = ++folderLoadSeq;
     const startedAt = hydrationEpoch;
-    set({ loadingFolder: true, folderError: null, packNotice: null });
+    set({ loadingFolder: true, folderError: null, packNotice: null, indexActivity: null });
+    const report = activityReporter(() => token === folderLoadSeq);
     let load: FolderLoad;
     try {
-      load = await packFromFiles(list, options);
+      load = await packFromFiles(list, {
+        ...options,
+        onRead: (done, total) => report({ phase: "reading", done, total }, done === 0 || done === total),
+      });
     } catch {
       endFolderLoad(token, { folderError: "Could not read that folder. Nothing was added." });
       return none;
@@ -1284,6 +1353,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       ...clearSessionOnSwitch(),
     });
     try {
+      report({ phase: "saving", total: raw.files.length }, true);
       const repo = getContextRepository();
       const { context } = await persistPackAsContext(raw, repo);
       if (epoch !== hydrationEpoch) {
@@ -1291,7 +1361,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         return none;
       }
       const space = await resolveSpaceForActivation(repo, context.id);
-      const hydrated = await indexSpace(repo, space.id, {
+      const hydrated = await indexSpaceWithProgress(repo, space.id, {
         isCancelled: () => epoch !== hydrationEpoch,
       });
       if (epoch !== hydrationEpoch || hydrated.cancelled) {
@@ -1343,6 +1413,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       }
       set({
         loadingFolder: false,
+        indexActivity: null,
         contextStatus: "error",
         contextError: "Could not save that folder.",
         folderError: "Could not save that folder.",
@@ -1394,7 +1465,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
       return;
     }
-    const runtime = await indexSpace(repo, space.id, {
+    const runtime = await indexSpaceWithProgress(repo, space.id, {
       isCancelled: () => epoch !== hydrationEpoch,
     });
     if (epoch !== hydrationEpoch || runtime.cancelled) return;
@@ -1519,7 +1590,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       }
 
       const space = await resolveSpaceForActivation(repo, targetId);
-      const runtime = await indexSpace(repo, space.id, {
+      const runtime = await indexSpaceWithProgress(repo, space.id, {
         isCancelled: () => get().hydrationEpoch !== epoch,
       });
       if (get().hydrationEpoch !== epoch || runtime.cancelled) return;
@@ -1630,7 +1701,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           set({ contexts });
           return;
         }
-        const runtime = await indexSpace(repo, space.id, {
+        const runtime = await indexSpaceWithProgress(repo, space.id, {
           isCancelled: () => epoch !== hydrationEpoch,
         });
         if (epoch !== hydrationEpoch || runtime.cancelled) return;

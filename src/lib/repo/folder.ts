@@ -48,7 +48,17 @@ export function shouldSkipDirectory(relativePath: string): boolean {
  * One file left out of the index, and why. `count` is set when the entry is a
  * folder that was not opened, and is the number of files inside it.
  */
-export type SkippedFile = { path: string; reason: string; count?: number };
+export type SkippedFile = {
+  path: string;
+  reason: string;
+  count?: number;
+  /**
+   * The file was meant to be indexed and could not be: it could not be read,
+   * or it was stored and produced nothing to search. Unset for a file left
+   * out on purpose (a vendor folder, a size limit, an exclusion).
+   */
+  failed?: boolean;
+};
 
 export type FolderLoadOptions = {
   includeTests?: boolean;
@@ -56,6 +66,8 @@ export type FolderLoadOptions = {
   skipLabels?: string[];
   /** Files an earlier step (folder review, drag and drop) already left out. */
   skippedFiles?: SkippedFile[];
+  /** Called as each candidate file has been read or left out: how many so far, out of how many. */
+  onRead?: (done: number, total: number) => void;
 };
 
 export type FolderCandidate = {
@@ -549,7 +561,11 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
   const failed = [...scan.failed];
   let total = 0;
   let truncated = false;
+  let read = 0;
   for (const item of candidates) {
+    // Reported at the top so every `continue` below is counted too.
+    options?.onRead?.(read, candidates.length);
+    read += 1;
     const reason = capReason(packFiles.length, total, item.file.size);
     if (reason) {
       truncated = true;
@@ -587,6 +603,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     total += item.file.size;
     packFiles.push({ path: item.path, language: langOf(item.path), content });
   }
+  options?.onRead?.(candidates.length, candidates.length);
 
   return {
     pack: {

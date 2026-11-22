@@ -59,8 +59,10 @@ import { isPdfSource } from "@/lib/context/types";
 import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
 import { cardUsedEvidence, isGeneratedAnswer, receiptKicker } from "@/lib/search/answer-mode";
 import { VerifiedCitations } from "@/components/verified-citations";
+import { ConsideredSources } from "@/components/considered-sources";
+import { stillLoaded } from "@/lib/search/considered";
 import { citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
-import type { Citation } from "@/lib/repo/types";
+import type { Citation, ConsideredFile, ConsideredSource } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
@@ -107,6 +109,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const ingestProgress = useMeetHint((s) => s.ingestProgress);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
+  const openPdfSource = useMeetHint((s) => s.openPdfSource);
   const subscription = useMeetHint((s) => s.subscription);
   const selectedModelId = useMeetHint((s) => s.selectedModelId);
   const setSelectedModelId = useMeetHint((s) => s.setSelectedModelId);
@@ -121,6 +124,9 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const pdfRef = useRef<HTMLInputElement>(null);
   const lastQuery = useRef<string | null>(null);
   const [citeReveal, setCiteReveal] = useState(0);
+  // The considered file the user asked to see. Set only by a click, so a new
+  // answer never scrolls or marks a file the user is reading on its own.
+  const [looked, setLooked] = useState<ConsideredFile | null>(null);
   const [keysOpen, setKeysOpen] = useState(false);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobilePane>("room");
@@ -303,6 +309,26 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   useEffect(() => {
     if (overlay && mobilePane === "repo") setMobilePane("room");
   }, [overlay, mobilePane]);
+
+  /**
+   * Open a file the answer considered and did not cite. It opens the loaded
+   * file at the ranked range; the pane marks that range as looked-at, never as
+   * cited evidence.
+   */
+  function openConsidered(source: ConsideredSource) {
+    if (source.kind === "file") {
+      setLooked(source);
+      setOpenFile(source.path);
+      setCiteReveal((n) => n + 1);
+      setMobilePane("repo");
+      if (overlay) setOverlay(false);
+      return;
+    }
+    // Overlay hides RepoPane. Do not open a PDF the user cannot see.
+    if (overlay) return;
+    openPdfSource(source.sourceId, source.page);
+    setMobilePane("repo");
+  }
 
   function openCited(cite: Citation) {
     if (isFileCitation(cite)) {
@@ -636,7 +662,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             data-pane="repo"
             data-active={mobilePane === "repo" ? "true" : undefined}
           >
-            <RepoPane reveal={citeReveal} />
+            <RepoPane reveal={citeReveal} looked={looked} />
           </div>
         )}
         <div
@@ -663,6 +689,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
           <CardPane
             compact={overlay}
             onOpenCited={openCited}
+            onOpenConsidered={openConsidered}
             overlay={overlay}
             active={Boolean(card?.query)}
             onKeys={() => setKeysOpen(true)}
@@ -1266,7 +1293,7 @@ function splitPath(path: string) {
   return { name: path.slice(slash + 1), dir: path.slice(0, slash) };
 }
 
-function RepoPane({ reveal = 0 }: { reveal?: number }) {
+function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looked?: ConsideredFile | null }) {
   const pack = useMeetHint((s) => s.pack);
   const sources = useMeetHint((s) => s.sources);
   const openFile = useMeetHint((s) => s.openFile);
@@ -1277,6 +1304,7 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const setPackExclusions = useMeetHint((s) => s.setPackExclusions);
   const includeAllSourcesInSearch = useMeetHint((s) => s.includeAllSourcesInSearch);
   const card = useMeetHint((s) => s.card);
+  const working = useMeetHint((s) => s.loadingFolder || s.contextStatus === "hydrating");
   const [filter, setFilter] = useState("");
   const [excludeGlob, setExcludeGlob] = useState("");
   const excludePatterns = pack.excludePatterns ?? [];
@@ -1288,6 +1316,15 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
   const citeRange = cite ? citedLineRange(cite) : null;
   const citeLine = citeRange?.startLine;
   const citeEnd = citeRange?.endLine;
+  // A considered file the user clicked. Its range gets a rule in the gutter,
+  // never the cited paint, and only while it belongs to the Card on screen and
+  // this file carries no citation of its own.
+  const looked =
+    !cite && asked && asked.path === file?.path && card?.considered?.some((item) => item === asked)
+      ? asked
+      : undefined;
+  const lookLine = looked?.startLine;
+  const lookEnd = looked?.endLine;
   const preRef = useRef<HTMLPreElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const why = pack.commits.find(
@@ -1327,8 +1364,18 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
     const start = preRef.current?.querySelector(`[data-line="${citeLine}"]`);
     const end = citeEnd != null ? preRef.current?.querySelector(`[data-line="${citeEnd}"]`) : null;
     start?.scrollIntoView({ block: "center" });
-    end?.scrollIntoView({ block: "nearest" });
+    // A range taller than the viewer keeps its first line on screen, not its last.
+    const room = preRef.current?.clientHeight ?? 0;
+    const tall =
+      start && end ? end.getBoundingClientRect().bottom - start.getBoundingClientRect().top > room : false;
+    if (tall) start?.scrollIntoView({ block: "start" });
+    else end?.scrollIntoView({ block: "nearest" });
   }, [citeLine, citeEnd, file?.path, reveal]);
+
+  useEffect(() => {
+    if (lookLine == null) return;
+    preRef.current?.querySelector(`[data-line="${lookLine}"]`)?.scrollIntoView({ block: "start" });
+  }, [lookLine, file?.path, reveal]);
 
   useEffect(() => {
     listRef.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" });
@@ -1336,8 +1383,10 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
 
   if (!file && !openDocument && pdfs.length === 0) {
     return (
-      <section className="ground-panel p-5">
+      <section className="ground-panel space-y-3 p-5">
         <p className="text-[15px] leading-relaxed text-body">Open a local folder to search your files.</p>
+        {/* A first load has no file list yet. Its progress still has to be somewhere. */}
+        {working ? <IndexSummaryNote /> : null}
       </section>
     );
   }
@@ -1525,12 +1574,18 @@ function RepoPane({ reveal = 0 }: { reveal?: number }) {
                 {painted.map((node, i) => {
                   const n = i + 1;
                   const active = citeLine != null && n >= citeLine && n <= (citeEnd ?? citeLine);
+                  const lookedAt = lookLine != null && n >= lookLine && n <= (lookEnd ?? lookLine);
                   return (
                     <div
                       key={n}
                       data-line={n}
                       data-cited={active ? "true" : undefined}
-                      className={cn("flex gap-3 md:min-w-max", active && "bg-pick")}
+                      data-considered={lookedAt ? "true" : undefined}
+                      className={cn(
+                        "flex gap-3 md:min-w-max",
+                        active && "bg-pick",
+                        lookedAt && "shadow-[inset_2px_0_0_var(--color-line-strong)]",
+                      )}
                     >
                       <span className="w-8 shrink-0 select-none text-right text-muted tabular-nums">{n}</span>
                       <span className="min-w-0 whitespace-pre-wrap break-all md:whitespace-pre md:break-normal">
@@ -1874,11 +1929,13 @@ function needsApiKey(reason?: string | null) {
 function CardPane({
   compact,
   onOpenCited,
+  onOpenConsidered,
   overlay,
   onKeys,
 }: {
   compact: boolean;
   onOpenCited: (cite: Citation) => void;
+  onOpenConsidered: (source: ConsideredSource) => void;
   overlay: boolean;
   active: boolean;
   onKeys: () => void;
@@ -1899,6 +1956,8 @@ function CardPane({
   );
   const [copied, setCopied] = useState(false);
   const [sayOpen, setSayOpen] = useState(true);
+  const loadedPaths = useMemo(() => new Set(pack.files.map((file) => file.path)), [pack.files]);
+  const loadedSourceIds = useMemo(() => new Set(sources.map((source) => source.sourceId)), [sources]);
   // The inline excerpt can only be shown for evidence that is in a file.
   const citedFile = card?.citations.find(isFileCitation);
   const cited = pack.files.find((f) => f.path === citedFile?.path);
@@ -1923,7 +1982,28 @@ function CardPane({
   const generated = isGeneratedAnswer(card?.answerMode, usedEvidence);
   const citations =
     !generated && card && card.citations.length > 0 ? (
-      <VerifiedCitations citations={card.citations} overlay={overlay} onOpenCited={onOpenCited} />
+      <VerifiedCitations
+        citations={card.citations}
+        overlay={overlay}
+        // While the space is still loading, "not loaded" would be a guess.
+        loadedPaths={searchReady ? loadedPaths : undefined}
+        onOpenCited={onOpenCited}
+      />
+    ) : null;
+  // Only files loaded right now are offered: a Card restored from history may
+  // remember a file that has since been removed.
+  const consideredNow = useMemo(
+    () => stillLoaded(card?.considered, { paths: loadedPaths, sourceIds: loadedSourceIds }),
+    [card?.considered, loadedPaths, loadedSourceIds],
+  );
+  const considered =
+    !generated && consideredNow.length > 0 ? (
+      <ConsideredSources
+        sources={consideredNow}
+        silent={!speaking}
+        canOpen={(source) => source.kind === "file" || !overlay}
+        onOpen={onOpenConsidered}
+      />
     ) : null;
   const productAlert = !speaking && card?.reason ? productStateForSilence(card) : null;
 
@@ -2010,6 +2090,7 @@ function CardPane({
                       ) : null}
                     </div>
                     {citations}
+                    {considered}
                   </div>
                 ) : (
                   <>
@@ -2024,6 +2105,7 @@ function CardPane({
                       </Button>
                     ) : null}
                     {citations}
+                    {considered}
                   </>
                 )}
               </div>
