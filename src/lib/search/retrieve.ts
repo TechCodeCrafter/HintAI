@@ -17,7 +17,7 @@ import {
 import { semanticRetrieve } from "./semantic-retrieve.ts";
 import type { VectorStore } from "./vector-store.ts";
 import { getVectorStore } from "./vector-access.ts";
-import { isProjectOverviewQuery } from "./question.ts";
+import { asksAboutWholeApp, isProjectOverviewQuery } from "./question.ts";
 
 const STOP = new Set([
   "a",
@@ -456,8 +456,12 @@ function isEditDistanceOne(a: string, b: string): boolean {
  * Inverse document frequency over the loaded material, so a term that appears
  * in half the repo ("gate", "store", "client") cannot outrank the term that
  * actually identifies the subject.
+ *
+ * Also returns the terms the material mentions anywhere. A word no file
+ * contains ("touched", "work") cannot tell one file from another, so it is
+ * left out when judging how well a chunk backs the question.
  */
-function idfMap(terms: string[], chunks: IndexedChunk[]): Map<string, number> {
+function termStats(terms: string[], chunks: IndexedChunk[]): { idf: Map<string, number>; known: Set<string> } {
   const df = new Map<string, number>();
   for (const chunk of chunks) {
     const idx = indexOf(chunk);
@@ -468,12 +472,53 @@ function idfMap(terms: string[], chunks: IndexedChunk[]): Map<string, number> {
     }
   }
   const n = Math.max(1, chunks.length);
-  const out = new Map<string, number>();
+  const idf = new Map<string, number>();
   for (const term of terms) {
-    out.set(term, Math.log(1 + n / (1 + (df.get(term) ?? 0))));
+    idf.set(term, Math.log(1 + n / (1 + (df.get(term) ?? 0))));
   }
-  return out;
+  return { idf, known: new Set(df.keys()) };
 }
+
+/** The query terms the material mentions in some path or body. */
+export function knownTerms(terms: string[], chunks: IndexedChunk[]): Set<string> {
+  return termStats(terms, chunks).known;
+}
+
+/**
+ * How much a path or file-name match is worth for this chunk, from
+ * `nameOnlyCredit` up to 1.
+ *
+ * A file name is a hint, not evidence. It counts in full when the path names
+ * everything the question asked about ("what does the auth middleware do"), or
+ * when the chunk's own text backs the rest of the question, and in proportion
+ * when the text backs part of the rest. A file called `app.ts` or `server.ts`
+ * that only shares a word with the question, and says nothing about the rest
+ * of it, keeps `nameOnlyCredit`. Without this, shallow entry points outranked
+ * the nested file that held the answer.
+ *
+ * `weightOf` should return 0 for a term the material never mentions: no chunk
+ * can back it, so it says nothing about this one.
+ */
+export function nameCredit(
+  terms: string[],
+  chunk: IndexedChunk,
+  weightOf: (term: string) => number = () => 1,
+): number {
+  const idx = indexOf(chunk);
+  let rest = 0;
+  let backed = 0;
+  for (const term of terms) {
+    if (freq(idx.pathWords, term) > 0) continue;
+    const weight = weightOf(term);
+    rest += weight;
+    if (freq(idx.bodyWords, term) > 0) backed += weight;
+  }
+  if (rest === 0) return 1;
+  return Math.max(RETRIEVAL_WEIGHTS.nameOnlyCredit, backed / rest);
+}
+
+/** Entry points: where an app is wired together, by file or directory name. */
+const ENTRY_POINT_PATH = /(?:^|\/)(api|main|app|index|server|router|client|store)(?:\/|\.[a-z]+$)/;
 
 export function namedPaths(query: string): string[] {
   return (query.match(/[A-Za-z0-9_./-]+\.[A-Za-z0-9]+/g) ?? []).map((p) => p.toLowerCase());
@@ -489,10 +534,16 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
 
   const q = query.toLowerCase();
   const wantsApi = /\bapi\b|endpoint|fastapi|flask|express|router/.test(q);
+  // The README and entry-point boosts below are for one kind of question: the
+  // app as a whole. "What is the structure of the settlement file?" contains
+  // "structure" and is not that question, so the wording alone no longer
+  // qualifies. The question must also have no subject of its own.
+  const wholeApp = asksAboutWholeApp(query);
   // A structural question is answered by the shape of the repo, so it retrieves
   // entry points and file heads. Kept deliberately narrow: the old blanket
   // "what is" bias boosted the head of every file and pinned citations to line 1.
   const wantsShape =
+    wholeApp &&
     /\barchitecture\b|\bstructure\b|\boverview\b|how is (?:this|the|it) (?:built|organized|structured)|what does (?:this|the|our) (?:app|application|service|project|repo|codebase|product|platform|tool|system) do/.test(
       q,
     );
@@ -517,30 +568,44 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
       )) &&
     !wantsApi;
   const wantsDefinition = /\b(?:what is|what's|define|explain|describe)\b/i.test(q);
-  const idf = idfMap(terms, chunks);
+  const { idf, known } = termStats(terms, chunks);
+  const weightOf = (term: string) => idf.get(term) ?? 1;
+  // Backing is judged on the terms the material can speak to.
+  const backable = (term: string) => (known.has(term) ? weightOf(term) : 0);
   const phrase = terms.join(" ");
 
   const scored: Hit[] = [];
   for (const chunk of chunks) {
     const idx = indexOf(chunk);
     let score = 0;
+    // Path and file-name matches are scaled by how much of the rest of the
+    // question this chunk's text covers. See `nameCredit`.
+    const credit = nameCredit(terms, chunk, backable);
+    let asked = 0;
+    let covered = 0;
     for (const term of terms) {
-      const weight = idf.get(term) ?? 1;
-      score += weight * 2.4 * sat(freq(idx.pathWords, term));
-      score += weight * 1.6 * sat(freq(idx.bodyWords, term));
-      if (term === idx.stem || term === idx.base) score += weight * RETRIEVAL_WEIGHTS.filenameMatch;
-      if (chunk.kind === "why") score += weight * 1.1 * sat(freq(idx.bodyWords, term));
+      const weight = weightOf(term);
+      const inBody = freq(idx.bodyWords, term);
+      score += credit * weight * 2.4 * sat(freq(idx.pathWords, term));
+      score += weight * 1.6 * sat(inBody);
+      if (term === idx.stem || term === idx.base) score += credit * weight * RETRIEVAL_WEIGHTS.filenameMatch;
+      if (chunk.kind === "why") score += weight * 1.1 * sat(inBody);
+      asked += backable(term);
+      if (inBody > 0) covered += backable(term);
     }
+    // 0 when the text shares no word with the question, 1 once it covers
+    // `backingShare` of it. Bonuses for what kind of file this is are scaled by
+    // it, so a README or an entry point cannot score on its name alone.
+    const backing = asked > 0 ? Math.min(1, covered / asked / RETRIEVAL_WEIGHTS.backingShare) : 0;
     for (const name of named) {
       if (idx.path.endsWith(name) || idx.path.includes(`/${name}`) || idx.base === name) {
         score += RETRIEVAL_WEIGHTS.pathMatch;
       }
     }
-    if (
-      (wantsApi || wantsShape) &&
-      /(?:^|\/)(api|main|app|index|server|router|client|store)(?:\/|\.[a-z]+$)/.test(idx.path)
-    ) {
-      score += RETRIEVAL_WEIGHTS.apiShapePath;
+    if ((wantsApi || wantsShape) && ENTRY_POINT_PATH.test(idx.path)) {
+      // In full for a question about the whole app or the whole API. For "which
+      // router handles retries", only as far as the file's text backs it.
+      score += RETRIEVAL_WEIGHTS.apiShapePath * (wholeApp ? 1 : backing);
     }
     if (wantsLambdaFleet && /container-lambdas\//.test(idx.path)) {
       score += RETRIEVAL_WEIGHTS.apiShapePath;
@@ -578,7 +643,11 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
       score -= RETRIEVAL_WEIGHTS.testPathPenalty;
     }
     if (isAuthoritativePath(idx.path) && !asksAboutTests) {
-      score += RETRIEVAL_WEIGHTS.authoritativePath;
+      // Docs outrank tests and examples that say the same thing. This used to
+      // be a flat bonus, which put the README in the results of every question,
+      // including ones it shares no word with. It is still flat for a question
+      // about the whole app, which is the README's question to answer.
+      score += RETRIEVAL_WEIGHTS.authoritativePath * (wholeApp ? 1 : backing);
     }
     if (score > 0) scored.push({ ...chunk, score });
   }

@@ -179,6 +179,45 @@ export function isArchitectureQuery(query: string): boolean {
 }
 
 /**
+ * Every word a question about the app as a whole can be made of: the asking,
+ * a noun for the app, and a word for its shape. Anything else is a subject of
+ * its own ("retry", "session", "exporter").
+ */
+const WHOLE_APP_WORDS = new Set([
+  // asking
+  "a", "an", "the", "this", "that", "it", "its", "is", "are", "was", "be", "does", "do", "did",
+  "can", "could", "would", "will", "you", "your", "me", "my", "we", "us", "our", "i", "please",
+  "tell", "give", "show", "explain", "describe", "walk", "talk", "take", "through", "about",
+  "of", "in", "on", "at", "to", "for", "and", "or", "so", "just", "like", "kind", "sort",
+  "quick", "quickly", "brief", "briefly", "short", "summary", "summarize", "what", "whats", "s", "how",
+  // the app
+  "app", "application", "system", "code", "codebase", "repo", "repository", "project", "service",
+  "product", "platform", "tool", "software", "api",
+  // its shape
+  "architecture", "architectural", "design", "designed", "structure", "structured", "built", "build",
+  "organized", "organised", "laid", "out", "layout", "overview", "work", "works", "working",
+  "fit", "fits", "together", "set", "up", "setup", "put", "made", "high", "level", "whole",
+  "entire", "overall", "general", "big", "picture", "top", "main", "components", "parts", "pieces",
+  "stack", "tech", "technical",
+]);
+
+/**
+ * True when the question has no subject of its own: it is about the app as a
+ * whole. "How does this app work?" is. "How does the app retry failed exports?"
+ * is a question about retries that happens to say "the app".
+ *
+ * This is the gate on the README and entry-point boost. It is an allowlist on
+ * purpose: an unknown word means the question goes to ordinary retrieval, which
+ * can still land on the README when the README is where the answer is.
+ * `names` are extra words that mean the app itself, such as the pack's name.
+ */
+export function asksAboutWholeApp(query: string, names: string[] = []): boolean {
+  const own = new Set(names.flatMap((name) => name.toLowerCase().match(/[a-z0-9]+/g) ?? []));
+  const words = query.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+  return words.length > 0 && words.every((word) => WHOLE_APP_WORDS.has(word) || own.has(word));
+}
+
+/**
  * "Tell me about the project" asks what the repo is, not for whichever file
  * happens to contain the word "project". The noun has to be the whole question.
  * "What is this project's terraform" is a different question and must not match.

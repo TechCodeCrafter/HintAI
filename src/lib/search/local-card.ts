@@ -22,7 +22,7 @@ import {
 } from "./evidence.ts";
 import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
-import { isArchitectureQuery, isProjectOverviewQuery } from "./question.ts";
+import { asksAboutWholeApp, isArchitectureQuery, isProjectOverviewQuery } from "./question.ts";
 import { FAST_PATH_MIN_SCORE } from "./answer-fast-path.ts";
 import { isTestEvidencePath } from "./retrieve.ts";
 import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
@@ -1308,7 +1308,12 @@ function compose(
   if (isProjectOverviewQuery(canonical)) {
     return readmeOverviewCard(pack, query, latencyMs);
   }
-  if (isArchitectureQuery(canonical)) {
+  // The structural card reads the README and shallow entry points, and takes no
+  // hits. That is right for "how does this app work" and wrong for "how does the
+  // app retry failed exports", which used to get the README's purpose line
+  // because it contains "the app". A question with its own subject is answered
+  // from what retrieval ranked.
+  if (isArchitectureQuery(canonical) && asksAboutWholeApp(canonical, [pack.name])) {
     const structural = architectureCard(pack, query, latencyMs);
     if (structural.say) return structural;
   }
