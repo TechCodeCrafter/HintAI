@@ -83,6 +83,14 @@ function speakableGroup(dir: string): boolean {
   return /s$/.test(humanize(dir));
 }
 
+/**
+ * Path-specific on purpose. This ranking prefers the README and shallow entry
+ * points because those are where a repo states what it is, which is only the
+ * right place to look when the question is about the whole app. It is reached
+ * through `architectureCard` alone, and `compose` only calls that for a
+ * question with no subject of its own (`asksAboutWholeApp`). Any other question
+ * is ranked by `retrieve`, where a file name has to be backed by the file's text.
+ */
 function rankEntry(path: string): number {
   const p = path.toLowerCase();
   const depth = p.split("/").length;

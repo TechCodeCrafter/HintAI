@@ -14,6 +14,17 @@ export const RETRIEVAL_WEIGHTS = {
   pathMatch: 12,
   /** Existing filename / stem multiplier on the IDF term weight. */
   filenameMatch: 4,
+  /**
+   * What a path or file-name match keeps when the chunk's text backs none of
+   * the rest of the question. `app.ts` sharing the word "app" is a hint, not
+   * evidence. See `nameCredit` in retrieve.ts.
+   */
+  nameOnlyCredit: 0.15,
+  /**
+   * Share of the question (by IDF weight) a chunk's text has to cover before
+   * the entry-point boost or the docs bonus counts in full.
+   */
+  backingShare: 0.5,
   /** Structured-chunk symbol overlap, hybrid traces and hybrid addend. */
   symbolMatch: 2.0,
   /** Document heading overlap (hybrid signal). */
