@@ -531,6 +531,125 @@ html[data-theme="light"] .cite-chip:hover:enabled {
   animation: cite-fade 160ms ease both;
 }
 
+/* A cited file that is not loaded right now: stated, never clickable. */
+.cite-chip[data-loaded="false"],
+html[data-theme="light"] .cite-chip[data-loaded="false"] {
+  border-color: var(--color-line);
+  background: transparent;
+}
+
+.cite-chip[data-loaded="false"] .cite-status {
+  color: var(--color-muted);
+}
+
+/*
+ * Other files retrieval ranked. Deliberately quieter than a citation chip: no
+ * green, no check mark, so it cannot be mistaken for evidence.
+ */
+.considered {
+  min-width: 0;
+}
+
+.considered-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 6px;
+  padding: 4px 6px 4px 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted);
+  user-select: none;
+  transition: color 150ms ease;
+}
+
+.considered-summary::-webkit-details-marker {
+  display: none;
+}
+
+.considered-summary:hover,
+.considered[open] > .considered-summary {
+  color: var(--color-fg);
+}
+
+.considered-summary:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+
+.considered-caret {
+  transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.considered[open] .considered-caret {
+  transform: rotate(90deg);
+}
+
+.considered-count {
+  color: var(--color-muted);
+}
+
+.considered-note {
+  margin: 6px 0 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.considered-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.considered-item {
+  display: inline-flex;
+  max-width: 100%;
+  min-width: 0;
+  align-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--color-line);
+  padding: 5px 10px;
+  text-align: left;
+  color: var(--color-body);
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+button.considered-item:hover {
+  border-color: var(--color-line-strong);
+  background: var(--color-pick);
+  color: var(--color-fg);
+}
+
+button.considered-item:active {
+  transform: scale(0.99);
+}
+
+.considered-item:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .considered-caret,
+  .considered-summary,
+  .considered-item {
+    transition: none;
+  }
+
+  button.considered-item:active {
+    transform: none;
+  }
+}
+
 .empty-listen {
   display: flex;
   flex-direction: column;

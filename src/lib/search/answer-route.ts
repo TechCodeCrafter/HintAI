@@ -15,6 +15,7 @@ import {
 } from "./generate-answer.ts";
 import { localCard } from "./local-card.ts";
 import { explainSilence, type FailFastCause, type Silence } from "./silence.ts";
+import { withConsidered } from "./considered.ts";
 
 export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
 
@@ -198,6 +199,24 @@ function failedCard(
  * composer found missing in the hits it read.
  */
 export async function routeSearchAnswer(
+  query: string,
+  hits: Hit[],
+  t0: number,
+  opts?: RouteSearchOpts,
+): Promise<RoutedSearchAnswer> {
+  const routed = await routeAnswer(query, hits, t0, opts);
+  // Whichever tier answered (composer, grounded model, synthesis, or none),
+  // the Card lists the other loaded files these same hits came from. Done once
+  // here so a model answer and a composer answer cannot differ in what they show.
+  const card = withConsidered(routed.card, hits, {
+    pack: opts?.pack,
+    material: opts?.material ?? opts?.cardContext?.material,
+    document: opts?.cardContext?.document,
+  });
+  return { ...routed, card };
+}
+
+async function routeAnswer(
   query: string,
   hits: Hit[],
   t0: number,

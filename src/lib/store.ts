@@ -246,7 +246,8 @@ type MeetHintState = {
   card: Card | null;
   openFile: string | null;
   openDocument: DocumentOpenTarget | null;
-  openPdfSource: (sourceId: string) => void;
+  /** Open a loaded PDF in the viewer, at `page` when given (default: the first page). */
+  openPdfSource: (sourceId: string, page?: number) => void;
   answerHistory: AnswerHistoryItem[];
   /** Structured context for the open thread. See thread.ts. */
   thread: ThreadContext | null;
@@ -642,14 +643,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       syncViewerBlobPins(s.card, target);
       return { openDocument: target };
     }),
-  openPdfSource: (sourceId) =>
+  openPdfSource: (sourceId, page) =>
     set((s) => {
       const source = s.sources.find((row) => row.id === sourceId);
       if (!source || !isPdfSource(source)) return s;
       const target = {
         sourceId: source.id,
         contentHash: source.contentHash,
-        page: 1,
+        page: page && Number.isInteger(page) && page > 0 ? page : 1,
         evidenceId: "",
       };
       syncViewerBlobPins(s.card, target);

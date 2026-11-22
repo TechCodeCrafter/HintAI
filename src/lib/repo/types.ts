@@ -141,6 +141,36 @@ export type DocumentCitation = {
 
 export type Citation = FileCitation | CommitCitation | DocumentCitation;
 
+/**
+ * A loaded file that retrieval ranked for the question and the answer did not
+ * cite. Deliberately not a `Citation`: nothing spoken rests on it, it carries
+ * no evidence id, and it is never counted, verified, or shown as "Verified".
+ * It exists so the room can see what else was read.
+ *
+ * Coordinates are the ranked chunk's real position in the loaded source:
+ * lines for a file, a page for a PDF. An entry whose source is not loaded, or
+ * whose text is no longer at that position, is never built.
+ */
+export type ConsideredFile = {
+  kind: "file";
+  path: string;
+  startLine: number;
+  endLine: number;
+  sourceId?: string;
+  displayName?: string;
+};
+
+export type ConsideredDocument = {
+  kind: "document";
+  path: string;
+  sourceId: string;
+  page: number;
+  heading?: string;
+  displayName?: string;
+};
+
+export type ConsideredSource = ConsideredFile | ConsideredDocument;
+
 export type Card = {
   say: string | null;
   /** Why the Card is silent, as one sentence the room can read. Set whenever `say` is null. */
@@ -148,6 +178,11 @@ export type Card = {
   /** The cause behind `reason`, so the UI can offer the right next step. */
   silence?: SilenceKind;
   citations: Citation[];
+  /**
+   * Up to three other loaded files retrieval ranked for this question and the
+   * answer did not cite. Never evidence; see `ConsideredSource`.
+   */
+  considered?: ConsideredSource[];
   /**
    * The exact evidence behind `say`. Non-empty whenever a Card speaks from the
    * material: composition derives citations from these, and the support gate

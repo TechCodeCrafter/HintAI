@@ -5,7 +5,7 @@ import { enrichFileCitation, fileInMaterial, sourceLabel } from "../context/mate
 import { isFileHit, type Citation, type Hit, type RepoPack } from "../repo/types.ts";
 import type { AnswerMode } from "./answer-mode.ts";
 import { provenanceLabel } from "./cite.ts";
-import { textEvidence, verifyClaim, type Evidence } from "./evidence.ts";
+import { commitEvidence, textEvidence, verifyClaim, type Evidence, type TextEvidence } from "./evidence.ts";
 
 export type AnswerPolicy = "extract" | "synthesize";
 
@@ -181,7 +181,42 @@ function resolveFileContent(hit: Hit, pack?: RepoPack, material?: SpaceMaterialV
   );
 }
 
+/**
+ * The evidence a cited chunk stands for, located in what is loaded right now.
+ *
+ * A citation printed from this is a claim about the material: this path, these
+ * lines. So a chunk the loaded material cannot back yields no evidence at all,
+ * and the marker that named it cites nothing:
+ *
+ * - A commit chunk is history. It becomes commit evidence, never lines of the
+ *   file the commit happened to touch.
+ * - A code chunk must be found in the loaded file. Its lines are read from
+ *   that file, not copied from the index.
+ *
+ * A PDF chunk is cited by page and is not re-read here. A caller that loaded
+ * nothing (an offline harness) falls back to the chunk's own text, because
+ * there is nothing to check it against.
+ */
 function evidenceFromHit(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView): Evidence | null {
+  const loaded = Boolean(pack || material);
+  if (hit.kind === "why") {
+    const message = hit.message ?? hit.text;
+    if (!message) return null;
+    const sha = hit.sha ?? hit.id;
+    const known = [...(pack?.commits ?? []), ...(material?.pack.commits ?? [])];
+    if (loaded && !known.some((commit) => commit.sha === sha)) return null;
+    return commitEvidence(
+      {
+        sha,
+        message,
+        author: hit.author,
+        date: hit.date,
+        pr: hit.pr,
+        files: hit.path ? [hit.path] : undefined,
+      },
+      message,
+    );
+  }
   if (isFileHit(hit)) {
     const file = resolveFileContent(hit, pack, material);
     if (file) {
@@ -198,6 +233,7 @@ function evidenceFromHit(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView
         });
       }
     }
+    if (loaded) return null;
   }
   if (!hit.text) return null;
   return textEvidence({
@@ -210,6 +246,20 @@ function evidenceFromHit(hit: Hit, pack?: RepoPack, material?: SpaceMaterialView
 }
 
 function citationFrom(hit: Hit, evidence: Evidence, material?: SpaceMaterialView): Citation {
+  if (evidence.kind === "commit") {
+    // The same chip the offline composer prints for history: a commit has
+    // provenance, and no line to default to 1.
+    return {
+      kind: "commit",
+      sha: evidence.sha,
+      shortSha: evidence.shortSha,
+      pr: evidence.pr,
+      author: evidence.author,
+      date: evidence.date,
+      evidenceId: evidence.id,
+      label: [evidence.author, evidence.date].filter(Boolean).join(" · "),
+    };
+  }
   if (evidence.kind === "text" && isFileHit(hit)) {
     return enrichFileCitation(
       {
@@ -261,9 +311,10 @@ function evidenceForMarkers(
   hits: Hit[],
   pack?: RepoPack,
   material?: SpaceMaterialView,
-): { evidence: Evidence[]; citations: Citation[] } {
+): { evidence: Evidence[]; citations: Citation[]; cited: Hit[] } {
   const evidence: Evidence[] = [];
   const citations: Citation[] = [];
+  const cited: Hit[] = [];
   const seen = new Set<string>();
   // [n] numbers the chunks as the prompt showed them, after the per-file and
   // total caps, so resolve them against that same list rather than raw hits.
@@ -276,6 +327,81 @@ function evidenceForMarkers(
     seen.add(span.id);
     evidence.push(span);
     citations.push(citationFrom(hit, span, material));
+    cited.push(hit);
+  }
+  return { evidence, citations, cited };
+}
+
+/**
+ * Narrow each cited chunk to the lines that carry the sentence.
+ *
+ * The model cites the chunk it was shown, which can be thirty lines, so the
+ * chip would read `retry.ts:1-28` for a sentence that sits on lines 4 to 6.
+ * This runs only after the sentence has verified against the whole chunk. It
+ * then drops leading and trailing lines of a file chunk for as long as the
+ * sentence still verifies, so the result is a subset of the same loaded text
+ * that passes the same check. It can only make a citation tighter.
+ *
+ * Left alone: commits and PDF pages (no lines to narrow), a chunk that cannot
+ * be located in the loaded file, and a chunk the sentence verifies without
+ * (the model cited it as context; there are no "lines that carry the claim").
+ */
+function narrowToClaim(
+  say: string,
+  found: { evidence: Evidence[]; citations: Citation[]; cited: Hit[] },
+  pack?: RepoPack,
+  material?: SpaceMaterialView,
+): { evidence: Evidence[]; citations: Citation[] } {
+  const evidence = [...found.evidence];
+  const citations = [...found.citations];
+  const holds = (trial: Evidence[]) => {
+    const check = verifyClaim(say, trial);
+    return check.ok && check.checked > 0;
+  };
+
+  for (let i = 0; i < evidence.length; i += 1) {
+    const whole = evidence[i];
+    const hit = found.cited[i];
+    if (!whole || !hit || whole.kind !== "text" || !isFileHit(hit)) continue;
+    const content = resolveFileContent(hit, pack, material)?.content;
+    if (!content || content.slice(whole.startOffset, whole.endOffset) !== whole.text) continue;
+    if (evidence.length > 1 && holds(evidence.filter((_, index) => index !== i))) continue;
+
+    const attempt = (start: number, end: number): TextEvidence | null => {
+      const span = textEvidence({
+        path: whole.path,
+        content,
+        start,
+        end,
+        normalizedText: content.slice(start, end),
+        sourceType: whole.sourceType,
+        sourceId: whole.sourceId,
+      });
+      if (!span) return null;
+      const trial = [...evidence];
+      trial[i] = span;
+      return holds(trial) ? span : null;
+    };
+
+    let best: TextEvidence = whole;
+    for (;;) {
+      const newline = content.indexOf("\n", best.startOffset);
+      if (newline < 0 || newline + 1 >= best.endOffset) break;
+      const next = attempt(newline + 1, best.endOffset);
+      if (!next) break;
+      best = next;
+    }
+    for (;;) {
+      // Skip a newline that ends the span, then cut at the one before the last line.
+      const newline = content.lastIndexOf("\n", best.endOffset - 2);
+      if (newline <= best.startOffset) break;
+      const next = attempt(best.startOffset, newline);
+      if (!next) break;
+      best = next;
+    }
+    if (best === whole) continue;
+    evidence[i] = best;
+    citations[i] = citationFrom(hit, best, material);
   }
   return { evidence, citations };
 }
@@ -369,14 +495,19 @@ export async function generateAnswer(
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = firstTwoSentences(stripCitationMarkers(remote.text));
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
-  if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
+  const found = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
+  if (found.evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
-  const check = verifyClaim(say, evidence);
-  const verifyMs = Math.round(performance.now() - verifyStart);
+  const check = verifyClaim(say, found.evidence);
   if (!check.ok || check.checked === 0) {
-    return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
+    return {
+      ok: false,
+      reason: "insufficient",
+      timing: { llmMs, verifyMs: Math.round(performance.now() - verifyStart) },
+    };
   }
+  const { evidence, citations } = narrowToClaim(say, found, opts?.pack, opts?.material);
+  const verifyMs = Math.round(performance.now() - verifyStart);
   return {
     ok: true,
     answer: {
@@ -411,14 +542,19 @@ export async function synthesizeAnswer(
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const say = firstTwoSentences(stripCitationMarkers(remote.text));
   if (!say) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
-  const { evidence, citations } = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
-  if (evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
+  const found = evidenceForMarkers(remote.text, hits, opts?.pack, opts?.material);
+  if (found.evidence.length === 0) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
   const verifyStart = performance.now();
-  const check = verifyClaim(say, evidence);
-  const verifyMs = Math.round(performance.now() - verifyStart);
+  const check = verifyClaim(say, found.evidence);
   if (!check.ok || check.checked === 0) {
-    return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs } };
+    return {
+      ok: false,
+      reason: "insufficient",
+      timing: { llmMs, verifyMs: Math.round(performance.now() - verifyStart) },
+    };
   }
+  const { evidence, citations } = narrowToClaim(say, found, opts?.pack, opts?.material);
+  const verifyMs = Math.round(performance.now() - verifyStart);
   return {
     ok: true,
     answer: {

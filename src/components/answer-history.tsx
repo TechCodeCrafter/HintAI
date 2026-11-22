@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { Copy } from "lucide-react";
 import { AnswerModeBadge } from "@/components/answer-mode-control";
 import { Button } from "@/components/ui/button";
@@ -75,6 +75,10 @@ export function HistoryRow({
   const overlayOn = useMeetHint((s) => s.overlay);
   const setOpenFile = useMeetHint((s) => s.setOpenFile);
   const openDocumentCitation = useMeetHint((s) => s.openDocumentCitation);
+  const files = useMeetHint((s) => s.pack.files);
+  const ready = useMeetHint((s) => s.contextStatus === "ready");
+  // An older answer may cite a file removed since. Its chip stays readable and stops being a link.
+  const loadedPaths = useMemo(() => new Set(files.map((file) => file.path)), [files]);
   const [copied, setCopied] = useState(false);
 
   function copyAnswer(event: MouseEvent) {
@@ -116,7 +120,12 @@ export function HistoryRow({
         </button>
         {cites.length > 0 ? (
           <div className="history-cites">
-            <VerifiedCitations citations={cites} overlay={hideOverlay} onOpenCited={openCited} />
+            <VerifiedCitations
+              citations={cites}
+              overlay={hideOverlay}
+              loadedPaths={ready ? loadedPaths : undefined}
+              onOpenCited={openCited}
+            />
           </div>
         ) : null}
       </div>

@@ -1,4 +1,4 @@
-import type { Card, Citation } from "@/lib/repo/types";
+import type { Card, Citation, ConsideredSource } from "@/lib/repo/types";
 import { sourceIdsFromCitations, sourceIdsFromEvidence } from "../context/material-view.ts";
 import type { AnswerMode } from "./answer-mode";
 import type { SilenceKind } from "./silence.ts";
@@ -30,6 +30,8 @@ export type AnswerHistoryItem = {
   silence?: SilenceKind;
   badge: AnswerHistoryBadge | null;
   citations: Citation[];
+  /** Other loaded files retrieval ranked for the question. Never evidence. */
+  considered?: ConsideredSource[];
   timestamp: number;
 };
 
@@ -81,6 +83,7 @@ export function historyItemFromCard(
       badgeFromAnswerMode(card.answerMode, card.usedEvidence ?? card.citations.length > 0) ??
       (card.say ? "from-docs" : null),
     citations: card.citations ?? [],
+    ...(card.considered?.length ? { considered: card.considered } : {}),
     timestamp: at,
   };
 }
@@ -100,6 +103,7 @@ export function cardFromHistory(item: AnswerHistoryItem): Card {
     reason: item.say ? undefined : item.reason?.trim() || UNRECORDED_SILENCE_REASON,
     silence: item.say ? undefined : item.silence,
     citations: item.citations,
+    ...(item.considered?.length ? { considered: item.considered } : {}),
     query: item.query,
     latencyMs: 0,
     source: item.badge ?? "local",

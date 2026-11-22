@@ -8,6 +8,7 @@ import { MEETHINT_NAME } from "@/lib/brand";
 import { DEMO_QUESTIONS, demoAnswer } from "@/lib/demo/answer";
 import { citationText, citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search/cite";
 import type { Card } from "@/lib/repo/types";
+import { ConsideredSources } from "@/components/considered-sources";
 
 /**
  * Search-only demo. The sample pack is in the page, so the first click can
@@ -160,6 +161,8 @@ export function DemoSearch() {
                   })}
                 </ul>
               ) : null}
+              {/* The demo has no file viewer, so these are stated and not clickable. */}
+              <ConsideredSources sources={card.considered ?? []} silent={!speaking} />
             </div>
           </article>
         ) : null}
