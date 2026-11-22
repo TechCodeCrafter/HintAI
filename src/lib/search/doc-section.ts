@@ -46,6 +46,23 @@ type Section = {
   units: Unit[];
 };
 
+/**
+ * A record header line: "Date: 2026-03-18", "Status: Accepted", "PR: #842".
+ * A short label, a colon, a short value, and no sentence ending.
+ */
+const FIELD_LINE = /^[A-Za-z][\w-]*(?: [\w-]+){0,2}:\s+\S+(?:\s+\S+){0,5}$/;
+
+/**
+ * A block of record headers at the top of an ADR, an RFC or a front-matter
+ * section. It says when a document was written and where it stands, never
+ * what the thing does, so it is not a sentence anyone would say out loud.
+ * One such line on its own is left alone: "Note: see the runbook" is prose.
+ */
+function isFieldBlock(text: string): boolean {
+  const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+  return lines.length >= 2 && lines.every((line) => FIELD_LINE.test(line) && !/[.!?]$/.test(line));
+}
+
 /** Small synonym table: question words that READMEs phrase differently. */
 const SYNONYMS: Record<string, string[]> = {
   duplicate: ["merged", "twice", "dedupe", "re-asked"],
@@ -99,6 +116,10 @@ export function parseSections(content: string): Section[] {
   const current = () => sections[sections.length - 1]!;
   const flush = () => {
     if (!para) return;
+    if (isFieldBlock(para.text)) {
+      para = null;
+      return;
+    }
     for (const s of sentencesOf(para.text, para.start)) {
       const spoken = plain(s.text);
       if (spoken) current().units.push({ kind: "sentence", text: spoken, start: s.start, end: s.end, lead: /:$/.test(spoken) });
@@ -124,6 +145,11 @@ export function parseSections(content: string): Section[] {
       continue;
     }
     if (!trimmed) {
+      flush();
+      continue;
+    }
+    // A rule, or the fence around front matter: it ends a block and says nothing.
+    if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
       flush();
       continue;
     }

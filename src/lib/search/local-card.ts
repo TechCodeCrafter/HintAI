@@ -21,7 +21,7 @@ import {
   verifyClaim,
 } from "./evidence.ts";
 import { verifyEvidenceSpan } from "./evidence-span.ts";
-import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
+import { evidenceFitsShape, shapeGap, shapeOf, statesCause } from "./intent.ts";
 import { SILENCE, type Silence, notStated, silent, unknownTerms } from "./silence.ts";
 import { withConsidered } from "./considered.ts";
 import { asksAboutWholeApp, isArchitectureQuery, isProjectOverviewQuery } from "./question.ts";
@@ -31,8 +31,8 @@ import { contentWords, normalizeSpokenQuestion } from "./spoken.ts";
 import { admissible, explain, fileFrequency, mentions, provenanceOf, subjectTerms } from "./subject.ts";
 import { type Prose, type ProseSpan, capabilityList, plain, proseOf } from "./prose.ts";
 import { sayable } from "./say.ts";
-import { covers, locateInCode } from "./code-locator.ts";
-import { quotesWholeSentences } from "./claim-verify.ts";
+import { covers, identWords as nameWords, locateInCode } from "./code-locator.ts";
+import { quotesWholeSentences, unwrapEvidenceText } from "./claim-verify.ts";
 import { type SectionAnswer, sectionAnswer } from "./doc-section.ts";
 
 /**
@@ -389,7 +389,19 @@ function bestClaim(
     }
   }
   if (eligible.length === 0) return null;
-  const winner = eligible.reduce((a, b) => (b.score > a.score ? b : a));
+  const best = eligible.reduce((a, b) => (b.score > a.score ? b : a));
+  // "Why" is answered only by a sentence that states a reason: the shape gate
+  // withdraws anything else. So a sentence that gives its cause outright is
+  // taken ahead of a description that scores higher, provided it covers as
+  // much of the question as that description does. Otherwise the description
+  // stands and the shape gate says what was missing.
+  const causes =
+    shapeOf(canonical) === "why"
+      ? eligible.filter(
+          (item) => item.score > 0 && item.relevance >= best.relevance && statesCause(item.claim.say),
+        )
+      : [];
+  const winner = causes.length > 0 ? causes.reduce((a, b) => (b.score > a.score ? b : a)) : best;
   // Admission needs a positive score, not merely a positive relevance. This is
   // the long-standing rule, kept deliberately: relaxing it to admit score-zero
   // claims raised coverage by one legitimate answer and one wrong one, which is
@@ -606,6 +618,8 @@ function twoSentences(text: string): string | null {
   return null;
 }
 
+const MARKDOWN_PATH = /\.(?:md|mdx|markdown)$/i;
+
 function isDocumentPackFile(path: string): boolean {
   return /\.(docx|pptx|ppt|xlsx|csv|md|mdx|txt|rst|adoc)$/i.test(path);
 }
@@ -726,6 +740,8 @@ function genericLocalCard(
       accepted: false, reject: twoSentences(claim.say) ? "NO_SPEAKABLE_SENTENCE" : "TOO_LONG",
     });
   }
+  // True while the spoken line is still the sentence read from the file.
+  let fromProse = Boolean(claim && say && !claim.generic);
 
   // "Who touched this?" is answered by history or not at all. A docstring says
   // what a file does and never who wrote it, so whatever prose won above is the
@@ -753,6 +769,7 @@ function genericLocalCard(
     }
     say = spoken;
     evidence = [commitFrom(authored, spoken)];
+    fromProse = false;
   } else if (!say && why?.message) {
     // A commit or ADR message is written evidence too, and it states the change.
     // Its evidence is the message, so the Card cites the commit rather than the
@@ -768,6 +785,7 @@ function genericLocalCard(
       if (spoken) {
         say = spoken;
         evidence = [commitFrom(why, spoken)];
+        fromProse = false;
       }
     }
   }
@@ -792,25 +810,43 @@ function genericLocalCard(
         covers(claim?.say ?? "", terms) < located.score,
     );
     // A list or field is read from the data itself; it answers by construction.
-    const readsData = located?.kind === "value" || located?.kind === "list" || located?.kind === "field";
+    // A setting found only because the file is configuration fills a silence;
+    // it does not displace a sentence someone wrote.
+    const readsData =
+      (located?.kind === "value" && !located.inferred) || located?.kind === "list" || located?.kind === "field";
     const better = located && (!say || readsData || whereNamed);
     // README and docs: a section whose heading or lines cover the question
     // better than the code comment that won. Product questions ("how do I
     // self-host it?", "what license?") live there, not in docstrings.
     const doc = sectionAnswer(canonical, terms, seeded, (path) => files.get(path));
     const claimCover = say ? covers(say, terms) : -1;
+    // The top-ranked file speaks first. A heading earns its section credit for
+    // the question words in it, and a file name does the same for the code
+    // under it. So when the claim was read from the source file retrieval put
+    // first, a document further down has to cover more of the question than
+    // the sentence, its path and its declaration put together.
+    const claimPath = claim && say && evidence[0] === claim.span ? claim.span.path : null;
+    const claimLeads = Boolean(
+      doc && claimPath && !MARKDOWN_PATH.test(claimPath) && seeded[0]?.path === claimPath && doc.hit.path !== claimPath,
+    );
+    const claimReach =
+      claimLeads && claimPath
+        ? covers(`${say} ${nameWords(claimPath.replace(/\.\w+$/, ""))} ${nameWords(claim?.decl ?? "")}`, terms)
+        : claimCover;
     const locatorWins = Boolean(
       located && better && (!doc || located.score > doc.coverage || (readsData && located.score >= doc.coverage)),
     );
     const docWins =
       doc &&
       !locatorWins &&
-      (doc.coverage > claimCover ||
-        (doc.coverage === claimCover &&
-          (doc.headingMatch ||
-            Boolean(claim?.decl) ||
-            Boolean(claim?.generic) ||
-            (describesReturnValue(say ?? "") && !/\breturns?\b/i.test(canonical)))));
+      (claimLeads
+        ? doc.coverage > claimReach
+        : doc.coverage > claimCover ||
+          (doc.coverage === claimCover &&
+            (doc.headingMatch ||
+              Boolean(claim?.decl) ||
+              Boolean(claim?.generic) ||
+              (describesReturnValue(say ?? "") && !/\breturns?\b/i.test(canonical)))));
     if (doc && docWins) {
       const card = docSectionCard(query, doc, latencyMs, material, contentWords(canonical), pack);
       if (card) return card;
@@ -865,7 +901,7 @@ function genericLocalCard(
     };
   }
 
-  const checked = admitEvidence(query, say, evidence, pack, context);
+  const checked = admitEvidence(query, say, evidence, pack, context, fromProse);
   if (!checked.ok) {
     return {
       say: null,
@@ -995,6 +1031,8 @@ function admitEvidence(
   evidence: Evidence[],
   pack: RepoPack,
   context?: LocalCardContext,
+  /** The line is a sentence read whole from a file, not one a template built. */
+  fromProse = false,
 ): { ok: true } | { ok: false; why: Silence } {
   const where = (item: Evidence) => {
     if (item.kind === "text") return { path: item.path, line: item.startLine };
@@ -1054,7 +1092,7 @@ function admitEvidence(
   }
 
   const support = verifyClaim(say, evidence);
-  if (!support.ok) {
+  if (!support.ok && !(fromProse && quotedWhole(say, evidence, support.missing))) {
     noteAttempt({
       query, ...where(evidence[0]), origin: "span",
       candidate: say, generic: false, relevance: 0, score: 0,
@@ -1064,6 +1102,25 @@ function admitEvidence(
     return { ok: false, why: SILENCE.unsupported };
   }
   return { ok: true };
+}
+
+/**
+ * A sentence quoted whole cannot be turned around by quoting it. The negation
+ * and ordering checks compare one clause of the claim with the whole evidence
+ * sentence, so "rank chunks, not files, so each is asked for everything" fails
+ * against itself: its first clause has no "not" and the sentence does. Those
+ * two checks, and only those, are waived when every spoken sentence is a
+ * complete sentence of the cited lines. A missing word is never waived, and a
+ * fragment never qualifies.
+ */
+function quotedWhole(say: string, evidence: Evidence[], failed: string[]): boolean {
+  if (failed.length === 0 || !failed.every((tag) => tag === "negation" || tag === "phrase_order")) return false;
+  const lines: string[] = [];
+  for (const item of evidence) {
+    if (item.kind !== "text") return false;
+    lines.push(unwrapEvidenceText(item.text));
+  }
+  return quotesWholeSentences(say, lines.join("\n"));
 }
 
 /** The loaded material, as the evidence model asks about it. */

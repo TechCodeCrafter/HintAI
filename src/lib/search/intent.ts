@@ -100,7 +100,20 @@ export function shapeOf(query: string): Shape {
  * one that says "retries three times" does not, however relevant it is.
  */
 const RATIONALE =
-  /\b(because|since|so that|in order to|to avoid|to prevent|to ensure|rather than|instead of|trade[- ]?off|on purpose|by design|deliberately|intentionally|the reason|rationale|decided|decision|chose|chosen|opted|due to|owing to|required by|constraint|limitation|workaround|prevents|avoids)\b/i;
+  /\b(because|since|so that|which is why|that is why|this is why|in order to|to avoid|to prevent|to ensure|rather than|instead of|trade[- ]?off|on purpose|by design|deliberately|intentionally|the reason|rationale|decided|decision|chose|chosen|opted|due to|owing to|required by|constraint|limitation|workaround|prevents|avoids)\b/i;
+
+/**
+ * A sentence that gives its cause in so many words. Narrower than RATIONALE on
+ * purpose: "chosen" and "decision" mark a rationale somewhere nearby, and are
+ * enough to let a claim that already won be spoken, but only an explicit
+ * connective is enough to pick one sentence ahead of a higher-scoring one.
+ */
+const CAUSE =
+  /\b(because|so that|which is why|that is why|this is why|in order to|to avoid|to prevent|to ensure|due to|owing to)\b/i;
+
+export function statesCause(claim: string): boolean {
+  return CAUSE.test(claim);
+}
 
 /** Prose that states who is responsible, rather than describing behaviour. */
 const OWNERSHIP =
