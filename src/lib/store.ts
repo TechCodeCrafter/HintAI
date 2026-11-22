@@ -81,6 +81,7 @@ import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
 import { recordAnswerFlight } from "@/lib/instrumentation/flight-recorder";
 import { routeSearchAnswer } from "@/lib/search/answer-route";
+import { searchFailureSilence, silent } from "@/lib/search/silence";
 import {
   emptySelectionMessage,
   officeReadError,
@@ -1864,7 +1865,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         ...applyCard(
           {
             say: null,
-            reason: "No question in the transcript yet. Ask about this repo — or type it.",
+            reason: "No question in the transcript yet. Ask about this repo, or type it.",
             citations: [],
             query: "",
             latencyMs: 0,
@@ -1957,26 +1958,64 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       return;
     }
 
+    // Retrieval, document hydration, and routing can throw (a workspace-scope
+    // violation, an unreadable index). Without this the pane spins forever with
+    // no Card. A failed search is silent like any other: it says nothing, costs
+    // nothing, and names the cause instead of blaming the material.
+    const searchFailed = (error: unknown) => {
+      console.warn("[search] failed:", error);
+      if (epoch !== searchEpoch) return;
+      const failed: Card = {
+        say: null,
+        ...silent(searchFailureSilence(error)),
+        citations: [],
+        query,
+        latencyMs: Math.round(performance.now() - t0),
+        source: "local",
+      };
+      set({ searching: false, refining: false, ...applyCard(failed, get().openDocument) });
+      persist({ card: failed, armed: get().armed, listening: get().listening, searching: false });
+      reportSearchDebug({
+        query,
+        chunks: state.chunks,
+        excludePatterns: state.pack.excludePatterns,
+        filesLoaded: state.pack.files.length,
+        ranked: [],
+        sent: [],
+        stage: "silence",
+        reason: failed.reason,
+        totalMs: failed.latencyMs,
+      });
+    };
+
     const retrieveT0 = performance.now();
-    const hits = await runSpaceScopedRetrieval({
-      query: canonical,
-      previousQuestion,
-      chunks: state.chunks,
-      pack: state.pack,
-      spaceState: state,
-      workspaceId,
-      vectorStore: getVectorStore(),
-      limit: 6,
-    });
+    let hits: Awaited<ReturnType<typeof runSpaceScopedRetrieval>>;
+    let hydrated: Awaited<ReturnType<typeof hydratePdfDocumentsForHits>>;
+    try {
+      hits = await runSpaceScopedRetrieval({
+        query: canonical,
+        previousQuestion,
+        chunks: state.chunks,
+        pack: state.pack,
+        spaceState: state,
+        workspaceId,
+        vectorStore: getVectorStore(),
+        limit: 6,
+      });
+    } catch (error) {
+      searchFailed(error);
+      return;
+    }
     const retrieveMs = Math.round(performance.now() - retrieveT0);
     if (epoch !== searchEpoch) return;
 
-    const { context: cardContext, documentHydrateMs } = await hydratePdfDocumentsForHits(
-      getContextRepository(),
-      state.sources,
-      hits,
-      material,
-    );
+    try {
+      hydrated = await hydratePdfDocumentsForHits(getContextRepository(), state.sources, hits, material);
+    } catch (error) {
+      searchFailed(error);
+      return;
+    }
+    const { context: cardContext, documentHydrateMs } = hydrated;
     if (epoch !== searchEpoch) return;
 
     const finish = (card: Card, remaining = get().extractRemaining) => {
@@ -2014,16 +2053,23 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
 
     const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
     const selectedModel = getModelById(get().selectedModelId) ?? getDefaultModel();
-    const routed = await routeSearchAnswer(query, hits, t0, {
-      pack: state.pack,
-      material,
-      cardContext,
-      modelId: selectedModel.id,
-      maxTokens: SYNTHESIZE_MAX_TOKENS,
-      threadHistory,
-      retrieveMs,
-      measureProgressive: isFlightRecorder(),
-    });
+    let routed: Awaited<ReturnType<typeof routeSearchAnswer>>;
+    try {
+      routed = await routeSearchAnswer(query, hits, t0, {
+        pack: state.pack,
+        material,
+        cardContext,
+        modelId: selectedModel.id,
+        maxTokens: SYNTHESIZE_MAX_TOKENS,
+        threadHistory,
+        retrieveMs,
+        indexedChunks: state.chunks.length,
+        measureProgressive: isFlightRecorder(),
+      });
+    } catch (error) {
+      searchFailed(error);
+      return;
+    }
     if (epoch !== searchEpoch) return;
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
     const remaining = extractRemaining();

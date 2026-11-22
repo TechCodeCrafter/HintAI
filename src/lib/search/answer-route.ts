@@ -3,10 +3,7 @@ import { classifyProgressiveAgreement } from "../instrumentation/progressive-agr
 import { buildProgressiveTiming, type ProgressiveTiming } from "../instrumentation/progressive-timing.ts";
 import type { SpaceMaterialView } from "../context/material-view.ts";
 import type { Card, Hit, RepoPack } from "../repo/types.ts";
-import {
-  localCardFastPathEligible,
-  shouldFailFastRetrieval,
-} from "./answer-fast-path.ts";
+import { failFastCause, localCardFastPathEligible } from "./answer-fast-path.ts";
 import type { LocalCardContext } from "./local-card.ts";
 import {
   generateAnswer,
@@ -17,36 +14,7 @@ import {
   type GeneratedAnswer,
 } from "./generate-answer.ts";
 import { localCard } from "./local-card.ts";
-
-const ERROR_REASON_CAP = 120;
-
-export function silentCardReason(hitCount: number, errorMessage?: string): string {
-  const message = errorMessage?.replace(/\s+/g, " ").trim();
-  if (message) return `Couldn't produce a cited answer: ${message.slice(0, ERROR_REASON_CAP)}`;
-  return hitCount === 0 ? "No matching material" : "Your material doesn't cover this";
-}
-
-/**
- * Reasons the composer produces that are no more specific than the routing
- * default — surfacing them would just reword "your material doesn't cover
- * this", so the routing default is kept for these.
- */
-const GENERIC_LOCAL_REASONS = new Set([
-  "Nothing in this pack cites that.",
-  "Found the file, but nothing in it I would say out loud.",
-  "No evidence I could point at for that.",
-]);
-
-/**
- * The silence reason the room should read. A shape-specific explanation ("The
- * material says what this does, not why it was chosen") is the feature — it
- * tells the room exactly what was checked. A generic local reason is not an
- * improvement over the routing default, so those fall through to it.
- */
-function specificLocalReason(localReason?: string): string | undefined {
-  if (!localReason) return undefined;
-  return GENERIC_LOCAL_REASONS.has(localReason) ? undefined : localReason;
-}
+import { explainSilence, type FailFastCause, type Silence } from "./silence.ts";
 
 export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
 
@@ -65,6 +33,11 @@ export type RoutedSearchAnswer = {
 };
 
 export type RouteSearchOpts = GenerateOpts & {
+  /**
+   * Chunks in the index that retrieval searched. Zero with no hits is reported
+   * as an empty index, not as "nothing covers this".
+   */
+  indexedChunks?: number;
   pack?: RepoPack;
   material?: SpaceMaterialView;
   cardContext?: LocalCardContext;
@@ -183,15 +156,17 @@ function localCardRouteFromAttempt(
   };
 }
 
+/**
+ * The only way the route goes silent. It never speaks, never spends quota, and
+ * always says why: `why` comes from `explainSilence`, which has no empty case.
+ */
 function failedCard(
   query: string,
-  hitCount: number,
+  why: Silence,
   t0: number,
   retrieveMs: number,
-  firstError: string | undefined,
   stages?: Partial<AnswerStageTimings>,
   progressive?: ProgressiveTiming,
-  localReason?: string,
 ): RoutedSearchAnswer {
   return {
     consumeQuota: false,
@@ -200,10 +175,8 @@ function failedCard(
     progressive,
     card: {
       say: null,
-      // Prefer the composer's shape-specific reason ("The material says what
-      // this does, not why it was chosen") over the generic routing string — a
-      // precise silence is what makes restraint legible as a feature.
-      reason: specificLocalReason(localReason) ?? silentCardReason(hitCount, firstError),
+      reason: why.reason,
+      silence: why.kind,
       citations: [],
       query,
       latencyMs: Math.round(performance.now() - t0),
@@ -219,6 +192,10 @@ function failedCard(
  * 3. Grounded LLM (generateAnswer)
  * 4. Cited synthesis LLM (synthesizeAnswer)
  * 5. localCard fallback — never general knowledge
+ *
+ * Every silent exit goes through `silence()` below, so each one names its own
+ * cause: nothing indexed, no match, weak match, model unreachable, or what the
+ * composer found missing in the hits it read.
  */
 export async function routeSearchAnswer(
   query: string,
@@ -229,6 +206,10 @@ export async function routeSearchAnswer(
   const retrieveMs = opts?.retrieveMs ?? 0;
   const routeStart = performance.now();
   let firstError: string | undefined;
+  // A model stage ran to the end and declined ("insufficient", or a line that
+  // failed verification). Once that is true the files were read, so a
+  // transport error from another stage is not why the room hears nothing.
+  let modelDeclined = false;
   let llmMs = 0;
   let verifyMs = 0;
   let groundedMs = 0;
@@ -268,10 +249,23 @@ export async function routeSearchAnswer(
         : undefined,
     });
 
-  if (shouldFailFastRetrieval(query, hits)) {
-    const latency = latencyOf(t0, retrieveMs, { llmMs: 0, verifyMs: 0 }, routeStages());
-    return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
-  }
+  const silence = (failFast: FailFastCause | null = null): RoutedSearchAnswer => {
+    const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
+    const why = explainSilence({
+      hitCount: hits.length,
+      failFast,
+      indexedChunks: opts?.indexedChunks,
+      modelError: firstError,
+      modelDeclined,
+      // What the composer said about the hits it read. Only its silence is
+      // reported; a composer that spoke was already returned as the answer.
+      local: localAttempt && !localAttempt.card.say ? localAttempt.card : null,
+    });
+    return failedCard(query, why, t0, retrieveMs, routeStages(), progressiveFor("silent", latency.totalMs, null));
+  };
+
+  const failFast = failFastCause(query, hits);
+  if (failFast) return silence(failFast);
 
   if (localAttempt && localCardFastPathEligible(localAttempt.card, hits)) {
     const routed = localCardRouteFromAttempt(
@@ -324,11 +318,11 @@ export async function routeSearchAnswer(
     );
   }
   firstError = noteError(firstError, grounded);
+  if (grounded.reason === "insufficient") modelDeclined = true;
   if (isTransportError(grounded)) {
     const local = localFallback();
     if (local) return local;
-    const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-    return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
+    return silence();
   }
 
   if (hits.length > 0) {
@@ -355,21 +349,18 @@ export async function routeSearchAnswer(
       );
     }
     firstError = noteError(firstError, synthesized);
+    // An uncited or unverified synthesis is the model declining too: it read
+    // the hits and produced nothing that may be said.
+    if (synthesized.ok || synthesized.reason === "insufficient") modelDeclined = true;
     if (isTransportError(synthesized)) {
       const local = localFallback();
       if (local) return local;
-      const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-      return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null));
+      return silence();
     }
   }
 
   const local = localFallback();
   if (local) return local;
 
-  const latency = latencyOf(t0, retrieveMs, { llmMs, verifyMs }, routeStages());
-  // The composer already decided why it cannot speak — surface that reason
-  // rather than the generic routing string, so the room reads a precise
-  // silence ("The material says what this does, not why it was chosen").
-  const localReason = localAttempt && !localAttempt.card.say ? localAttempt.card.reason : undefined;
-  return failedCard(query, hits.length, t0, retrieveMs, firstError, routeStages(), progressiveFor("silent", latency.totalMs, null), localReason);
+  return silence();
 }

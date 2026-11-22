@@ -22,6 +22,7 @@ import {
 } from "./evidence.ts";
 import { verifyEvidenceSpan } from "./evidence-span.ts";
 import { evidenceFitsShape, shapeGap, shapeOf } from "./intent.ts";
+import { SILENCE, type Silence, notStated, silent, unknownTerms } from "./silence.ts";
 import { asksAboutWholeApp, isArchitectureQuery, isProjectOverviewQuery } from "./question.ts";
 import { FAST_PATH_MIN_SCORE } from "./answer-fast-path.ts";
 import { isTestEvidencePath } from "./retrieve.ts";
@@ -656,7 +657,9 @@ function genericLocalCard(
     closeDecision(query, false);
     return {
       say: null,
-      reason: "Nothing in this pack cites that.",
+      // No hit at all and hits below the evidence floor are different facts
+      // about the files: one is "not there", the other is "not close enough".
+      ...silent(seeded.length === 0 ? SILENCE.noMatch : SILENCE.weakMatch),
       citations: [],
       query,
       latencyMs,
@@ -702,7 +705,7 @@ function genericLocalCard(
     closeDecision(query, false);
     return {
       say: null,
-      reason: "Only the tests describe that — nothing loaded says what it does.",
+      ...silent(SILENCE.testsOnly),
       citations: [citationOfHit(code, material)],
       query,
       latencyMs,
@@ -740,7 +743,7 @@ function genericLocalCard(
       closeDecision(query, false);
       return {
         say: null,
-        reason: shapeGap("who"),
+        ...silent(notStated(shapeGap("who"))),
         citations: [citationOfHit(code, material)],
         query,
         latencyMs,
@@ -833,7 +836,7 @@ function genericLocalCard(
     closeDecision(query, false);
     return {
       say: null,
-      reason: "Found the file, but nothing in it I would say out loud.",
+      ...silent(SILENCE.noSentence),
       citations: [fallback],
       query,
       latencyMs,
@@ -853,7 +856,7 @@ function genericLocalCard(
     closeDecision(query, false);
     return {
       say: null,
-      reason: "Nothing in this pack cites that.",
+      ...silent(unknownTerms(strangers)),
       citations: [],
       query,
       latencyMs,
@@ -865,7 +868,7 @@ function genericLocalCard(
   if (!checked.ok) {
     return {
       say: null,
-      reason: checked.reason,
+      ...silent(checked.why),
       citations: citationsFor(evidence, code, material) ?? [fallback],
       query,
       latencyMs,
@@ -991,7 +994,7 @@ function admitEvidence(
   evidence: Evidence[],
   pack: RepoPack,
   context?: LocalCardContext,
-): { ok: true } | { ok: false; reason: string } {
+): { ok: true } | { ok: false; why: Silence } {
   const where = (item: Evidence) => {
     if (item.kind === "text") return { path: item.path, line: item.startLine };
     if (item.kind === "document") return { path: item.path, line: item.page };
@@ -1004,7 +1007,7 @@ function admitEvidence(
       relevance: 0, score: 0, accepted: false, reject: "NO_EVIDENCE_SPAN",
     });
     closeDecision(query, false);
-    return { ok: false, reason: "No evidence I could point at for that." };
+    return { ok: false, why: SILENCE.noSpan };
   }
 
   // Each kind is checked against its own source: a file against the file as
@@ -1021,7 +1024,7 @@ function admitEvidence(
         accepted: false, reject: "NO_EVIDENCE_SPAN",
       });
       closeDecision(query, false);
-      return { ok: false, reason: "No evidence I could point at for that." };
+      return { ok: false, why: SILENCE.noSpan };
     }
     const verified = verifyEvidenceSpan(item, {
       content: source.content,
@@ -1034,7 +1037,7 @@ function admitEvidence(
         accepted: false, reject: verified.reason === "STALE" ? "STALE_EVIDENCE" : "NO_EVIDENCE_SPAN",
       });
       closeDecision(query, false);
-      return { ok: false, reason: "That material changed since I read it." };
+      return { ok: false, why: SILENCE.stale };
     }
   }
 
@@ -1046,7 +1049,7 @@ function admitEvidence(
       accepted: false, reject: "STALE_EVIDENCE",
     });
     closeDecision(query, false);
-    return { ok: false, reason: "That material changed since I read it." };
+    return { ok: false, why: SILENCE.stale };
   }
 
   const support = verifyClaim(say, evidence);
@@ -1057,7 +1060,7 @@ function admitEvidence(
       accepted: false, reject: "UNSUPPORTED_CLAIM",
     });
     closeDecision(query, false);
-    return { ok: false, reason: "I could not back every word of that from the file." };
+    return { ok: false, why: SILENCE.unsupported };
   }
   return { ok: true };
 }
@@ -1176,7 +1179,7 @@ function holdToShape(card: Card, hits: FileHit[], canonical: string): Card {
   if ((card.evidence ?? []).some((item) => item.kind === "document")) {
     if (documentFitsShape(shape, card.say)) return card;
     overrideDecision(card.query, "WRONG_SHAPE");
-    return { ...card, say: null, reason: shapeGap(shape), citations: card.citations };
+    return { ...card, say: null, ...silent(notStated(shapeGap(shape))), citations: card.citations };
   }
   // Rationale evidence is now identifiable from the evidence itself: a commit
   // exists to record why a change was made. This used to be inferred by matching
@@ -1196,7 +1199,7 @@ function holdToShape(card: Card, hits: FileHit[], canonical: string): Card {
   );
   if (evidenceFitsShape(shape, card.say, citedWhy, authored)) return card;
   overrideDecision(card.query, "WRONG_SHAPE");
-  return { ...card, say: null, reason: shapeGap(shape), citations: card.citations };
+  return { ...card, say: null, ...silent(notStated(shapeGap(shape))), citations: card.citations };
 }
 
 /**
@@ -1237,7 +1240,7 @@ export function localCard(
     const top = composeHits[0] ?? hits[0];
     return {
       say: null,
-      reason: shapeGap("absence"),
+      ...silent(notStated(shapeGap("absence"))),
       citations: top && isFileHit(top) ? [citationOfHit(top, context?.material)] : [],
       query,
       latencyMs,
@@ -1251,7 +1254,7 @@ export function localCard(
     if (blocked) {
       return {
         say: null,
-        reason: blocked,
+        ...silent(blocked),
         citations: [],
         query,
         latencyMs,
@@ -1259,11 +1262,16 @@ export function localCard(
       };
     }
     let fileCard: Card | null = null;
+    // The best-ranked document hit that stayed silent. Its reason is what the
+    // room reads if nothing else speaks: it says what was wrong with the
+    // closest passage (stale, off subject, not stated).
+    let closest: Card | null = null;
     for (const hit of hits) {
       if (isDocumentHit(hit)) {
         if (!sourceHitEligible(hit.sourceId, contract)) continue;
         const card = documentCard(canonical, hit, context?.document?.(hit.sourceId), documents, latencyMs, contract);
         if (card.say) return holdToShape({ ...card, query }, composeHits, canonical);
+        closest ??= card;
         continue;
       }
       if (fileCard) continue;
@@ -1273,7 +1281,11 @@ export function localCard(
     if (fileCard) return holdToShape(fileCard, composeHits, canonical);
     return {
       say: null,
-      reason: "Nothing in this pack cites that.",
+      ...silent(
+        closest?.reason
+          ? { kind: closest.silence ?? "not-stated", reason: closest.reason }
+          : SILENCE.notStated,
+      ),
       citations: [],
       query,
       latencyMs,

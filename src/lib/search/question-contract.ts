@@ -11,6 +11,7 @@ import {
   threadDocumentIds,
 } from "./document-identity.ts";
 import { type Shape, shapeOf } from "./intent.ts";
+import { SILENCE, type Silence } from "./silence.ts";
 import { documentMentions } from "./document-subject.ts";
 import { contentWords } from "./spoken.ts";
 import type { ThreadContext } from "./thread.ts";
@@ -293,14 +294,20 @@ export function sourceHitEligible(sourceId: string, contract: QuestionContract):
   return selector.sourceIds.includes(sourceId);
 }
 
-export function contractBlocksAll(contract: QuestionContract): string | null {
-  if (contract.needsThreadSource) return "Nothing loaded answers that.";
+/**
+ * The question names a source that cannot be searched, and why. Each case is a
+ * different thing for the room to fix, so each gets its own reason.
+ */
+export function contractBlocksAll(contract: QuestionContract): Silence | null {
+  // "That document" with no single document in the thread to point at.
+  if (contract.needsThreadSource) return SILENCE.whichDocument;
   const selector = contract.sourceSelector;
   if (!selector) return null;
-  if (selector.emptyTyped) return "Nothing loaded answers that.";
-  if (selector.ambiguous && selector.strength === "named") return "Nothing loaded answers that.";
+  // The named document is loaded but has no text layer (scanned or encrypted).
+  if (selector.emptyTyped) return SILENCE.noSearchableText;
+  if (selector.ambiguous && selector.strength === "named") return SILENCE.ambiguousDocument;
   if (selector.explicit && selector.strength === "named" && selector.sourceIds.length === 0) {
-    return "Nothing loaded answers that.";
+    return SILENCE.unknownDocument;
   }
   return null;
 }

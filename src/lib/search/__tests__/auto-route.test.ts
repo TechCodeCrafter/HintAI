@@ -8,7 +8,8 @@ import { NORTHSTAR } from "../../repo/northstar.ts";
 import type { RepoPack } from "../../repo/types.ts";
 import { isFileHit } from "../../repo/types.ts";
 import { FAST_PATH_MIN_SCORE } from "../answer-fast-path.ts";
-import { routeSearchAnswer, silentCardReason } from "../answer-route.ts";
+import { routeSearchAnswer } from "../answer-route.ts";
+import { SILENCE } from "../silence.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
 
 const fixtureRoot = join(dirname(fileURLToPath(import.meta.url)), "fixtures");
@@ -109,9 +110,10 @@ test("uncited synthesis ok is never spoken — localCard or silence only", async
   });
   assert.notEqual(silentRouted.card.say, UNCITED_UPLOAD_SYNTHESIS);
   assert.equal(silentRouted.card.say, null);
+  assert.equal(silentRouted.card.silence, devHits.length === 0 ? "no-match" : "weak-match");
   assert.equal(
     silentRouted.card.reason,
-    devHits.length === 0 ? "No matching material" : "Your material doesn't cover this",
+    devHits.length === 0 ? SILENCE.noMatch.reason : SILENCE.weakMatch.reason,
   );
 });
 
@@ -139,7 +141,7 @@ test("off-topic questions with irrelevant hits stay silent instead of speaking g
   assert.equal(routed.card.say, null);
   assert.equal(
     routed.card.reason,
-    devHits.length === 0 ? "No matching material" : "Your material doesn't cover this",
+    devHits.length === 0 ? SILENCE.noMatch.reason : SILENCE.weakMatch.reason,
   );
 });
 
@@ -150,7 +152,8 @@ test("off-topic questions with no hits stay silent", async () => {
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "No matching material");
+  assert.equal(routed.card.reason, "Nothing in your files covers this.");
+  assert.equal(routed.card.silence, "no-match");
 });
 
 test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async () => {
@@ -160,8 +163,7 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
   });
   assert.equal(none.consumeQuota, false);
   assert.equal(none.card.say, null);
-  assert.equal(none.card.reason, "No matching material");
-  assert.equal(silentCardReason(0), "No matching material");
+  assert.equal(none.card.reason, SILENCE.noMatch.reason);
 
   const uncovered = await routeSearchAnswer("Do we store card numbers in the export?", cardHits, 0, {
     pack: NORTHSTAR,
@@ -171,7 +173,10 @@ test("INSUFFICIENT across tiers stays silent with the hit-aware reason", async (
   if (uncovered.card.say) {
     assert.equal(uncovered.card.answerMode, "docs");
   } else {
-    assert.equal(uncovered.card.reason, "Your material doesn't cover this");
+    // The model read the hits and declined, so the composer's verdict on those
+    // same hits is the reason: related file found, answer not stated in it.
+    assert.equal(uncovered.card.silence, "not-stated");
+    assert.equal(uncovered.card.reason, SILENCE.noSentence.reason);
   }
 });
 
@@ -185,9 +190,13 @@ test("an API error is not disguised as missing material", async () => {
   });
   assert.equal(broken.consumeQuota, false);
   assert.equal(broken.card.say, null);
-  assert.equal(broken.card.reason, "Couldn't produce a cited answer: Add API key");
-  assert.equal(silentCardReason(3, "Add API key"), "Couldn't produce a cited answer: Add API key");
-  assert.match(silentCardReason(0, `${"x".repeat(200)}`), /^Couldn't produce a cited answer: x{120}$/);
+  assert.equal(broken.card.silence, "transport");
+  assert.equal(
+    broken.card.reason,
+    "No API key is set, so the model could not read your files. Add an API key and ask again.",
+  );
+  // The answer pane offers the key dialog on this phrase.
+  assert.match(broken.card.reason ?? "", /api key/i);
 });
 
 test("a timeout does not spend two more model calls", async () => {
@@ -202,7 +211,8 @@ test("a timeout does not spend two more model calls", async () => {
   assert.equal(asks, 1);
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "Couldn't produce a cited answer: timeout");
+  assert.equal(routed.card.silence, "transport");
+  assert.equal(routed.card.reason, "The model did not respond in time. Check your connection and ask again.");
 });
 
 test("the first error across tiers is the one the silent card shows", async () => {
@@ -216,7 +226,8 @@ test("the first error across tiers is the one the silent card shows", async () =
   });
   assert.equal(routed.consumeQuota, false);
   assert.equal(routed.card.say, null);
-  assert.equal(routed.card.reason, "Couldn't produce a cited answer: timeout");
+  assert.equal(routed.card.silence, "transport");
+  assert.equal(routed.card.reason, "The model did not respond in time. Check your connection and ask again.");
 });
 
 test("failed LLM answers do not consume quota", async () => {
@@ -225,7 +236,7 @@ test("failed LLM answers do not consume quota", async () => {
     ask: ask(null),
   });
   assert.equal(failed.consumeQuota, false);
-  assert.equal(failed.card.reason, "No matching material");
+  assert.equal(failed.card.reason, SILENCE.noMatch.reason);
 
   const silent = await routeSearchAnswer("What is the weather in Tokyo?", [], 0, {
     pack: NORTHSTAR,

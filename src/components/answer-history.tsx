@@ -9,7 +9,7 @@ import { answerModeFromBadge, type AnswerHistoryItem } from "@/lib/search/answer
 import { useMeetHint } from "@/lib/store";
 
 function historyPreview(item: AnswerHistoryItem): string {
-  return item.say ?? "No cited answer.";
+  return item.say ?? item.reason ?? "No cited answer.";
 }
 
 function formatHistoryTime(timestamp: number): string {

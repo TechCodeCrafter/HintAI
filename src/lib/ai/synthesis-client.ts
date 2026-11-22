@@ -17,7 +17,7 @@ function resolveKey(provider: ModelProvider, keys?: ProviderKeys): string | unde
 function providerHttpReason(provider: ModelProvider, status: number): string {
   const name = provider === "openai" ? "OpenAI" : provider === "anthropic" ? "Anthropic" : "xAI";
   if (status === 401 || status === 403) return `${name} rejected the API key`;
-  if (status === 429) return `${name} rate limit — try again in a moment`;
+  if (status === 429) return `${name} rate limit, try again in a moment`;
   return `${name} ${status}`;
 }
 

@@ -12,7 +12,7 @@ import { allSourcesExcluded } from "@/lib/context/exclusions";
 import { VerifiedCitations } from "@/components/verified-citations";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
-import { inferProductStateFromReason, productState } from "@/lib/product-states";
+import { productState, productStateForSilence } from "@/lib/product-states";
 import { cardUsedEvidence } from "@/lib/search/answer-mode";
 import { telemetryFromCard } from "@/lib/search/answer-history";
 import { recordBetaEventOnce } from "@/lib/instrumentation/beta-telemetry";
@@ -154,9 +154,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             ) : (
               <>
                 {card.reason ? (
-                  <ProductStateAlert
-                    state={inferProductStateFromReason(card.reason) ?? productState("unsupported-answer")}
-                  />
+                  <ProductStateAlert state={productStateForSilence(card)} />
                 ) : null}
                 <p className="text-sm text-muted">{card.reason ?? "No cited answer."}</p>
               </>
