@@ -3,6 +3,7 @@ import { useRef, type DragEvent } from "react";
 import { DropzoneCard } from "@/components/ui/dropzone-card";
 import { MATERIAL_FILE_ACCEPT, splitMaterialFiles } from "@/lib/material-upload";
 import { readDrop } from "@/lib/repo/drop-entries";
+import type { SkippedFile } from "@/lib/repo/folder";
 
 type MaterialUploadPanelProps = {
   disabled?: boolean;
@@ -17,7 +18,7 @@ type MaterialUploadPanelProps = {
   onAdd?: (files: File[], pdfs: File[]) => unknown;
   /** A folder dropped on the panel, walked into its files, for review. */
   /** `capped` means the drop was larger than one scan reads, so part of it is missing. */
-  onFolderDrop?: (files: File[], detail: { capped: boolean; skipLabels: string[] }) => void;
+  onFolderDrop?: (files: File[], detail: { capped: boolean; skipLabels: string[]; skippedFiles: SkippedFile[] }) => void;
   testId?: string;
 };
 
@@ -49,9 +50,9 @@ export function MaterialUploadPanel({
     if (disabled || folderReading) return;
     // Entries have to be taken from the event now; it is emptied once this returns.
     const dropped = readDrop(event.dataTransfer);
-    void dropped.then(({ folder, files, capped, skipLabels }) => {
+    void dropped.then(({ folder, files, capped, skipLabels, skippedFiles }) => {
       // A dropped folder goes through the same review as a chosen one.
-      if (folder && onFolderDrop) onFolderDrop(files, { capped, skipLabels });
+      if (folder && onFolderDrop) onFolderDrop(files, { capped, skipLabels, skippedFiles });
       else void ingest(files);
     });
   }
