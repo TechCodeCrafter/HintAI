@@ -1304,6 +1304,7 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
   const setPackExclusions = useMeetHint((s) => s.setPackExclusions);
   const includeAllSourcesInSearch = useMeetHint((s) => s.includeAllSourcesInSearch);
   const card = useMeetHint((s) => s.card);
+  const working = useMeetHint((s) => s.loadingFolder || s.contextStatus === "hydrating");
   const [filter, setFilter] = useState("");
   const [excludeGlob, setExcludeGlob] = useState("");
   const excludePatterns = pack.excludePatterns ?? [];
@@ -1382,8 +1383,10 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
 
   if (!file && !openDocument && pdfs.length === 0) {
     return (
-      <section className="ground-panel p-5">
+      <section className="ground-panel space-y-3 p-5">
         <p className="text-[15px] leading-relaxed text-body">Open a local folder to search your files.</p>
+        {/* A first load has no file list yet. Its progress still has to be somewhere. */}
+        {working ? <IndexSummaryNote /> : null}
       </section>
     );
   }

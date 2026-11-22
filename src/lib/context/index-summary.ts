@@ -20,6 +20,7 @@ export const INDEX_SKIP = {
   excluded: "excluded from search in this space",
   tooling: "generated or tooling files",
   pending: "PDF still being read",
+  /** A stored file with text that should have produced chunks and did not. */
   unknown: "no chunks were built",
 } as const;
 
@@ -52,17 +53,46 @@ function fileKey(sourceId: string | undefined, path: string): string {
   return `${sourceId ?? ""}\u0000${path}`;
 }
 
-function reasonFor(source: SummarySource, excludePatterns: string[] | undefined): string {
-  if (pathExcluded(source.path, excludePatterns)) return INDEX_SKIP.excluded;
+/**
+ * Why a stored file has no chunk, and whether that is a failure.
+ *
+ * A failure is a file that was meant to be searchable: a PDF with no text
+ * layer or one that could not be read, and any file that reached the chunker
+ * and came back with nothing. A file left out by a rule (an exclusion, a
+ * vendor folder, a page limit) is not a failure.
+ */
+function reasonFor(
+  source: SummarySource,
+  excludePatterns: string[] | undefined,
+): { reason: string; failed?: true } {
+  if (pathExcluded(source.path, excludePatterns)) return { reason: INDEX_SKIP.excluded };
   if (source.kind === "pdf") {
-    if (source.readiness === "pending") return INDEX_SKIP.pending;
-    if (source.readiness !== "ready") return userFacingPdfNote(source.readiness, source.readinessNote);
-    return INDEX_SKIP.unknown;
+    if (source.readiness === "pending") return { reason: INDEX_SKIP.pending };
+    if (source.readiness === "refused") return { reason: userFacingPdfNote(source.readiness, source.readinessNote) };
+    if (source.readiness !== "ready") {
+      return { reason: userFacingPdfNote(source.readiness, source.readinessNote), failed: true };
+    }
+    return { reason: INDEX_SKIP.unknown, failed: true };
   }
-  if (inSkippedFolder(source.path, source.pathPrefix)) return SKIP_LABEL.vendor;
-  if (!isEvidencePath(storedPathForRules(source.path, source.pathPrefix))) return INDEX_SKIP.tooling;
-  if (!source.content.trim()) return SKIP_LABEL.empty;
-  return INDEX_SKIP.unknown;
+  if (inSkippedFolder(source.path, source.pathPrefix)) return { reason: SKIP_LABEL.vendor };
+  if (!isEvidencePath(storedPathForRules(source.path, source.pathPrefix))) return { reason: INDEX_SKIP.tooling };
+  // Content that is not text cannot be chunked. It is a failure, not an empty file.
+  if (typeof source.content !== "string") return { reason: INDEX_SKIP.unknown, failed: true };
+  if (!source.content.trim()) return { reason: SKIP_LABEL.empty };
+  return { reason: INDEX_SKIP.unknown, failed: true };
+}
+
+/** True for a file that was meant to be indexed and could not be read or parsed. */
+export function isParseFailure(item: SkippedFile): boolean {
+  return item.failed === true || item.reason === SKIP_LABEL.failed;
+}
+
+/** Files that failed, apart from files left out on purpose. Order is kept. */
+export function splitSkipped(skipped: SkippedFile[]): { failed: SkippedFile[]; left: SkippedFile[] } {
+  const failed: SkippedFile[] = [];
+  const left: SkippedFile[] = [];
+  for (const item of skipped) (isParseFailure(item) ? failed : left).push(item);
+  return { failed, left };
 }
 
 /** Summary for one context: its stored sources against the chunks built from them. */
@@ -85,7 +115,7 @@ export function summarizeIndex(
   let filesIndexed = 0;
   for (const source of sources) {
     if (withChunks.has(fileKey(source.sourceId, source.path))) filesIndexed += 1;
-    else skipped.push({ path: source.path, reason: reasonFor(source, excludePatterns) });
+    else skipped.push({ path: source.path, ...reasonFor(source, excludePatterns) });
   }
   skipped.sort((a, b) => a.reason.localeCompare(b.reason) || a.path.localeCompare(b.path));
   return {

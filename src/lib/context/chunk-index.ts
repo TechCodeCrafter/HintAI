@@ -54,6 +54,21 @@ export type IndexOptions = {
   /** Generate embeddings after chunks are built. Defaults to USE_HYBRID_RETRIEVAL. */
   embed?: boolean;
   vectorStore?: VectorStore;
+  /** Called before the first file and after each one, with the counts so far. */
+  onProgress?: (progress: IndexProgress) => void;
+};
+
+/**
+ * How far an index pass has got. Counted by the loop that builds the chunks,
+ * so a status line read from it cannot run ahead of the work.
+ */
+export type IndexProgress = {
+  /** Files handled so far: chunked, read from cache, or failed. */
+  filesDone: number;
+  /** Files this pass will handle. Null when it is not known yet (a space with several contexts). */
+  filesTotal: number | null;
+  /** Chunks assembled so far. */
+  chunks: number;
 };
 
 export type IndexedRuntime = HydratedRuntime & {
@@ -231,15 +246,14 @@ function orderDocumentChunks(chunks: IndexedChunk[]): IndexedChunk[] {
   );
 }
 
-async function rebuildSource(
+/** Write freshly built chunks and the ledger row that says they are current. */
+async function persistRebuilt(
   repo: ContextRepository,
   source: TextStoredSource,
-  file: RepoFile,
+  chunks: Chunk[],
   chunkerVersion: number,
   indexVersion: number,
-  structured?: boolean,
 ): Promise<Chunk[]> {
-  const chunks = chunksFromFile(file, source, { structured });
   const record: IndexedSourceRecord = {
     id: indexedSourceKey(source.contextId, source.id),
     workspaceId: source.workspaceId ?? defaultWorkspaceId(),
@@ -358,6 +372,10 @@ export async function indexContext(
 
   const assembled: IndexedChunk[] = [];
   const assembleStart = nowMs();
+  const filesTotal = active.length + pdfs.length;
+  let filesDone = 0;
+  const tick = () => options.onProgress?.({ filesDone, filesTotal, chunks: assembled.length });
+  tick();
   for (const { file, source } of active) {
     if (options.isCancelled?.()) break;
     const ledger = ledgerBySource.get(source.id);
@@ -370,16 +388,34 @@ export async function indexContext(
         assembled.push(...orderFileChunks(cached));
         stats.reusedSourceCount += 1;
         stats.reusedChunkCount += cached.length;
+        filesDone += 1;
+        tick();
         continue;
       }
     }
     const buildStart = nowMs();
-    const built = await rebuildSource(repo, source, file, chunkerVersion, indexVersion, options.structured);
+    let chunks: Chunk[];
+    try {
+      chunks = chunksFromFile(file, source, { structured: options.structured });
+    } catch (error) {
+      // One file the chunker cannot handle must not take the other files down
+      // with it. It gets no ledger row, so the next pass tries it again, and
+      // the summary names it as a file with no chunks.
+      console.warn(`Could not index ${file.path}`, error);
+      timings.chunkBuildMs += nowMs() - buildStart;
+      filesDone += 1;
+      tick();
+      continue;
+    }
+    // A failed write is not caught: storage that cannot be written fails the pass.
+    const built = await persistRebuilt(repo, source, chunks, chunkerVersion, indexVersion);
     timings.chunkBuildMs += nowMs() - buildStart;
     assembled.push(...built);
     stats.rebuiltSourceCount += 1;
     stats.rebuiltChunkCount += built.length;
     if (!known) stats.newSourceCount += 1;
+    filesDone += 1;
+    tick();
   }
 
   for (const source of pdfs) {
@@ -389,6 +425,8 @@ export async function indexContext(
     }
     const live = await indexPdfSource(repo, source, source.contentHash, versions, stats, timings);
     assembled.push(...live);
+    filesDone += 1;
+    tick();
   }
 
   const commits = commitChunks(use);
