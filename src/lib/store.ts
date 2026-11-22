@@ -114,6 +114,7 @@ import {
 import { shapeOf, type Shape } from "@/lib/search/intent";
 import {
   contentWords,
+  expandRetrievalQuery,
   normalizeSpokenQuestion,
   previousRetrievalQuestion,
 } from "@/lib/search/spoken";
@@ -2234,6 +2235,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         .then((ranked) =>
           reportSearchDebug({
             query,
+            retrievalQuery: expandRetrievalQuery(canonical, previousQuestion),
             chunks: state.chunks,
             excludePatterns: state.pack.excludePatterns,
             filesLoaded: state.pack.files.length,

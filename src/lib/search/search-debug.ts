@@ -13,8 +13,10 @@
  */
 import { pathExcluded } from "../context/exclusions.ts";
 import { isSearchDebug } from "../debug.ts";
-import type { Hit, IndexedChunk } from "../repo/types.ts";
+import type { Hit, IndexedChunk, ScoreBoosts } from "../repo/types.ts";
 import type { AnswerTier } from "./answer-route.ts";
+import { RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
+import { namedCode } from "./retrieve.ts";
 
 /** How many ranked hits a record lists. The answer stages are sent fewer. */
 export const SEARCH_DEBUG_TOP = 10;
@@ -33,6 +35,18 @@ export type SearchDebugHit = {
   page?: number;
   kind: Hit["kind"];
   score: number;
+  /**
+   * Every addend the lexical channel applied to this chunk, by name, exactly
+   * as scored (rounded to two places). They sum to `lexical`, or to `score`
+   * when retrieval ran without the hybrid channels.
+   */
+  boosts?: ScoreBoosts;
+  /** Channel scores on the hybrid path, before the channel weights. */
+  lexical?: number;
+  semantic?: number;
+  structural?: number;
+  /** Every addend the structural channel applied. They sum to `structural`. */
+  structuralBoosts?: ScoreBoosts;
   /** True when this chunk was one of the hits handed to the answer stages. */
   sentToAnswer: boolean;
 };
@@ -48,6 +62,13 @@ export type SearchDebugRecord = {
   filesLoaded?: number;
   /** How many hits the answer stages were given. */
   hitsSent: number;
+  /**
+   * The code the question names and the material confirms: identifiers some
+   * code chunk declares, and file names some path matches. When either list
+   * has an entry, the README, docs and entry-point bonuses were not applied.
+   */
+  namedSymbols: string[];
+  namedPaths: string[];
   topHits: SearchDebugHit[];
   stage: SearchDebugStage;
   /** The silence reason shown on the card, when the stage is `silence`. */
@@ -57,6 +78,11 @@ export type SearchDebugRecord = {
 
 export type SearchDebugInput = {
   query: string;
+  /**
+   * The question as retrieval ranked it, when that is not `query`: a follow-up
+   * is expanded with the question before it. Used to report the code it names.
+   */
+  retrievalQuery?: string;
   /** Every chunk the search could draw on, before exclusions. */
   chunks: IndexedChunk[];
   excludePatterns?: string[];
@@ -101,23 +127,72 @@ export function indexCounts(
   return { filesIndexed: files.size, chunksIndexed };
 }
 
+function rounded(value: number): number {
+  return Number(value.toFixed(2));
+}
+
+function roundedBoosts(boosts: ScoreBoosts | undefined): ScoreBoosts | undefined {
+  if (!boosts) return undefined;
+  const entries = Object.entries(boosts).filter(([, value]) => value !== 0);
+  return entries.length > 0 ? Object.fromEntries(entries.map(([name, value]) => [name, rounded(value)])) : undefined;
+}
+
+/** `body 6.54 + symbolDefinition 30.66`, and `- testPath 9.00` for a penalty. */
+function sumOf(boosts: ScoreBoosts): string {
+  return Object.entries(boosts)
+    .map(([name, value], index) =>
+      index === 0 ? `${name} ${value.toFixed(2)}` : `${value < 0 ? "-" : "+"} ${name} ${Math.abs(value).toFixed(2)}`,
+    )
+    .join(" ");
+}
+
+/** The lines under one ranked hit that say where its score came from. */
+function scoreLines(hit: SearchDebugHit): string[] {
+  const lines: string[] = [];
+  const hybrid = hit.lexical != null || hit.semantic != null || hit.structural != null;
+  if (hybrid) {
+    lines.push(
+      `score = ${RETRIEVAL_WEIGHTS.lexical} x lexical ${(hit.lexical ?? 0).toFixed(2)}` +
+        ` + ${RETRIEVAL_WEIGHTS.semantic} x semantic ${(hit.semantic ?? 0).toFixed(2)}` +
+        ` + ${RETRIEVAL_WEIGHTS.structural} x structural ${(hit.structural ?? 0).toFixed(2)}`,
+    );
+  }
+  if (hit.boosts) lines.push(`${hybrid ? "lexical" : "score"} = ${sumOf(hit.boosts)}`);
+  if (hit.structuralBoosts) lines.push(`structural = ${sumOf(hit.structuralBoosts)}`);
+  return lines;
+}
+
 export function buildSearchDebug(input: SearchDebugInput): SearchDebugRecord {
   const sent = new Set(input.sent.map((hit) => hit.id));
-  const topHits = input.ranked.slice(0, SEARCH_DEBUG_TOP).map((hit, index): SearchDebugHit => ({
-    rank: index + 1,
-    path: hit.path,
-    line: hit.kind === "document" ? undefined : hit.startLine,
-    page: hit.kind === "document" ? hit.page : undefined,
-    kind: hit.kind,
-    score: Number(hit.score.toFixed(2)),
-    sentToAnswer: sent.has(hit.id),
-  }));
+  const topHits = input.ranked.slice(0, SEARCH_DEBUG_TOP).map((hit, index): SearchDebugHit => {
+    const hybrid = hit.lexicalScore != null || hit.semanticScore != null || hit.structuralScore != null;
+    return {
+      rank: index + 1,
+      path: hit.path,
+      line: hit.kind === "document" ? undefined : hit.startLine,
+      page: hit.kind === "document" ? hit.page : undefined,
+      kind: hit.kind,
+      score: rounded(hit.score),
+      boosts: roundedBoosts(hit.boosts),
+      lexical: hybrid ? rounded(hit.lexicalScore ?? 0) : undefined,
+      semantic: hybrid ? rounded(hit.semanticScore ?? 0) : undefined,
+      structural: hybrid ? rounded(hit.structuralScore ?? 0) : undefined,
+      structuralBoosts: roundedBoosts(hit.structuralBoosts),
+      sentToAnswer: sent.has(hit.id),
+    };
+  });
+  const usable = input.excludePatterns?.length
+    ? input.chunks.filter((chunk) => !pathExcluded(chunk.path, input.excludePatterns))
+    : input.chunks;
+  const named = namedCode(input.retrievalQuery ?? input.query, usable);
   return {
     at: new Date().toISOString(),
     query: input.query,
     ...indexCounts(input.chunks, input.excludePatterns),
     filesLoaded: input.filesLoaded,
     hitsSent: input.sent.length,
+    namedSymbols: named.symbols.map((symbol) => symbol.name),
+    namedPaths: named.paths,
     topHits,
     stage: input.stage,
     reason: input.stage === "silence" ? (input.reason ?? null) : null,
@@ -147,6 +222,12 @@ export function reportSearchDebug(input: SearchDebugInput): SearchDebugRecord | 
   console.info(
     `[search] answered by: ${record.stage}${timing}${record.reason ? ` (${record.reason})` : ""}`,
   );
+  const namedHere = [...record.namedSymbols, ...record.namedPaths];
+  console.info(
+    namedHere.length > 0
+      ? `[search] names code: ${namedHere.join(", ")}. README, docs and entry-point boosts are off for this question.`
+      : "[search] names no symbol or file in the material. README, docs and entry-point boosts apply as far as the text backs them.",
+  );
   console.info(
     `[search] top ${record.topHits.length} hits, ${record.hitsSent} sent to the answer stages:`,
   );
@@ -156,6 +237,7 @@ export function reportSearchDebug(input: SearchDebugInput): SearchDebugRecord | 
       `[search]   ${String(hit.rank).padStart(2)}. ${hit.score.toFixed(2).padStart(6)}  ${hit.path}${where}` +
         `${hit.kind === "why" ? " (commit)" : ""}${hit.sentToAnswer ? "" : "  [not sent]"}`,
     );
+    for (const line of scoreLines(hit)) console.info(`[search]             ${line}`);
   }
   return record;
 }

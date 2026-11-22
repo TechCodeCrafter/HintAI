@@ -62,12 +62,22 @@ export type Chunk = FileChunk;
 /** Anything retrieve() and packVocabulary() may see. */
 export type IndexedChunk = Chunk | DocumentChunk;
 
+/**
+ * The named addends behind a channel score, for the search debug log. The
+ * values sum to that channel's score. Diagnostic only: nothing ranks on it.
+ */
+export type ScoreBoosts = Record<string, number>;
+
 export type RetrievalScores = {
   score: number;
   lexicalScore?: number;
   semanticScore?: number;
   structuralScore?: number;
   signals?: string[];
+  /** What the lexical channel added and subtracted for this chunk. */
+  boosts?: ScoreBoosts;
+  /** What the structural channel added for this chunk, on the hybrid path. */
+  structuralBoosts?: ScoreBoosts;
 };
 
 export type FileHit = FileChunk & RetrievalScores;

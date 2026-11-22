@@ -25,6 +25,22 @@ export const RETRIEVAL_WEIGHTS = {
    * the entry-point boost or the docs bonus counts in full.
    */
   backingShare: 0.5,
+  /**
+   * The chunk declares an identifier the question names ("verifyClaim" and
+   * `export function verifyClaim`). The question named this place, so it is
+   * worth what a named file is worth (`pathMatch`).
+   *
+   * In the lexical channel the declaring chunk's text is first raised to the
+   * best text match in the material (`symbolLift` in the debug log), and this
+   * is added on top. So a declaration outranks a chunk that only mentions the
+   * symbol, however often: the kind-of-file bonuses a mention can still
+   * collect (exact phrase 3, behavior path 2.6, file head 1.6, lambda fleet
+   * 3.4) come to less than this. Keep it above their sum. Only a path score
+   * can compete: a file the question names. For the same question the README,
+   * docs and entry-point bonuses are switched off: see `namesCode` in
+   * retrieve.ts.
+   */
+  symbolDefinition: 12,
   /** Structured-chunk symbol overlap, hybrid traces and hybrid addend. */
   symbolMatch: 2.0,
   /** Document heading overlap (hybrid signal). */

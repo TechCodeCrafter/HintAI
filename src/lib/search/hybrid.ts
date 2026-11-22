@@ -2,7 +2,8 @@
  * Structural / path / symbol retrieve — the third hybrid channel.
  * The async union lives on retrieve.ts `hybridRetrieve`.
  */
-import type { Hit, IndexedChunk } from "../repo/types.ts";
+import type { Hit, IndexedChunk, ScoreBoosts } from "../repo/types.ts";
+import { declaredSymbols, symbolKey } from "./query-symbols.ts";
 import { RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
 import { knownTerms, nameCredit, namedPaths, tokenize } from "./retrieve.ts";
 
@@ -56,6 +57,9 @@ export function retrieveStructural(query: string, chunks: IndexedChunk[], limit 
   const named = namedPaths(query);
   const terms = tokenize(query);
   if (named.length === 0 && terms.length === 0) return [];
+  // Window chunks carry no `symbol`, so without this the channel had no symbol
+  // signal at all for them: only file names.
+  const symbols = declaredSymbols(query, chunks);
 
   // Only needed when some file name matches, so it is worked out on first use.
   let known: Set<string> | null = null;
@@ -67,19 +71,35 @@ export function retrieveStructural(query: string, chunks: IndexedChunk[], limit 
     const base = path.split("/").pop() ?? path;
     const stem = base.replace(/\.[^.]+$/, "");
     const symbol = "symbol" in chunk && typeof chunk.symbol === "string" ? chunk.symbol.toLowerCase() : "";
+    // Named addends for the search debug log. The score is their sum.
+    const structuralBoosts: ScoreBoosts = {};
     let score = 0;
+    const add = (name: string, value: number) => {
+      if (value === 0) return;
+      structuralBoosts[name] = (structuralBoosts[name] ?? 0) + value;
+      score += value;
+    };
     for (const name of named) {
-      if (path.endsWith(name) || path.includes(`/${name}`) || base === name) score += RETRIEVAL_WEIGHTS.pathMatch;
+      if (path.endsWith(name) || path.includes(`/${name}`) || base === name) add("namedPath", RETRIEVAL_WEIGHTS.pathMatch);
     }
     // Same rule as the lexical channel: a file name the chunk's text does not
     // back is a hint, and is scored as one.
-    const nameHit = terms.some((term) => term === stem || term === base);
+    const stemKey = symbols.length > 0 ? symbolKey(stem) : "";
+    const nameHit =
+      terms.some((term) => term === stem || term === base) || symbols.some((asked) => asked.key === stemKey);
     const credit = nameHit ? nameCredit(terms, chunk, backable) : 1;
     for (const term of terms) {
-      if (term === stem || term === base) score += credit * RETRIEVAL_WEIGHTS.filenameMatch;
-      if (symbol && (term === symbol || symbol.includes(term))) score += RETRIEVAL_WEIGHTS.symbolMatch;
+      if (term === stem || term === base) add("fileName", credit * RETRIEVAL_WEIGHTS.filenameMatch);
+      if (symbol && (term === symbol || symbol.includes(term))) add("symbolMatch", RETRIEVAL_WEIGHTS.symbolMatch);
     }
-    if (score > 0) scored.push({ ...chunk, score });
+    for (const asked of symbols) {
+      if (asked.chunks.has(chunk)) add("symbolDefinition", RETRIEVAL_WEIGHTS.symbolDefinition);
+      // `answer-card.tsx` is the file of `AnswerCard`.
+      if (asked.key === stemKey && !terms.some((term) => term === stem || term === base)) {
+        add("symbolFile", credit * RETRIEVAL_WEIGHTS.filenameMatch);
+      }
+    }
+    if (score > 0) scored.push({ ...chunk, score, structuralBoosts });
   }
   return scored.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id)).slice(0, limit);
 }

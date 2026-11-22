@@ -1,4 +1,4 @@
-import type { Chunk, Hit, IndexedChunk, RepoFile, RepoPack } from "@/lib/repo/types";
+import type { Chunk, Hit, IndexedChunk, RepoFile, RepoPack, ScoreBoosts } from "@/lib/repo/types";
 import { pathExcluded } from "../context/exclusions.ts";
 import { fileChunkId, type BuildChunksOptions } from "../context/source-identity.ts";
 import { USE_HYBRID_RETRIEVAL, USE_STRUCTURED_CHUNKER } from "../context/index-versions.ts";
@@ -18,6 +18,7 @@ import { semanticRetrieve } from "./semantic-retrieve.ts";
 import type { VectorStore } from "./vector-store.ts";
 import { getVectorStore } from "./vector-access.ts";
 import { asksAboutWholeApp, isProjectOverviewQuery } from "./question.ts";
+import { declaredSymbols, symbolKey, type DeclaredSymbol } from "./query-symbols.ts";
 
 const STOP = new Set([
   "a",
@@ -411,6 +412,11 @@ function sat(tf: number): number {
   return tf <= 0 ? 0 : (tf * 2.2) / (tf + 1.2);
 }
 
+/** What a chunk's own text scored: the addends that count words in it. */
+function textScore(boosts: ScoreBoosts | undefined): number {
+  return (boosts?.body ?? 0) + (boosts?.commit ?? 0);
+}
+
 function freq(words: Map<string, number>, term: string): number {
   const exact = words.get(term) ?? 0;
   const stem = words.get(`~${stemOf(term)}`) ?? 0;
@@ -533,6 +539,29 @@ export function namedPaths(query: string): string[] {
   return (query.match(/[A-Za-z0-9_./-]+\.[A-Za-z0-9]+/g) ?? []).map((p) => p.toLowerCase());
 }
 
+/** True when `name`, a file-like word from the question, is this chunk's file. */
+function isNamedPath(idx: Indexed, name: string): boolean {
+  return idx.path.endsWith(name) || idx.path.includes(`/${name}`) || idx.base === name;
+}
+
+export type NamedCode = {
+  /** Identifiers in the question that some code chunk declares. */
+  symbols: DeclaredSymbol[];
+  /** File-like words in the question that some chunk's path matches. */
+  paths: string[];
+};
+
+/**
+ * The code a question names, confirmed against the material. When this is not
+ * empty the question is about a specific place, and path and symbol scores
+ * decide the ranking: the README, docs and entry-point bonuses are not applied.
+ */
+export function namedCode(query: string, chunks: IndexedChunk[]): NamedCode {
+  const named = namedPaths(query);
+  const paths = named.filter((name) => chunks.some((chunk) => isNamedPath(indexOf(chunk), name)));
+  return { symbols: declaredSymbols(query, chunks), paths };
+}
+
 // Same cap as the fused hybrid ranking (`capPerFile` in hybrid.ts), so a
 // question gets the same spread of files with or without embeddings.
 const MAX_PER_FILE = RETRIEVAL_WEIGHTS.maxChunksPerFile;
@@ -581,15 +610,34 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   const wantsDefinition = /\b(?:what is|what's|define|explain|describe)\b/i.test(q);
   const { idf, known } = termStats(terms, chunks);
   const weightOf = (term: string) => idf.get(term) ?? 1;
+  // A question that names an identifier the code declares, or a file that is
+  // loaded, is about that place. Bonuses for what kind of file a chunk is in
+  // (README, docs, entry point) are for questions that name no place.
+  const code = namedCode(query, chunks);
+  const namesCode = code.symbols.length > 0 || code.paths.length > 0;
+  // The query term each symbol was typed as, for its weight.
+  const symbolTerm = new Map(
+    code.symbols.map((symbol) => [symbol.key, terms.find((term) => symbolKey(term) === symbol.key)] as const),
+  );
   // Backing is judged on the terms the material can speak to.
   const backable = (term: string) => (known.has(term) ? weightOf(term) : 0);
   const phrase = terms.join(" ");
 
   const scored: Hit[] = [];
   const lastResort: Hit[] = [];
+  // The best any chunk's text scored for this question. See `symbolLift`.
+  let bestText = 0;
   for (const chunk of chunks) {
     const idx = indexOf(chunk);
+    // Every addend is recorded under its name, so the search debug log can
+    // show what each one contributed. The score is their sum and nothing else.
+    const boosts: ScoreBoosts = {};
     let score = 0;
+    const add = (name: string, value: number) => {
+      if (value === 0) return;
+      boosts[name] = (boosts[name] ?? 0) + value;
+      score += value;
+    };
     // Path and file-name matches are scaled by how much of the rest of the
     // question this chunk's text covers. See `nameCredit`.
     const credit = nameCredit(terms, chunk, backable);
@@ -598,10 +646,10 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     for (const term of terms) {
       const weight = weightOf(term);
       const inBody = freq(idx.bodyWords, term);
-      score += credit * weight * 2.4 * sat(freq(idx.pathWords, term));
-      score += weight * 1.6 * sat(inBody);
-      if (term === idx.stem || term === idx.base) score += credit * weight * RETRIEVAL_WEIGHTS.filenameMatch;
-      if (chunk.kind === "why") score += weight * 1.1 * sat(inBody);
+      add("pathWords", credit * weight * 2.4 * sat(freq(idx.pathWords, term)));
+      add("body", weight * 1.6 * sat(inBody));
+      if (term === idx.stem || term === idx.base) add("fileName", credit * weight * RETRIEVAL_WEIGHTS.filenameMatch);
+      if (chunk.kind === "why") add("commit", weight * 1.1 * sat(inBody));
       asked += backable(term);
       if (inBody > 0) covered += backable(term);
     }
@@ -609,41 +657,51 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     // `backingShare` of it. Bonuses for what kind of file this is are scaled by
     // it, so a README or an entry point cannot score on its name alone.
     const backing = asked > 0 ? Math.min(1, covered / asked / RETRIEVAL_WEIGHTS.backingShare) : 0;
+    bestText = Math.max(bestText, textScore(boosts));
     for (const name of named) {
-      if (idx.path.endsWith(name) || idx.path.includes(`/${name}`) || idx.base === name) {
-        score += RETRIEVAL_WEIGHTS.pathMatch;
+      if (isNamedPath(idx, name)) add("namedPath", RETRIEVAL_WEIGHTS.pathMatch);
+    }
+    for (const symbol of code.symbols) {
+      // The declaration is where the question points.
+      if (symbol.chunks.has(chunk)) add("symbolDefinition", RETRIEVAL_WEIGHTS.symbolDefinition);
+      // `answer-card.tsx` is the file of `AnswerCard`. The exact-match rule
+      // above only sees a stem spelled the way the term is.
+      const term = symbolTerm.get(symbol.key);
+      if (symbolKey(idx.stem) === symbol.key && idx.stem !== term && idx.base !== term) {
+        add("symbolFile", credit * weightOf(term ?? symbol.key) * RETRIEVAL_WEIGHTS.filenameMatch);
       }
     }
     if ((wantsApi || wantsShape) && ENTRY_POINT_PATH.test(idx.path)) {
       // In full for a question about the whole app or the whole API. For "which
-      // router handles retries", only as far as the file's text backs it.
-      score += RETRIEVAL_WEIGHTS.apiShapePath * (wholeApp ? 1 : backing);
+      // router handles retries", only as far as the file's text backs it. Not
+      // at all when the question names the code it is about.
+      add("entryPoint", RETRIEVAL_WEIGHTS.apiShapePath * (wholeApp ? 1 : namesCode ? 0 : backing));
     }
     if (wantsLambdaFleet && /container-lambdas\//.test(idx.path)) {
-      score += RETRIEVAL_WEIGHTS.apiShapePath;
+      add("lambdaFleet", RETRIEVAL_WEIGHTS.apiShapePath);
     }
     if (wantsOverview && /^readme\.(md|mdx|rst|txt)$/i.test(idx.path)) {
-      score += RETRIEVAL_WEIGHTS.pathMatch;
+      add("readmeOverview", RETRIEVAL_WEIGHTS.pathMatch);
     }
     if ((named.length > 0 || wantsShape || wantsLambdaFleet) && chunk.kind === "code" && chunk.startLine <= 8) {
-      score += RETRIEVAL_WEIGHTS.fileHead;
+      add("fileHead", RETRIEVAL_WEIGHTS.fileHead);
     }
     // Behavior questions prefer the file that performs the work over the route
     // that triggers it. A router docstring is the API surface, not the answer.
     if (wantsBehavior && isBehaviorPath(idx.path)) {
-      score += RETRIEVAL_WEIGHTS.behaviorPath;
+      add("behaviorPath", RETRIEVAL_WEIGHTS.behaviorPath);
     }
     // Office uploads only — do not boost README/ADR markdown inside code repos.
     const isUploadedOffice = /\.(docx|pptx|ppt|xlsx|csv)$/i.test(idx.path);
     if (isUploadedOffice) {
-      score += RETRIEVAL_WEIGHTS.documentPath;
+      add("documentPath", RETRIEVAL_WEIGHTS.documentPath);
     }
     if (wantsDefinition && isUploadedOffice) {
-      score += RETRIEVAL_WEIGHTS.documentDefinition;
+      add("documentDefinition", RETRIEVAL_WEIGHTS.documentDefinition);
     }
     if (phrase.length > 4) {
       const body = chunk.text?.toLowerCase() ?? "";
-      if (body.includes(phrase)) score += RETRIEVAL_WEIGHTS.exactPhrase;
+      if (body.includes(phrase)) add("exactPhrase", RETRIEVAL_WEIGHTS.exactPhrase);
     }
     // Test/fixture files describe what the suite covers, not what the system
     // does. Demote so a test docstring cannot outrank the component it tests
@@ -654,17 +712,33 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     if (isTestEvidencePath(idx.path) && !asksAboutTests) {
       // The penalty is a demotion. Where it would erase the match, keep the
       // chunk aside: it is used only if nothing else in the material matches.
-      if (score > 0 && score <= RETRIEVAL_WEIGHTS.testPathPenalty) lastResort.push({ ...chunk, score });
-      score -= RETRIEVAL_WEIGHTS.testPathPenalty;
+      if (score > 0 && score <= RETRIEVAL_WEIGHTS.testPathPenalty) lastResort.push({ ...chunk, score, boosts: { ...boosts } });
+      add("testPath", -RETRIEVAL_WEIGHTS.testPathPenalty);
     }
     if (isAuthoritativePath(idx.path) && !asksAboutTests) {
       // Docs outrank tests and examples that say the same thing. This used to
       // be a flat bonus, which put the README in the results of every question,
       // including ones it shares no word with. It is still flat for a question
       // about the whole app, which is the README's question to answer.
-      score += RETRIEVAL_WEIGHTS.authoritativePath * (wholeApp ? 1 : backing);
+      // And it is off when the question names a symbol or a file: the code is
+      // then the authority, and a document that mentions it ranks on its text.
+      add("authoritativePath", RETRIEVAL_WEIGHTS.authoritativePath * (wholeApp ? 1 : namesCode ? 0 : backing));
     }
-    if (score > 0) scored.push({ ...chunk, score });
+    if (score > 0) scored.push({ ...chunk, score, boosts });
+  }
+  // A declaration is short, and a document can mention the symbol in every
+  // line. So a chunk that declares a named symbol is scored as if its text
+  // were the best text match in the material, and `symbolDefinition` is added
+  // on top of that. A chunk that only mentions the symbol cannot make up the
+  // difference with kind-of-file bonuses. Only a path score can compete.
+  if (code.symbols.length > 0) {
+    for (const hit of [...scored, ...lastResort]) {
+      if (hit.boosts?.symbolDefinition == null) continue;
+      const lift = bestText - textScore(hit.boosts);
+      if (lift <= 0) continue;
+      hit.boosts.symbolLift = lift;
+      hit.score += lift;
+    }
   }
   // A string that exists only in a test file used to be unsearchable: the
   // penalty took its score below zero. The weight's own rule is that a test
@@ -852,6 +926,7 @@ export async function hybridRetrieve(
     const existing = byId.get(hit.id);
     if (existing) {
       existing.structuralScore = hit.score;
+      existing.structuralBoosts = hit.structuralBoosts;
     } else {
       byId.set(hit.id, {
         ...hit,
