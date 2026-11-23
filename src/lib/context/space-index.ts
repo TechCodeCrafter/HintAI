@@ -3,7 +3,8 @@ import { packFromSources } from "./hydrate.ts";
 import { indexContext, type IndexedRuntime, type IndexOptions, type IndexProgress } from "./chunk-index.ts";
 import { tagChunksForScope } from "../search/retrieval-scope.ts";
 import { packVocabulary } from "../search/retrieve.ts";
-import { preferredOpenFile, prunePack } from "../repo/folder.ts";
+import { preferredOpenFile, prunePack, type SkippedFile } from "../repo/folder.ts";
+import type { FileChange } from "../repo/git-history.ts";
 import type { RepoFile, RepoPack } from "../repo/types.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { SpaceNotFoundError } from "./space-types.ts";
@@ -14,6 +15,10 @@ import { mergeIndexSummaries, type IndexSummary } from "./index-summary.ts";
 export type IndexedSpaceRuntime = IndexedRuntime & {
   memberContextIds: string[];
   allSources: StoredSource[];
+  /** Files left out at load, as kept with each member context that still has sources. */
+  notLoaded: SkippedFile[];
+  /** Stored files a recent commit changed, as kept with each member context. */
+  recentChanges: FileChange[];
 };
 
 function mergeReports(reports: IndexReport[]): IndexReport {
@@ -66,6 +71,8 @@ export async function indexSpace(
   const allSources: StoredSource[] = [];
   const reports: IndexReport[] = [];
   const summaries: IndexSummary[] = [];
+  const notLoaded: SkippedFile[] = [];
+  const recentChanges: FileChange[] = [];
   let weak = false;
   let openFile: string | null = null;
   const files: RepoFile[] = [];
@@ -102,10 +109,19 @@ export async function indexSpace(
         ...runtime,
         memberContextIds: members,
         allSources,
+        notLoaded,
+        recentChanges,
       };
     }
     allChunks.push(...runtime.chunks);
-    allSources.push(...(await repo.listSources(contextId)));
+    const memberSources = await repo.listSources(contextId);
+    allSources.push(...memberSources);
+    if (memberSources.length > 0) notLoaded.push(...(context.notLoaded ?? []));
+    if (memberSources.length > 0 && context.recentChanges?.length) {
+      // Only for files that are still stored: a removed file has no chunks to rank.
+      const stored = new Set(memberSources.map((source) => source.path));
+      recentChanges.push(...context.recentChanges.filter((change) => stored.has(change.path)));
+    }
     files.push(...runtime.pack.files);
     weak = weak || runtime.weak;
     openFile = openFile ?? runtime.openFile;
@@ -158,5 +174,7 @@ export async function indexSpace(
     cancelled: false,
     memberContextIds: members,
     allSources,
+    notLoaded,
+    recentChanges,
   };
 }

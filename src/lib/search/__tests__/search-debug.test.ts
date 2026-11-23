@@ -8,11 +8,15 @@ import type { Chunk, Hit } from "../../repo/types.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
 import {
   buildSearchDebug,
+  buildSearchDetails,
   clearSearchDebugLog,
   indexCounts,
   reportSearchDebug,
   SEARCH_DEBUG_TOP,
+  SEARCH_DETAILS_TOP,
   searchDebugLog,
+  snippetOf,
+  stageLabel,
   stageOfTier,
 } from "../search-debug.ts";
 
@@ -132,4 +136,123 @@ test("a record lists at most ten hits and keeps the last twenty searches", () =>
   assert.equal(log.length, 20);
   assert.equal(log[0].query, "q5");
   assert.equal(log[19].query, "q24");
+});
+
+// The Search details panel: the same record, top three, one line of text each.
+
+const RETRY_TEXT = [
+  "// Exports go out in batches.",
+  "",
+  "export async function sendBatch(batch: Batch) {",
+  "  // A failed export is retried three times with a doubling delay.",
+  "  return withRetry(() => post(batch), { attempts: 3 });",
+  "}",
+].join("\n");
+
+function detailsInput(overrides: Partial<Parameters<typeof buildSearchDetails>[0]> = {}) {
+  const ranked: Hit[] = [
+    { ...chunk("r1", "src/exporter/retry.ts", { startLine: 12, text: RETRY_TEXT }), score: 21.456 },
+    { ...chunk("r2", "docs/exports.md", { text: "# Exports\n\nFailed exports are retried when the sink is down." }), score: 9.1 },
+    { ...chunk("r3", "src/exporter/sink.ts", { text: "export const SINK_TIMEOUT_MS = 4000;" }), score: 4 },
+    { ...chunk("r4", "src/exporter/queue.ts", { text: "export class Queue {}" }), score: 2 },
+    { ...chunk("r5", "src/unrelated.ts", { text: "export const x = 1;" }), score: 1 },
+  ];
+  return {
+    query: "How does the app retry failed exports?",
+    chunks: ranked,
+    ranked,
+    sent: ranked,
+    stage: "localCard" as const,
+    totalMs: 41.6,
+    ...overrides,
+  };
+}
+
+test("the snippet is the line of the chunk that shares the most words with the question", () => {
+  assert.equal(
+    snippetOf(RETRY_TEXT, "How does the app retry failed exports?"),
+    "// A failed export is retried three times with a doubling delay.",
+  );
+  // Nothing in common: the first line with text in it, not a blank or a brace.
+  assert.equal(snippetOf("\n}\n\n  const   total = 3;\n", "weather in tokyo"), "const total = 3;");
+  assert.equal(snippetOf("", "anything"), "");
+});
+
+test("a long line is cut to one hundred and sixty characters with an ellipsis", () => {
+  const snippet = snippetOf(`retry ${"x".repeat(400)}`, "retry");
+  assert.equal(snippet.length, 160);
+  assert.ok(snippet.endsWith("…"));
+});
+
+test("search details hold the index size, the top three hits with a snippet, and the stage", () => {
+  const details = buildSearchDetails(detailsInput());
+
+  assert.equal(details.filesIndexed, 5);
+  assert.equal(details.chunksIndexed, 5);
+  assert.equal(details.topHits.length, SEARCH_DETAILS_TOP);
+  assert.deepEqual(
+    details.topHits.map((hit) => [hit.rank, hit.path, hit.line, hit.score]),
+    [
+      [1, "src/exporter/retry.ts", 12, 21.46],
+      [2, "docs/exports.md", 1, 9.1],
+      [3, "src/exporter/sink.ts", 1, 4],
+    ],
+  );
+  assert.deepEqual(
+    details.topHits.map((hit) => hit.snippet),
+    [
+      "// A failed export is retried three times with a doubling delay.",
+      "Failed exports are retried when the sink is down.",
+      "export const SINK_TIMEOUT_MS = 4000;",
+    ],
+  );
+  assert.equal(details.stage, "localCard");
+  assert.equal(details.silence, null);
+  assert.equal(details.reason, null);
+  assert.equal(details.totalMs, 41.6);
+});
+
+test("silent search details carry the silence kind and the reason, an answer carries neither", () => {
+  const silent = buildSearchDetails(
+    detailsInput({ stage: "silence", silence: "not-stated", reason: "Found the file, but it does not say." }),
+  );
+  assert.equal(silent.stage, "silence");
+  assert.equal(silent.silence, "not-stated");
+  assert.equal(silent.reason, "Found the file, but it does not say.");
+
+  // A kind left over on a card that a stage answered is not reported as silence.
+  const answered = buildSearchDetails(detailsInput({ stage: "generateAnswer", silence: "weak-match", reason: "stale" }));
+  assert.equal(answered.silence, null);
+  assert.equal(answered.reason, null);
+
+  // No material: an empty index and no hits, still a record.
+  const empty = buildSearchDetails({ query: "q", chunks: [], ranked: [], sent: [], stage: "silence", silence: "index" });
+  assert.deepEqual([empty.filesIndexed, empty.chunksIndexed, empty.topHits.length], [0, 0, 0]);
+  assert.equal(empty.silence, "index");
+});
+
+test("the stage is shown in the four words the panel uses", () => {
+  assert.equal(stageLabel("generateAnswer"), "generate");
+  assert.equal(stageLabel("synthesizeAnswer"), "synthesize");
+  assert.equal(stageLabel("localCard"), "localCard");
+  assert.equal(stageLabel("silence"), "silence");
+});
+
+test("file text stays out of the console record, and details are never logged or kept", () => {
+  process.env.DEBUG_SEARCH = "true";
+  const input = detailsInput({ stage: "silence", silence: "unverified", reason: "Could not verify it." });
+
+  const lines = printed(() => {
+    buildSearchDetails(input);
+  });
+  assert.deepEqual(lines, [], "building the panel record prints nothing");
+  assert.deepEqual(searchDebugLog(), [], "and keeps nothing in the global log");
+
+  const text = printed(() => reportSearchDebug(input)).join("\n");
+  const [record] = searchDebugLog();
+  assert.equal(record.silence, "unverified");
+  assert.match(text, /answered by: silence .*\(unverified: Could not verify it\.\)/);
+  for (const hit of record.topHits) assert.equal("snippet" in hit, false);
+  assert.doesNotMatch(text, /doubling delay|SINK_TIMEOUT_MS/);
+  assert.doesNotMatch(JSON.stringify(record), /doubling delay|SINK_TIMEOUT_MS/);
 });

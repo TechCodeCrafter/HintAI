@@ -29,7 +29,7 @@ export type ContextRepository = {
   createContext(input: CreateContextInput): Promise<ContextRecord>;
   patchContext(
     id: string,
-    patch: Partial<Pick<ContextRecord, "name" | "description" | "excludePatterns">>,
+    patch: Partial<Pick<ContextRecord, "name" | "description" | "excludePatterns" | "notLoaded" | "recentChanges">>,
   ): Promise<ContextRecord>;
   replaceSources(contextId: string, drafts: SourceDraft[]): Promise<StoredSource[]>;
   /** Add or update one repo bundle without removing other bundles in the context. */

@@ -1,23 +1,17 @@
-import { useMemo } from "react";
 import { cn } from "@/lib/cn";
 import { indexStatusView, namedFailures } from "@/lib/context/index-status";
-import { groupSkipped, splitSkipped, summarizeLoaded } from "@/lib/context/index-summary";
-import type { SkippedFile } from "@/lib/repo/folder";
+import { NOT_LOADED_REST, type groupSkipped } from "@/lib/context/index-summary";
+import { useIndexSkipped } from "@/components/use-index-skipped";
 import { useMeetHint } from "@/lib/store";
 
 /** How many paths one reason lists before the rest are counted, not named. */
 const SKIPPED_PATHS_SHOWN = 40;
-const NONE: SkippedFile[] = [];
-
-function total(groups: { count: number }[]): number {
-  return groups.reduce((sum, group) => sum + group.count, 0);
-}
 
 function files(count: number): string {
   return `${count.toLocaleString("en-US")} ${count === 1 ? "file" : "files"}`;
 }
 
-function SkippedGroups({ groups, testId }: { groups: ReturnType<typeof groupSkipped>; testId: string }) {
+export function SkippedGroups({ groups, testId }: { groups: ReturnType<typeof groupSkipped>; testId: string }) {
   return (
     <ul className="index-status-groups" data-testid={testId}>
       {groups.map((group) => (
@@ -26,12 +20,16 @@ function SkippedGroups({ groups, testId }: { groups: ReturnType<typeof groupSkip
             {group.count.toLocaleString("en-US")} × {group.reason}
           </p>
           <ul className="mt-0.5 space-y-0.5 font-mono text-[11px]">
-            {group.files.slice(0, SKIPPED_PATHS_SHOWN).map((item) => (
-              <li key={item.path} className="truncate" title={item.path}>
-                {item.path}
-                {item.count ? ` (${item.count.toLocaleString("en-US")} files)` : ""}
-              </li>
-            ))}
+            {group.files.slice(0, SKIPPED_PATHS_SHOWN).map((item) => {
+              // Two folders can each leave out a file with the same path.
+              const shown = item.root && item.path !== NOT_LOADED_REST ? `${item.root}/${item.path}` : item.path;
+              return (
+                <li key={`${item.root ?? ""}\u0000${item.path}`} className="truncate" title={shown}>
+                  {shown}
+                  {item.count ? ` (${item.count.toLocaleString("en-US")} ${item.count === 1 ? "file" : "files"})` : ""}
+                </li>
+              );
+            })}
             {group.files.length > SKIPPED_PATHS_SHOWN ? (
               <li>and {(group.files.length - SKIPPED_PATHS_SHOWN).toLocaleString("en-US")} more</li>
             ) : null}
@@ -53,9 +51,9 @@ function SkippedGroups({ groups, testId }: { groups: ReturnType<typeof groupSkip
  * with no state of their own to go stale.
  *
  * Files that failed to parse are named apart from files skipped by a rule.
- * A file that could not be read at all is never stored, so it is known only
- * for the selection just loaded and is not kept after the page reloads. A PDF
- * that could not be read is stored, and stays listed.
+ * A file that could not be read at all is never stored; its path and reason
+ * are kept with the space, so it stays listed after the page reloads. A PDF
+ * that could not be read is stored, and stays listed too.
  */
 export function IndexSummaryNote({
   className,
@@ -68,24 +66,18 @@ export function IndexSummaryNote({
   /** False where the screen already draws its own progress bar. */
   bar?: boolean;
 }) {
-  const sources = useMeetHint((s) => s.sources);
-  const pack = useMeetHint((s) => s.pack);
-  const chunks = useMeetHint((s) => s.chunks);
   const contextStatus = useMeetHint((s) => s.contextStatus);
   const loadingFolder = useMeetHint((s) => s.loadingFolder);
   const contextUpdating = useMeetHint((s) => s.contextUpdating);
   const activity = useMeetHint((s) => s.indexActivity);
   const ingest = useMeetHint((s) => s.ingestProgress);
-  const notLoaded = useMeetHint((s) =>
-    s.loadSkipped && s.loadSkipped.spaceId === s.activeSpaceId ? s.loadSkipped.files : NONE,
-  );
+  const { summary, failed, failedGroups, leftGroups, failedCount, leftCount } = useIndexSkipped();
 
   const booting = contextStatus === "booting";
   const pdfWorking = Boolean(ingest && ingest.phase !== "ready");
   const working =
     callerWorking || booting || contextStatus === "hydrating" || loadingFolder || contextUpdating || pdfWorking;
 
-  const summary = useMemo(() => summarizeLoaded(sources, pack, chunks), [sources, pack, chunks]);
   const view = indexStatusView({
     working,
     booting,
@@ -94,14 +86,6 @@ export function IndexSummaryNote({
     pdf: ingest,
     summary,
   });
-  const { failed, left } = useMemo(
-    () => splitSkipped([...notLoaded, ...summary.skipped]),
-    [notLoaded, summary],
-  );
-  const failedGroups = useMemo(() => groupSkipped(failed), [failed]);
-  const leftGroups = useMemo(() => groupSkipped(left), [left]);
-  const failedCount = total(failedGroups);
-  const leftCount = total(leftGroups);
   // While a load runs, a file that has not been reached yet has no chunks
   // either. Only a finished pass can say which files failed.
   const settled = view.state !== "working";

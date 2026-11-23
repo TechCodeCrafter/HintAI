@@ -14,7 +14,7 @@ import {
   type GeneratedAnswer,
 } from "./generate-answer.ts";
 import { localCard } from "./local-card.ts";
-import { explainSilence, type FailFastCause, type Silence } from "./silence.ts";
+import { QUOTA_FALLBACK_REASON, explainSilence, transportSilence, type FailFastCause, type Silence } from "./silence.ts";
 import { withConsidered } from "./considered.ts";
 
 export type AnswerTier = "grounded" | "synthesis" | "localCard" | "silent";
@@ -31,6 +31,11 @@ export type RoutedSearchAnswer = {
   llmBypassed?: boolean;
   /** Observation-only shadow localCard timing when measureProgressive is set. */
   progressive?: ProgressiveTiming;
+  /**
+   * Set when the model stages were skipped on purpose rather than tried. A
+   * silent Card with this set is silent because only the composer was asked.
+   */
+  modelSkipped?: "quota" | "thread";
 };
 
 export type RouteSearchOpts = GenerateOpts & {
@@ -46,6 +51,18 @@ export type RouteSearchOpts = GenerateOpts & {
   retrieveMs?: number;
   /** Shadow localCard before LLM tiers — flight capture only, does not change routing. */
   measureProgressive?: boolean;
+  /**
+   * Answer from the offline composer only and never call a model.
+   *
+   * "quota": the plan's daily model answers are used up. The files are still
+   * read, what they state is still cited, and the Card says the model was not
+   * asked.
+   *
+   * "thread": a follow-up is being looked up in the files the thread already
+   * cited. A cited line from there is the answer; silence sends the caller on
+   * to the full search, so nothing is said about the model either way.
+   */
+  localOnly?: "quota" | "thread";
 };
 
 function noteError(first: string | undefined, result: AnswerResult): string | undefined {
@@ -312,10 +329,29 @@ async function routeAnswer(
       routeStages(),
       progressiveFor("localCard", Math.round(performance.now() - t0), localAttempt.say),
     );
-    return local
-      ? { ...local, progressive: progressiveFor("localCard", local.latency.totalMs, local.card.say) }
-      : null;
+    if (!local) return null;
+    // The model never completed, so this is the composer standing in for it.
+    // The Card says so; a model that read the hits and declined is not that.
+    const card =
+      firstError && !modelDeclined
+        ? { ...local.card, modelFallback: transportSilence(firstError).reason }
+        : local.card;
+    return { ...local, card, progressive: progressiveFor("localCard", local.latency.totalMs, local.card.say) };
   };
+
+  // No model answers left today. The composer is the whole route: it speaks
+  // what the files state, cited, or the Card is silent. No model is called.
+  if (opts?.localOnly) {
+    const local = localFallback();
+    if (local) {
+      return {
+        ...local,
+        modelSkipped: opts.localOnly,
+        card: opts.localOnly === "quota" ? { ...local.card, modelFallback: QUOTA_FALLBACK_REASON } : local.card,
+      };
+    }
+    return { ...silence(), modelSkipped: opts.localOnly };
+  }
 
   const groundedStart = performance.now();
   const grounded = await generateAnswer(query, hits, t0, opts);

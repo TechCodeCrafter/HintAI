@@ -77,6 +77,8 @@ export async function runSpaceScopedRetrieval(input: {
   vectorStore?: VectorStore | null;
   limit?: number;
   hybrid?: boolean;
+  /** Recent-commit recency by chunk path, when the space's folders had history. */
+  recency?: ReadonlyMap<string, number>;
 }): Promise<Hit[]> {
   const workspaceId = input.workspaceId ?? currentWorkspaceId() ?? defaultWorkspaceId();
   const scope = buildSearchRetrievalScope(input.spaceState, workspaceId);
@@ -87,6 +89,7 @@ export async function runSpaceScopedRetrieval(input: {
       ...retrieveHitsOptionsForPack(input.pack, scope, {
         limit: input.limit ?? 6,
         vectorStore: input.vectorStore,
+        recency: input.recency,
       }),
       hybrid: input.hybrid,
     },

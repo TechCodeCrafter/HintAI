@@ -11,10 +11,12 @@ import { routeSearchAnswer } from "../answer-route.ts";
 import { localCard } from "../local-card.ts";
 import { buildChunks, retrieve } from "../retrieve.ts";
 import {
+  MODEL_FALLBACK_NOTE,
   SILENCE,
   type SilenceKind,
   explainSilence,
   searchFailureSilence,
+  silenceGuidance,
   transportSilence,
   unknownTerms,
 } from "../silence.ts";
@@ -329,4 +331,138 @@ test("a silent answer keeps its reason in history", () => {
   const spoken = historyItemFromCard({ ...silentCard, say: "Three attempts.", reason: undefined, silence: undefined });
   assert.equal(spoken.reason, undefined);
   assert.equal(cardFromHistory(spoken).reason, undefined);
+});
+
+// What the Card tells the person to do next, by kind.
+
+const ALL_KINDS: SilenceKind[] = ["no-match", "weak-match", "not-stated", "unverified", "ambiguous", "index", "transport"];
+const SOME = { hits: 3, skipped: 4 };
+const NONE = { hits: 0, skipped: 0 };
+
+function guide(why: { kind: SilenceKind; reason: string }, facts = SOME) {
+  const guidance = silenceGuidance({ reason: why.reason, silence: why.kind }, facts);
+  assert.ok(guidance, `${why.kind}: no guidance`);
+  return guidance;
+}
+
+test("the four kinds the ticket names read exactly as written", () => {
+  assert.equal(guide(SILENCE.noMatch).headline, "No files contain these terms. Add more material or rephrase.");
+  assert.equal(guide(SILENCE.weakMatch).headline, "Found related files but low confidence. Check top hits.");
+  assert.equal(guide(SILENCE.nothingIndexed).headline, "4 files were skipped. See list.");
+  assert.equal(guide(SILENCE.nothingIndexed, { hits: 0, skipped: 1 }).headline, "1 file was skipped. See list.");
+  assert.equal(guide(SILENCE.nothingIndexed, { hits: 0, skipped: 1200 }).headline, "1,200 files were skipped. See list.");
+  assert.equal(MODEL_FALLBACK_NOTE, "Model unreachable. Using local extraction.");
+});
+
+test("every kind ends in something to do, in a plain sentence, with or without hits and skipped files", () => {
+  const NEXT = /\b(add|rephrase|check|see list|name|reload|ask)\b/i;
+  for (const kind of ALL_KINDS) {
+    for (const facts of [SOME, NONE, { hits: 2, skipped: 0 }, { hits: 0, skipped: 5 }]) {
+      const label = `${kind} ${JSON.stringify(facts)}`;
+      for (const reason of ["The specific cause.", undefined]) {
+        const guidance = silenceGuidance({ reason, silence: kind }, facts);
+        assert.ok(guidance, label);
+        assertReadable(guidance.headline, label);
+        // A transport silence carries its fix in the detail ("Add an API key and ask again").
+        if (kind !== "transport") assert.match(guidance.headline, NEXT, `${label}: no next step in "${guidance.headline}"`);
+        if (guidance.detail) assertReadable(guidance.detail, label);
+      }
+    }
+  }
+  for (const raw of ["Add API key", "timeout", "OpenAI 500", "OpenAI rate limit, try again in a moment", "empty", "Failed to fetch"]) {
+    const guidance = guide(transportSilence(raw));
+    assert.match(guidance.detail ?? "", /\b(add an api key|check|wait|ask again|ask it again)\b/i, raw);
+  }
+});
+
+test("guidance never points at a list that would be empty", () => {
+  // "Check top hits" needs hits to open.
+  assert.doesNotMatch(guide(SILENCE.weakMatch, NONE).headline, /top hits/i);
+  assert.doesNotMatch(guide(SILENCE.notStated, NONE).headline, /top hits/i);
+  assert.doesNotMatch(guide(SILENCE.noSpan, NONE).headline, /top hits/i);
+  // A skipped count needs skipped files.
+  const nothing = guide(SILENCE.nothingIndexed, NONE);
+  assert.doesNotMatch(nothing.headline, /skipped|see list/i);
+  assert.equal(nothing.detail, SILENCE.nothingIndexed.reason);
+
+  for (const kind of ALL_KINDS) {
+    assert.deepEqual(silenceGuidance({ reason: "Why.", silence: kind }, NONE)?.shows, { hits: false, skipped: false });
+    assert.deepEqual(silenceGuidance({ reason: "Why.", silence: kind }, SOME)?.shows, { hits: true, skipped: true });
+    assert.deepEqual(silenceGuidance({ reason: "Why.", silence: kind }, { hits: 1, skipped: 0 })?.shows, {
+      hits: true,
+      skipped: false,
+    });
+  }
+});
+
+test("the card's own reason is kept as the detail, without repeating the headline", () => {
+  // The generic sentence adds nothing under the headline.
+  assert.equal(guide(SILENCE.noMatch).detail, null);
+  assert.equal(guide(SILENCE.weakMatch).detail, null);
+  assert.equal(guide(SILENCE.notStated).detail, null);
+  // A cause finer than its kind is still said.
+  assert.equal(guide(unknownTerms(["kafka", "partition"])).detail, 'I could not find "kafka", "partition" in the files I searched.');
+  // Files can be ranked for an unrelated question or a misnamed document, so
+  // neither is reported as "no files contain these terms".
+  assert.equal(guide(SILENCE.offTopic).headline, "This looks unrelated to what is loaded. Add more material or rephrase.");
+  assert.equal(guide(SILENCE.offTopic).detail, null);
+  assert.equal(guide(SILENCE.unknownDocument).headline, "No loaded document matches that name. Add the document or rephrase.");
+  assert.equal(guide(SILENCE.unknownDocument).detail, null);
+  assert.equal(guide(unknownTerms(["kafka"])).headline, "No files contain these terms. Add more material or rephrase.");
+  assert.equal(guide(SILENCE.testsOnly).detail, SILENCE.testsOnly.reason);
+  assert.equal(guide(SILENCE.noSpan).detail, SILENCE.noSpan.reason);
+  assert.equal(guide(SILENCE.stale).detail, SILENCE.stale.reason);
+  // An ambiguous question's reason already is the step, so it is the headline.
+  assert.equal(guide(SILENCE.ambiguousDocument).headline, SILENCE.ambiguousDocument.reason);
+  assert.equal(guide(SILENCE.ambiguousDocument).detail, null);
+  assert.equal(guide(SILENCE.whichDocument).headline, SILENCE.whichDocument.reason);
+  assert.equal(
+    silenceGuidance({ reason: "Two specs share that title.", silence: "ambiguous" }, SOME)?.headline,
+    "Cannot tell which document you mean. Name the document and ask again.",
+  );
+  // A silent card after a model failure: the composer ran and found nothing.
+  const key = guide(transportSilence("Add API key"));
+  assert.equal(key.headline, "Model unreachable. Local extraction found nothing to cite.");
+  assert.match(key.detail ?? "", /API key/);
+});
+
+test("a card with no kind gets no guidance", () => {
+  assert.equal(silenceGuidance({ reason: "Every file is excluded from search." }, SOME), null);
+  assert.equal(silenceGuidance({}, SOME), null);
+});
+
+test("routing: an answer the composer gave because the model was unreachable says so", async () => {
+  const question = "Why does that retry three times?";
+  // Hits from two sources and a composer answer that cites one: not enough for
+  // the fast path, so the route asks the model before it settles for the composer.
+  const hits = retrieve(question, chunks).map((hit, index) => ({ ...hit, sourceId: index === 0 ? "repo" : "docs" }));
+
+  for (const raw of ["Add API key", "timeout", "OpenAI 500"]) {
+    const routed = await routeSearchAnswer(question, hits, 0, { pack: NORTHSTAR, ask: failing(raw) });
+    assert.ok(routed.card.say, `${raw}: the composer should answer from the files`);
+    assert.equal(routed.tier, "localCard", raw);
+    assert.ok(routed.card.citations.length > 0, raw);
+    assert.equal(routed.card.modelFallback, transportSilence(raw).reason, raw);
+    assert.equal(routed.card.silence, undefined, raw);
+  }
+
+  // The model read the hits and declined: it was reached, so nothing is said about it.
+  const declined = await routeSearchAnswer(question, hits, 0, { pack: NORTHSTAR, ask: insufficient });
+  assert.ok(declined.card.say);
+  assert.equal(declined.card.modelFallback, undefined);
+
+  // Grounded read the hits and declined, then synthesis timed out. The model
+  // was reached, so the timeout is not why the composer is answering.
+  const declinedThenTimeout = await routeSearchAnswer(question, hits, 0, {
+    pack: NORTHSTAR,
+    ask: async (payload) => (payload.policy === "extract" ? { text: "INSUFFICIENT" } : { text: null, reason: "timeout" }),
+  });
+  assert.ok(declinedThenTimeout.card.say);
+  assert.equal(declinedThenTimeout.card.modelFallback, undefined);
+
+  // The fast path never asks the model, so it cannot have been unreachable.
+  const fast = await routeSearchAnswer(question, retrieve(question, chunks), 0, { pack: NORTHSTAR, ask: failing("timeout") });
+  assert.ok(fast.card.say);
+  assert.equal(fast.llmBypassed, true);
+  assert.equal(fast.card.modelFallback, undefined);
 });

@@ -114,3 +114,64 @@ export function namedFailures(paths: string[]): string {
   const name = first.replace(/\/$/, "").split("/").pop() ?? first;
   return rest.length === 0 ? name : `${name} and ${rest.length.toLocaleString("en-US")} more`;
 }
+
+export type IndexChipView = {
+  state: IndexStatusView["state"];
+  /** "Indexed 142 files · 3 skipped · 18,400 chunks" once a load has finished. */
+  text: string;
+  /** True when the counts are final: no load, re-index or PDF read is running. */
+  settled: boolean;
+  /** True when a file that was meant to be indexed could not be. */
+  attention: boolean;
+};
+
+/**
+ * The header chip: the same facts as the status line, in the shape that fits
+ * a chip and always says how many files search cannot reach.
+ *
+ * `skipped` is every file that is not searchable (left out when the selection
+ * was loaded, stored with no chunk, or failed to parse). `failed` is the part
+ * of it that was meant to be indexed. While a load runs the chip shows the
+ * step in progress, because a file not reached yet has no chunks either and
+ * would be miscounted as skipped.
+ */
+export function indexChipView(input: {
+  working: boolean;
+  booting?: boolean;
+  errored: boolean;
+  activity: IndexActivity | null;
+  pdf?: PdfActivity | null;
+  summary: IndexSummary;
+  skipped: number;
+  failed: number;
+}): IndexChipView {
+  if (input.working) {
+    return {
+      state: "working",
+      text: workingText(input.activity, input.pdf ?? null, input.booting ?? false),
+      settled: false,
+      attention: false,
+    };
+  }
+  const { filesIndexed, chunkCount, filesStored } = input.summary;
+  const counts = `Indexed ${count(filesIndexed, "file")} · ${input.skipped.toLocaleString("en-US")} skipped · ${count(chunkCount, "chunk")}`;
+  if (input.errored) {
+    return {
+      state: "error",
+      text: chunkCount > 0 ? `Indexing did not finish · ${counts}` : "Indexing did not finish",
+      settled: true,
+      attention: true,
+    };
+  }
+  if (chunkCount === 0) {
+    // Nothing was ever added: there is no load to report on.
+    const nothing = filesStored === 0 && input.skipped === 0;
+    return {
+      state: "empty",
+      text: nothing ? "Nothing indexed yet" : counts,
+      settled: true,
+      attention: !nothing,
+    };
+  }
+  return { state: "ready", text: counts, settled: true, attention: input.failed > 0 };
+}

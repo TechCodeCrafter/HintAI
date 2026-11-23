@@ -2,6 +2,7 @@ import type { Card, Citation, ConsideredSource } from "@/lib/repo/types";
 import { sourceIdsFromCitations, sourceIdsFromEvidence } from "../context/material-view.ts";
 import type { AnswerMode } from "./answer-mode";
 import type { SilenceKind } from "./silence.ts";
+import type { Evidence } from "./evidence.ts";
 
 export const ANSWER_HISTORY_LIMIT = 50;
 
@@ -32,6 +33,13 @@ export type AnswerHistoryItem = {
   citations: Citation[];
   /** Other loaded files retrieval ranked for the question. Never evidence. */
   considered?: ConsideredSource[];
+  /**
+   * The exact spans a spoken answer was read from, so "Why this answer?" still
+   * opens on an answer restored from history. Absent on silent answers and on
+   * items saved before this was recorded.
+   */
+  evidence?: Evidence[];
+  parts?: Card["parts"];
   timestamp: number;
 };
 
@@ -84,6 +92,8 @@ export function historyItemFromCard(
       (card.say ? "from-docs" : null),
     citations: card.citations ?? [],
     ...(card.considered?.length ? { considered: card.considered } : {}),
+    ...(card.say && card.evidence?.length ? { evidence: card.evidence } : {}),
+    ...(card.say && card.parts?.length ? { parts: card.parts } : {}),
     timestamp: at,
   };
 }
@@ -104,6 +114,8 @@ export function cardFromHistory(item: AnswerHistoryItem): Card {
     silence: item.say ? undefined : item.silence,
     citations: item.citations,
     ...(item.considered?.length ? { considered: item.considered } : {}),
+    ...(item.say && item.evidence?.length ? { evidence: item.evidence } : {}),
+    ...(item.say && item.parts?.length ? { parts: item.parts } : {}),
     query: item.query,
     latencyMs: 0,
     source: item.badge ?? "local",

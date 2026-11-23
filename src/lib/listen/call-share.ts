@@ -265,13 +265,13 @@ export function micCarriesRoom(): boolean {
   return !hasComputer;
 }
 
-function ingestHeard(text: string, lane: LaneName, eventId: string) {
+function ingestHeard(text: string, lane: LaneName, eventId: string, speechMs: number) {
   const cleaned = cleanCaption(text);
   if (!cleaned) return;
   const state = useMeetHint.getState();
   draftFrom = null;
-  state.heard({ id: eventId, role: roleForLane(lane), text: cleaned });
-  mark("committed", lane, { text: cleaned, role: roleForLane(lane), eventId });
+  state.heard({ id: eventId, role: roleForLane(lane), text: cleaned, speechMs });
+  mark("committed", lane, { text: cleaned, role: roleForLane(lane), eventId, speechMs: Math.round(speechMs) });
 }
 
 function frameMs(frame: Float32Array): number {
@@ -556,7 +556,7 @@ function closeLane(lane: Lane, forced = false) {
   commitSeq += 1;
   const eventId = `${name}-${commitSeq}`;
   // Off the audio callback, so frames keep arriving while this clip decodes.
-  setTimeout(() => void transcribeSegment(frames, name, bufferedMs, gate, eventId), 0);
+  setTimeout(() => void transcribeSegment(frames, name, bufferedMs, gate, eventId, voiced), 0);
 }
 
 async function transcribeSegment(
@@ -565,11 +565,13 @@ async function transcribeSegment(
   bufferedMs: number,
   gate: number,
   eventId: string,
+  /** Voiced audio in the clip. The question gate reads it as the speech behind the line. */
+  voiced: number,
 ) {
   try {
     const text = await captionAccurate(frames, { lane: name, bufferedMs, gate });
     if (!running) return;
-    if (text) ingestHeard(text, name, eventId);
+    if (text) ingestHeard(text, name, eventId, voiced);
     else if (draftFrom === name) {
       useMeetHint.getState().setLiveDraft("");
       draftFrom = null;

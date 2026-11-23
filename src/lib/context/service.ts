@@ -1,8 +1,11 @@
 import { contextDatabaseName, onAccountUnbind, requireBoundAccountId } from "../auth/account-boundary.ts";
 import type { RepoPack } from "../repo/types.ts";
+import type { SkippedFile } from "../repo/folder.ts";
+import type { FileChange } from "../repo/git-history.ts";
+import { mergeNotLoaded } from "./index-summary.ts";
 import { draftsFromPack, fingerprintPack, fingerprintsMatch, hydrateContext, packFromSources } from "./hydrate.ts";
 import { textSourcesInBundle, upsertRepoBundle, verifyRepoBundleFiles } from "./repo-bundle.ts";
-import { sanitizePathPrefix } from "./source-identity.ts";
+import { prefixedPath, sanitizePathPrefix } from "./source-identity.ts";
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import type { SpaceRecord } from "./space-types.ts";
 import { createIndexedDbRepository } from "./storage/indexeddb.ts";
@@ -35,6 +38,13 @@ export type PersistPackOptions = {
   /** Attach to an existing context instead of creating one. */
   contextId?: string;
   kind?: ContextKind;
+  /**
+   * Files the selection left out before storing. Kept with the context so
+   * the count of skipped files survives a reload and a later load.
+   */
+  notLoaded?: SkippedFile[];
+  /** Loaded files a recent commit changed, by the path they have in `pack`. */
+  recentChanges?: FileChange[];
 };
 
 export type ContextSummary = {
@@ -85,6 +95,32 @@ export async function persistPackAsContext(
       files: draftsFromPack(pack),
     });
     const stored = await verifyPersistedPack(repo, context.id, pack, pathPrefix, bundleSourceId);
+    if (options?.notLoaded) {
+      // A context whose sources were all removed starts its list again.
+      const previous = existing && existing.sourceCount > 0 ? existing.notLoaded ?? [] : [];
+      const notLoaded = mergeNotLoaded(
+        previous,
+        options.notLoaded,
+        pack.name,
+        pack.files.map((file) => file.path),
+      );
+      if (notLoaded.length > 0 || (existing?.notLoaded?.length ?? 0) > 0) {
+        await repo.patchContext(context.id, { notLoaded });
+      }
+    }
+    if (options?.recentChanges) {
+      // Kept by stored path. Loading the same folder again replaces its entries.
+      const previous = (existing && existing.sourceCount > 0 ? existing.recentChanges ?? [] : []).filter(
+        (change) => !change.path.startsWith(pathPrefix),
+      );
+      const recentChanges = [
+        ...previous,
+        ...options.recentChanges.map((change) => ({ ...change, path: prefixedPath(pathPrefix, change.path) })),
+      ];
+      if (recentChanges.length > 0 || (existing?.recentChanges?.length ?? 0) > 0) {
+        await repo.patchContext(context.id, { recentChanges });
+      }
+    }
     const ready = (await repo.getContext(context.id)) ?? { ...context, sourceCount: stored.files.length, status: "ready" as const };
     return { context: ready, pack: stored };
   } catch (error) {

@@ -424,6 +424,11 @@ function looksHeading(line: BlockSourceLine, prev?: BlockSourceLine, next?: Bloc
   if (text.length < 4 || text.length > 88 || line.wordCount > 10) return false;
   if (isListMarkerLine(line) || isCaptionLine(line)) return false;
   if (SECTION_HEADING.test(text) && line.wordCount <= 8) return true;
+  // The first line of a page or a column has nothing above it to be taller
+  // than or set off from, so a section that opens a page was never seen as a
+  // heading and its title was read as the start of the first paragraph. It is
+  // judged against the line below it instead.
+  if (!prev) return next !== undefined && next.wordCount >= 3 && line.height >= next.height * 1.25 && line.wordCount <= 8;
   const taller = prev ? line.height >= prev.height * 1.25 : false;
   const gap = prev ? verticalGap(prev, line) > prev.height * 1.45 : false;
   const hasBodyAfter = next ? next.wordCount >= 3 : false;

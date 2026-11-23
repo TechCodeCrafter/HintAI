@@ -360,8 +360,8 @@ test("block itemIndexes and mapped ranges stay valid; blocks are not evidence", 
 });
 
 test("production chunks and chunker version stay frozen", () => {
-  assert.equal(DOCUMENT_CHUNKER_VERSION, 2);
-  assert.equal(DOCUMENT_STRUCTURE_VERSION, 3);
+  assert.equal(DOCUMENT_CHUNKER_VERSION, 3);
+  assert.equal(DOCUMENT_STRUCTURE_VERSION, 4);
   const document = pageDoc([
     item(0, "Serializable isolation prevents lost outcomes.", 72, 700, 240),
     item(1, "• Read committed", 88, 670, 140),

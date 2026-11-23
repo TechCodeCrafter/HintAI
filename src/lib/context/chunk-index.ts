@@ -34,6 +34,13 @@ import {
 import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
 import { isPdfSource, isTextSource, type PdfStoredSource, type StoredSource, type TextStoredSource } from "./types.ts";
 
+/**
+ * How long an index pass waits for embeddings. Long enough that a small
+ * folder is fully embedded when it reports ready; short enough that a large
+ * one is not kept waiting on the model.
+ */
+export const EMBED_WAIT_MS = 1500;
+
 export type IndexOptions = {
   chunkerVersion?: number;
   indexVersion?: number;
@@ -53,6 +60,12 @@ export type IndexOptions = {
   structured?: boolean;
   /** Generate embeddings after chunks are built. Defaults to USE_HYBRID_RETRIEVAL. */
   embed?: boolean;
+  /**
+   * How long the pass waits for embeddings before it returns. Encoding that
+   * is not finished by then carries on in the background, in small batches.
+   * Search does not need the vectors to work. Defaults to `EMBED_WAIT_MS`.
+   */
+  embedWaitMs?: number;
   vectorStore?: VectorStore;
   /** Called before the first file and after each one, with the counts so far. */
   onProgress?: (progress: IndexProgress) => void;
@@ -116,6 +129,7 @@ export function chunkEquivalent(a: IndexedChunk, b: IndexedChunk): boolean {
     a.startLine === b.startLine &&
     a.endLine === b.endLine &&
     a.startOffset === b.startOffset &&
+    a.heading === b.heading &&
     a.text === b.text &&
     a.sha === b.sha &&
     a.author === b.author &&
@@ -448,8 +462,12 @@ export async function indexContext(
       const store = options.vectorStore ?? (await defaultVectorStore());
       if (store) {
         setVectorStore(store);
-        const { embedIndexedChunks } = await import("../search/embed-chunks.ts");
-        await embedIndexedChunks(scopedChunks, store);
+        const { embedInBackground } = await import("../search/embed-chunks.ts");
+        // A large folder is not held at "indexing" until every chunk has a
+        // vector. The pass waits a moment, which is all a small folder needs,
+        // and the encoding carries on after it has returned.
+        const embedding = embedInBackground(scopedChunks, store, { isCancelled: options.isCancelled });
+        await settledWithin(embedding, options.embedWaitMs ?? EMBED_WAIT_MS);
       }
     } catch {
       // Embedding is a sidecar. A failed encode must not block searchability.
@@ -562,15 +580,38 @@ async function indexPdfSource(
   return orderDocumentChunks(chunks);
 }
 
+/**
+ * One store per account database for the life of the tab. It keeps the
+ * vectors it has read in memory, so making a new one for every index pass
+ * would throw that away and read them all again.
+ */
+let accountVectorStore: { name: string; store: VectorStore } | null = null;
+
 async function defaultVectorStore(): Promise<VectorStore | null> {
   try {
     const { currentAccountId, vectorDatabaseName } = await import("../auth/account-boundary.ts");
     const accountId = currentAccountId();
     if (!accountId) return null;
+    const name = vectorDatabaseName(accountId);
+    if (accountVectorStore?.name === name) return accountVectorStore.store;
     const { createIndexedDbVectorStore } = await import("./storage/vector-store-indexeddb.ts");
-    return createIndexedDbVectorStore(vectorDatabaseName(accountId));
+    accountVectorStore = { name, store: createIndexedDbVectorStore(name) };
+    return accountVectorStore.store;
   } catch {
     return null;
+  }
+}
+
+/** Waits for `work`, but no longer than `ms`. The timer is cleared either way. */
+async function settledWithin(work: Promise<unknown>, ms: number): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, Math.max(0, ms));
+  });
+  try {
+    await Promise.race([work.then(() => undefined), timeout]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
   }
 }
 

@@ -307,7 +307,11 @@ function sameLine(a: string, b: string): boolean {
  * back to the previous evidence, the room does not hear the same sentence twice
  * as the answer to a different question.
  */
-export function withdrawReplay(card: Card, thread: ThreadContext | null, resolved: boolean): Card {
+export function withdrawReplay(
+  card: Card,
+  thread: Pick<ThreadContext, "claim"> | null,
+  resolved: boolean,
+): Card {
   if (!resolved || !card.say || !thread) return card;
   if (!sameLine(card.say, thread.claim)) return card;
   return {

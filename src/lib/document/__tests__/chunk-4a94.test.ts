@@ -40,7 +40,7 @@ function chunksOf(document: NormalizedDocument) {
 }
 
 test("mapped paragraph becomes one chunk; large paragraph splits on sentences", () => {
-  assert.equal(DOCUMENT_CHUNKER_VERSION, 2);
+  assert.equal(DOCUMENT_CHUNKER_VERSION, 3);
   const short = pageDoc([item(0, "Serializable isolation prevents lost outcomes.", 72, 700, 260)]);
   const { chunks } = chunksOf(short);
   assert.equal(chunks.length, 1);

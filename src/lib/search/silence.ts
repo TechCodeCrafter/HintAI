@@ -159,6 +159,143 @@ export function searchFailureSilence(error: unknown): Silence {
   );
 }
 
+/**
+ * Shown on a Card that speaks when the model could not be reached and the
+ * offline composer answered from the files instead.
+ */
+export const MODEL_FALLBACK_NOTE = "Model unreachable. Using local extraction.";
+
+/**
+ * Why a Card was composed locally when the plan's daily model answers are
+ * used up. The model was not asked, so nothing is said about it being down.
+ */
+export const QUOTA_FALLBACK_REASON =
+  "Today's model answers are used up, so this was read from your files by local extraction.";
+export const QUOTA_FALLBACK_NOTE = "Daily model limit reached. Using local extraction.";
+
+/** The short note for a Card the offline composer answered in the model's place. */
+export function modelFallbackNote(reason: string | undefined): string {
+  return reason === QUOTA_FALLBACK_REASON ? QUOTA_FALLBACK_NOTE : MODEL_FALLBACK_NOTE;
+}
+
+/** What the screen knows about the search behind a silent Card, at the time it is shown. */
+export type SilenceFacts = {
+  /** Files retrieval ranked for the question that are still loaded and can be listed. */
+  hits: number;
+  /** Loaded files that were skipped, so search never read them. */
+  skipped: number;
+};
+
+export type SilenceGuidance = {
+  /** What happened and what to do next. Always ends in an action. */
+  headline: string;
+  /** The Card's own reason, when it says more than the headline does. */
+  detail: string | null;
+  /** What opening the reason lists. Never true for a list that would be empty. */
+  shows: { hits: boolean; skipped: boolean };
+};
+
+/** `reason` with any of the generic sentences taken off the front, or null when nothing is left. */
+function beyond(reason: string | undefined, ...generic: string[]): string | null {
+  let rest = (reason ?? "").trim();
+  for (const lead of generic) {
+    if (rest.startsWith(lead)) rest = rest.slice(lead.length).trim();
+  }
+  return rest || null;
+}
+
+function filesSkipped(count: number): string {
+  return count === 1 ? "1 file was skipped" : `${count.toLocaleString("en-US")} files were skipped`;
+}
+
+/**
+ * The next step for a silent Card, by kind. Every kind ends in something the
+ * person can do, and nothing here states a fact the caller did not pass in:
+ * "check top hits" is only said when there are hits to open, and a skipped
+ * count is only said when files were skipped.
+ *
+ * The Card's `reason` is kept as the detail, because a kind is coarser than a
+ * cause ("no-match" is also "no loaded document has that name"). Returns null
+ * for a Card with no kind, which the caller shows as it always did.
+ */
+export function silenceGuidance(
+  card: { reason?: string | null; silence?: SilenceKind },
+  facts: SilenceFacts,
+): SilenceGuidance | null {
+  if (!card.silence) return null;
+  const reason = card.reason ?? undefined;
+  const hits = facts.hits > 0;
+  const skipped = facts.skipped > 0;
+  const shows = { hits, skipped };
+
+  switch (card.silence) {
+    case "no-match":
+      // Two no-match causes are not "the terms are absent": the question was
+      // judged unrelated, or it named a document that is not loaded. Files may
+      // still have been ranked for either, so neither claims the terms are missing.
+      if (reason === SILENCE.offTopic.reason) {
+        return { headline: "This looks unrelated to what is loaded. Add more material or rephrase.", detail: null, shows };
+      }
+      if (reason === SILENCE.unknownDocument.reason) {
+        return { headline: "No loaded document matches that name. Add the document or rephrase.", detail: null, shows };
+      }
+      return {
+        headline: "No files contain these terms. Add more material or rephrase.",
+        detail: beyond(reason, SILENCE.noMatch.reason),
+        shows,
+      };
+    case "weak-match":
+      return {
+        headline: hits
+          ? "Found related files but low confidence. Check top hits."
+          : "Found only weak matches, and none in a file that can be opened. Rephrase or add more material.",
+        detail: beyond(reason, SILENCE.weakMatch.reason),
+        shows,
+      };
+    case "not-stated":
+      return {
+        headline: hits
+          ? "Read the closest files and none states this. Check top hits, or add the document that does."
+          : "Read the closest material and none of it states this. Add the document that does.",
+        detail: beyond(reason, SILENCE.notStated.reason),
+        shows,
+      };
+    case "unverified":
+      return {
+        headline: hits
+          ? "Had a possible answer but could not verify it. Check top hits before you say it."
+          : "Had a possible answer but could not verify it. Ask about one specific file or term.",
+        detail: beyond(reason),
+        shows,
+      };
+    case "ambiguous": {
+      // The two fixed reasons already are the step ("Name it and ask again").
+      const own = reason === SILENCE.whichDocument.reason || reason === SILENCE.ambiguousDocument.reason;
+      return {
+        headline: own ? reason : "Cannot tell which document you mean. Name the document and ask again.",
+        detail: own ? null : beyond(reason),
+        shows,
+      };
+    }
+    case "index":
+      return {
+        headline: skipped
+          ? `${filesSkipped(facts.skipped)}. See list.`
+          : "The index could not be used for this question. Add the material again, or reload.",
+        detail: beyond(reason),
+        shows,
+      };
+    case "transport":
+      // A silent Card after a model failure means the offline composer ran on
+      // the same hits and had nothing it could cite. The fix is in the detail.
+      return {
+        headline: "Model unreachable. Local extraction found nothing to cite.",
+        detail: beyond(reason),
+        shows,
+      };
+  }
+}
+
 export type FailFastCause = "no-hits" | "off-topic" | "weak";
 
 export type SilenceInput = {

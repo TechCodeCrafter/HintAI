@@ -43,12 +43,7 @@ export function buildDocumentChunks(
 ): DocumentChunk[] {
   if (document.readiness !== "ready") return [];
   const derived = asDocumentStructure(structure) ?? deriveDocumentStructure(document);
-  const headingByPage = new Map<number, string>();
-  for (const item of document.outline) {
-    if (item.page && item.title.trim() && !headingByPage.has(item.page)) {
-      headingByPage.set(item.page, item.title);
-    }
-  }
+  const headingByPage = outlineSectionByPage(document);
   const furnitureTexts = classifiedFurnitureTexts(derived);
   const chunks: DocumentChunk[] = [];
   for (const page of document.pages) {
@@ -65,6 +60,26 @@ export function buildDocumentChunks(
     chunks.push(...chunksFromStructuredPage(document, page, structured, outlineHeading, banned));
   }
   return chunks;
+}
+
+/**
+ * The outline section each page is in. A page an outline entry points at takes
+ * that entry (the first, when several point at it). A page no entry points at
+ * is still inside the section that began on an earlier page, so it takes the
+ * last entry before it. Pages before the first entry have none.
+ */
+function outlineSectionByPage(document: NormalizedDocument): Map<number, string> {
+  const starts = new Map<number, string>();
+  for (const item of document.outline) {
+    if (item.page && item.title.trim() && !starts.has(item.page)) starts.set(item.page, item.title);
+  }
+  const byPage = new Map<number, string>();
+  let current: string | undefined;
+  for (const page of [...document.pages].sort((a, b) => a.pageNumber - b.pageNumber)) {
+    current = starts.get(page.pageNumber) ?? current;
+    if (current) byPage.set(page.pageNumber, current);
+  }
+  return byPage;
 }
 
 export function isUsableDocumentChunk(chunk: unknown): chunk is DocumentChunk {
@@ -274,19 +289,24 @@ function headingFor(
   block: DocumentBlock,
   outlineHeading: string | undefined,
 ): string | undefined {
-  const nearby = structured.blocks.find(
-    (entry) =>
-      entry.kind === "heading" &&
-      entry.page === page.pageNumber &&
-      entry.normEnd !== undefined &&
-      block.normStart !== undefined &&
-      entry.normEnd <= block.normStart &&
-      block.normStart - entry.normEnd <= 80,
-  );
-  const fromBlock = nearby && nearby.normStart !== undefined && nearby.normEnd !== undefined
-    ? page.text.slice(nearby.normStart, nearby.normEnd).trim()
-    : "";
-  return outlineHeading ?? (fromBlock || undefined);
+  // The section a block is in: the nearest heading above it on its page. This
+  // used to be the heading only when it ended within 80 characters of the
+  // block, which is the first paragraph of a section and nothing after it.
+  //
+  // A heading is not carried over a page break. Headings are found by layout,
+  // and the next page may open a section whose title was not recognised; a
+  // label on a citation has to be one the page can show.
+  let nearest: DocumentBlock | undefined;
+  for (const entry of structured.blocks) {
+    if (entry.kind !== "heading" || entry.page !== page.pageNumber) continue;
+    if (entry.normStart === undefined || entry.normEnd === undefined || block.normStart === undefined) continue;
+    if (entry.normEnd > block.normStart) continue;
+    if (!nearest || entry.normEnd > (nearest.normEnd ?? 0)) nearest = entry;
+  }
+  const fromBlock = nearest ? page.text.slice(nearest.normStart, nearest.normEnd).trim() : "";
+  // The heading on the page says where on the page; the outline only says
+  // which page a section starts on. The outline is the fallback.
+  return fromBlock || outlineHeading;
 }
 
 function crossesColumnBreak(page: NormalizedPage, start: number, end: number): boolean {

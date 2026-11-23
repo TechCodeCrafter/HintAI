@@ -156,6 +156,92 @@ export function mergeIndexSummaries(parts: IndexSummary[]): IndexSummary {
   return merged;
 }
 
+/** How many paths one reason keeps by name in the list stored with a space. */
+export const NOT_LOADED_NAMED = 200;
+/** The entry that counts the files of one reason that are not kept by name. */
+export const NOT_LOADED_REST = "other files";
+
+function notLoadedKey(item: SkippedFile): string {
+  return `${item.root ?? ""}\u0000${item.path}`;
+}
+
+function reasonKey(item: SkippedFile): string {
+  return `${item.root ?? ""}\u0000${item.reason}`;
+}
+
+/**
+ * The list of files left out at load that is kept with a space, after one
+ * more selection has been loaded from the folder `root`.
+ *
+ * This follows what storage does with the files themselves: a path loaded
+ * again from a folder of the same name replaces the older copy, and nothing
+ * else is removed. So entries from other folders are kept as they are. For
+ * the same folder, a file left out again replaces its old entry, and a file
+ * that was loaded this time is no longer listed. A file deleted from the
+ * folder since stays listed, as its stored copy would stay stored.
+ *
+ * Each reason names at most `NOT_LOADED_NAMED` paths; the rest are counted in
+ * one entry so the record stays small. Counted files have no path to match,
+ * so when the same folder is loaded again and overflows the same reason, the
+ * new count replaces the old one instead of being added to it.
+ */
+export function mergeNotLoaded(
+  previous: SkippedFile[],
+  next: SkippedFile[],
+  root: string,
+  loaded: Iterable<string> = [],
+): SkippedFile[] {
+  const nowLoaded = new Set(loaded);
+  const named = new Map<string, SkippedFile>();
+  const rest = new Map<string, { item: SkippedFile; count: number }>();
+  const countRest = (item: SkippedFile, count: number) => {
+    const key = reasonKey(item);
+    const held = rest.get(key);
+    if (held) held.count += count;
+    else rest.set(key, { item, count });
+  };
+  const incoming = next.map((raw): SkippedFile => ({ ...raw, root }));
+  const incomingPerReason = new Map<string, number>();
+  for (const item of incoming) {
+    incomingPerReason.set(reasonKey(item), (incomingPerReason.get(reasonKey(item)) ?? 0) + 1);
+  }
+  for (const item of previous) {
+    if (item.path === NOT_LOADED_REST) {
+      const recounted = (incomingPerReason.get(reasonKey(item)) ?? 0) > NOT_LOADED_NAMED;
+      if (!recounted) countRest(item, item.count ?? 1);
+    } else if (item.root !== root || !nowLoaded.has(item.path)) {
+      named.set(notLoadedKey(item), item);
+    }
+  }
+  for (const item of incoming) {
+    // Set again at the end, so a file left out twice keeps its latest reason.
+    named.delete(notLoadedKey(item));
+    named.set(notLoadedKey(item), item);
+  }
+  const kept: SkippedFile[] = [];
+  const perReason = new Map<string, number>();
+  for (const item of named.values()) {
+    const key = reasonKey(item);
+    const used = perReason.get(key) ?? 0;
+    if (used < NOT_LOADED_NAMED) {
+      perReason.set(key, used + 1);
+      kept.push(item);
+    } else {
+      countRest(item, item.count ?? 1);
+    }
+  }
+  for (const { item, count } of rest.values()) {
+    kept.push({
+      path: NOT_LOADED_REST,
+      reason: item.reason,
+      count,
+      ...(item.failed ? { failed: true } : {}),
+      ...(item.root !== undefined ? { root: item.root } : {}),
+    });
+  }
+  return kept;
+}
+
 /** How many files a list of skipped entries stands for. A skipped folder counts its files. */
 export function skippedFileCount(skipped: SkippedFile[]): number {
   return skipped.reduce((sum, item) => sum + (item.count ?? 1), 0);

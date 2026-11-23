@@ -1,3 +1,6 @@
+import type { SkippedFile } from "../repo/folder.ts";
+import type { FileChange } from "../repo/git-history.ts";
+
 export const CONTEXT_SCHEMA_VERSION = 2;
 
 /** Why this context exists. Optional so older IndexedDB rows stay valid. */
@@ -18,6 +21,20 @@ export type ContextRecord = {
   schemaVersion: number;
   /** Paths and globs omitted from chunks. Sources stay stored. */
   excludePatterns?: string[];
+  /**
+   * Files a folder or file selection left out before anything was stored
+   * (a size limit, an unsupported type, the file cap, a file that could not
+   * be read). They never become sources, so this list is the only record of
+   * them once the page reloads. Paths and reasons only, never content.
+   */
+  notLoaded?: SkippedFile[];
+  /**
+   * Stored files a recent commit changed, read from the folder's `.git` at
+   * load time. Ranking only: a path, a short commit id, a date and how many
+   * commits back. No commit message and no author. Absent for a folder with
+   * no readable history.
+   */
+  recentChanges?: FileChange[];
 };
 
 export type SourceType = "repo" | "pdf" | "file";
