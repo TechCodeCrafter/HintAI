@@ -3,6 +3,7 @@ import { pathExcluded } from "../context/exclusions.ts";
 import { fileChunkId, type BuildChunksOptions } from "../context/source-identity.ts";
 import { USE_HYBRID_RETRIEVAL, USE_STRUCTURED_CHUNKER } from "../context/index-versions.ts";
 import { llmDebug } from "../debug.ts";
+import { buildFormatChunks } from "../repo/format-chunks.ts";
 import { createRegexParser } from "../repo/parsers/regex-parser.ts";
 import { buildStructuredChunks } from "../repo/structured-chunks.ts";
 import { combineScores, RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
@@ -18,7 +19,28 @@ import { semanticRetrieve } from "./semantic-retrieve.ts";
 import type { VectorStore } from "./vector-store.ts";
 import { getVectorStore } from "./vector-access.ts";
 import { asksAboutWholeApp, isProjectOverviewQuery } from "./question.ts";
-import { declaredSymbols, symbolKey, type DeclaredSymbol } from "./query-symbols.ts";
+import {
+  declaredSymbols,
+  symbolKey,
+  type DeclaredSymbol,
+  type MayDeclare,
+  type NamedSymbol,
+} from "./query-symbols.ts";
+import { declaredWords } from "./declared-names.ts";
+import {
+  anyOf,
+  bagOf,
+  countOf,
+  freq,
+  holds,
+  knownWordId,
+  NO_WORDS,
+  termOf,
+  trimVocabulary,
+  vocabularyGeneration,
+  wordIdsWhere,
+  type Bag,
+} from "./word-index.ts";
 
 const STOP = new Set([
   "a",
@@ -222,6 +244,17 @@ export function buildChunks(pack: RepoPack, options?: BuildChunksOptions): Chunk
   for (const file of pack.files) {
     if (!isEvidencePath(options?.pathForRules ? options.pathForRules(file.path) : file.path)) continue;
     if (pathExcluded(file.path, pack.excludePatterns)) continue;
+    // Documents, decks, spreadsheets and XML are cut on their own structure:
+    // a section, a slide, a group of rows, whole elements.
+    try {
+      const formatted = buildFormatChunks(file, options);
+      if (formatted && formatted.length > 0) {
+        chunks.push(...formatted);
+        continue;
+      }
+    } catch {
+      // A file this cannot read is still searchable as line windows.
+    }
     if (useStructured) {
       try {
         const structured = buildStructuredChunks(file, REGEX_PARSER, options);
@@ -358,53 +391,173 @@ function toWords(source: string): string[] {
   return out;
 }
 
-/**
- * Light suffix stripping so "retrieval" reaches "retrieve" and "captions"
- * reaches "caption". Deliberately shallow: aggressive stemming collides more
- * than it helps on identifier-heavy text.
- */
-function stemOf(word: string): string {
-  const cut = word.replace(/(ational|ization|ations|ition|ment|ness)$/, "").replace(/(ing|ed|es|s|al|ly)$/, "");
-  const base = cut.length >= 3 ? cut : word;
-  return base.endsWith("e") && base.length > 3 ? base.slice(0, -1) : base;
-}
+export { stemOf } from "./word-index.ts";
 
-type Indexed = {
+/**
+ * What is true of a file whatever part of it a chunk holds. Chunks of one
+ * file share one of these.
+ */
+type FileInfo = {
+  /** Lower-case path. */
   path: string;
   base: string;
   stem: string;
-  pathWords: Map<string, number>;
-  bodyWords: Map<string, number>;
+  words: Bag;
+  entryPoint: boolean;
+  lambda: boolean;
+  readme: boolean;
+  behavior: boolean;
+  office: boolean;
+  test: boolean;
+  authoritative: boolean;
 };
 
-function tally(words: string[]): Map<string, number> {
-  const map = new Map<string, number>();
-  for (const word of words) {
-    map.set(word, (map.get(word) ?? 0) + 1);
-    const stem = stemOf(word);
-    if (stem !== word) map.set(`~${stem}`, (map.get(`~${stem}`) ?? 0) + 1);
-  }
-  return map;
+type Indexed = {
+  file: FileInfo;
+  body: Bag;
+  /**
+   * Words of the heading a chunk sits under: a section title, a slide title,
+   * the column names of a spreadsheet, an XML element path, a PDF section.
+   * Empty for a chunk with no heading.
+   */
+  heading: Bag;
+  /**
+   * Words of the names this chunk declares: `function retryBackoff` gives
+   * "retry" and "backoff". Source code only; empty for prose and documents.
+   */
+  declared: Bag;
+  /**
+   * Lower-casing the chunk's text leaves its words where they are. False for
+   * the rare text with a character that lower-cases to a letter (the Kelvin
+   * sign becomes "k"), which would join it to the word beside it. The word
+   * filters below rule nothing out for such a chunk.
+   */
+  wordsHold: boolean;
+  /** The vocabulary these word ids belong to. See `vocabularyGeneration`. */
+  generation: number;
+};
+
+/** Source code, as opposed to prose that may show a declaration in a fence. */
+const PROSE_FILE = /\.(md|mdx|markdown|txt|rst|adoc|docx|pptx|ppt|xlsx|csv|pdf)$/i;
+
+function declaredIn(chunk: IndexedChunk): Bag {
+  if (chunk.kind !== "code" || PROSE_FILE.test(chunk.path)) return NO_WORDS;
+  const named = "symbol" in chunk && typeof chunk.symbol === "string" ? [chunk.symbol] : [];
+  return bagOf(declaredWords(chunk.text ?? "", named));
+}
+
+/**
+ * What ranking may know beyond the chunks themselves. Every field is optional
+ * and absent means "no such signal": the ranking is then what it always was.
+ */
+export type RankSignals = {
+  /**
+   * Chunk path to how recently a commit changed that file: 1 for the newest
+   * commit, towards 0 for older ones. Only files a recent commit touched.
+   */
+  recency?: ReadonlyMap<string, number>;
+};
+
+/** The heading of a chunk from a structured document, or "" when it has none. */
+export function headingOf(chunk: IndexedChunk): string {
+  return "heading" in chunk && typeof chunk.heading === "string" ? chunk.heading : "";
 }
 
 const INDEX = new WeakMap<IndexedChunk, Indexed>();
 
-function indexOf(chunk: IndexedChunk): Indexed {
-  const cached = INDEX.get(chunk);
-  if (cached) return cached;
-  const path = chunk.path.toLowerCase();
+/** Chunks arrive file by file, so the last file's facts are usually the next chunk's too. */
+let lastFile: { path: string; generation: number; info: FileInfo } | null = null;
+
+function fileInfoOf(chunkPath: string): FileInfo {
+  const generation = vocabularyGeneration();
+  if (lastFile && lastFile.path === chunkPath && lastFile.generation === generation) return lastFile.info;
+  const path = chunkPath.toLowerCase();
   const base = path.split("/").pop() ?? path;
-  const built: Indexed = {
+  const info: FileInfo = {
     path,
     base,
     stem: base.replace(/\.[^.]+$/, ""),
-    pathWords: tally(toWords(chunk.path)),
-    bodyWords: tally(
+    words: bagOf(toWords(chunkPath)),
+    entryPoint: ENTRY_POINT_PATH.test(path),
+    lambda: /container-lambdas\//.test(path),
+    readme: /^readme\.(md|mdx|rst|txt)$/i.test(path),
+    behavior: isBehaviorPath(path),
+    // Office uploads only — do not boost README/ADR markdown inside code repos.
+    office: /\.(docx|pptx|ppt|xlsx|csv)$/i.test(path),
+    test: isTestEvidencePath(path),
+    authoritative: isAuthoritativePath(path),
+  };
+  lastFile = { path: chunkPath, generation, info };
+  return info;
+}
+
+const NON_ASCII = /[\u0080-\uffff]/g;
+const ASCII_WORD_CHARACTER = /[a-z0-9]/;
+
+/** True unless some non-ASCII character in `text` lower-cases to an ASCII letter or digit. */
+function wordsHoldWhenLowered(text: string): boolean {
+  NON_ASCII.lastIndex = 0;
+  for (let match = NON_ASCII.exec(text); match; match = NON_ASCII.exec(text)) {
+    if (ASCII_WORD_CHARACTER.test(match[0].toLowerCase())) {
+      NON_ASCII.lastIndex = 0;
+      return false;
+    }
+  }
+  return true;
+}
+
+function indexOf(chunk: IndexedChunk): Indexed {
+  const cached = INDEX.get(chunk);
+  if (cached && cached.generation === vocabularyGeneration()) return cached;
+  const heading = headingOf(chunk);
+  const built: Indexed = {
+    file: fileInfoOf(chunk.path),
+    body: bagOf(
       toWords(`${chunk.text} ${"message" in chunk ? (chunk.message ?? "") : ""} ${"pr" in chunk ? (chunk.pr ?? "") : ""}`),
     ),
+    heading: heading ? bagOf(toWords(heading)) : NO_WORDS,
+    declared: declaredIn(chunk),
+    wordsHold: wordsHoldWhenLowered(chunk.text ?? ""),
+    generation: vocabularyGeneration(),
   };
   INDEX.set(chunk, built);
   return built;
+}
+
+/** One warm-up at a time: starting another ends the one before it. */
+let warmRun = 0;
+
+/**
+ * Builds the word index for `chunks` ahead of the first question.
+ *
+ * A chunk's words are indexed the first time a search looks at it, so without
+ * this the first question on new material pays for all of it at once: seconds
+ * on a large folder, with the page frozen. This does the same work in short
+ * slices with a pause between them, so the page keeps responding and a
+ * question asked part-way through is answered (it indexes whatever is left).
+ *
+ * Returns how many chunks it indexed. Starting it again, or `isCancelled`
+ * turning true, ends an earlier run.
+ */
+export async function warmSearchIndex(
+  chunks: IndexedChunk[],
+  options: { sliceMs?: number; isCancelled?: () => boolean; pause?: () => Promise<void> } = {},
+): Promise<number> {
+  const run = ++warmRun;
+  const sliceMs = options.sliceMs ?? 12;
+  const pause = options.pause ?? (() => new Promise<void>((resolve) => setTimeout(resolve, 0)));
+  const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+  let done = 0;
+  let sliceStart = now();
+  for (const chunk of chunks) {
+    indexOf(chunk);
+    done += 1;
+    if (now() - sliceStart < sliceMs) continue;
+    await pause();
+    if (run !== warmRun || options.isCancelled?.()) return done;
+    sliceStart = now();
+  }
+  return done;
 }
 
 /** Bounded term frequency: repetition helps, but cannot run away. */
@@ -417,54 +570,9 @@ function textScore(boosts: ScoreBoosts | undefined): number {
   return (boosts?.body ?? 0) + (boosts?.commit ?? 0);
 }
 
-function freq(words: Map<string, number>, term: string): number {
-  const exact = words.get(term) ?? 0;
-  const stem = words.get(`~${stemOf(term)}`) ?? 0;
-  const direct = exact + 0.5 * stem;
-  if (direct > 0) return direct;
-  // Typo tolerance: a single edit ("experince" -> "experience") must still
-  // retrieve. Only for terms >=5 chars, only edit distance 1, weighted below
-  // exact/stem so correct spellings always win. Bounded scan over the chunk's
-  // distinct tokens — chunks are small, queries are short.
-  if (term.length < 5) return 0;
-  let best = 0;
-  for (const [word, count] of words) {
-    if (word.startsWith("~") || word.length < 5) continue;
-    if (Math.abs(word.length - term.length) > 1) continue;
-    if (!isEditDistanceOne(word, term)) continue;
-    if (count > best) best = count;
-  }
-  return 0.6 * best;
-}
-
-/** True when a and b differ by exactly one insertion/deletion/substitution. */
-function isEditDistanceOne(a: string, b: string): boolean {
-  if (a === b) return true;
-  const la = a.length;
-  const lb = b.length;
-  if (Math.abs(la - lb) > 1) return false;
-  let i = 0;
-  let j = 0;
-  let edits = 0;
-  while (i < la && j < lb) {
-    if (a[i] === b[j]) {
-      i += 1;
-      j += 1;
-      continue;
-    }
-    edits += 1;
-    if (edits > 1) return false;
-    if (la === lb) {
-      i += 1;
-      j += 1;
-    } else if (la > lb) {
-      i += 1;
-    } else {
-      j += 1;
-    }
-  }
-  edits += la - i + (lb - j);
-  return edits <= 1;
+/** True when the heading a chunk sits under has this query term, by the same match the text gets. */
+export function headingHolds(chunk: IndexedChunk, term: string): boolean {
+  return freq(indexOf(chunk).heading, termOf(term)) > 0;
 }
 
 /**
@@ -477,21 +585,26 @@ function isEditDistanceOne(a: string, b: string): boolean {
  * left out when judging how well a chunk backs the question.
  */
 function termStats(terms: string[], chunks: IndexedChunk[]): { idf: Map<string, number>; known: Set<string> } {
+  // Index first. A question word can only be resolved against words that
+  // have been seen, and indexing a chunk is what makes its words seen.
+  const indexed = chunks.map(indexOf);
+  const asked = terms.map(termOf);
   const df = new Map<string, number>();
-  for (const chunk of chunks) {
-    const idx = indexOf(chunk);
-    for (const term of terms) {
-      if (freq(idx.bodyWords, term) > 0 || freq(idx.pathWords, term) > 0) {
-        df.set(term, (df.get(term) ?? 0) + 1);
+  for (const idx of indexed) {
+    for (const term of asked) {
+      if (freq(idx.body, term) > 0 || freq(idx.file.words, term) > 0 || freq(idx.heading, term) > 0) {
+        df.set(term.text, (df.get(term.text) ?? 0) + 1);
       }
     }
   }
-  const n = Math.max(1, chunks.length);
+  return { idf: idfOf(terms, (term) => df.get(term) ?? 0, chunks.length), known: new Set(df.keys()) };
+}
+
+function idfOf(terms: string[], dfOf: (term: string) => number, chunkCount: number): Map<string, number> {
+  const n = Math.max(1, chunkCount);
   const idf = new Map<string, number>();
-  for (const term of terms) {
-    idf.set(term, Math.log(1 + n / (1 + (df.get(term) ?? 0))));
-  }
-  return { idf, known: new Set(df.keys()) };
+  for (const term of terms) idf.set(term, Math.log(1 + n / (1 + dfOf(term))));
+  return idf;
 }
 
 /** The query terms the material mentions in some path or body. */
@@ -522,11 +635,12 @@ export function nameCredit(
   const idx = indexOf(chunk);
   let rest = 0;
   let backed = 0;
-  for (const term of terms) {
-    if (freq(idx.pathWords, term) > 0) continue;
-    const weight = weightOf(term);
+  for (const text of terms) {
+    const term = termOf(text);
+    if (freq(idx.file.words, term) > 0) continue;
+    const weight = weightOf(text);
     rest += weight;
-    if (freq(idx.bodyWords, term) > 0) backed += weight;
+    if (freq(idx.body, term) > 0 || freq(idx.heading, term) > 0) backed += weight;
   }
   if (rest === 0) return 1;
   return Math.max(RETRIEVAL_WEIGHTS.nameOnlyCredit, backed / rest);
@@ -540,8 +654,8 @@ export function namedPaths(query: string): string[] {
 }
 
 /** True when `name`, a file-like word from the question, is this chunk's file. */
-function isNamedPath(idx: Indexed, name: string): boolean {
-  return idx.path.endsWith(name) || idx.path.includes(`/${name}`) || idx.base === name;
+function isNamedPath(file: FileInfo, name: string): boolean {
+  return file.path.endsWith(name) || file.path.includes(`/${name}`) || file.base === name;
 }
 
 export type NamedCode = {
@@ -558,8 +672,133 @@ export type NamedCode = {
  */
 export function namedCode(query: string, chunks: IndexedChunk[]): NamedCode {
   const named = namedPaths(query);
-  const paths = named.filter((name) => chunks.some((chunk) => isNamedPath(indexOf(chunk), name)));
-  return { symbols: declaredSymbols(query, chunks), paths };
+  const paths = named.filter((name) => chunks.some((chunk) => isNamedPath(indexOf(chunk).file, name)));
+  return { symbols: declaredIdentifiers(query, chunks), paths };
+}
+
+/**
+ * The identifiers a question names that the code declares. The same answer as
+ * `declaredSymbols`, without running the declaration pattern over the text of
+ * every chunk: the word index rules out the chunks that cannot hold the name.
+ */
+export function declaredIdentifiers(query: string, chunks: IndexedChunk[]): DeclaredSymbol[] {
+  return declaredSymbols(query, chunks, mayDeclareIn(chunks));
+}
+
+/**
+ * Rules out chunks that cannot declare an identifier, from their words alone.
+ *
+ * Why it never rules out a real declaration. The declaration pattern matches
+ * the name ("verify_?claim", any case) with white space, a line start or a
+ * dot before it and no letter, digit, "_" or "$" after it. So in the text the
+ * name is a whole token, and it is written in one of two ways:
+ *
+ *   - with no "_" in it. Then it is one run of letters and digits, and
+ *     `toWords` indexes every such run whole, so the chunk has the word
+ *     "verifyclaim".
+ *   - with a "_" at one of the joins between its parts. `toWords` indexes
+ *     each chain of runs joined by "_" as one word, cut only at a camelCase
+ *     hump. So the chunk has a word with "x_y" in it, where x ends the parts
+ *     before that join and y starts the parts after it: "verify_claim", or
+ *     "gate_91626" from `smokeGate_91626`.
+ *
+ * A chunk with neither word is skipped. A chunk with a character that
+ * lower-cases to a letter is always passed on to the pattern: in the index
+ * that character is joined to the word beside it, and in the text the pattern
+ * reads it is not.
+ */
+function mayDeclareIn(chunks: IndexedChunk[]): MayDeclare {
+  let indexed = false;
+  return (symbol: NamedSymbol) => {
+    const parts = symbol.parts;
+    if (parts.length === 0) return () => true;
+    // Word ids are looked up after every chunk is indexed, or a word first
+    // seen in a later chunk would look unknown.
+    if (!indexed) {
+      for (const chunk of chunks) indexOf(chunk);
+      indexed = true;
+    }
+    const whole = knownWordId(parts.join(""));
+    // For each join: the parts before it and the parts after it, each as one string.
+    const before: string[] = [];
+    const after: string[] = [];
+    for (let cut = 1; cut < parts.length; cut += 1) {
+      before.push(parts.slice(0, cut).join(""));
+      after.push(parts.slice(cut).join(""));
+    }
+    const withUnderscore =
+      before.length === 0
+        ? []
+        : wordIdsWhere((word) => {
+            if (!word.includes("_")) return false;
+            const runs = word.split("_");
+            for (let i = 0; i + 1 < runs.length; i += 1) {
+              const left = runs[i];
+              const right = runs[i + 1];
+              if (!left || !right) continue;
+              for (let cut = 0; cut < before.length; cut += 1) {
+                if (before[cut].endsWith(left) && after[cut].startsWith(right)) return true;
+              }
+            }
+            return false;
+          });
+    const hasUnderscored = anyOf(withUnderscore);
+    return (chunk) => {
+      const idx = indexOf(chunk);
+      if (!idx.wordsHold) return true;
+      return (whole >= 0 && countOf(idx.body, whole) > 0) || hasUnderscored(idx.body);
+    };
+  };
+}
+
+/**
+ * A cheap test that rules out chunks which cannot contain `phrase`, so the
+ * text of every chunk does not have to be lower-cased and searched for every
+ * question. It never rules out a chunk that does contain it.
+ *
+ * Why that holds: every unbroken run of ASCII letters and digits in the
+ * lower-cased text is one of the chunk's indexed words. So if the lower-cased text contains the
+ * phrase, then for each run of letters and digits in the phrase:
+ *   - a run with other characters on both sides in the phrase is a word of the chunk;
+ *   - a run that starts the phrase is the end of a word of the chunk;
+ *   - a run that ends the phrase is the start of a word of the chunk;
+ *   - a phrase that is one run is inside a word of the chunk.
+ * The one exception is text with a character that lower-cases to a letter
+ * (see `wordsHold`). Such a chunk is always passed on to the real check.
+ */
+function phraseFilter(phrase: string): (idx: Indexed) => boolean {
+  const tests: Array<(bag: Bag) => boolean> = [];
+  let impossible = false;
+  for (const match of phrase.matchAll(/[a-z0-9]+/g)) {
+    const run = match[0];
+    const opensPhrase = match.index === 0;
+    const closesPhrase = match.index + run.length === phrase.length;
+    if (!opensPhrase && !closesPhrase) {
+      const id = knownWordId(run);
+      if (id < 0) impossible = true;
+      else tests.push(anyOf([id]));
+    }
+  }
+  if (tests.length === 0 && !impossible) {
+    // No run sits inside the phrase. Use the runs at its edges.
+    const runs = [...phrase.matchAll(/[a-z0-9]+/g)];
+    const first = runs[0];
+    const last = runs[runs.length - 1];
+    if (first && first.index === 0 && first[0].length === phrase.length) {
+      tests.push(anyOf(wordIdsWhere((word) => word.includes(first[0]))));
+    } else {
+      if (first && first.index === 0) tests.push(anyOf(wordIdsWhere((word) => word.endsWith(first[0]))));
+      if (last && last.index + last[0].length === phrase.length) {
+        tests.push(anyOf(wordIdsWhere((word) => word.startsWith(last[0]))));
+      }
+    }
+  }
+  return (idx) => {
+    if (!idx.wordsHold) return true;
+    if (impossible) return false;
+    for (const test of tests) if (!test(idx.body)) return false;
+    return true;
+  };
 }
 
 // Same cap as the fused hybrid ranking (`capPerFile` in hybrid.ts), so a
@@ -567,7 +806,8 @@ export function namedCode(query: string, chunks: IndexedChunk[]): NamedCode {
 const MAX_PER_FILE = RETRIEVAL_WEIGHTS.maxChunksPerFile;
 const MAX_PER_FILE_KIND = 2;
 
-export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[] {
+export function retrieve(query: string, chunks: IndexedChunk[], limit = 6, signals?: RankSignals): Hit[] {
+  trimVocabulary();
   const terms = tokenize(query);
   const named = namedPaths(query);
   if (terms.length === 0 && named.length === 0) return [];
@@ -608,7 +848,33 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
       )) &&
     !wantsApi;
   const wantsDefinition = /\b(?:what is|what's|define|explain|describe)\b/i.test(q);
-  const { idf, known } = termStats(terms, chunks);
+  // One pass over the material resolves every question word against every
+  // chunk. The scoring pass below reads these numbers instead of looking the
+  // words up again.
+  // Index first: a question word can only be resolved against words that have
+  // been seen, and indexing a chunk is what makes its words seen.
+  const indexed = chunks.map(indexOf);
+  const asked = terms.map(termOf);
+  const width = asked.length;
+  const inBodyOf = new Float64Array(chunks.length * width);
+  const inPathOf = new Float64Array(chunks.length * width);
+  const inHeadingOf = new Float64Array(chunks.length * width);
+  const df = new Int32Array(width);
+  for (let c = 0; c < chunks.length; c += 1) {
+    const idx = indexed[c];
+    const row = c * width;
+    for (let t = 0; t < width; t += 1) {
+      const body = freq(idx.body, asked[t]);
+      const path = freq(idx.file.words, asked[t]);
+      const heading = freq(idx.heading, asked[t]);
+      inBodyOf[row + t] = body;
+      inPathOf[row + t] = path;
+      inHeadingOf[row + t] = heading;
+      if (body > 0 || path > 0 || heading > 0) df[t] += 1;
+    }
+  }
+  const idf = idfOf(terms, (term) => df[terms.indexOf(term)], chunks.length);
+  const known = new Set(terms.filter((_, t) => df[t] > 0));
   const weightOf = (term: string) => idf.get(term) ?? 1;
   // A question that names an identifier the code declares, or a file that is
   // loaded, is about that place. Bonuses for what kind of file a chunk is in
@@ -621,14 +887,21 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
   );
   // Backing is judged on the terms the material can speak to.
   const backable = (term: string) => (known.has(term) ? weightOf(term) : 0);
+  const weights = terms.map(weightOf);
+  const backs = terms.map(backable);
   const phrase = terms.join(" ");
+  const mayHoldPhrase = phrase.length > 4 ? phraseFilter(phrase) : null;
+  const asksAboutTests = queryAsksAboutTests(query);
 
   const scored: Hit[] = [];
   const lastResort: Hit[] = [];
   // The best any chunk's text scored for this question. See `symbolLift`.
   let bestText = 0;
-  for (const chunk of chunks) {
-    const idx = indexOf(chunk);
+  for (let c = 0; c < chunks.length; c += 1) {
+    const chunk = chunks[c];
+    const idx = indexed[c];
+    const file = idx.file;
+    const row = c * width;
     // Every addend is recorded under its name, so the search debug log can
     // show what each one contributed. The score is their sum and nothing else.
     const boosts: ScoreBoosts = {};
@@ -640,26 +913,50 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     };
     // Path and file-name matches are scaled by how much of the rest of the
     // question this chunk's text covers. See `nameCredit`.
-    const credit = nameCredit(terms, chunk, backable);
-    let asked = 0;
+    // The same sum `nameCredit` makes, from the numbers already looked up.
+    let rest = 0;
+    let backed = 0;
+    for (let t = 0; t < width; t += 1) {
+      if (inPathOf[row + t] > 0) continue;
+      rest += backs[t];
+      if (inBodyOf[row + t] > 0 || inHeadingOf[row + t] > 0) backed += backs[t];
+    }
+    const credit = rest === 0 ? 1 : Math.max(RETRIEVAL_WEIGHTS.nameOnlyCredit, backed / rest);
+    let askedWeight = 0;
     let covered = 0;
-    for (const term of terms) {
-      const weight = weightOf(term);
-      const inBody = freq(idx.bodyWords, term);
-      add("pathWords", credit * weight * 2.4 * sat(freq(idx.pathWords, term)));
+    for (let t = 0; t < width; t += 1) {
+      const term = terms[t];
+      const weight = weights[t];
+      const inBody = inBodyOf[row + t];
+      add("pathWords", credit * weight * 2.4 * sat(inPathOf[row + t]));
       add("body", weight * 1.6 * sat(inBody));
-      if (term === idx.stem || term === idx.base) add("fileName", credit * weight * RETRIEVAL_WEIGHTS.filenameMatch);
+      // A word the chunk's text does not have, and the heading it sits under
+      // does. "Notice period" is in a spreadsheet's header row, not in row 40;
+      // "refund" is in the section title, not in the third paragraph under it.
+      // Counted only when the text lacks the word, so a section whose first
+      // line is its own title is not scored for that title twice.
+      const inHeading = inBody > 0 ? 0 : inHeadingOf[row + t];
+      add("heading", weight * RETRIEVAL_WEIGHTS.headingTerm * sat(inHeading));
+      if (term === file.stem || term === file.base) add("fileName", credit * weight * RETRIEVAL_WEIGHTS.filenameMatch);
       if (chunk.kind === "why") add("commit", weight * 1.1 * sat(inBody));
-      asked += backable(term);
-      if (inBody > 0) covered += backable(term);
+      // The word is part of a name this chunk declares, so this is where the
+      // thing is defined, not one of the places that call it.
+      if (holds(idx.declared, asked[t])) add("declares", weight * RETRIEVAL_WEIGHTS.declaredTerm);
+      askedWeight += backs[t];
+      if (inBody > 0 || inHeading > 0) covered += backs[t];
     }
     // 0 when the text shares no word with the question, 1 once it covers
     // `backingShare` of it. Bonuses for what kind of file this is are scaled by
     // it, so a README or an entry point cannot score on its name alone.
-    const backing = asked > 0 ? Math.min(1, covered / asked / RETRIEVAL_WEIGHTS.backingShare) : 0;
+    const backing = askedWeight > 0 ? Math.min(1, covered / askedWeight / RETRIEVAL_WEIGHTS.backingShare) : 0;
     bestText = Math.max(bestText, textScore(boosts));
+    // A file a recent commit changed, when the folder's history was readable.
+    // Scaled by how much of the question this chunk's text covers, so a recent
+    // file that does not match the question gets nothing.
+    const recency = backing > 0 ? (signals?.recency?.get(chunk.path) ?? 0) : 0;
+    if (recency > 0) add("recentCommit", RETRIEVAL_WEIGHTS.recentCommit * recency * backing);
     for (const name of named) {
-      if (isNamedPath(idx, name)) add("namedPath", RETRIEVAL_WEIGHTS.pathMatch);
+      if (isNamedPath(file, name)) add("namedPath", RETRIEVAL_WEIGHTS.pathMatch);
     }
     for (const symbol of code.symbols) {
       // The declaration is where the question points.
@@ -667,20 +964,20 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
       // `answer-card.tsx` is the file of `AnswerCard`. The exact-match rule
       // above only sees a stem spelled the way the term is.
       const term = symbolTerm.get(symbol.key);
-      if (symbolKey(idx.stem) === symbol.key && idx.stem !== term && idx.base !== term) {
+      if (symbolKey(file.stem) === symbol.key && file.stem !== term && file.base !== term) {
         add("symbolFile", credit * weightOf(term ?? symbol.key) * RETRIEVAL_WEIGHTS.filenameMatch);
       }
     }
-    if ((wantsApi || wantsShape) && ENTRY_POINT_PATH.test(idx.path)) {
+    if ((wantsApi || wantsShape) && file.entryPoint) {
       // In full for a question about the whole app or the whole API. For "which
       // router handles retries", only as far as the file's text backs it. Not
       // at all when the question names the code it is about.
       add("entryPoint", RETRIEVAL_WEIGHTS.apiShapePath * (wholeApp ? 1 : namesCode ? 0 : backing));
     }
-    if (wantsLambdaFleet && /container-lambdas\//.test(idx.path)) {
+    if (wantsLambdaFleet && file.lambda) {
       add("lambdaFleet", RETRIEVAL_WEIGHTS.apiShapePath);
     }
-    if (wantsOverview && /^readme\.(md|mdx|rst|txt)$/i.test(idx.path)) {
+    if (wantsOverview && file.readme) {
       add("readmeOverview", RETRIEVAL_WEIGHTS.pathMatch);
     }
     if ((named.length > 0 || wantsShape || wantsLambdaFleet) && chunk.kind === "code" && chunk.startLine <= 8) {
@@ -688,18 +985,19 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     }
     // Behavior questions prefer the file that performs the work over the route
     // that triggers it. A router docstring is the API surface, not the answer.
-    if (wantsBehavior && isBehaviorPath(idx.path)) {
+    if (wantsBehavior && file.behavior) {
       add("behaviorPath", RETRIEVAL_WEIGHTS.behaviorPath);
     }
-    // Office uploads only — do not boost README/ADR markdown inside code repos.
-    const isUploadedOffice = /\.(docx|pptx|ppt|xlsx|csv)$/i.test(idx.path);
+    const isUploadedOffice = file.office;
     if (isUploadedOffice) {
       add("documentPath", RETRIEVAL_WEIGHTS.documentPath);
     }
     if (wantsDefinition && isUploadedOffice) {
       add("documentDefinition", RETRIEVAL_WEIGHTS.documentDefinition);
     }
-    if (phrase.length > 4) {
+    // The filter only rules out chunks whose words show the phrase cannot be
+    // there. Whether it is there is still decided by the text itself.
+    if (mayHoldPhrase && mayHoldPhrase(idx)) {
       const body = chunk.text?.toLowerCase() ?? "";
       if (body.includes(phrase)) add("exactPhrase", RETRIEVAL_WEIGHTS.exactPhrase);
     }
@@ -708,14 +1006,13 @@ export function retrieve(query: string, chunks: IndexedChunk[], limit = 6): Hit[
     // and be spoken as a confident wrong answer. Applied last so it cannot be
     // fully cancelled by the behavior boost on a test living under a behavior
     // directory.
-    const asksAboutTests = queryAsksAboutTests(query);
-    if (isTestEvidencePath(idx.path) && !asksAboutTests) {
+    if (file.test && !asksAboutTests) {
       // The penalty is a demotion. Where it would erase the match, keep the
       // chunk aside: it is used only if nothing else in the material matches.
       if (score > 0 && score <= RETRIEVAL_WEIGHTS.testPathPenalty) lastResort.push({ ...chunk, score, boosts: { ...boosts } });
       add("testPath", -RETRIEVAL_WEIGHTS.testPathPenalty);
     }
-    if (isAuthoritativePath(idx.path) && !asksAboutTests) {
+    if (file.authoritative && !asksAboutTests) {
       // Docs outrank tests and examples that say the same thing. This used to
       // be a flat bonus, which put the README in the results of every question,
       // including ones it shares no word with. It is still flat for a question
@@ -806,6 +1103,8 @@ export type RetrieveHitsOptions = {
   limit?: number;
   vectorStore?: VectorStore | null;
   hybrid?: boolean;
+  /** Recent-commit recency by chunk path, when the loaded folder had history. */
+  recency?: RankSignals["recency"];
   /** Tenant filter applied before ranking — required on every retrieveHits call. */
   scope: import("./retrieval-scope.ts").RetrievalScope;
 };
@@ -858,10 +1157,11 @@ export async function retrieveHits(
     ? scoped.filter((chunk) => !pathExcluded(chunk.path, excludePatterns))
     : scoped;
   const excludedCount = chunks.length - usable.length;
+  const signals: RankSignals | undefined = options.recency?.size ? { recency: options.recency } : undefined;
   const hits =
     hybrid && vectorStore
-      ? await hybridRetrieve(query, usable, vectorStore, limit)
-      : retrieve(query, usable, limit);
+      ? await hybridRetrieve(query, usable, vectorStore, limit, signals)
+      : retrieve(query, usable, limit, signals);
   logRetrieval(hits, chunks.length, excludedCount);
   return hits;
 }
@@ -876,10 +1176,11 @@ export async function hybridRetrieve(
   chunks: IndexedChunk[],
   vectorStore: VectorStore,
   limit = 6,
+  signals?: RankSignals,
 ): Promise<Hit[]> {
   const { vectorCacheKey } = await import("./retrieval-scope.ts");
   const cached = await vectorStore.get(chunks.map((chunk) => vectorCacheKey(chunk)));
-  const lexicalHits = retrieve(query, chunks, limit * 2);
+  const lexicalHits = retrieve(query, chunks, limit * 2, signals);
   const { candidatesForCap, capPerFile, retrieveStructural } = await import("./hybrid.ts");
   // These two channels rank chunks, not files, so each is asked for everything
   // it scored and `candidatesForCap` picks the window: the top `limit * 2` as

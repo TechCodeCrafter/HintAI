@@ -30,7 +30,12 @@ async function checkStore(store: VectorStore) {
     { chunkId: "b", embedding: [0, 1], contentHash: "h2" },
   ]);
   assert.equal(await store.has("a"), true);
-  assert.deepEqual((await store.get(["a", "missing"])).get("a"), [1, 2, 3]);
+  // A store may hand back the typed array it holds, so compare the values.
+  assert.deepEqual(Array.from((await store.get(["a", "missing"])).get("a") ?? []), [1, 2, 3]);
+  assert.deepEqual([...((await store.hashes?.(["a", "b", "missing"])) ?? new Map())].sort(), [
+    ["a", "h1"],
+    ["b", "h2"],
+  ]);
   assert.equal(await store.isStale("a", "h1"), false);
   assert.equal(await store.isStale("a", "changed"), true);
   assert.equal(await store.isStale("missing", "x"), true);

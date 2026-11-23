@@ -28,6 +28,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { AnswerFeedback } from "@/components/answer-feedback";
+import { SearchDetailsPanel, SearchDetailsToggle } from "@/components/search-details";
+import { SilenceReason } from "@/components/silence-reason";
 import { ApiKeySettings } from "@/components/api-key-settings";
 import { AnswerSay } from "@/components/answer-say";
 import { AnswerHistory } from "@/components/answer-history";
@@ -49,7 +51,9 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { highlightLine } from "@/lib/highlight";
 import { stopHear, toggleHear } from "@/lib/listen/call-share";
-import { isFramed, useLiveListen } from "@/lib/listen/speech";
+import { isFramed, openLiveWindow, useLiveListen } from "@/lib/listen/speech";
+import { OverlayPrefsControl, useOverlayPrefs } from "@/components/overlay-prefs-control";
+import { sessionWireOrigin, watchSessionWire } from "@/lib/store/session-wire";
 import { PdfPane } from "@/components/pdf-pane";
 import { AuthChrome } from "@/components/auth-chrome";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -65,6 +69,8 @@ import { citedLineRange, isDocumentCitation, isFileCitation } from "@/lib/search
 import type { Citation, ConsideredFile, ConsideredSource } from "@/lib/repo/types";
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
+import { modelFallbackNote } from "@/lib/search/silence";
+import { WhyAnswer } from "@/components/why-answer";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
 import { ProductStateAlert } from "@/components/product-state-alert";
@@ -77,6 +83,7 @@ import { telemetryFromCard } from "@/lib/search/answer-history";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
 import { isWeakPack, type FolderLoadOptions } from "@/lib/repo/folder";
+import { IndexChip } from "@/components/index-chip";
 import { IndexSummaryNote } from "@/components/index-summary-note";
 import { useIndexedFileCount } from "@/components/use-indexed-file-count";
 
@@ -86,6 +93,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   const armed = useMeetHint((s) => s.armed);
   const playing = useMeetHint((s) => s.playing);
   const overlay = useMeetHint((s) => s.overlay);
+  const [overlayPrefs, setOverlayPrefs] = useOverlayPrefs();
   const sharingCall = useMeetHint((s) => s.sharingCall);
   const disarm = useMeetHint((s) => s.disarm);
   const card = useMeetHint((s) => s.card);
@@ -237,6 +245,22 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   }
 
   useLiveListen();
+
+  // A live window follows the cockpit beside it: a card answered there shows
+  // here as soon as it is on the wire, and the last one is back after a
+  // reload. Its own searches still work; it only skips what it wrote itself.
+  useEffect(() => {
+    if (!booted) return;
+    if (new URLSearchParams(window.location.search).get("overlay") !== "1") return;
+    const mine = sessionWireOrigin();
+    return watchSessionWire((wire) => {
+      if (!wire || wire.origin === mine) return;
+      const state = useMeetHint.getState();
+      // A card from another space cites files this window does not have open.
+      if ((wire.spaceId ?? null) !== (state.activeSpaceId ?? null)) return;
+      state.mirrorCard(wire.card);
+    });
+  }, [booted]);
 
   useEffect(() => {
     useMeetHint.getState().setListenError(null);
@@ -476,6 +500,7 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             ) : null}
           </div>
           <div className="cockpit-pack">
+            <IndexChip />
             <SpaceSwitcher
               onOpenFolder={() => {
                 folderIntent.current = "new";
@@ -639,9 +664,14 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
         <MobileAnswerPeek say={card.say} onOpen={() => setMobilePane("card")} />
       ) : null}
 
+      {overlay ? (
+        <OverlayPrefsControl className="cockpit-overlay-prefs" prefs={overlayPrefs} onChange={setOverlayPrefs} />
+      ) : null}
+
       <main
         className="cockpit-workspace"
         data-mode={overlay ? "overlay" : "cockpit"}
+        style={overlay ? { opacity: overlayPrefs.opacity } : undefined}
         data-audit={auditOpen ? "on" : undefined}
         data-files={mobilePane === "repo" ? "open" : undefined}
       >
@@ -984,6 +1014,18 @@ function SpaceSwitcher({ onOpenFolder }: { onOpenFolder: () => void }) {
   );
 }
 
+/**
+ * A plain click on "Live window" opens the pop-up where the second-screen
+ * settings put it, on this space, in overlay mode. A modified click, or a
+ * browser that blocks the pop-up, falls through to the link.
+ */
+function openLiveWindowFromLink(event: React.MouseEvent<HTMLAnchorElement>) {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    return;
+  }
+  if (openLiveWindow()) event.preventDefault();
+}
+
 function UtilityLinks({
   overlay,
   demo,
@@ -1026,6 +1068,8 @@ function UtilityLinks({
         aria-label="Live window"
         title="Live window"
         className="cockpit-icon"
+        data-testid="live-window-link"
+        onClick={openLiveWindowFromLink}
       >
         <ExternalLink className="size-4" />
       </a>
@@ -1122,7 +1166,10 @@ function UtilityMenu({
             rel="noreferrer"
             role="menuitem"
             className="context-option"
-            onClick={() => setOpen(false)}
+            onClick={(event) => {
+              setOpen(false);
+              openLiveWindowFromLink(event);
+            }}
           >
             <ExternalLink className="size-3.5 shrink-0" />
             Live window
@@ -1949,6 +1996,7 @@ function CardPane({
   const sources = useMeetHint((s) => s.sources);
   const indexedFileCount = useIndexedFileCount();
   const heardQuestion = useMeetHint((s) => s.heardQuestion);
+  const searchDetailsOn = useMeetHint((s) => s.searchDetailsOn);
   const theySaid = card?.query || heardQuestion;
   const chips = useMemo(
     () => (searchReady && sources.length > 0 ? questionChips(pack) : []),
@@ -2005,7 +2053,10 @@ function CardPane({
         onOpen={onOpenConsidered}
       />
     ) : null;
-  const productAlert = !speaking && card?.reason ? productStateForSilence(card) : null;
+  // A Card with a silence kind says what to do next, and opens to the files
+  // behind it. A Card with none (a store-level state, old history) keeps the banner.
+  const guided = !speaking && Boolean(card?.silence);
+  const productAlert = !speaking && !guided && card?.reason ? productStateForSilence(card) : null;
 
   return (
     <section className="ground-panel answer-panel" data-testid="card">
@@ -2027,6 +2078,7 @@ function CardPane({
               sourceIds={telemetryFromCard(card).sourceIds}
             />
           ) : null}
+          <SearchDetailsToggle />
           <span className="ground-status tabular-nums">
             {found ?? (searching ? "Searching" : speaking ? "Ready" : "Ready")}
           </span>
@@ -2035,7 +2087,9 @@ function CardPane({
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <div key={cardKey} className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-auto px-5 py-5">
           {theySaid || speaking ? (
-            <div className="answer-receipt">
+            // shrink-0: the receipt clips its overflow, so without it a tall
+            // sibling below squeezes the answer instead of scrolling the pane.
+            <div className="answer-receipt shrink-0">
               <div className="answer-receipt-body">
                 {theySaid ? (
                   <div className="heard-block min-w-0">
@@ -2059,6 +2113,11 @@ function CardPane({
                             : "Supported"}
                       {card?.citations?.length ? ` · ${card.citations.length} source${card.citations.length === 1 ? "" : "s"}` : ""}
                     </p>
+                    {card?.modelFallback ? (
+                      <p className="generated-note" data-testid="model-fallback-note" title={card.modelFallback}>
+                        {modelFallbackNote(card.modelFallback)}
+                      </p>
+                    ) : null}
                     {generated ? (
                       <p
                         className="generated-note"
@@ -2090,14 +2149,24 @@ function CardPane({
                       ) : null}
                     </div>
                     {citations}
+                    <WhyAnswer card={card} />
                     {considered}
                   </div>
                 ) : (
                   <>
                     {productAlert ? <ProductStateAlert state={productAlert} /> : null}
-                    <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
-                      {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
-                    </p>
+                    {guided && card ? (
+                      <SilenceReason
+                        card={card}
+                        hits={generated ? [] : consideredNow}
+                        canOpen={(source) => source.kind === "file" || !overlay}
+                        onOpen={onOpenConsidered}
+                      />
+                    ) : (
+                      <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
+                        {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
+                      </p>
+                    )}
                     {needsApiKey(card?.reason) ? (
                       <Button variant="primary" size="sm" onClick={onKeys}>
                         <KeyRound className="size-4" />
@@ -2105,7 +2174,8 @@ function CardPane({
                       </Button>
                     ) : null}
                     {citations}
-                    {considered}
+                    {/* The reason already opens to these files. */}
+                    {guided ? null : considered}
                   </>
                 )}
               </div>
@@ -2123,6 +2193,7 @@ function CardPane({
               {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}
             </p>
           )}
+          {searchDetailsOn ? <SearchDetailsPanel /> : null}
           <AnswerHistory onOpenCited={onOpenCited} overlay={overlay} />
         </div>
         <div className="shrink-0 space-y-3 px-5 py-4">

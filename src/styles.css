@@ -640,7 +640,159 @@ html[data-theme="light"] .cite-chip[data-loaded="false"] {
   text-align: left;
 }
 
+/* Header chip: the index status that stays on screen in every layout. */
+.index-chip-root {
+  position: relative;
+  min-width: 0;
+}
+
+.index-chip {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 2rem;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  padding: 0 10px 0 12px;
+  background: transparent;
+  color: var(--color-body);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.index-chip:hover,
+.index-chip[aria-expanded="true"] {
+  background: var(--color-hover);
+  color: var(--color-fg);
+}
+
+.index-chip:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+
+.index-chip-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.index-chip-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-faint);
+}
+
+.index-chip[data-state="ready"] .index-chip-dot {
+  background: var(--color-ok);
+}
+
+.index-chip[data-state="working"] .index-chip-dot {
+  background: var(--color-accent);
+  animation: index-chip-pulse 1.2s ease-in-out infinite;
+}
+
+.index-chip[data-attention="true"] .index-chip-dot {
+  background: var(--color-warn);
+}
+
+.index-chip-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--color-faint);
+}
+
+.index-chip-panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 40;
+  display: flex;
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: min(28rem, calc(100dvh - 8rem));
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--menu-shadow);
+  color: var(--color-body);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.index-chip-panel p,
+.index-chip-panel h3 {
+  margin: 0;
+}
+
+.index-chip-lead {
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.index-chip-heading {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+.index-chip-heading-failed {
+  color: var(--color-warn);
+}
+
+.index-chip-panel .index-status-groups {
+  max-height: none;
+  overflow: visible;
+}
+
+@keyframes index-chip-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 767px) {
+  /* On a phone the chip takes its own row, so the whole line can be read. */
+  .index-chip-root {
+    flex: 1 1 100%;
+    order: -1;
+  }
+
+  .index-chip {
+    width: 100%;
+  }
+
+  .index-chip-text {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  .index-chip-panel {
+    left: 0;
+    width: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .index-chip,
+  .index-chip[data-state="working"] .index-chip-dot {
+    transition: none;
+    animation: none;
+  }
+
   .index-status-bar > span {
     transition: none;
   }
@@ -758,6 +910,238 @@ button.considered-item:active {
   button.considered-item:active {
     transform: none;
   }
+}
+
+/*
+ * A silent Card's reason. The line is the next step and it is a switch: it
+ * opens to the files search ranked and the files it never read.
+ */
+.silence-reason {
+  min-width: 0;
+}
+
+.silence-reason-summary {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 8px;
+  margin: -6px -8px;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 8px;
+  padding: 6px 8px;
+  transition: background 150ms ease;
+}
+
+.silence-reason-summary::-webkit-details-marker {
+  display: none;
+}
+
+.silence-reason-summary:hover {
+  background: var(--color-hover);
+}
+
+.silence-reason-summary:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+
+.silence-reason-caret {
+  margin-top: 4px;
+  color: var(--color-muted);
+  transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.silence-reason details[open] .silence-reason-caret {
+  transform: rotate(90deg);
+}
+
+.silence-reason-headline {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-fg);
+}
+
+.silence-reason-detail {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-body);
+}
+
+.silence-reason-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 12px 0 0 24px;
+  border-top: 1px solid var(--color-line);
+}
+
+.silence-reason-body > section {
+  min-width: 0;
+}
+
+.silence-reason-note {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.silence-reason-body > .silence-reason-note {
+  margin: 0;
+}
+
+.silence-reason-body .index-status-groups {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .silence-reason-summary,
+  .silence-reason-caret {
+    transition: none;
+  }
+}
+
+/* Search details: why the last question got the card it got. Off by default. */
+.search-details {
+  display: flex;
+  min-width: 0;
+  /* Never take room from the answer above: the pane scrolls instead. */
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 8px;
+  border: 1px dashed var(--color-line-strong);
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-body);
+}
+
+.search-details-query {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-fg);
+}
+
+.search-details-empty {
+  color: var(--color-muted);
+}
+
+.search-details-facts {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.search-details-facts > div {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.search-details-facts dt {
+  color: var(--color-muted);
+}
+
+.search-details-facts dd {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 0;
+  color: var(--color-fg);
+}
+
+.search-details-stage {
+  font-family: var(--font-mono);
+  color: var(--color-ok);
+}
+
+.search-details-stage[data-silent="true"] {
+  color: var(--color-warn);
+}
+
+.search-details-kind {
+  font-family: var(--font-mono);
+}
+
+.search-details-ms {
+  color: var(--color-muted);
+}
+
+.search-details-hits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--color-line);
+  list-style: none;
+}
+
+.search-details-hits > li {
+  min-width: 0;
+}
+
+.search-details-hit-head {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.search-details-rank {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+.search-details-path {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  /* Cut from the left, so the file name and line stay visible in a narrow overlay. */
+  direction: rtl;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  color: var(--color-file);
+}
+
+.search-details-tag {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+.search-details-score {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  color: var(--color-fg);
+}
+
+.search-details-snippet {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 2px 0 0;
+  padding-left: 16px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
 }
 
 .empty-listen {
@@ -2263,5 +2647,204 @@ html[data-theme="light"] .hint-landing .receipt-kicker,
   }
   to {
     transform: translateX(100%);
+  }
+}
+
+/* Second screen: where the card docks, and the settings that move it. */
+.relay-dock {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.relay-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 28rem;
+  transition: opacity 120ms ease;
+}
+
+.relay-dock[data-position="center"] {
+  align-items: center;
+  justify-content: center;
+}
+
+.relay-dock[data-position="top-left"] {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.relay-dock[data-position="top-right"] {
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.relay-dock[data-position="bottom-left"] {
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.relay-dock[data-position="bottom-right"] {
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.overlay-prefs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.overlay-prefs-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.overlay-prefs-field select {
+  border: 1px solid var(--color-line);
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--color-fg);
+  padding: 0.15rem 0.35rem;
+  font-size: 0.75rem;
+}
+
+.overlay-prefs-field input[type="range"] {
+  width: 6rem;
+  accent-color: var(--color-accent);
+}
+
+.cockpit-overlay-prefs {
+  border-bottom: 1px solid var(--color-hairline);
+  padding: 0.35rem 1rem;
+}
+
+.cockpit-workspace[data-mode="overlay"] {
+  transition: opacity 120ms ease;
+}
+
+/* "Why this answer?": the evidence spans behind a spoken Card. */
+.why-answer {
+  min-width: 0;
+}
+
+.why-answer-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 6px;
+  padding: 4px 6px 4px 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted);
+  user-select: none;
+  transition: color 150ms ease;
+}
+
+.why-answer-summary::-webkit-details-marker {
+  display: none;
+}
+
+.why-answer-summary:hover,
+.why-answer[open] > .why-answer-summary {
+  color: var(--color-fg);
+}
+
+.why-answer-summary:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+
+.why-answer-caret {
+  transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.why-answer[open] .why-answer-caret {
+  transform: rotate(90deg);
+}
+
+.why-answer-count {
+  color: var(--color-muted);
+}
+
+.why-answer-note {
+  margin: 6px 0 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.why-answer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.why-answer-span {
+  min-width: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.why-answer-where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-body);
+}
+
+.why-answer-detail {
+  color: var(--color-muted);
+}
+
+.why-answer-said {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.why-answer-text {
+  margin: 8px 0 0;
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--color-body);
+}
+
+.why-answer-text:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+
+.why-answer-mark {
+  border-radius: 3px;
+  padding: 0 1px;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .why-answer-caret,
+  .why-answer-summary {
+    transition: none;
   }
 }

@@ -3,9 +3,17 @@
  * The async union lives on retrieve.ts `hybridRetrieve`.
  */
 import type { Hit, IndexedChunk, ScoreBoosts } from "../repo/types.ts";
-import { declaredSymbols, symbolKey } from "./query-symbols.ts";
+import { symbolKey } from "./query-symbols.ts";
 import { RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
-import { knownTerms, nameCredit, namedPaths, tokenize } from "./retrieve.ts";
+import {
+  declaredIdentifiers,
+  headingHolds,
+  headingOf,
+  knownTerms,
+  nameCredit,
+  namedPaths,
+  tokenize,
+} from "./retrieve.ts";
 
 /**
  * The diversity cap on a ranked list: at most `max` chunks from any one file,
@@ -59,7 +67,7 @@ export function retrieveStructural(query: string, chunks: IndexedChunk[], limit 
   if (named.length === 0 && terms.length === 0) return [];
   // Window chunks carry no `symbol`, so without this the channel had no symbol
   // signal at all for them: only file names.
-  const symbols = declaredSymbols(query, chunks);
+  const symbols = declaredIdentifiers(query, chunks);
 
   // Only needed when some file name matches, so it is worked out on first use.
   let known: Set<string> | null = null;
@@ -91,6 +99,13 @@ export function retrieveStructural(query: string, chunks: IndexedChunk[], limit 
     for (const term of terms) {
       if (term === stem || term === base) add("fileName", credit * RETRIEVAL_WEIGHTS.filenameMatch);
       if (symbol && (term === symbol || symbol.includes(term))) add("symbolMatch", RETRIEVAL_WEIGHTS.symbolMatch);
+    }
+    // A heading is the name of a place in a document, as a symbol is the name
+    // of a place in code. Scaled by how much of the question the heading
+    // holds, so it is bounded however many columns a spreadsheet has.
+    if (headingOf(chunk) && terms.length > 0) {
+      const held = terms.filter((term) => headingHolds(chunk, term)).length;
+      add("headingMatch", (RETRIEVAL_WEIGHTS.headingMatch * held) / terms.length);
     }
     for (const asked of symbols) {
       if (asked.chunks.has(chunk)) add("symbolDefinition", RETRIEVAL_WEIGHTS.symbolDefinition);

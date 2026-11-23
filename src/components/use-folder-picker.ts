@@ -76,6 +76,9 @@ export function useFolderPicker() {
       selectedCount: scan.selected - pdfs.length,
       skipLabels: scan.skipLabels,
       skippedFiles: scan.skippedFiles,
+      // Only the files to index are handed on. The folder's history is not
+      // one of them, so it goes with the request.
+      git: scan.git,
     };
     cancelReview();
     return { files, pdfs, options };

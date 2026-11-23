@@ -52,9 +52,21 @@ async function loadPipeline(): Promise<FeaturePipe> {
   return (await pipeline("feature-extraction", MODEL_NAME)) as FeaturePipe;
 }
 
-export function embeddingTextFor(text: string, path?: string): string {
+/**
+ * What is embedded for a chunk: its path, the heading it sits under, and its
+ * text.
+ *
+ * The heading is what a chunk lost by being cut out of its document: rows 40
+ * to 52 of a spreadsheet do not say what their columns are, and the third
+ * paragraph of a section does not say which section. It is left out when the
+ * chunk's first line already holds it, as the first chunk of a section does.
+ * A chunk with no heading embeds exactly as it did before.
+ */
+export function embeddingTextFor(text: string, path?: string, heading?: string): string {
   const body = text.length > EMBED_CHARS ? text.slice(0, EMBED_CHARS) : text;
-  return path ? `${path}\n${body}` : body;
+  const firstLine = text.slice(0, text.indexOf("\n") < 0 ? text.length : text.indexOf("\n"));
+  const lead = heading && !firstLine.includes(heading) ? `${heading}\n` : "";
+  return path ? `${path}\n${lead}${body}` : `${lead}${body}`;
 }
 
 export async function embedText(text: string): Promise<number[]> {
@@ -120,7 +132,7 @@ function fnv(text: string): number {
   return h >>> 0;
 }
 
-export function cosineSimilarity(a: number[], b: number[]): number {
+export function cosineSimilarity(a: ArrayLike<number>, b: ArrayLike<number>): number {
   const n = Math.min(a.length, b.length);
   if (n === 0) return 0;
   let dot = 0;

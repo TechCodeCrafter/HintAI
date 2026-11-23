@@ -69,13 +69,18 @@ function chunkHeader(hit: Hit, material?: SpaceMaterialView): string {
 }
 
 /** Grounded synthesis prompt. The model may use only the numbered chunks. */
-export function buildSynthesisPrompt(query: string, hits: Hit[], material?: SpaceMaterialView): string {
+export function buildSynthesisPrompt(
+  query: string,
+  hits: Hit[],
+  material?: SpaceMaterialView,
+  turns?: PromptTurn[],
+): string {
   const chunks = hitsForPrompt(hits).map((hit, i) => {
     return `[${i + 1}] ${chunkHeader(hit, material)}\n${(hit.text ?? "").slice(0, CHUNK_CHARS)}`;
   });
   const documents = chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
   return `${GROUNDED_INSTRUCTION}
-
+${turns?.length ? historyBlock(undefined, turns) : ""}
 DOCUMENTS:
 ${documents}
 
@@ -89,12 +94,38 @@ function formatChunks(hits: Hit[], material?: SpaceMaterialView): string {
   return chunks.length > 0 ? chunks.join("\n\n") : "(no matching documents)";
 }
 
-function historyBlock(history?: string[]): string {
+/** One earlier question and the line that was spoken for it. */
+export type PromptTurn = { question: string; answer: string };
+
+/** How many earlier turns the model is shown. */
+export const PROMPT_TURNS = 3;
+
+/**
+ * The last three answered questions, as context for what the new question
+ * refers to. They are labelled as not being evidence, and that is enforced
+ * rather than trusted: the model's line is verified against the document
+ * chunks alone, so a sentence only an earlier answer supports is rejected.
+ *
+ * `history` is the older, questions-only form. It is used when no answered
+ * turns are passed, newest first, and held to the same three.
+ */
+export function historyBlock(history?: string[], turns?: PromptTurn[]): string {
+  if (turns?.length) {
+    const lines = turns
+      .slice(-PROMPT_TURNS)
+      .map((turn) => `Q: ${oneLine(turn.question)}\nA: ${oneLine(turn.answer)}`)
+      .join("\n");
+    return `\nEARLIER IN THIS MEETING (context for what the question refers to. Not evidence. Never quote or cite it.):\n${lines}\n`;
+  }
   if (!history?.length) return "";
   return `\nRECENT QUESTIONS:\n${history
-    .slice(0, 4)
+    .slice(0, PROMPT_TURNS)
     .map((item) => `- ${item}`)
     .join("\n")}\n`;
+}
+
+function oneLine(text: string): string {
+  return text.replace(/\s+/g, " ").trim().slice(0, 400);
 }
 
 /** Cited synthesis when grounded extract returned INSUFFICIENT. Same cite-or-silence contract as tier 1. */
@@ -103,9 +134,10 @@ export function buildWeakEvidencePrompt(
   hits: Hit[],
   history?: string[],
   material?: SpaceMaterialView,
+  turns?: PromptTurn[],
 ): string {
   return `${GROUNDED_INSTRUCTION}
-${historyBlock(history)}
+${historyBlock(history, turns)}
 DOCUMENT CHUNKS:
 ${formatChunks(hits, material)}
 
@@ -420,6 +452,8 @@ export type GenerateOpts = {
   material?: SpaceMaterialView;
   maxTokens?: number;
   threadHistory?: string[];
+  /** The last answered questions with their spoken lines, oldest first. Context only. */
+  threadTurns?: PromptTurn[];
 };
 
 type CompletionResult =
@@ -489,7 +523,7 @@ export async function generateAnswer(
 ): Promise<AnswerResult> {
   if (hits.length === 0) return { ok: false, reason: "insufficient" };
   const llmStart = performance.now();
-  const remote = await completePrompt(query, buildSynthesisPrompt(query, hits, opts?.material), "extract", opts);
+  const remote = await completePrompt(query, buildSynthesisPrompt(query, hits, opts?.material, opts?.threadTurns), "extract", opts);
   const llmMs = Math.round(performance.now() - llmStart);
   if (!remote.ok) return { ...remote, timing: { llmMs, verifyMs: 0 } };
   if (isInsufficient(remote.text)) return { ok: false, reason: "insufficient", timing: { llmMs, verifyMs: 0 } };
@@ -533,7 +567,7 @@ export async function synthesizeAnswer(
   const llmStart = performance.now();
   const remote = await completePrompt(
     query,
-    buildWeakEvidencePrompt(query, hits, opts?.threadHistory, opts?.material),
+    buildWeakEvidencePrompt(query, hits, opts?.threadHistory, opts?.material, opts?.threadTurns),
     "synthesize",
     opts,
   );

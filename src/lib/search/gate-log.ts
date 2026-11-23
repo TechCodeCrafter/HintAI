@@ -6,7 +6,8 @@
  * decision — utterance identity, verdict, dedupe outcome — never audio, and it
  * is capped so a long meeting cannot grow it without bound.
  */
-import type { GateDecision } from "./question";
+import { isSearchDebug } from "../debug.ts";
+import type { GateDecision } from "./question.ts";
 
 export type GateRecord = GateDecision & {
   at: number;
@@ -24,6 +25,8 @@ declare global {
   interface Window {
     __groundGate?: {
       records: () => GateRecord[];
+      /** Only the utterances that were turned away, each with its reason. */
+      rejected: () => GateRecord[];
       reset: () => void;
     };
   }
@@ -32,16 +35,36 @@ declare global {
 export function recordGate(record: GateRecord) {
   records.push(record);
   if (records.length > MAX) records = records.slice(-MAX);
+  if (record.reason && isSearchDebug()) console.info(rejectionLine(record));
   if (typeof window !== "undefined" && !window.__groundGate) {
     window.__groundGate = {
       records: () => records,
-      reset: () => {
-        records = [];
-      },
+      rejected: rejectedGateRecords,
+      reset: resetGateRecords,
     };
   }
 }
 
 export function gateRecords(): GateRecord[] {
   return records;
+}
+
+/**
+ * The utterances the gate turned away, oldest first, each with the reason. A
+ * line that passed the gate and was then not searched (auto answer off, typing
+ * in the box, already handled) is not a rejection and is not listed.
+ */
+export function rejectedGateRecords(): GateRecord[] {
+  return records.filter((record) => record.reason !== null);
+}
+
+/** One rejection as a console line. Printed only when search debugging is on. */
+export function rejectionLine(record: GateRecord): string {
+  const speech = record.speechMs === undefined ? "" : ` after ${record.speechMs} ms of speech`;
+  return `[gate] rejected (${record.verdict})${speech}: ${JSON.stringify(record.candidate)}. ${record.reason}`;
+}
+
+/** Test seam: empties the log. */
+export function resetGateRecords() {
+  records = [];
 }

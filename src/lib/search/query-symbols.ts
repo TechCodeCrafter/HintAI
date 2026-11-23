@@ -45,6 +45,11 @@ function partsOf(name: string): string[] {
     .filter(Boolean);
 }
 
+/** Lower-case words of an identifier: "verifyClaim" and "verify_claim" are both ["verify", "claim"]. */
+export function symbolParts(name: string): string[] {
+  return partsOf(name);
+}
+
 /** The same key for an identifier and for a file stem that spells it. */
 export function symbolKey(text: string): string {
   return partsOf(text).join("");
@@ -100,30 +105,40 @@ export type DeclaredSymbol = NamedSymbol & {
 };
 
 /**
+ * A cheap test that rules chunks out before the declaration pattern is run on
+ * their text. It may only say "no" for a chunk the pattern could not match:
+ * the pattern still decides for every chunk it lets through.
+ */
+export type MayDeclare = (symbol: NamedSymbol) => (chunk: IndexedChunk) => boolean;
+
+/**
  * The identifiers in the question that the material declares, each with the
  * chunks that declare it. One pass over the chunks per candidate, and no pass
  * at all for a question with no identifier-shaped word in it.
  */
-export function declaredSymbols(query: string, chunks: IndexedChunk[]): DeclaredSymbol[] {
+export function declaredSymbols(query: string, chunks: IndexedChunk[], mayDeclare?: MayDeclare): DeclaredSymbol[] {
   const candidates = symbolCandidates(query);
   if (candidates.length === 0) return [];
   // The lexical channel, the structural channel and the debug log all ask the
   // same thing about the same question. The last answer per chunk list is kept.
   const last = LAST.get(chunks);
   if (last && last.query === query) return last.symbols;
-  const symbols = scan(candidates, chunks);
+  const symbols = scan(candidates, chunks, mayDeclare);
   LAST.set(chunks, { query, symbols });
   return symbols;
 }
 
 const LAST = new WeakMap<IndexedChunk[], { query: string; symbols: DeclaredSymbol[] }>();
 
-function scan(candidates: NamedSymbol[], chunks: IndexedChunk[]): DeclaredSymbol[] {
+function scan(candidates: NamedSymbol[], chunks: IndexedChunk[], mayDeclare?: MayDeclare): DeclaredSymbol[] {
   const out: DeclaredSymbol[] = [];
   for (const candidate of candidates) {
     const declaring = new Set<IndexedChunk>();
+    const may = mayDeclare?.(candidate);
     for (const chunk of chunks) {
-      if (isSource(chunk) && candidate.declaration.test(chunk.text)) declaring.add(chunk);
+      if (!isSource(chunk)) continue;
+      if (may && !may(chunk)) continue;
+      if (candidate.declaration.test(chunk.text)) declaring.add(chunk);
     }
     if (declaring.size > 0) out.push({ ...candidate, chunks: declaring });
   }

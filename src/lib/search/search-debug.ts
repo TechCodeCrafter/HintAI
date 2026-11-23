@@ -10,13 +10,19 @@
  * `globalThis.__meethintSearchDebug` (the last 20), so it can be read back in
  * DevTools on a deployed build. Nothing is sent anywhere. A record holds the
  * question and file paths, never file contents.
+ *
+ * The same record, cut to the top three hits and with one line of each hit's
+ * text, is what the cockpit's "Search details" panel shows. That copy is built
+ * only while the panel is switched on, lives in memory for the open tab, and
+ * is never printed, stored or sent. See `buildSearchDetails`.
  */
 import { pathExcluded } from "../context/exclusions.ts";
 import { isSearchDebug } from "../debug.ts";
 import type { Hit, IndexedChunk, ScoreBoosts } from "../repo/types.ts";
 import type { AnswerTier } from "./answer-route.ts";
 import { RETRIEVAL_WEIGHTS } from "./retrieval-weights.ts";
-import { namedCode } from "./retrieve.ts";
+import { namedCode, stemOf, tokenize } from "./retrieve.ts";
+import type { SilenceKind } from "./silence.ts";
 
 /** How many ranked hits a record lists. The answer stages are sent fewer. */
 export const SEARCH_DEBUG_TOP = 10;
@@ -73,8 +79,21 @@ export type SearchDebugRecord = {
   stage: SearchDebugStage;
   /** The silence reason shown on the card, when the stage is `silence`. */
   reason: string | null;
+  /** Why the card said nothing, as a kind. Null when a stage answered. */
+  silence: SilenceKind | null;
   totalMs?: number;
 };
+
+/** How many hits the "Search details" panel lists. */
+export const SEARCH_DETAILS_TOP = 3;
+
+export type SearchDetailsHit = SearchDebugHit & {
+  /** One line of the chunk: the one that shares the most words with the question. */
+  snippet: string;
+};
+
+/** What the "Search details" panel shows for one search. */
+export type SearchDetails = Omit<SearchDebugRecord, "topHits"> & { topHits: SearchDetailsHit[] };
 
 export type SearchDebugInput = {
   query: string;
@@ -93,6 +112,8 @@ export type SearchDebugInput = {
   sent: Hit[];
   stage: SearchDebugStage;
   reason?: string | null;
+  /** The card's silence kind, when it said nothing. */
+  silence?: SilenceKind | null;
   totalMs?: number;
 };
 
@@ -196,8 +217,61 @@ export function buildSearchDebug(input: SearchDebugInput): SearchDebugRecord {
     topHits,
     stage: input.stage,
     reason: input.stage === "silence" ? (input.reason ?? null) : null,
+    silence: input.stage === "silence" ? (input.silence ?? null) : null,
     totalMs: input.totalMs,
   };
+}
+
+const SNIPPET_MAX = 160;
+
+/**
+ * One line of a chunk to show beside its score: the line that shares the most
+ * words with the question, or the first line with any text in it. Collapsed to
+ * single spaces and cut at `SNIPPET_MAX` characters.
+ *
+ * Words are compared by retrieval's own stem, so "exports" in the question
+ * finds "export" in the line. The first such line wins a tie.
+ */
+export function snippetOf(text: string, query: string): string {
+  const terms = [...new Set(tokenize(query).map(stemOf))];
+  let best = "";
+  let bestCount = -1;
+  for (const raw of text.split("\n")) {
+    const line = raw.replace(/\s+/g, " ").trim();
+    if (!/[A-Za-z0-9]/.test(line)) continue;
+    const lowered = line.toLowerCase();
+    const count = terms.filter((term) => lowered.includes(term)).length;
+    if (count > bestCount) {
+      best = line;
+      bestCount = count;
+    }
+  }
+  return best.length > SNIPPET_MAX ? `${best.slice(0, SNIPPET_MAX - 1).trimEnd()}…` : best;
+}
+
+/**
+ * The record for the "Search details" panel: the same fields as the console
+ * record, the top `SEARCH_DETAILS_TOP` hits only, and a snippet for each.
+ *
+ * Unlike the console record this one holds file text, one line per hit. It is
+ * for the screen of the person whose files they are. Do not print it, keep it
+ * in `__meethintSearchDebug`, persist it, or attach it to telemetry.
+ */
+export function buildSearchDetails(input: SearchDebugInput): SearchDetails {
+  const ranked = input.ranked.slice(0, SEARCH_DETAILS_TOP);
+  const record = buildSearchDebug({ ...input, ranked });
+  const asked = input.retrievalQuery ?? input.query;
+  return {
+    ...record,
+    topHits: record.topHits.map((hit, index) => ({ ...hit, snippet: snippetOf(ranked[index]!.text, asked) })),
+  };
+}
+
+/** The stage, in the words the panel and the ticket use. */
+export function stageLabel(stage: SearchDebugStage): "generate" | "synthesize" | "localCard" | "silence" {
+  if (stage === "generateAnswer") return "generate";
+  if (stage === "synthesizeAnswer") return "synthesize";
+  return stage;
 }
 
 /**
@@ -219,9 +293,8 @@ export function reportSearchDebug(input: SearchDebugInput): SearchDebugRecord | 
   const timing = record.totalMs != null ? ` in ${record.totalMs} ms` : "";
   console.info(`[search] ${JSON.stringify(record.query)}`);
   console.info(`[search] indexed: ${record.filesIndexed} files, ${record.chunksIndexed} chunks${loaded}`);
-  console.info(
-    `[search] answered by: ${record.stage}${timing}${record.reason ? ` (${record.reason})` : ""}`,
-  );
+  const why = [record.silence, record.reason].filter(Boolean).join(": ");
+  console.info(`[search] answered by: ${record.stage}${timing}${why ? ` (${why})` : ""}`);
   const namedHere = [...record.namedSymbols, ...record.namedPaths];
   console.info(
     namedHere.length > 0

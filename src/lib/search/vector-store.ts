@@ -13,8 +13,11 @@ export type VectorEntry = {
 export interface VectorStore {
   /** Store embeddings for chunks. */
   set(entries: VectorEntry[]): Promise<void>;
-  /** Retrieve embeddings for given chunk ids. */
-  get(chunkIds: string[]): Promise<Map<string, number[]>>;
+  /**
+   * Retrieve embeddings for given chunk ids. Read-only: a store may hand back
+   * the arrays it holds rather than copies, and they may be typed arrays.
+   */
+  get(chunkIds: string[]): Promise<Map<string, ArrayLike<number>>>;
   /** Delete embeddings for removed chunks. */
   delete(chunkIds: string[]): Promise<void>;
   /** Check if embeddings exist for a chunk id. */
@@ -23,6 +26,12 @@ export interface VectorStore {
   isStale(chunkId: string, contentHash: string): Promise<boolean>;
   /** Hash + vector, for stale detection before re-embed. */
   entries(chunkIds: string[]): Promise<Map<string, VectorEntry>>;
+  /**
+   * The content hash stored with each vector, for the ids that have one. One
+   * call for a whole index pass, in place of two lookups per chunk. A store
+   * without it is asked chunk by chunk.
+   */
+  hashes?(chunkIds: string[]): Promise<Map<string, string>>;
 }
 
 export function createMemoryVectorStore(): VectorStore {
@@ -66,6 +75,14 @@ export function createMemoryVectorStore(): VectorStore {
             contentHash: row.contentHash,
           });
         }
+      }
+      return out;
+    },
+    async hashes(chunkIds) {
+      const out = new Map<string, string>();
+      for (const id of chunkIds) {
+        const row = rows.get(id);
+        if (row) out.set(id, row.contentHash);
       }
       return out;
     },

@@ -11,6 +11,7 @@ import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
 import { allSourcesExcluded } from "@/lib/context/exclusions";
 import { VerifiedCitations } from "@/components/verified-citations";
 import { ConsideredSources } from "@/components/considered-sources";
+import { SilenceReason } from "@/components/silence-reason";
 import { stillLoaded } from "@/lib/search/considered";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
@@ -20,6 +21,8 @@ import { telemetryFromCard } from "@/lib/search/answer-history";
 import { recordBetaEventOnce } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
 import { cleanCaption } from "@/lib/search/question";
+import { modelFallbackNote } from "@/lib/search/silence";
+import { WhyAnswer } from "@/components/why-answer";
 
 export function AskPanel({ spaceId }: { spaceId: string }) {
   const { ready: vaultReady } = useAccountVaultReady();
@@ -158,7 +161,15 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
                   ) : null}
                 </div>
                 <AnswerSay text={card.say} />
+                {card.modelFallback ? (
+                  <p className="generated-note" data-testid="model-fallback-note" title={card.modelFallback}>
+                    {modelFallbackNote(card.modelFallback)}
+                  </p>
+                ) : null}
               </>
+            ) : card.silence ? (
+              // This page has no file viewer, so the files are listed and not opened.
+              <SilenceReason card={card} hits={considered} />
             ) : (
               <>
                 {card.reason ? (
@@ -178,8 +189,10 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
                 if (cite.kind === "document") openDocumentCitation(cite);
               }}
             />
+            <WhyAnswer card={card} />
             {/* This page has no file viewer, so the list states the files and offers no dead click. */}
-            <ConsideredSources sources={considered} silent={!card.say} />
+            {/* A silent Card's reason already opens to these files. */}
+            {!card.say && card.silence ? null : <ConsideredSources sources={considered} silent={!card.say} />}
           </article>
         ) : null}
       </main>

@@ -6,6 +6,7 @@ import {
   parseOfficeBuffer,
 } from "../document/parsers/office-parsers.ts";
 import { isPdfFile, MATERIAL_EXTENSIONS } from "../material-upload.ts";
+import { gitFilesFromMap, readRecentChanges, type FileChange, type GitFiles } from "./git-history.ts";
 import type { RepoFile, RepoPack } from "./types";
 
 const SKIP_DIR =
@@ -58,6 +59,11 @@ export type SkippedFile = {
    * out on purpose (a vendor folder, a size limit, an exclusion).
    */
   failed?: boolean;
+  /**
+   * The folder the selection came from. Set only on the list kept with a
+   * space, where two folders can both leave out a file with the same path.
+   */
+  root?: string;
 };
 
 export type FolderLoadOptions = {
@@ -68,6 +74,12 @@ export type FolderLoadOptions = {
   skippedFiles?: SkippedFile[];
   /** Called as each candidate file has been read or left out: how many so far, out of how many. */
   onRead?: (done: number, total: number) => void;
+  /**
+   * The folder's `.git`, as an earlier scan found it. The folder review hands
+   * on only the files that will be indexed, so the history has to travel
+   * beside them or it is lost before the load.
+   */
+  git?: GitFiles;
 };
 
 export type FolderCandidate = {
@@ -86,6 +98,11 @@ export type FolderScan = {
   failed: string[];
   /** Every file this scan left out, with the reason. Absent on older callers. */
   skippedFiles?: SkippedFile[];
+  /**
+   * The folder's own `.git`, when it has one that can be read. Its files are
+   * never loaded as sources. It is only asked which files recent commits changed.
+   */
+  git?: GitFiles;
 };
 
 export type FolderPreview = {
@@ -109,6 +126,11 @@ export type FolderLoad = {
   skipLabels: string[];
   /** Every selected file that is not in `pack`, with the reason. */
   skippedFiles: SkippedFile[];
+  /**
+   * Loaded files a recent commit changed, when the folder had a readable
+   * `.git`. Paths, short commit ids and dates only. Empty otherwise.
+   */
+  recentChanges?: FileChange[];
 };
 
 export type FsEntry =
@@ -384,9 +406,13 @@ export function scanFileList(
   const skippedFiles: SkippedFile[] = [...(options?.skippedFiles ?? [])];
   const candidates: FolderCandidate[] = [];
   const pdfs: File[] = [];
+  const gitFiles = new Map<string, Blob>();
   for (const file of files) {
     const path = repoRelativePath(file);
     const grouped = groupedDropFiles.has(file);
+    // The picked folder's own history. Several folders dropped together each
+    // have their own, and are not told apart here, so they get none.
+    if (!grouped && path.startsWith(".git/")) gitFiles.set(path.slice(".git/".length), file);
     const project = grouped ? path.includes("/") : Boolean(file.webkitRelativePath);
     const pathForRules = grouped ? dropFirstPathSegment(path) : path;
     const pathReason = pathSkipReason(pathForRules, project);
@@ -410,6 +436,7 @@ export function scanFileList(
     skipLabels: [...skipLabels],
     failed: [],
     skippedFiles,
+    ...(gitFiles.has("HEAD") ? { git: gitFilesFromMap(gitFiles) } : {}),
   };
 }
 
@@ -474,11 +501,13 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
   const failed: string[] = [];
   const skippedFiles: SkippedFile[] = [];
   let selected = 0;
+  const history: { dir: DirectoryLike | null } = { dir: null };
 
   async function walk(dir: DirectoryLike, prefix: string): Promise<void> {
     for await (const entry of dir.values()) {
       const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
       if (entry.kind === "directory") {
+        if (rel === ".git") history.dir = entry;
         if (shouldSkipDirectory(rel)) {
           skipLabels.add(SKIP_LABEL.vendor);
           // Not opened: one line for the folder, with how many files it held.
@@ -521,7 +550,59 @@ export async function scanDirectoryHandle(handle: DirectoryLike): Promise<Folder
   }
 
   await walk(handle, "");
-  return { selected, folderName, candidates, pdfs, skipLabels: [...skipLabels], failed, skippedFiles };
+  const git = history.dir ? gitFilesFromDirectory(history.dir) : undefined;
+  return { selected, folderName, candidates, pdfs, skipLabels: [...skipLabels], failed, skippedFiles, ...(git ? { git } : {}) };
+}
+
+/** `.git` as a directory handle. Each folder is listed once, on first use. */
+export function gitFilesFromDirectory(root: DirectoryLike): GitFiles {
+  const listings = new Map<string, Promise<Map<string, FsEntry>>>();
+  const entriesOf = (dir: DirectoryLike, key: string): Promise<Map<string, FsEntry>> => {
+    let listing = listings.get(key);
+    if (!listing) {
+      listing = (async () => {
+        const out = new Map<string, FsEntry>();
+        for await (const entry of dir.values()) out.set(entry.name, entry);
+        return out;
+      })();
+      listings.set(key, listing);
+    }
+    return listing;
+  };
+  const find = async (path: string): Promise<FsEntry | DirectoryLike | null> => {
+    let dir: DirectoryLike = root;
+    let key = "";
+    const parts = path.split("/").filter(Boolean);
+    for (let i = 0; i < parts.length; i += 1) {
+      const entry = (await entriesOf(dir, key)).get(parts[i]);
+      if (!entry) return null;
+      if (i === parts.length - 1) return entry;
+      if (entry.kind !== "directory") return null;
+      dir = entry;
+      key = `${key}/${parts[i]}`;
+    }
+    return root;
+  };
+  return {
+    file: async (path) => {
+      try {
+        const entry = await find(path);
+        return entry && "kind" in entry && entry.kind === "file" ? await entry.getFile() : null;
+      } catch {
+        return null;
+      }
+    },
+    list: async (dir) => {
+      try {
+        const entry = await find(dir);
+        if (!entry || ("kind" in entry && entry.kind !== "directory")) return [];
+        const key = `/${dir.split("/").filter(Boolean).join("/")}`;
+        return [...(await entriesOf(entry as DirectoryLike, key === "/" ? "" : key)).keys()];
+      } catch {
+        return [];
+      }
+    },
+  };
 }
 
 function capReason(count: number, totalBytes: number, nextBytes: number): string | null {
@@ -605,6 +686,19 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
   }
   options?.onRead?.(candidates.length, candidates.length);
 
+  // Which of the loaded files recent commits changed. Optional in every way:
+  // no `.git`, or one that cannot be read, leaves this empty.
+  let recentChanges: FileChange[] = [];
+  const git = scan.git ?? options?.git;
+  if (git && packFiles.length > 0) {
+    const loaded = new Set(packFiles.map((file) => file.path));
+    try {
+      recentChanges = (await readRecentChanges(git)).filter((change) => loaded.has(change.path));
+    } catch {
+      recentChanges = [];
+    }
+  }
+
   return {
     pack: {
       id: `folder-${scan.folderName}`,
@@ -619,6 +713,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     failed,
     skipLabels: [...skipLabels],
     skippedFiles,
+    recentChanges,
   };
 }
 

@@ -39,33 +39,51 @@ export function ConsideredSources({
           ? "Ranked highest for this question. No cited answer came from them."
           : "Ranked for this question and not cited. Nothing in the answer rests on them."}
       </p>
-      <ul className="considered-list">
-        {sources.map((source) => {
-          const text = consideredText(source);
-          const opens = Boolean(onOpen) && (canOpen ? canOpen(source) : true);
-          return (
-            <li key={`${source.kind}:${source.path}`} className="min-w-0">
-              {opens ? (
-                <button
-                  type="button"
-                  className="considered-item"
-                  data-testid="card-considered-item"
-                  data-path={source.path}
-                  title={`Open ${text}`}
-                  onClick={() => onOpen?.(source)}
-                >
-                  <span className="break-all font-mono text-[12px]">{text}</span>
-                  <span className="sr-only">, considered and not cited</span>
-                </button>
-              ) : (
-                <span className="considered-item" data-testid="card-considered-item" data-path={source.path}>
-                  <span className="break-all font-mono text-[12px]">{text}</span>
-                </span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <ConsideredList sources={sources} canOpen={canOpen} onOpen={onOpen} />
     </details>
+  );
+}
+
+/**
+ * The ranked files themselves, each a button that opens the file at the ranked
+ * lines where it can be opened. Also listed under a silent Card's reason.
+ */
+export function ConsideredList({
+  sources,
+  canOpen,
+  onOpen,
+}: {
+  sources: ConsideredSource[];
+  canOpen?: (source: ConsideredSource) => boolean;
+  onOpen?: (source: ConsideredSource) => void;
+}) {
+  return (
+    <ul className="considered-list">
+      {sources.map((source) => {
+        const text = consideredText(source);
+        const opens = Boolean(onOpen) && (canOpen ? canOpen(source) : true);
+        return (
+          <li key={`${source.kind}:${source.path}`} className="min-w-0">
+            {opens ? (
+              <button
+                type="button"
+                className="considered-item"
+                data-testid="card-considered-item"
+                data-path={source.path}
+                title={`Open ${text}`}
+                onClick={() => onOpen?.(source)}
+              >
+                <span className="break-all font-mono text-[12px]">{text}</span>
+                <span className="sr-only">, considered and not cited</span>
+              </button>
+            ) : (
+              <span className="considered-item" data-testid="card-considered-item" data-path={source.path}>
+                <span className="break-all font-mono text-[12px]">{text}</span>
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ul>
   );
 }

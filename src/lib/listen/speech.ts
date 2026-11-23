@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { isIOS, liveCaptionsOk } from "@/lib/listen/browser-capability";
 import { markSpeechLive, roleForLane, stopCallShare } from "@/lib/listen/call-share";
+import { createSpeechSpans } from "@/lib/listen/speech-span";
+import { liveWindowFeatures, readOverlayPrefs } from "@/lib/overlay-prefs";
 import { cleanCaption } from "@/lib/search/question";
 import { useMeetHint } from "@/lib/store";
 
@@ -76,13 +78,23 @@ let lastSpeechError = "";
  */
 let recSession = 0;
 
+const spans = createSpeechSpans();
+
 function ingestResult(event: RecEvent) {
   let interim = "";
   let finalText = "";
+  let speechMs = 0;
+  const now = Date.now();
   for (let i = event.resultIndex; i < event.results.length; i += 1) {
     const piece = event.results[i]?.[0]?.transcript ?? "";
-    if (event.results[i]?.isFinal) finalText += piece;
-    else interim += piece;
+    const key = `${recSession}-${i}`;
+    if (event.results[i]?.isFinal) {
+      finalText += piece;
+      speechMs += spans.take(key);
+    } else {
+      interim += piece;
+      spans.note(key, piece, now);
+    }
   }
   markSpeechLive();
   useMeetHint.getState().setLiveDraft(cleanCaption(interim), roleForLane("mic"));
@@ -93,6 +105,7 @@ function ingestResult(event: RecEvent) {
     id: `speech-${recSession}-${event.resultIndex}`,
     role: roleForLane("mic"),
     text,
+    speechMs,
   });
 }
 
@@ -194,6 +207,7 @@ function startRecognition() {
   if (running) return true;
   window.clearTimeout(restartTimer);
   recSession += 1;
+  spans.clear();
   rec = new Ctor();
   wire(rec);
   try {
@@ -308,16 +322,15 @@ export function liveWindowHref(): string {
   return url.toString();
 }
 
+/**
+ * Opens the live window as a small pop-up in the corner the second-screen
+ * settings name. One window, reused: asking again brings back the same one
+ * instead of stacking another. It is never focused from here, so nothing
+ * that happens later can pull the keyboard out of the meeting.
+ */
 export function openLiveWindow(): Window | null {
   if (typeof window === "undefined") return null;
-  const url = liveWindowHref();
-  const opened = window.open(url, `ground-live-${Date.now()}`, "popup,width=560,height=900");
-  try {
-    opened?.focus();
-  } catch {
-    /* ignore */
-  }
-  return opened;
+  return window.open(liveWindowHref(), "meethint-live", liveWindowFeatures(readOverlayPrefs(), window.screen));
 }
 
 export function useLiveListen() {

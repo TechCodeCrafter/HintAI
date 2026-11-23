@@ -33,7 +33,7 @@ afterEach(() => {
 
 test("USE_STRUCTURED_CHUNKER stays off and CHUNKER_VERSION tracks scoped chunk ids", () => {
   assert.equal(USE_STRUCTURED_CHUNKER, false);
-  assert.equal(CHUNKER_VERSION, 2);
+  assert.equal(CHUNKER_VERSION, 3);
 });
 
 test("a TypeScript file gets structured chunks with symbol names", () => {

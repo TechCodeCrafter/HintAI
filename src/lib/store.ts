@@ -33,6 +33,7 @@ import {
   toggleExcludePath,
 } from "@/lib/context/exclusions";
 import { getVectorStore } from "@/lib/search/vector-access";
+import { vectorCacheKey } from "@/lib/search/retrieval-scope";
 import { getContextRepository, listSpaceSummaries, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
 import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
@@ -75,7 +76,14 @@ import {
   recordBetaEventOnce,
 } from "@/lib/instrumentation/beta-telemetry";
 import { isFlightRecorder, isSearchDebug } from "@/lib/debug";
-import { reportSearchDebug, SEARCH_DEBUG_TOP, stageOfTier } from "@/lib/search/search-debug";
+import {
+  buildSearchDetails,
+  reportSearchDebug,
+  SEARCH_DEBUG_TOP,
+  stageOfTier,
+  type SearchDebugInput,
+  type SearchDetails,
+} from "@/lib/search/search-debug";
 import { hydratePdfDocumentsForHits } from "@/lib/search/live-card-context";
 import type { LocalCardContext } from "@/lib/search/local-card";
 import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace.ts";
@@ -92,6 +100,7 @@ import {
   type FolderLoadOptions,
   type SkippedFile,
 } from "@/lib/repo/folder";
+import { recencyByPath, type FileChange } from "@/lib/repo/git-history";
 import { reportIndexSummary, type IndexSummary } from "@/lib/context/index-summary";
 import type { IndexActivity } from "@/lib/context/index-status";
 import type { IndexOptions } from "@/lib/context/chunk-index";
@@ -110,6 +119,7 @@ import {
   buildChunks,
   formatFlightRetrievalSummary,
   packVocabulary,
+  warmSearchIndex,
 } from "@/lib/search/retrieve";
 import { shapeOf, type Shape } from "@/lib/search/intent";
 import {
@@ -121,6 +131,15 @@ import {
 import { subjectTerms } from "@/lib/search/subject";
 import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread";
 import {
+  type MemoryTurn,
+  expandThread,
+  followUpQuery,
+  isThreadFollowUp,
+  memoryForPrompt,
+  rememberTurn,
+  withdrawRepeat,
+} from "@/lib/search/meeting-memory";
+import {
   downloadClaimReport as saveClaimReport,
   reportFilename,
 } from "@/lib/audit/report";
@@ -131,13 +150,18 @@ import { getMeetingRepository } from "@/lib/audit/repository";
 import { finishMeeting, latestOpenMeeting, loadMeetings, meetingTitle, persistMeeting } from "@/lib/audit/session";
 import { newClaim, newMeetingRecord, type MeetingRecord } from "@/lib/audit/types";
 import {
-  persistSessionWire as persist,
+  persistSessionWire,
   readRelaySession,
   SESSION_KEY,
-  type SessionWire,
+  type SessionState,
 } from "@/lib/store/session-wire.ts";
 
 export { readSavedPack, readRelaySession, SESSION_KEY };
+
+/** Writes the session for the second screens, stamped with the space it belongs to. */
+function persist(state: SessionState) {
+  persistSessionWire({ ...state, spaceId: useMeetHint.getState().activeSpaceId });
+}
 const HERO_QUERY = "Why does that retry three times?";
 const WEAK_PACK = "This pack is mostly CI/config. Open the src folder, not the repo root.";
 
@@ -267,6 +291,13 @@ type MeetHintState = {
   listening: boolean;
   playing: boolean;
   overlay: boolean;
+  /**
+   * The "Search details" panel in the Answer pane. While this is false the
+   * search path builds nothing for it and `searchDetails` stays null.
+   */
+  searchDetailsOn: boolean;
+  /** What the last search indexed, ranked and answered with. Memory only. */
+  searchDetails: SearchDetails | null;
   autoAnswer: boolean;
   subscription: SubscriptionTier;
   selectedModelId: string;
@@ -288,11 +319,16 @@ type MeetHintState = {
   folderError: string | null;
   packNotice: string | null;
   /**
-   * Files the last folder or file selection left out before storing, with
-   * reasons, and the space it was loaded into. They were never stored, so
-   * this is known for this session only.
+   * Files that folder and file selections left out before storing, with
+   * reasons, for the space they were loaded into. The files were never
+   * stored; this list is kept with the space and read back when it opens.
    */
   loadSkipped: { spaceId: string; files: SkippedFile[] } | null;
+  /**
+   * How recently a commit changed each stored file, for the space it was read
+   * for. Ranking only. Empty for a space whose folders had no readable history.
+   */
+  recency: { spaceId: string; byPath: Map<string, number> } | null;
   utterances: Utterance[];
   typedQuery: string;
   heardQuestion: string | null;
@@ -306,9 +342,20 @@ type MeetHintState = {
   answerHistory: AnswerHistoryItem[];
   /** Structured context for the open thread. See thread.ts. */
   thread: ThreadContext | null;
+  /** The last three answered questions and what they cited. See meeting-memory.ts. */
+  memory: MemoryTurn[];
+  /** Where the last search looked: the files the thread cited, or the whole index. */
+  lastSearchRoute: "thread" | "full" | null;
   arm: () => void;
   disarm: () => void;
   setOverlay: (value: boolean) => void;
+  /**
+   * Shows a card another window answered. Used by a live window, which
+   * follows the cockpit it was opened from. Nothing else changes: no search
+   * runs, no history is written, and the session on the wire is left alone.
+   */
+  mirrorCard: (card: Card | null) => void;
+  setSearchDetailsOn: (value: boolean) => void;
   setAutoAnswer: (value: boolean) => void;
   setSubscription: (tier: SubscriptionTier) => void;
   setSelectedModelId: (id: string) => void;
@@ -416,7 +463,9 @@ function searchIsLive(): boolean {
 function clearSessionOnSwitch(): Pick<
   MeetHintState,
   | "thread"
+  | "memory"
   | "card"
+  | "searchDetails"
   | "answerHistory"
   | "heardQuestion"
   | "handledId"
@@ -429,7 +478,10 @@ function clearSessionOnSwitch(): Pick<
   syncViewerBlobPins(null, null);
   return {
     thread: null,
+    memory: [],
     card: null,
+    // It quotes lines of the material that is being left behind.
+    searchDetails: null,
     answerHistory: [],
     heardQuestion: null,
     handledId: null,
@@ -562,7 +614,13 @@ function patchFromSpaceRuntime(
   runtime: Pick<
     IndexedSpaceRuntime,
     "memberContextIds" | "allSources" | "pack" | "chunks" | "vocab" | "openFile"
-  > & { summary?: IndexSummary },
+  > & {
+    summary?: IndexSummary;
+    /** Files left out at load, as stored with the space. Unset leaves the list in memory as it is. */
+    notLoaded?: SkippedFile[];
+    /** Stored files a recent commit changed. Unset leaves what is in memory as it is. */
+    recentChanges?: FileChange[];
+  },
   /** Files a folder load left out before storing, for the debug line only. */
   notLoaded: SkippedFile[] = [],
 ): Pick<
@@ -577,11 +635,21 @@ function patchFromSpaceRuntime(
   | "vocab"
   | "openFile"
   | "indexActivity"
-> {
+> &
+  Partial<Pick<MeetHintState, "loadSkipped" | "recency">> {
   // Every index pass that reaches the screen goes through here, so this is
   // the one place the "Indexed X files, Y chunks" debug line is written, and
   // the one place a finished pass stops reporting progress.
   if (runtime.summary) reportIndexSummary(space.name, runtime.summary, notLoaded);
+  // Build the word index for these chunks now, a few milliseconds at a time,
+  // so the first question does not pay for it in one block. A question asked
+  // before this finishes indexes whatever is left itself.
+  void warmSearchIndex(runtime.chunks).catch(() => undefined);
+  // The same for the vectors: read from this device's database now, in
+  // batches, so the first question after a reload does not wait for them.
+  void getVectorStore()
+    ?.get(runtime.chunks.map((chunk) => vectorCacheKey(chunk)))
+    .catch(() => undefined);
   return {
     indexActivity: null,
     activeSpaceId: space.id,
@@ -593,6 +661,10 @@ function patchFromSpaceRuntime(
     chunks: runtime.chunks,
     vocab: runtime.vocab,
     openFile: runtime.openFile,
+    ...(runtime.notLoaded ? { loadSkipped: { spaceId: space.id, files: runtime.notLoaded } } : {}),
+    ...(runtime.recentChanges
+      ? { recency: { spaceId: space.id, byPath: recencyByPath(runtime.recentChanges) } }
+      : {}),
   };
 }
 
@@ -617,6 +689,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   listening: false,
   playing: false,
   overlay: false,
+  searchDetailsOn: false,
+  searchDetails: null,
   autoAnswer: true,
   subscription: "free",
   selectedModelId: getDefaultModel().id,
@@ -637,6 +711,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   folderError: null,
   packNotice: null,
   loadSkipped: null,
+  recency: null,
   currentMeeting: null,
   meetingHistory: [],
   selectedClaimId: null,
@@ -650,6 +725,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   openDocument: null,
   answerHistory: [],
   thread: null,
+  memory: [],
+  lastSearchRoute: null,
   arm: () => {
     playTimeouts.splice(0).forEach((id) => window.clearTimeout(id));
     set({ armed: true, listening: true, playing: false, listenError: null, listenBlocked: null });
@@ -672,11 +749,18 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       // Listening stopped, so the open thread is over: the next session's
       // pointers must not reach into this one.
       thread: null,
+      memory: [],
     });
     persist({ card: get().card, armed: false, listening: false, searching: false });
     void get().endClaimAudit();
   },
   setOverlay: (value) => set({ overlay: value }),
+  mirrorCard: (card) => set((s) => applyCard(card, s.openDocument)),
+  setSearchDetailsOn: (value) => {
+    writeSearchDetailsOn(value);
+    // Switching it off drops the record: nothing is kept for a panel that is closed.
+    set(value ? { searchDetailsOn: true } : { searchDetailsOn: false, searchDetails: null });
+  },
   setAutoAnswer: (value) => set({ autoAnswer: value }),
   setSubscription: (tier) => {
     writeSubscription(tier);
@@ -910,7 +994,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     try {
       report({ phase: "saving", total: raw.files.length }, true);
       const repo = getContextRepository();
-      const { context } = await persistPackAsContext(raw, repo, { contextId });
+      const { context } = await persistPackAsContext(raw, repo, {
+        contextId,
+        notLoaded: load.skippedFiles,
+        recentChanges: load.recentChanges,
+      });
       if (epoch !== hydrationEpoch) {
         endFolderLoad(token);
         return none;
@@ -944,7 +1032,6 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           weak: hydrated.weak,
           fileCount: hydrated.pack.files.length,
         }),
-        loadSkipped: { spaceId: space.id, files: load.skippedFiles },
       });
       const ws = currentWorkspaceId() ?? defaultWorkspaceId();
       recordBetaEvent("SOURCE_CONNECTED", { workspaceId: ws, spaceId: space.id, meta: { fileCount: hydrated.pack.files.length } });
@@ -1033,7 +1120,13 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       packNotice: null,
       ...(sameSpace ? {} : clearSessionOnSwitch()),
     });
-    persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
+    // A switch drops the card from the second screen along with everything
+    // else. Opening a space in a fresh page is not a switch: the card on the
+    // wire may be the one this page showed before a reload, or the one another
+    // window is showing now. It stays unless it belongs to a different space.
+    const opening = current.activeSpaceId === null && readRelaySession()?.spaceId === spaceId;
+    if (!opening)
+      persist({ card: null, armed: get().armed, listening: get().listening, searching: false });
     try {
       const repo = getContextRepository();
       const space = await resolveSpaceForActivation(repo, spaceId);
@@ -1062,6 +1155,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
               chunks: [],
               vocab: new Set(),
               openFile: null,
+              notLoaded: [],
+              recentChanges: [],
             }),
             contexts,
             contextStatus: "ready",
@@ -1175,6 +1270,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       openFile: runtime.openFile,
       ...applyCard(null, null),
       thread: null,
+      memory: [],
       folderError: packWarning(runtime.weak, runtime.pack.files.length),
       packNotice: null,
     });
@@ -1254,6 +1350,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           verdict: "repeat-of-same-event",
           question: null,
           usedContext: false,
+          // A re-emit is not a second utterance, so there is nothing to turn away.
+          reason: null,
           lastHandledId: get().handledId,
           dedupe: "same-utterance-and-question",
           triggered: false,
@@ -1276,7 +1374,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     // The newest utterance is the candidate; everything before it is context that
     // may interpret the candidate but may never trigger on its own.
     const context = them.slice(-CONTEXT_LINES - 1, -1).map((u) => u.text);
-    const decision = gateNewest({ id: newest.id, text: newest.text }, context, gateFrom(state));
+    const decision = gateNewest(
+      { id: newest.id, text: newest.text, speechMs: event.speechMs },
+      context,
+      gateFrom(state),
+    );
 
     // Identity is the utterance, not the words: the same question asked twice in
     // a meeting is two events and deserves two answers. Re-running the same
@@ -1315,6 +1417,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       heardQuestion: null,
       handledId: null,
       thread: null,
+      memory: [],
       utterances: s.utterances.filter((u) => u.role !== "them"),
     })),
   lastWindow: (ms = 15000) => windowText(get().utterances, ms),
@@ -1356,7 +1459,10 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     try {
       report({ phase: "saving", total: raw.files.length }, true);
       const repo = getContextRepository();
-      const { context } = await persistPackAsContext(raw, repo);
+      const { context } = await persistPackAsContext(raw, repo, {
+        notLoaded: load.skippedFiles,
+        recentChanges: load.recentChanges,
+      });
       if (epoch !== hydrationEpoch) {
         endFolderLoad(token);
         return none;
@@ -1394,7 +1500,6 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           weak: hydrated.weak,
           fileCount: hydrated.pack.files.length,
         }),
-        loadSkipped: { spaceId: space.id, files: load.skippedFiles },
       });
       get().appendUtterance({
         at: Date.now(),
@@ -1457,6 +1562,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           chunks: [],
           vocab: new Set(),
           openFile: null,
+          notLoaded: [],
+          recentChanges: [],
         }),
         contextStatus: "ready",
         contextUpdating: false,
@@ -1948,26 +2055,19 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
       return;
     }
-    if (state.subscription === "free" && extractExhausted()) {
-      set({
-        extractRemaining: 0,
-        upgradeFeature: "extract-limit",
-        ...applyCard(
-          {
-            say: null,
-            reason: "You've reached your daily limit. Upgrade to Pro for unlimited cited answers and Claim Audit.",
-            citations: [],
-            query,
-            latencyMs: 0,
-            source: "local",
-          },
-          get().openDocument,
-        ),
-      });
-      return;
-    }
+    // The daily limit counts model answers. Once it is spent the files are
+    // still searched and the offline composer still answers, cited, from what
+    // they state. Only a question the composer cannot answer shows the limit.
+    const modelQuotaSpent = state.subscription === "free" && extractExhausted();
     const epoch = ++searchEpoch;
     const t0 = performance.now();
+    // One search, reported where someone asked to see it: the Search details
+    // panel when it is switched on, the console when VITE_DEBUG_SEARCH is set.
+    // With both off this is two flag reads and nothing else.
+    const noteSearch = (input: SearchDebugInput) => {
+      if (get().searchDetailsOn) set({ searchDetails: buildSearchDetails(input) });
+      reportSearchDebug(input);
+    };
     const gate = gateRecords().at(-1);
     const transcriptFinalizeMs =
       gate?.triggered && gate.at != null ? Math.max(0, Math.round(t0 - gate.at)) : null;
@@ -2016,7 +2116,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         ...applyCard(blocked, get().openDocument),
       });
       persist({ card: blocked, armed: get().armed, listening: get().listening, searching: false });
-      reportSearchDebug({
+      noteSearch({
         query,
         chunks: state.chunks,
         excludePatterns: state.pack.excludePatterns,
@@ -2047,7 +2147,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       };
       set({ searching: false, refining: false, ...applyCard(failed, get().openDocument) });
       persist({ card: failed, armed: get().armed, listening: get().listening, searching: false });
-      reportSearchDebug({
+      noteSearch({
         query,
         chunks: state.chunks,
         excludePatterns: state.pack.excludePatterns,
@@ -2056,36 +2156,110 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         sent: [],
         stage: "silence",
         reason: failed.reason,
+        silence: failed.silence,
         totalMs: failed.latencyMs,
       });
     };
 
+    // A follow-up is looked up in the files the thread already cited before
+    // the whole index is searched. The offline composer reads those files; when
+    // it finds a cited line that is not the one just spoken, that is the answer
+    // and no full search or model call is made. Otherwise the full search runs
+    // as it always has. The question itself is not rewritten either way.
+    const followUp = isThreadFollowUp(canonical, state.memory, { resolved });
+    const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
+    const threadTurns = memoryForPrompt(state.memory);
+    const selectedModel = getModelById(get().selectedModelId) ?? getDefaultModel();
+    let threadExpanded = false;
+    // Recent-commit recency for this space's files, when its folders had history.
+    const recency = state.recency && state.recency.spaceId === state.activeSpaceId ? state.recency.byPath : undefined;
     const retrieveT0 = performance.now();
-    let hits: Awaited<ReturnType<typeof runSpaceScopedRetrieval>>;
-    let hydrated: Awaited<ReturnType<typeof hydratePdfDocumentsForHits>>;
+    let hits: Awaited<ReturnType<typeof runSpaceScopedRetrieval>> = [];
+    let hydrated: Awaited<ReturnType<typeof hydratePdfDocumentsForHits>> | null = null;
+    let routed: Awaited<ReturnType<typeof routeSearchAnswer>> | null = null;
+    let retrieveMs = 0;
+
     try {
-      hits = await runSpaceScopedRetrieval({
-        query: canonical,
-        previousQuestion,
+      const expanded = await expandThread({
+        canonical,
+        turns: state.memory,
         chunks: state.chunks,
-        pack: state.pack,
-        spaceState: state,
-        workspaceId,
-        vectorStore: getVectorStore(),
-        limit: 6,
+        resolved,
+        retrieve: (threadQuery, scoped) =>
+          runSpaceScopedRetrieval({
+            query: threadQuery,
+            chunks: scoped,
+            pack: state.pack,
+            spaceState: state,
+            workspaceId,
+            vectorStore: getVectorStore(),
+            limit: 6,
+            recency,
+          }),
+        answer: async (threadHits) => {
+          const threadMs = Math.round(performance.now() - retrieveT0);
+          const context = await hydratePdfDocumentsForHits(
+            getContextRepository(),
+            state.sources,
+            threadHits,
+            material,
+          );
+          const answered = await routeSearchAnswer(query, threadHits, t0, {
+            pack: state.pack,
+            material,
+            cardContext: context.context,
+            retrieveMs: threadMs,
+            indexedChunks: state.chunks.length,
+            localOnly: "thread",
+          });
+          return { ...answered, hydrated: context, threadMs };
+        },
       });
+      if (epoch !== searchEpoch) return;
+      if (expanded) {
+        const { hydrated: context, threadMs, ...answered } = expanded.answered;
+        hits = expanded.hits;
+        hydrated = context;
+        routed = answered;
+        retrieveMs = threadMs;
+        threadExpanded = true;
+      }
     } catch (error) {
       searchFailed(error);
       return;
     }
-    const retrieveMs = Math.round(performance.now() - retrieveT0);
-    if (epoch !== searchEpoch) return;
 
-    try {
-      hydrated = await hydratePdfDocumentsForHits(getContextRepository(), state.sources, hits, material);
-    } catch (error) {
-      searchFailed(error);
-      return;
+    if (!hydrated) {
+      try {
+        hits = await runSpaceScopedRetrieval({
+          query: canonical,
+          previousQuestion,
+          chunks: state.chunks,
+          pack: state.pack,
+          spaceState: state,
+          workspaceId,
+          vectorStore: getVectorStore(),
+          limit: 6,
+          recency,
+        });
+      } catch (error) {
+        searchFailed(error);
+        return;
+      }
+      retrieveMs = Math.round(performance.now() - retrieveT0);
+      if (epoch !== searchEpoch) return;
+
+      try {
+        hydrated = await hydratePdfDocumentsForHits(
+          getContextRepository(),
+          state.sources,
+          hits,
+          material,
+        );
+      } catch (error) {
+        searchFailed(error);
+        return;
+      }
     }
     const { context: cardContext, documentHydrateMs } = hydrated;
     if (epoch !== searchEpoch) return;
@@ -2113,6 +2287,8 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           answerHistory,
           currentMeeting,
           thread: nextThread(s.thread, { query, canonical, card, pack: s.pack, resolved }),
+          memory: rememberTurn(s.memory, { query, canonical, card }),
+          lastSearchRoute: threadExpanded ? "thread" : "full",
         };
       });
       persist({
@@ -2123,26 +2299,41 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       });
     };
 
-    const threadHistory = state.answerHistory.map((item) => item.query).filter(Boolean);
-    const selectedModel = getModelById(get().selectedModelId) ?? getDefaultModel();
-    let routed: Awaited<ReturnType<typeof routeSearchAnswer>>;
-    try {
-      routed = await routeSearchAnswer(query, hits, t0, {
-        pack: state.pack,
-        material,
-        cardContext,
-        modelId: selectedModel.id,
-        maxTokens: SYNTHESIZE_MAX_TOKENS,
-        threadHistory,
-        retrieveMs,
-        indexedChunks: state.chunks.length,
-        measureProgressive: isFlightRecorder(),
-      });
-    } catch (error) {
-      searchFailed(error);
-      return;
+    if (!routed) {
+      try {
+        routed = await routeSearchAnswer(query, hits, t0, {
+          pack: state.pack,
+          material,
+          cardContext,
+          modelId: selectedModel.id,
+          maxTokens: SYNTHESIZE_MAX_TOKENS,
+          threadHistory,
+          threadTurns,
+          retrieveMs,
+          indexedChunks: state.chunks.length,
+          measureProgressive: isFlightRecorder(),
+          localOnly: modelQuotaSpent ? "quota" : undefined,
+        });
+      } catch (error) {
+        searchFailed(error);
+        return;
+      }
     }
     if (epoch !== searchEpoch) return;
+    // A follow-up that comes back with the line just spoken is withdrawn: the
+    // room asked for more and nothing loaded takes it further.
+    if (followUp) routed = { ...routed, card: withdrawRepeat(routed.card, state.memory) };
+    if (routed.modelSkipped === "quota" && !routed.card.say) {
+      routed = {
+        ...routed,
+        card: {
+          ...routed.card,
+          reason:
+            "You've reached your daily limit. Upgrade to Pro for unlimited cited answers and Claim Audit.",
+        },
+      };
+      set({ extractRemaining: 0, upgradeFeature: "extract-limit" });
+    }
     if (routed.consumeQuota && get().subscription === "free") consumeExtractQuestion();
     const remaining = extractRemaining();
     const flightTelemetry = telemetryFromCard(routed.card);
@@ -2218,6 +2409,27 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       citations: routed.card.citations,
       quotaRemaining: remaining,
     });
+    if (get().searchDetailsOn) {
+      // The panel lists the top three, which are among the six hits the answer
+      // stages were sent. No second retrieval is run for it.
+      set({
+        searchDetails: buildSearchDetails({
+          query,
+          retrievalQuery: threadExpanded
+            ? followUpQuery(canonical)
+            : expandRetrievalQuery(canonical, previousQuestion),
+          chunks: state.chunks,
+          excludePatterns: state.pack.excludePatterns,
+          filesLoaded: state.pack.files.length,
+          ranked: hits,
+          sent: hits,
+          stage: stageOfTier(routed.tier),
+          reason: routed.card.reason,
+          silence: routed.card.silence,
+          totalMs: latency.totalMs,
+        }),
+      });
+    }
     if (isSearchDebug()) {
       // The card is already on screen. The answer stages were sent the top 6;
       // the log lists the top 10, so retrieval is run once more for the log
@@ -2231,11 +2443,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         workspaceId,
         vectorStore: getVectorStore(),
         limit: SEARCH_DEBUG_TOP,
+        recency,
       })
         .then((ranked) =>
           reportSearchDebug({
             query,
-            retrievalQuery: expandRetrievalQuery(canonical, previousQuestion),
+            retrievalQuery: threadExpanded
+              ? followUpQuery(canonical)
+              : expandRetrievalQuery(canonical, previousQuestion),
             chunks: state.chunks,
             excludePatterns: state.pack.excludePatterns,
             filesLoaded: state.pack.files.length,
@@ -2243,6 +2458,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             sent: hits,
             stage: stageOfTier(routed.tier),
             reason: routed.card.reason,
+            silence: routed.card.silence,
             totalMs: latency.totalMs,
           }),
         )
@@ -2257,7 +2473,29 @@ export function hydrateClientPrefs() {
     subscription: readSubscription(),
     selectedModelId: readSelectedModelId(),
     extractRemaining: extractRemaining(),
+    searchDetailsOn: readSearchDetailsOn(),
   });
+}
+
+const SEARCH_DETAILS_KEY = "meethint.searchDetails";
+
+/** The panel stays as it was left, so a reload mid-meeting does not close it. */
+function readSearchDetailsOn(): boolean {
+  try {
+    return typeof localStorage !== "undefined" && localStorage.getItem(SEARCH_DETAILS_KEY) === "on";
+  } catch {
+    return false;
+  }
+}
+
+function writeSearchDetailsOn(value: boolean): void {
+  try {
+    if (typeof localStorage === "undefined") return;
+    if (value) localStorage.setItem(SEARCH_DETAILS_KEY, "on");
+    else localStorage.removeItem(SEARCH_DETAILS_KEY);
+  } catch {
+    /* private mode or storage disabled: the toggle still works for this tab */
+  }
 }
 
 if (typeof window !== "undefined") {

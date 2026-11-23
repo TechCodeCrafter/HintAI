@@ -3,6 +3,7 @@ import type { SpaceMaterialView } from "../context/material-view.ts";
 import { enrichFileCitation, fileInMaterial } from "../context/material-view.ts";
 import { isDocumentHit, isFileHit } from "../repo/types.ts";
 import { tryMultiSourceCard } from "./multi-source-compose.ts";
+import { type SpanCandidate, combineSpans } from "./multi-span.ts";
 import type { NormalizedDocument } from "../document/types.ts";
 import { documentCard, documentFitsShape } from "./document-card.ts";
 import { buildQuestionContract, contractBlocksAll, sourceHitEligible } from "./question-contract.ts";
@@ -340,7 +341,7 @@ function bestClaim(
   query: string,
   canonical: string,
   material?: SpaceMaterialView,
-): { claim: Claim; hit: FileHit } | null {
+): { claim: Claim; hit: FileHit; others: SpanCandidate[] } | null {
   // Subject selection reads the canonical question: filler is rare in code and
   // would otherwise look like the most discriminating word in the sentence.
   const terms = contentWords(canonical);
@@ -428,7 +429,20 @@ function bestClaim(
       reject: item === winner ? null : "NOT_PREFERRED",
     });
   }
-  return { claim: winner.claim, hit: winner.hit };
+  // The other admissible sentences, best first. They are never spoken on their
+  // own; the composer may join one or two of them to the winner when they
+  // cover a part of the question the winner does not.
+  const others = eligible
+    .filter(
+      (item) =>
+        item !== winner &&
+        item.score > 0 &&
+        !item.claim.generic &&
+        !isTestEvidencePath(item.claim.span.path ?? item.hit.path),
+    )
+    .sort((a, b) => b.score - a.score)
+    .map((item) => ({ say: item.claim.say, span: item.claim.span, score: item.score }));
+  return { claim: winner.claim, hit: winner.hit, others };
 }
 
 function fileFromQuery(query: string, pack: RepoPack, openFile?: string | null) {
@@ -881,6 +895,30 @@ function genericLocalCard(
     };
   }
 
+  // One sentence rarely answers a question with two halves. When the spoken
+  // line is still the sentence read from the file and it leaves question words
+  // uncovered, the sentences that cover them are joined to it: each as written,
+  // each with its own span, so every sentence on the Card has a citation.
+  let parts: Card["parts"];
+  if (fromProse && claim && picked && evidence.length === 1 && evidence[0] === claim.span) {
+    const combined = combineSpans(
+      say,
+      { say, span: claim.span, score: Number.POSITIVE_INFINITY },
+      picked.others,
+      canonical,
+    );
+    if (combined) {
+      say = combined.say;
+      evidence = combined.evidence;
+      parts = combined.parts;
+      noteAttempt({
+        query, path: claim.span.path, line: claim.span.startLine, origin: "span",
+        candidate: say, generic: false, relevance: combined.evidence.length, score: combined.evidence.length,
+        accepted: true, reject: null,
+      });
+    }
+  }
+
   // "When is the next board meeting?" matched a sentence about meetings, but
   // "board" is not a word anywhere in the material: it is about something else.
   // Silent when the question is mostly about things the pack never names
@@ -926,6 +964,7 @@ function genericLocalCard(
     say,
     citations: citationsFor(evidence, code, material) ?? [fallback],
     evidence,
+    ...(parts ? { parts } : {}),
     query,
     latencyMs,
     source: "local",

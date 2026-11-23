@@ -49,6 +49,13 @@ export type FileChunk = {
   symbol?: string;
   symbolKind?: SymbolKind;
   language?: string;
+  /**
+   * Where this chunk sits in a structured document: the section path of a Word
+   * document, the slide and its title, the column names of a spreadsheet, the
+   * element path of an XML file. Used to rank the chunk. It is not part of
+   * `text` and is never quoted as evidence.
+   */
+  heading?: string;
   sha?: string;
   author?: string;
   date?: string;
@@ -187,6 +194,11 @@ export type Card = {
   reason?: string;
   /** The cause behind `reason`, so the UI can offer the right next step. */
   silence?: SilenceKind;
+  /**
+   * Set on a Card that speaks when the model could not be reached and the
+   * offline composer answered instead. Holds why, as one sentence.
+   */
+  modelFallback?: string;
   citations: Citation[];
   /**
    * Up to three other loaded files retrieval ranked for this question and the
@@ -199,6 +211,12 @@ export type Card = {
    * checks the spoken words against them.
    */
   evidence?: Evidence[];
+  /**
+   * Set when the spoken line joins sentences from more than one span: each
+   * spoken sentence beside the id of the evidence it was read from, in spoken
+   * order. Absent when the whole line comes from one place.
+   */
+  parts?: Array<{ say: string; evidenceId: string }>;
   query: string;
   latencyMs: number;
   /** Extract is "local". Synthesize/generate store the model name. */
@@ -234,4 +252,11 @@ export type HeardEvent = {
   id: string;
   role: "them" | "you";
   text: string;
+  /**
+   * Speech behind this commit, in milliseconds, measured where the audio was:
+   * voiced audio in the clip for a listening lane, the time words kept
+   * arriving for browser speech recognition. Absent when nothing measured it,
+   * and the question gate then treats the line as having no measured speech.
+   */
+  speechMs?: number;
 };
