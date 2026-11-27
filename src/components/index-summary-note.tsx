@@ -1,40 +1,66 @@
+import { useState } from "react";
+
 import { cn } from "@/lib/cn";
-import { indexStatusView, namedFailures } from "@/lib/context/index-status";
+import { indexStatusView, indexWorking, namedFailures } from "@/lib/context/index-status";
 import { NOT_LOADED_REST, type groupSkipped } from "@/lib/context/index-summary";
 import { useIndexSkipped } from "@/components/use-index-skipped";
+import { warmPhase } from "@/lib/search/readiness";
 import { useMeetHint } from "@/lib/store";
 
-/** How many paths one reason lists before the rest are counted, not named. */
-const SKIPPED_PATHS_SHOWN = 40;
+/** How many paths one reason lists before "Show all". Nothing is dropped: the rest open in place. */
+export const SKIPPED_PATHS_SHOWN = 40;
 
 function files(count: number): string {
   return `${count.toLocaleString("en-US")} ${count === 1 ? "file" : "files"}`;
+}
+
+type SkippedGroup = ReturnType<typeof groupSkipped>[number];
+
+/**
+ * One reason and every path it left out. A long list starts short and opens
+ * in place, so no path is ever replaced by a count.
+ */
+function SkippedGroupRows({ group }: { group: SkippedGroup }) {
+  const [all, setAll] = useState(false);
+  const hidden = group.files.length - SKIPPED_PATHS_SHOWN;
+  const rows = all || hidden <= 0 ? group.files : group.files.slice(0, SKIPPED_PATHS_SHOWN);
+  return (
+    <li data-reason={group.reason}>
+      <p className="text-body">
+        {group.count.toLocaleString("en-US")} × {group.reason}
+      </p>
+      <ul className="index-status-paths mt-0.5 space-y-0.5 font-mono text-[11px]">
+        {rows.map((item) => {
+          // Two folders can each leave out a file with the same path.
+          const shown = item.root && item.path !== NOT_LOADED_REST ? `${item.root}/${item.path}` : item.path;
+          return (
+            <li key={`${item.root ?? ""}\u0000${item.path}`} className="truncate" title={shown}>
+              {shown}
+              {item.count ? ` (${item.count.toLocaleString("en-US")} ${item.count === 1 ? "file" : "files"})` : ""}
+            </li>
+          );
+        })}
+      </ul>
+      {hidden > 0 ? (
+        <button
+          type="button"
+          className="index-status-all"
+          data-testid="skipped-show-all"
+          aria-expanded={all}
+          onClick={() => setAll((value) => !value)}
+        >
+          {all ? "Show fewer" : `Show all ${group.files.length.toLocaleString("en-US")}`}
+        </button>
+      ) : null}
+    </li>
+  );
 }
 
 export function SkippedGroups({ groups, testId }: { groups: ReturnType<typeof groupSkipped>; testId: string }) {
   return (
     <ul className="index-status-groups" data-testid={testId}>
       {groups.map((group) => (
-        <li key={group.reason}>
-          <p className="text-body">
-            {group.count.toLocaleString("en-US")} × {group.reason}
-          </p>
-          <ul className="mt-0.5 space-y-0.5 font-mono text-[11px]">
-            {group.files.slice(0, SKIPPED_PATHS_SHOWN).map((item) => {
-              // Two folders can each leave out a file with the same path.
-              const shown = item.root && item.path !== NOT_LOADED_REST ? `${item.root}/${item.path}` : item.path;
-              return (
-                <li key={`${item.root ?? ""}\u0000${item.path}`} className="truncate" title={shown}>
-                  {shown}
-                  {item.count ? ` (${item.count.toLocaleString("en-US")} ${item.count === 1 ? "file" : "files"})` : ""}
-                </li>
-              );
-            })}
-            {group.files.length > SKIPPED_PATHS_SHOWN ? (
-              <li>and {(group.files.length - SKIPPED_PATHS_SHOWN).toLocaleString("en-US")} more</li>
-            ) : null}
-          </ul>
-        </li>
+        <SkippedGroupRows key={group.reason} group={group} />
       ))}
     </ul>
   );
@@ -43,7 +69,8 @@ export function SkippedGroups({ groups, testId }: { groups: ReturnType<typeof gr
 /**
  * Where the index stands, in one line that follows the load:
  * "Reading 120 of 480 files…", "Indexing 120 of 480 files, 1,930 chunks so
- * far…", then "Indexed 480 files, 2,104 chunks. Ready."
+ * far…", "Warming vectors, 1,200 of 2,104 chunks…", then "Indexed 480
+ * files, 2,104 chunks. Ready."
  *
  * While a load runs the numbers come from the step doing the work (the file
  * reader, then the indexer). Once it is finished they are counted from the
@@ -71,12 +98,16 @@ export function IndexSummaryNote({
   const contextUpdating = useMeetHint((s) => s.contextUpdating);
   const activity = useMeetHint((s) => s.indexActivity);
   const ingest = useMeetHint((s) => s.ingestProgress);
+  const warmth = useMeetHint((s) => s.warm);
   const { summary, failed, failedGroups, leftGroups, failedCount, leftCount } = useIndexSkipped();
 
   const booting = contextStatus === "booting";
-  const pdfWorking = Boolean(ingest && ingest.phase !== "ready");
-  const working =
-    callerWorking || booting || contextStatus === "hydrating" || loadingFolder || contextUpdating || pdfWorking;
+  const loading = indexWorking({ status: contextStatus, loadingFolder, contextUpdating, pdf: ingest });
+  // A caller that is still working has nothing more exact to say than
+  // "Indexing…", so once the load itself is over the warm-up's own line
+  // ("Warming vectors, 1,200 of 2,104 chunks…") is shown in its place.
+  const warming = warmPhase(warmth) !== "ready";
+  const working = loading || (callerWorking && !warming);
 
   const view = indexStatusView({
     working,
@@ -85,6 +116,7 @@ export function IndexSummaryNote({
     activity,
     pdf: ingest,
     summary,
+    warmth,
   });
   // While a load runs, a file that has not been reached yet has no chunks
   // either. Only a finished pass can say which files failed.

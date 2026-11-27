@@ -1,11 +1,12 @@
 import Dexie, { type Table } from "dexie";
 import { assertWorkspaceMatch, defaultWorkspaceId, withWorkspaceBackfill } from "../../auth/workspace.ts";
 import type { NormalizedDocumentRow, SourceBlobRecord } from "../../document/types.ts";
+import type { IndexedChunk } from "../../repo/types.ts";
 import { normalizedDocumentKey, sourceBlobKey } from "../../document/types.ts";
-import type { IndexedSourceRecord, StoredChunkRow } from "../index-types.ts";
+import type { IndexedSourceRecord, SourceChunksRow, StoredChunkRow } from "../index-types.ts";
 import { documentLedgerKey, indexedSourceKey, ledgerKey, storedChunkKey } from "../index-types.ts";
 import { STORED_CHUNK_SCHEMA } from "../index-versions.ts";
-import { ContextNotFoundError, type ContextRepository } from "../repository.ts";
+import { ContextNotFoundError, type ContextRepository, type IndexedWrite } from "../repository.ts";
 import { cachedDocumentIsCurrent } from "../../document/usable.ts";
 import { keepBlobHashes } from "../../document/viewer/retain.ts";
 import {
@@ -31,6 +32,7 @@ import {
   SPACE_INDEXES,
   NORMALIZED_DOCUMENT_INDEXES,
   SOURCE_BLOB_INDEXES,
+  SOURCE_CHUNK_INDEXES,
   SOURCE_INDEXES,
   STORED_CHUNK_INDEXES,
   type ContextRow,
@@ -47,6 +49,7 @@ class MeetHintDatabase extends Dexie {
   sources!: Table<SourceRow, string>;
   indexedSources!: Table<IndexedSourceRecord, string>;
   storedChunks!: Table<StoredChunkRow, string>;
+  sourceChunks!: Table<SourceChunksRow, string>;
   sourceBlobs!: Table<SourceBlobRecord, string>;
   normalizedDocuments!: Table<NormalizedDocumentRow, string>;
   meetings!: Table<MeetingRecord, string>;
@@ -99,7 +102,7 @@ class MeetHintDatabase extends Dexie {
         row.schemaVersion = CONTEXT_SCHEMA_VERSION;
       });
     });
-    this.version(DATABASE_VERSION).stores({
+    this.version(6).stores({
       contexts: CONTEXT_INDEXES,
       sources: SOURCE_INDEXES,
       indexedSources: INDEXED_SOURCE_INDEXES,
@@ -124,6 +127,20 @@ class MeetHintDatabase extends Dexie {
           }),
         );
       }
+    });
+    // 7: text chunks are stored a file to a row (`sourceChunks`). Nothing is
+    // moved: chunks already in `storedChunks` are still read from there, and
+    // a file goes to the new table the next time it is chunked.
+    this.version(DATABASE_VERSION).stores({
+      contexts: CONTEXT_INDEXES,
+      sources: SOURCE_INDEXES,
+      indexedSources: INDEXED_SOURCE_INDEXES,
+      storedChunks: STORED_CHUNK_INDEXES,
+      sourceChunks: SOURCE_CHUNK_INDEXES,
+      sourceBlobs: SOURCE_BLOB_INDEXES,
+      normalizedDocuments: NORMALIZED_DOCUMENT_INDEXES,
+      meetings: MEETING_INDEXES,
+      spaces: SPACE_INDEXES,
     });
   }
 }
@@ -231,9 +248,11 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
     if (!sourceIds) {
       await db.indexedSources.where("contextId").equals(contextId).delete();
       await db.storedChunks.where("contextId").equals(contextId).delete();
+      await db.sourceChunks.where("contextId").equals(contextId).delete();
       return;
     }
     if (sourceIds.length === 0) return;
+    await db.sourceChunks.bulkDelete(sourceIds.map((sourceId) => indexedSourceKey(contextId, sourceId)));
     for (const sourceId of sourceIds) {
       const rows = await db.indexedSources.where("sourceId").equals(sourceId).toArray();
       for (const row of rows) {
@@ -276,11 +295,98 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
     }
   }
 
+  /** A stored file's chunks, or null when the row is from a layout this build does not read. */
+  function usableSourceChunks(row: SourceChunksRow): IndexedChunk[] | null {
+    if (row.schemaVersion !== STORED_CHUNK_SCHEMA || !Array.isArray(row.chunks)) return null;
+    return row.chunks;
+  }
+
+  /**
+   * Stores ledger rows and their chunks in one transaction: all of them, or none.
+   *
+   * A text file's chunks are one row in `sourceChunks`. A PDF's stay a chunk
+   * to a row in `storedChunks`, kept per content hash so a staged copy and
+   * the live one can sit side by side.
+   */
+  async function writeIndexedEntries(entries: IndexedWrite[]) {
+    if (entries.length === 0) return;
+    await db.transaction("rw", db.contexts, db.indexedSources, db.storedChunks, db.sourceChunks, async () => {
+      const workspaces = new Map<string, string | undefined>();
+      for (const { record } of entries) {
+        if (workspaces.has(record.contextId)) continue;
+        const ctx = await db.contexts.get(record.contextId);
+        if (!ctx) throw new ContextNotFoundError(record.contextId);
+        const workspaceId = normalizeContext(ctx).workspaceId;
+        assertWorkspaceMatch(workspaceId, "writeIndexed");
+        workspaces.set(record.contextId, workspaceId);
+      }
+      const isDocument = (record: IndexedSourceRecord) => Boolean(record.parserVersion || record.documentChunkerVersion);
+      const entryOf = new Map(entries.map((entry) => [`${entry.record.contextId}\u0000${entry.record.sourceId}`, entry]));
+      // Rows this write replaces: a PDF's chunks for the same content, and a
+      // text file's chunks from before they were kept a file to a row.
+      const existing = await db.storedChunks
+        .where("[contextId+sourceId]")
+        .anyOf(entries.map(({ record }) => [record.contextId, record.sourceId]))
+        .toArray();
+      const stale: string[] = [];
+      for (const row of existing) {
+        const record = entryOf.get(`${row.contextId}\u0000${row.sourceId}`)?.record;
+        if (!record) continue;
+        const replace = isDocument(record)
+          ? row.chunk.kind === "document" && row.chunk.contentHash === record.contentHash
+          : row.chunk.kind !== "document";
+        if (replace) stale.push(row.id);
+      }
+      if (stale.length > 0) await db.storedChunks.bulkDelete(stale);
+      await db.indexedSources.bulkPut(
+        entries.map(({ record }) => {
+          const scoped = { ...record, workspaceId: workspaces.get(record.contextId) };
+          return { ...scoped, id: ledgerKey(scoped) };
+        }),
+      );
+      const documentRows: StoredChunkRow[] = [];
+      const fileRows: SourceChunksRow[] = [];
+      const emptied: string[] = [];
+      for (const { record, chunks } of entries) {
+        const workspaceId = workspaces.get(record.contextId);
+        if (isDocument(record)) {
+          chunks.forEach((chunk, ordinal) =>
+            documentRows.push({
+              id: storedChunkKey(record.contextId, record.sourceId, chunk.id),
+              workspaceId,
+              contextId: record.contextId,
+              sourceId: record.sourceId,
+              ordinal,
+              schemaVersion: STORED_CHUNK_SCHEMA,
+              chunk,
+            }),
+          );
+        } else if (chunks.length === 0) {
+          // No row: the ledger's count of zero is what says the file is current.
+          emptied.push(indexedSourceKey(record.contextId, record.sourceId));
+        } else {
+          fileRows.push({
+            id: indexedSourceKey(record.contextId, record.sourceId),
+            workspaceId,
+            contextId: record.contextId,
+            sourceId: record.sourceId,
+            schemaVersion: STORED_CHUNK_SCHEMA,
+            chunks,
+          });
+        }
+      }
+      if (emptied.length > 0) await db.sourceChunks.bulkDelete(emptied);
+      if (fileRows.length > 0) await db.sourceChunks.bulkPut(fileRows);
+      if (documentRows.length > 0) await db.storedChunks.bulkAdd(documentRows);
+    });
+  }
+
   const contextStoreNames = [
     db.contexts,
     db.sources,
     db.indexedSources,
     db.storedChunks,
+    db.sourceChunks,
     db.sourceBlobs,
     db.normalizedDocuments,
     db.spaces,
@@ -396,7 +502,7 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
       const now = Date.now();
       const current = await loadSources(contextId);
       const merged = await upsertRepoBundle(contextId, bundle, current, now);
-      await db.transaction("rw", db.contexts, db.sources, db.indexedSources, db.storedChunks, async () => {
+      await db.transaction("rw", db.contexts, db.sources, db.indexedSources, db.storedChunks, db.sourceChunks, async () => {
         await writeContextSources(existing, merged.sources, now);
         if (merged.removedFileIds.length > 0) {
           await deleteIndexed(contextId, merged.removedFileIds);
@@ -501,6 +607,9 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
         ? rows.filter((row) => row.chunk.kind !== "document" || row.chunk.contentHash === contentHash)
         : rows.filter((row) => row.chunk.kind !== "document");
       if (matched.length === 0) {
+        // A text file's chunks are one row, unless they were stored before that table existed.
+        const held = await db.sourceChunks.get(indexedSourceKey(contextId, sourceId));
+        if (held) return usableSourceChunks(held);
         const ledger = await db.indexedSources.get(ledgerId);
         return ledger?.chunkCount === 0 ? [] : null;
       }
@@ -511,39 +620,56 @@ export function createIndexedDbRepository(dbName = DATABASE_NAME): ContextReposi
         .map((row) => row.chunk);
     },
 
-    async writeIndexed(record, chunks) {
-      await db.transaction("rw", db.contexts, db.indexedSources, db.storedChunks, async () => {
-        const ctx = await db.contexts.get(record.contextId);
-        if (!ctx) throw new ContextNotFoundError(record.contextId);
-        const workspaceId = normalizeContext(ctx).workspaceId;
-        assertWorkspaceMatch(workspaceId, "writeIndexed");
-        const scopedRecord = { ...record, workspaceId };
-        const existing = await db.storedChunks.where("[contextId+sourceId]").equals([record.contextId, record.sourceId]).toArray();
-        for (const row of existing) {
-          const replace =
-            record.parserVersion || record.documentChunkerVersion
-              ? row.chunk.kind === "document" && row.chunk.contentHash === record.contentHash
-              : row.chunk.kind !== "document";
-          if (replace) await db.storedChunks.delete(row.id);
-        }
-        await db.indexedSources.put({ ...scopedRecord, id: ledgerKey(scopedRecord) });
-        if (chunks.length === 0) return;
-        await db.storedChunks.bulkAdd(
-          chunks.map((chunk, ordinal) => ({
-            id: storedChunkKey(record.contextId, record.sourceId, chunk.id),
-            workspaceId,
-            contextId: record.contextId,
-            sourceId: record.sourceId,
-            ordinal,
-            schemaVersion: STORED_CHUNK_SCHEMA,
-            chunk,
-          })),
-        );
+    async readIndexedChunksMany(contextId, sourceIds) {
+      const out = new Map<string, IndexedChunk[] | null>();
+      if (sourceIds.length === 0) return out;
+      const held = await db.sourceChunks.bulkGet(sourceIds.map((sourceId) => indexedSourceKey(contextId, sourceId)));
+      const missing: string[] = [];
+      sourceIds.forEach((sourceId, i) => {
+        const row = held[i];
+        if (row) out.set(sourceId, usableSourceChunks(row));
+        else missing.push(sourceId);
       });
+      if (missing.length === 0) return out;
+      // Not in the table of whole files: stored a chunk to a row, or has no chunks.
+      const rows = await db.storedChunks
+        .where("[contextId+sourceId]")
+        .anyOf(missing.map((sourceId) => [contextId, sourceId]))
+        .toArray();
+      const bySource = new Map<string, StoredChunkRow[]>();
+      for (const row of rows) {
+        if (row.chunk?.kind === "document") continue;
+        const list = bySource.get(row.sourceId);
+        if (list) list.push(row);
+        else bySource.set(row.sourceId, [row]);
+      }
+      // A source with no rows is current only when its ledger says it has no chunks.
+      const empty = missing.filter((sourceId) => !bySource.has(sourceId));
+      const ledgers = empty.length
+        ? await db.indexedSources.bulkGet(empty.map((sourceId) => indexedSourceKey(contextId, sourceId)))
+        : [];
+      empty.forEach((sourceId, i) => out.set(sourceId, ledgers[i]?.chunkCount === 0 ? [] : null));
+      for (const [sourceId, matched] of bySource) {
+        out.set(
+          sourceId,
+          matched.some((row) => row.schemaVersion !== STORED_CHUNK_SCHEMA || !row.chunk)
+            ? null
+            : matched.sort((a, b) => (a.ordinal ?? 0) - (b.ordinal ?? 0)).map((row) => row.chunk),
+        );
+      }
+      return out;
+    },
+
+    async writeIndexed(record, chunks) {
+      await writeIndexedEntries([{ record, chunks }]);
+    },
+
+    async writeIndexedBatch(entries) {
+      await writeIndexedEntries(entries);
     },
 
     async deleteIndexed(contextId, sourceIds) {
-      await db.transaction("rw", db.indexedSources, db.storedChunks, async () => {
+      await db.transaction("rw", db.indexedSources, db.storedChunks, db.sourceChunks, async () => {
         await deleteIndexed(contextId, sourceIds);
       });
     },

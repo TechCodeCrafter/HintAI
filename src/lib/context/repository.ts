@@ -15,6 +15,9 @@ export type CreateContextInput = {
  * Persistence seam. Search, the store, and the cockpit talk to this — never
  * to Dexie or IndexedDB. A later SQLite backend implements the same methods.
  */
+/** One source's ledger row and the chunks it says are current. */
+export type IndexedWrite = { record: IndexedSourceRecord; chunks: IndexedChunk[] };
+
 export type ContextRepository = {
   listContexts(): Promise<ContextRecord[]>;
   getContext(id: string): Promise<ContextRecord | null>;
@@ -48,6 +51,17 @@ export type ContextRepository = {
   listIndexed(contextId: string): Promise<IndexedSourceRecord[]>;
   readIndexedChunks(contextId: string, sourceId: string, contentHash?: string): Promise<IndexedChunk[] | null>;
   writeIndexed(record: IndexedSourceRecord, chunks: IndexedChunk[]): Promise<void>;
+  /**
+   * `readIndexedChunks` for many text sources of one context in one read.
+   * Each source maps to what `readIndexedChunks(contextId, sourceId)` would
+   * return for it. Optional: a repository without it is read a source at a time.
+   */
+  readIndexedChunksMany?(contextId: string, sourceIds: string[]): Promise<Map<string, IndexedChunk[] | null>>;
+  /**
+   * `writeIndexed` for many sources in one write: all of them are stored, or
+   * none. Optional: a repository without it is written a source at a time.
+   */
+  writeIndexedBatch?(entries: IndexedWrite[]): Promise<void>;
   deleteIndexed(contextId: string, sourceIds?: string[]): Promise<void>;
   getSourceBlob(sourceId: string, contentHash: string): Promise<Blob | null>;
   getNormalizedDocument(sourceId: string, contentHash?: string): Promise<NormalizedDocument | null>;

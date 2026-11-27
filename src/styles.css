@@ -640,6 +640,29 @@ html[data-theme="light"] .cite-chip[data-loaded="false"] {
   text-align: left;
 }
 
+/* A long list of skipped paths opens in place. Rows off screen are not laid out. */
+.index-status-paths > li {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1.2em;
+}
+
+.index-status-all {
+  margin-top: 4px;
+  min-height: 24px;
+  border-radius: 4px;
+  padding: 0 2px;
+  color: var(--color-fg);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.index-status-all:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 /* Header chip: the index status that stays on screen in every layout. */
 .index-chip-root {
   position: relative;
@@ -688,6 +711,20 @@ html[data-theme="light"] .cite-chip[data-loaded="false"] {
   flex: none;
   border-radius: 999px;
   background: var(--color-faint);
+}
+
+/* "Ready" beside the counts. Never cut short: it is what Listen waits for. */
+.index-chip-phase {
+  flex: none;
+  font-weight: 600;
+  color: var(--color-fg);
+}
+
+.index-chip-phase::after {
+  content: "·";
+  margin-left: 8px;
+  font-weight: 400;
+  color: var(--color-faint);
 }
 
 .index-chip[data-state="ready"] .index-chip-dot {
@@ -773,11 +810,17 @@ html[data-theme="light"] .cite-chip[data-loaded="false"] {
 
   .index-chip {
     width: 100%;
+    /* "Ready · word search" and long counts do not share one line at this
+       width. The counts run onto a second line instead of being cut off. */
+    padding-block: 6px;
+    border-radius: 16px;
+    line-height: 1.35;
   }
 
   .index-chip-text {
     flex: 1 1 auto;
     text-align: left;
+    white-space: normal;
   }
 
   .index-chip-panel {
@@ -1130,6 +1173,42 @@ button.considered-item:active {
   color: var(--color-fg);
 }
 
+/* The score as a sum: lexical + semantic + structural + symbol. */
+.search-details-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin: 3px 0 0;
+  padding-left: 16px;
+  font-size: 11px;
+}
+
+.search-details-parts > div {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.search-details-parts > div + div::before {
+  content: "+";
+  margin-right: 2px;
+  color: var(--color-muted);
+}
+
+.search-details-parts dt {
+  color: var(--color-muted);
+}
+
+.search-details-parts dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  color: var(--color-fg);
+}
+
+.search-details-parts > div[data-zero="true"] dd {
+  color: var(--color-muted);
+}
+
 .search-details-snippet {
   display: -webkit-box;
   overflow: hidden;
@@ -1212,6 +1291,24 @@ html[data-theme="light"] .badge-generated {
   font-size: 12px;
   line-height: 1.4;
   color: var(--color-muted);
+}
+
+/* On a Card ranked without vectors. A plain outline: it is a note about how
+   the question was searched, not a verdict on the answer. */
+.lexical-only-note {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  text-transform: none;
+  white-space: nowrap;
+  color: var(--color-body);
 }
 
 .key-settings-backdrop {
@@ -2835,11 +2932,30 @@ html[data-theme="light"] .hint-landing .receipt-kicker,
   outline-offset: 2px;
 }
 
+/* A single word the answer uses. */
 .why-answer-mark {
   border-radius: 3px;
   padding: 0 1px;
-  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
   color: var(--color-fg);
+}
+
+/* A run the answer repeats word for word. Told apart by the rule under it,
+   not by colour alone. No heavier weight: that would fetch another font file,
+   and opening this view makes no request. */
+.why-answer-mark[data-exact="true"] {
+  background: color-mix(in srgb, var(--color-accent) 34%, transparent);
+  box-shadow: inset 0 -2px 0 var(--color-accent);
+}
+
+.why-answer-hint {
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+/* A finger held on a card opens its evidence, so the system callout stays out of the way. */
+[data-evidence-card] {
+  -webkit-touch-callout: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

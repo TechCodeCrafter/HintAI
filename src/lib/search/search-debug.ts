@@ -87,9 +87,55 @@ export type SearchDebugRecord = {
 /** How many hits the "Search details" panel lists. */
 export const SEARCH_DETAILS_TOP = 3;
 
+/**
+ * A hit's score as four amounts that add up to it.
+ *
+ * Retrieval scores a chunk in three channels and weights them:
+ * `score = 1.0 x lexical + 0.8 x semantic + 0.6 x structural`. What a chunk
+ * gets for declaring, or being the file of, a symbol the question names is
+ * spread over the lexical and structural channels, so it is lifted out of both
+ * and shown on its own. Each amount is already weighted.
+ *
+ * - `lexical`: the question's words in the chunk's text, heading and path.
+ * - `semantic`: closeness of meaning, from the vectors. 0 when the search ran
+ *   on words only.
+ * - `structural`: the file names and headings the question names.
+ * - `symbol`: the `SYMBOL_ADDENDS`, from either channel.
+ *
+ * A part can be negative: the lexical channel takes points off a test file.
+ */
+export type ScoreParts = { lexical: number; semantic: number; structural: number; symbol: number };
+
+export const SCORE_PARTS = ["lexical", "semantic", "structural", "symbol"] as const;
+
+/** The addends a chunk gets for a symbol the question names. */
+export const SYMBOL_ADDENDS = ["symbolDefinition", "symbolLift", "symbolFile", "symbolMatch", "declares"] as const;
+
+function symbolShare(boosts: ScoreBoosts | undefined): number {
+  if (!boosts) return 0;
+  return SYMBOL_ADDENDS.reduce((sum, name) => sum + (boosts[name] ?? 0), 0);
+}
+
+/** Reads the breakdown off a ranked hit. It scores nothing itself. */
+export function scoreParts(hit: Hit): ScoreParts {
+  const hybrid = hit.lexicalScore != null || hit.semanticScore != null || hit.structuralScore != null;
+  // Without the hybrid channels the score is the lexical channel's own.
+  const lexical = hybrid ? (hit.lexicalScore ?? 0) : hit.score;
+  const lexicalSymbol = symbolShare(hit.boosts);
+  const structuralSymbol = symbolShare(hit.structuralBoosts);
+  return {
+    lexical: RETRIEVAL_WEIGHTS.lexical * (lexical - lexicalSymbol),
+    semantic: RETRIEVAL_WEIGHTS.semantic * (hit.semanticScore ?? 0),
+    structural: RETRIEVAL_WEIGHTS.structural * ((hit.structuralScore ?? 0) - structuralSymbol),
+    symbol: RETRIEVAL_WEIGHTS.lexical * lexicalSymbol + RETRIEVAL_WEIGHTS.structural * structuralSymbol,
+  };
+}
+
 export type SearchDetailsHit = SearchDebugHit & {
   /** One line of the chunk: the one that shares the most words with the question. */
   snippet: string;
+  /** Where the score came from, as four amounts that add up to it. */
+  parts: ScoreParts;
 };
 
 /** What the "Search details" panel shows for one search. */
@@ -263,7 +309,19 @@ export function buildSearchDetails(input: SearchDebugInput): SearchDetails {
   const asked = input.retrievalQuery ?? input.query;
   return {
     ...record,
-    topHits: record.topHits.map((hit, index) => ({ ...hit, snippet: snippetOf(ranked[index]!.text, asked) })),
+    topHits: record.topHits.map((hit, index) => {
+      const parts = scoreParts(ranked[index]!);
+      return {
+        ...hit,
+        snippet: snippetOf(ranked[index]!.text, asked),
+        parts: {
+          lexical: rounded(parts.lexical),
+          semantic: rounded(parts.semantic),
+          structural: rounded(parts.structural),
+          symbol: rounded(parts.symbol),
+        },
+      };
+    }),
   };
 }
 

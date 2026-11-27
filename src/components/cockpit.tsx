@@ -9,8 +9,6 @@ import {
   ClipboardPaste,
   Copy,
   Download,
-  Ban,
-  EyeOff,
   ExternalLink,
   FileCode2,
   FileText,
@@ -60,7 +58,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { SourcesExclusionAlert } from "@/components/sources-exclusion-alert";
 import { pathExcluded } from "@/lib/context/exclusions";
 import { isPdfSource } from "@/lib/context/types";
-import { pdfSourceStatus } from "@/lib/document/pdf/source-status";
 import { cardUsedEvidence, isGeneratedAnswer, receiptKicker } from "@/lib/search/answer-mode";
 import { VerifiedCitations } from "@/components/verified-citations";
 import { ConsideredSources } from "@/components/considered-sources";
@@ -70,6 +67,7 @@ import type { Citation, ConsideredFile, ConsideredSource } from "@/lib/repo/type
 import { questionChips } from "@/lib/search/local-card";
 import { cleanCaption } from "@/lib/search/question";
 import { modelFallbackNote } from "@/lib/search/silence";
+import { EvidenceCard } from "@/components/evidence-view";
 import { WhyAnswer } from "@/components/why-answer";
 import { useAccountVaultReady } from "@/lib/auth/account-session";
 import { BetaSearchScopeNote } from "@/components/beta-onboarding";
@@ -84,7 +82,10 @@ import { currentWorkspaceId, defaultWorkspaceId } from "@/lib/auth/workspace";
 import { useMeetHint } from "@/lib/store";
 import { isWeakPack, type FolderLoadOptions } from "@/lib/repo/folder";
 import { IndexChip } from "@/components/index-chip";
+import { ListenButton } from "@/components/listen-button";
+import { LexicalOnlyNote } from "@/components/lexical-only-note";
 import { IndexSummaryNote } from "@/components/index-summary-note";
+import { SourceFileList } from "@/components/source-file-list";
 import { useIndexedFileCount } from "@/components/use-indexed-file-count";
 
 type MobilePane = "repo" | "room" | "card";
@@ -158,7 +159,6 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
   );
   const demo = pack.id === "northstar-payments";
   const onDemoPack = demo;
-  const listenLabel = live ? "Stop listen" : "Listen";
   const statusLabel = live ? "Listening" : "Idle";
   const searchReady = contextStatus === "ready";
   const ingestNote =
@@ -412,24 +412,14 @@ export function Cockpit({ spaceId }: { spaceId?: string } = {}) {
             </Button>
           </div>
           <div className="cockpit-cluster" role="group" aria-label="Session">
-            <Button
-              variant="primary"
-              size="sm"
-              aria-label={listenLabel}
-              title="Hear you and the computer. The answer is what you say."
-              disabled={!searchReady}
-              onClick={() => {
-                if (live) {
-                  stopHear();
-                  disarm();
-                  return;
-                }
-                toggleHear();
+            <ListenButton
+              live={live}
+              onStart={toggleHear}
+              onStop={() => {
+                stopHear();
+                disarm();
               }}
-            >
-              <Mic className={cn("size-4", live && "live-dot")} />
-              <span className="hidden lg:inline">{listenLabel}</span>
-            </Button>
+            />
             <Button
               variant="quiet"
               size="sm"
@@ -1334,11 +1324,7 @@ function ProofLine() {
   );
 }
 
-function splitPath(path: string) {
-  const slash = path.lastIndexOf("/");
-  if (slash < 0) return { name: path, dir: "" };
-  return { name: path.slice(slash + 1), dir: path.slice(0, slash) };
-}
+const NO_PATTERNS: string[] = [];
 
 function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looked?: ConsideredFile | null }) {
   const pack = useMeetHint((s) => s.pack);
@@ -1354,8 +1340,8 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
   const working = useMeetHint((s) => s.loadingFolder || s.contextStatus === "hydrating");
   const [filter, setFilter] = useState("");
   const [excludeGlob, setExcludeGlob] = useState("");
-  const excludePatterns = pack.excludePatterns ?? [];
-  const pdfs = sources.filter(isPdfSource);
+  const excludePatterns = pack.excludePatterns ?? NO_PATTERNS;
+  const pdfs = useMemo(() => sources.filter(isPdfSource), [sources]);
   const file = pack.files.find((f) => f.path === openFile) ?? (openDocument ? undefined : pack.files[0]);
   // Only a file citation has a line to highlight in this pane. A commit
   // citation is about history and deliberately has no position in the file.
@@ -1373,7 +1359,6 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
   const lookLine = looked?.startLine;
   const lookEnd = looked?.endLine;
   const preRef = useRef<HTMLPreElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
   const why = pack.commits.find(
     (c) =>
       card?.citations.some(
@@ -1382,13 +1367,29 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
           (item.kind === "file" && (item.sha === c.sha || item.pr === c.pr)),
       ) ?? false,
   );
-  const weak = pack.id !== "northstar-payments" && isWeakPack(pack.files.map((f) => f.path));
-  const visible = pack.files.filter((f) => !filter || f.path.toLowerCase().includes(filter.toLowerCase()));
-  const visiblePdfs = pdfs.filter((source) => !filter || source.path.toLowerCase().includes(filter.toLowerCase()));
+  // This pane renders on every answer. Anything that walks the whole file
+  // list is worked out when the list changes, not on each of those renders.
+  const weak = useMemo(
+    () => pack.id !== "northstar-payments" && isWeakPack(pack.files.map((f) => f.path)),
+    [pack.id, pack.files],
+  );
+  const visible = useMemo(() => {
+    const needle = filter.toLowerCase();
+    return needle ? pack.files.filter((f) => f.path.toLowerCase().includes(needle)) : pack.files;
+  }, [pack.files, filter]);
+  const visiblePdfs = useMemo(() => {
+    const needle = filter.toLowerCase();
+    return needle ? pdfs.filter((source) => source.path.toLowerCase().includes(needle)) : pdfs;
+  }, [pdfs, filter]);
   const sourceCount = pack.files.length + pdfs.length;
-  const excludedCount =
-    pack.files.filter((item) => pathExcluded(item.path, excludePatterns)).length +
-    pdfs.filter((source) => pathExcluded(source.path, excludePatterns)).length;
+  const excludedCount = useMemo(
+    () =>
+      excludePatterns.length === 0
+        ? 0
+        : pack.files.filter((item) => pathExcluded(item.path, excludePatterns)).length +
+          pdfs.filter((source) => pathExcluded(source.path, excludePatterns)).length,
+    [pack.files, pdfs, excludePatterns],
+  );
   const lines = useMemo(
     () => (file ? file.content.replace(/\n$/, "").split("\n") : []),
     [file],
@@ -1423,10 +1424,6 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
     if (lookLine == null) return;
     preRef.current?.querySelector(`[data-line="${lookLine}"]`)?.scrollIntoView({ block: "start" });
   }, [lookLine, file?.path, reveal]);
-
-  useEffect(() => {
-    listRef.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" });
-  }, [file?.path]);
 
   if (!file && !openDocument && pdfs.length === 0) {
     return (
@@ -1474,101 +1471,16 @@ function RepoPane({ reveal = 0, looked: asked = null }: { reveal?: number; looke
               className="ground-input h-10 rounded-[10px] pl-9 pr-3 text-[13px] placeholder:text-muted"
             />
           </label>
-          <ul
-            ref={listRef}
-            className="file-list min-h-0 min-w-0 flex-1 space-y-1 overflow-auto"
-            tabIndex={0}
-          >
-            {visible.length === 0 && visiblePdfs.length === 0 ? (
-              <li className="px-2 py-3 text-xs text-muted">No files match that filter.</li>
-            ) : null}
-            {visible.map((f) => {
-              const parts = splitPath(f.path);
-              const excluded = pathExcluded(f.path, excludePatterns);
-              return (
-              <li key={f.path} className="file-item min-w-0">
-                <button
-                  type="button"
-                  data-source-kind="file"
-                  data-source-path={f.path}
-                  data-excluded={excluded ? "true" : undefined}
-                  data-active={!openDocument && file && f.path === file.path ? "true" : undefined}
-                  onClick={() => setOpenFile(f.path)}
-                  className="file-row flex min-w-0 flex-1 items-center gap-2 px-2.5 text-left"
-                >
-                  <FileCode2 className="size-3.5 shrink-0 text-muted" />
-                  <span className="min-w-0 flex-1">
-                    <span className="file-name block truncate text-[13px]">{parts.name}</span>
-                    <span className="file-path block truncate">
-                      {excluded ? "Excluded from search" : parts.dir}
-                    </span>
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className="file-exclude"
-                  aria-pressed={excluded}
-                  aria-label={excluded ? `Include ${f.path} in search` : `Exclude ${f.path} from search`}
-                  title={excluded ? "Include in search" : "Exclude from search"}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    void togglePackExclusion(f.path);
-                  }}
-                >
-                  {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
-                </button>
-              </li>
-              );
-            })}
-            {visiblePdfs.map((source) => {
-              const status = pdfSourceStatus(source);
-              const active = openDocument?.sourceId === source.id;
-              const parts = splitPath(source.path);
-              const excluded = pathExcluded(source.path, excludePatterns);
-              return (
-                <li key={source.id} className="file-item min-w-0">
-                  <button
-                    type="button"
-                    data-source-kind="pdf"
-                    data-source-path={source.path}
-                    data-source-status={source.readiness}
-                    data-excluded={excluded ? "true" : undefined}
-                    data-active={active ? "true" : undefined}
-                    title={status.detail}
-                    onClick={() => openPdfSource(source.id)}
-                    className="file-row flex min-w-0 flex-1 items-center gap-2 px-2.5 text-left"
-                  >
-                    <FileText className="size-3.5 shrink-0 text-muted" />
-                    <span className="min-w-0 flex-1">
-                      <span className="file-name block truncate text-[13px]">{parts.name}</span>
-                      <span className="file-path block truncate" data-source-label>
-                        {excluded
-                          ? "Excluded from search"
-                          : source.lastFailedNote && source.readiness === "ready"
-                            ? "Update failed"
-                            : status.short !== "Ready"
-                              ? status.short
-                              : parts.dir || "Ready"}
-                      </span>
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className="file-exclude"
-                    aria-pressed={excluded}
-                    aria-label={excluded ? `Include ${source.path} in search` : `Exclude ${source.path} from search`}
-                    title={excluded ? "Include in search" : "Exclude from search"}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      void togglePackExclusion(source.path);
-                    }}
-                  >
-                    {excluded ? <EyeOff className="size-3.5" /> : <Ban className="size-3.5" />}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          <SourceFileList
+            files={visible}
+            pdfs={visiblePdfs}
+            excludePatterns={excludePatterns}
+            activePath={!openDocument && file ? file.path : null}
+            activePdfId={openDocument?.sourceId ?? null}
+            onOpenFile={setOpenFile}
+            onOpenPdf={openPdfSource}
+            onToggleExclusion={togglePackExclusion}
+          />
           <form
             className="mt-2 shrink-0"
             onSubmit={(event) => {
@@ -2064,6 +1976,7 @@ function CardPane({
         <span className="ground-head-left">
           <span>Answer</span>
           {speaking ? <AnswerModeBadge mode={card?.answerMode} usedEvidence={usedEvidence} /> : null}
+          <LexicalOnlyNote card={card} />
           {searching ? <span className="search-spin" aria-label="Searching" /> : null}
         </span>
         <span className="ground-head-right flex items-center gap-1">
@@ -2089,7 +2002,7 @@ function CardPane({
           {theySaid || speaking ? (
             // shrink-0: the receipt clips its overflow, so without it a tall
             // sibling below squeezes the answer instead of scrolling the pane.
-            <div className="answer-receipt shrink-0">
+            <EvidenceCard card={card} className="answer-receipt shrink-0">
               <div className="answer-receipt-body">
                 {theySaid ? (
                   <div className="heard-block min-w-0">
@@ -2187,7 +2100,7 @@ function CardPane({
                     .join("\n")}
                 </pre>
               ) : null}
-            </div>
+            </EvidenceCard>
           ) : (
             <p data-testid="card-reason" className="text-[15px] leading-relaxed text-body">
               {card?.reason ?? "Ask a question about this pack. Small talk stays in Room."}

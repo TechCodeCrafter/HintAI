@@ -5,6 +5,7 @@ import { packFromFiles, SKIP_LABEL, type SkippedFile } from "../../repo/folder.t
 import { indexChipView } from "../index-status.ts";
 import {
   emptyIndexSummary,
+  groupSkipped,
   mergeNotLoaded,
   NOT_LOADED_NAMED,
   NOT_LOADED_REST,
@@ -158,8 +159,23 @@ test("a file left out twice keeps the latest reason", () => {
   assert.deepEqual(after, [{ path: "src/big.json", reason: SKIP_LABEL.json, root: "acme" }]);
 });
 
+test("every file over a limit is kept by name, however many there are", () => {
+  const over = Array.from({ length: NOT_LOADED_NAMED + 60 }, (_, index) => skip(`src/f${index}.ts`, SKIP_LABEL.cap));
+  const sized = Array.from({ length: 30 }, (_, index) => skip(`data/d${index}.csv`, SKIP_LABEL.total));
+  const stored = mergeNotLoaded([], [...over, ...sized], "acme");
+  assert.equal(stored.length, NOT_LOADED_NAMED + 90);
+  assert.equal(stored.some((item) => item.path === NOT_LOADED_REST), false);
+  assert.deepEqual(
+    groupSkipped(stored).map((group) => [group.reason, group.files.length]),
+    [
+      [SKIP_LABEL.cap, NOT_LOADED_NAMED + 60],
+      [SKIP_LABEL.total, 30],
+    ],
+  );
+});
+
 test("a long list is stored short and still adds up to the exact count", () => {
-  const many = Array.from({ length: NOT_LOADED_NAMED + 60 }, (_, index) => skip(`src/f${index}.ts`, SKIP_LABEL.cap));
+  const many = Array.from({ length: NOT_LOADED_NAMED + 60 }, (_, index) => skip(`src/f${index}.png`, SKIP_LABEL.binaries));
   const folder = skip("node_modules/", SKIP_LABEL.vendor, { count: 900 });
   const unread = skip("locked.docx", SKIP_LABEL.failed);
   const stored = mergeNotLoaded([], [...many, folder, unread], "acme");
@@ -167,7 +183,7 @@ test("a long list is stored short and still adds up to the exact count", () => {
   assert.equal(stored.length, NOT_LOADED_NAMED + 3);
   assert.equal(skippedFileCount(stored), NOT_LOADED_NAMED + 60 + 900 + 1);
   const rest = stored.filter((item) => item.path === NOT_LOADED_REST);
-  assert.deepEqual(rest, [{ path: NOT_LOADED_REST, reason: SKIP_LABEL.cap, count: 60, root: "acme" }]);
+  assert.deepEqual(rest, [{ path: NOT_LOADED_REST, reason: SKIP_LABEL.binaries, count: 60, root: "acme" }]);
   // A file that could not be read is still told apart from one skipped by a rule.
   assert.deepEqual(
     splitSkipped(stored).failed.map((item) => item.path),

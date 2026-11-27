@@ -191,5 +191,11 @@ export async function readDrop(source: DropSource): Promise<DroppedMaterial> {
     // unexpected browser error and show that part of the selection was unreadable.
     skipLabels.add(SKIP_LABEL.failed);
   }
+  if (capped) {
+    // The walk stopped, so what was left has no names. It is still listed:
+    // nothing the person dropped goes missing without a line saying so.
+    skipLabels.add(SKIP_LABEL.walk);
+    skippedFiles.push({ path: `everything after the first ${MAX_WALKED_FILES.toLocaleString("en-US")} files`, reason: SKIP_LABEL.walk });
+  }
   return { folder, files, capped, skipLabels: [...skipLabels], skippedFiles };
 }

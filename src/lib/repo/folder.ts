@@ -7,6 +7,7 @@ import {
 } from "../document/parsers/office-parsers.ts";
 import { isPdfFile, MATERIAL_EXTENSIONS } from "../material-upload.ts";
 import { gitFilesFromMap, readRecentChanges, type FileChange, type GitFiles } from "./git-history.ts";
+import { fileCapLabel, folderLimits, formatBytes, totalCapLabel, type FolderLimits } from "./limits.ts";
 import type { RepoFile, RepoPack } from "./types";
 
 const SKIP_DIR =
@@ -28,10 +29,9 @@ const GENERATED_EXT = /\.(min\.js|map)$/i;
 const ALLOW_EXT = new Set<string>(MATERIAL_EXTENSIONS);
 const ALLOW_NAME = /^(README|LICENSE|LICENCE|COPYING|CHANGELOG|AUTHORS|CONTRIBUTING|NOTICE|Dockerfile|Containerfile|Makefile|Gemfile|Rakefile|Procfile)$/i;
 
-const MAX_FILES = 500;
+/** The per-file limits. How many files and bytes one selection may load is in `limits.ts`. */
 const MAX_FILE_BYTES = 150_000;
 const OFFICE_MAX_FILE_BYTES = 4_000_000;
-const MAX_TOTAL_BYTES = 8_000_000;
 export const GROUPED_DROP_ROOT = "Dropped material";
 const GROUPED_DROP_STORAGE_PREFIX = `${GROUPED_DROP_ROOT.toLowerCase().replaceAll(" ", "-")}/`;
 const groupedDropFiles = new WeakSet<File>();
@@ -80,6 +80,13 @@ export type FolderLoadOptions = {
    * beside them or it is lost before the load.
    */
   git?: GitFiles;
+  /** The file and size limits for this load. Defaults to `folderLimits()`. */
+  limits?: Partial<FolderLimits>;
+  /**
+   * Asked before each file is read. Once it returns true the load stops and
+   * comes back with `cancelled` set; what it read so far must not be stored.
+   */
+  isCancelled?: () => boolean;
 };
 
 export type FolderCandidate = {
@@ -112,6 +119,10 @@ export type FolderPreview = {
   pdfs: number;
   skipped: number;
   truncated: boolean;
+  /** Files left out because the selection is over the file or size limit. */
+  overLimit: number;
+  /** The limits the preview was counted against. */
+  limits: FolderLimits;
   includeTests: boolean;
   skipLabels: string[];
   keepSample: string[];
@@ -131,6 +142,8 @@ export type FolderLoad = {
    * `.git`. Paths, short commit ids and dates only. Empty otherwise.
    */
   recentChanges?: FileChange[];
+  /** The load was stopped part-way (`isCancelled`). `pack` is incomplete. */
+  cancelled?: boolean;
 };
 
 export type FsEntry =
@@ -153,10 +166,17 @@ export const SKIP_LABEL = {
   size: "files over the size limit",
   json: "large JSON",
   tests: "tests",
-  cap: "over the 500-file cap",
-  total: "over the total size limit",
+  /** Follows the limits in force, so the reason names the number that was hit. */
+  get cap(): string {
+    return fileCapLabel();
+  },
+  get total(): string {
+    return totalCapLabel();
+  },
   empty: "files with no text",
   failed: "files we could not read",
+  /** A drop larger than one scan walks. The files past that point were never seen, so they have no names. */
+  walk: "past the number of files one drop reads",
 } as const;
 
 export function emptySelectionMessage(
@@ -205,8 +225,17 @@ export function emptySelectionMessage(
   return `${summary}. ${next}`;
 }
 
-export function truncationNotice(fileCount: number): string {
-  return `Loaded ${fileCount} files. Some files were skipped due to size limits. For best results, load a service folder (src/) rather than the full repo root.`;
+/** "5,000 files or 50 MB" */
+export function describeLimits(limits: FolderLimits = folderLimits()): string {
+  return `${limits.maxFiles.toLocaleString("en-US")} files or ${formatBytes(limits.maxTotalBytes)}`;
+}
+
+export function truncationNotice(fileCount: number, overLimit = 0): string {
+  const left =
+    overLimit > 0
+      ? `${overLimit.toLocaleString("en-US")} more ${overLimit === 1 ? "is" : "are"} over the limit for one selection (${describeLimits()}) and ${overLimit === 1 ? "is" : "are"} listed under the index chip.`
+      : "Some files were skipped due to size limits and are listed under the index chip.";
+  return `Loaded ${fileCount.toLocaleString("en-US")} files. ${left} For best results, load a service folder (src/) rather than the full repo root.`;
 }
 
 function relativePath(file: File): string {
@@ -326,7 +355,7 @@ export function inSkippedFolder(path: string, pathPrefix = ""): boolean {
   return shouldSkipDirectory(storedPathForRules(path, pathPrefix));
 }
 
-/** Files that look like source or documents, by the same score the 500-file cap ranks on. */
+/** Files that look like source or documents, by the same score the file limit ranks on. */
 function looksLikeMaterial(path: string): boolean {
   return scorePath(storedPathForRules(path)) >= 2;
 }
@@ -347,7 +376,7 @@ export function isWeakPack(paths: string[]): boolean {
  * score does not know (`plugins/tax/VatRates.php`, `web/forms/Amount.vue`).
  * Those files had passed the load filters and were stored, then were never
  * chunked, and nothing said so. The score now only orders files and ranks
- * them for the 500-file cap; it does not decide what is searchable.
+ * them for the file limit; it does not decide what is searchable.
  *
  * `prefixOf` returns the selected folder's prefix for a stored path, so the
  * folder's own name is not judged. Packs that were never stored have none.
@@ -397,6 +426,16 @@ export function sizeSkipReason(path: string, size: number, project = true): stri
   return null;
 }
 
+/** The outermost folder of `path` that the folder rules leave out, or null when none does. */
+function skippedFolderOf(path: string): string | null {
+  const parts = path.split("/");
+  for (let depth = 1; depth < parts.length; depth += 1) {
+    const dir = parts.slice(0, depth).join("/");
+    if (shouldSkipDirectory(dir)) return dir;
+  }
+  return null;
+}
+
 export function scanFileList(
   list: FileList | File[],
   options?: Pick<FolderLoadOptions, "skipLabels" | "skippedFiles">,
@@ -407,6 +446,10 @@ export function scanFileList(
   const candidates: FolderCandidate[] = [];
   const pdfs: File[] = [];
   const gitFiles = new Map<string, Blob>();
+  // A vendor or build folder is one line with a count, as it is when a folder
+  // is walked by handle. A `node_modules` named file by file is tens of
+  // thousands of lines that say the same thing.
+  const skippedFolders = new Map<string, SkippedFile>();
   for (const file of files) {
     const path = repoRelativePath(file);
     const grouped = groupedDropFiles.has(file);
@@ -423,7 +466,19 @@ export function scanFileList(
     const skip = pathReason ?? sizeSkipReason(pathForRules, file.size, project);
     if (skip) {
       skipLabels.add(skip);
-      skippedFiles.push({ path, reason: skip });
+      const folder = skip === SKIP_LABEL.vendor ? skippedFolderOf(pathForRules) : null;
+      if (folder === null) {
+        skippedFiles.push({ path, reason: skip });
+        continue;
+      }
+      const folderPath = `${path.slice(0, path.length - pathForRules.length)}${folder}/`;
+      const held = skippedFolders.get(folderPath);
+      if (held) held.count = (held.count ?? 0) + 1;
+      else {
+        const entry: SkippedFile = { path: folderPath, reason: skip, count: 1 };
+        skippedFolders.set(folderPath, entry);
+        skippedFiles.push(entry);
+      }
       continue;
     }
     candidates.push({ file, path, pathForRules, score: scorePath(pathForRules) });
@@ -443,13 +498,14 @@ export function scanFileList(
 export function previewScan(scan: FolderScan, options?: FolderLoadOptions): FolderPreview {
   const includeTests = options?.includeTests ?? true;
   const { candidates, skipLabels } = rankedCandidates(scan, includeTests);
+  const limits = { ...folderLimits(), ...(options?.limits ?? {}) };
   const keep: FolderCandidate[] = [];
   let total = 0;
-  let truncated = false;
+  let overLimit = 0;
   for (const item of candidates) {
-    const reason = capReason(keep.length, total, item.file.size);
+    const reason = capReason(keep.length, total, item.file.size, limits);
     if (reason) {
-      truncated = true;
+      overLimit += 1;
       skipLabels.add(reason);
       continue;
     }
@@ -462,7 +518,9 @@ export function previewScan(scan: FolderScan, options?: FolderLoadOptions): Fold
     keep: keep.length,
     pdfs: scan.pdfs.length,
     skipped: Math.max(0, scan.selected - scan.pdfs.length - keep.length),
-    truncated,
+    truncated: overLimit > 0,
+    overLimit,
+    limits,
     includeTests,
     skipLabels: [...skipLabels],
     keepSample: keep.slice(0, 3).map((item) => item.path),
@@ -605,9 +663,9 @@ export function gitFilesFromDirectory(root: DirectoryLike): GitFiles {
   };
 }
 
-function capReason(count: number, totalBytes: number, nextBytes: number): string | null {
-  if (count >= MAX_FILES) return SKIP_LABEL.cap;
-  if (totalBytes + nextBytes > MAX_TOTAL_BYTES) return SKIP_LABEL.total;
+function capReason(count: number, totalBytes: number, nextBytes: number, limits: FolderLimits): string | null {
+  if (count >= limits.maxFiles) return fileCapLabel(limits);
+  if (totalBytes + nextBytes > limits.maxTotalBytes) return totalCapLabel(limits);
   return null;
 }
 
@@ -638,16 +696,24 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     if (!seen.has(item.path)) skippedFiles.push(item);
   }
   const selected = options?.selectedCount ?? scan.selected;
+  const limits = { ...folderLimits(), ...(options?.limits ?? {}) };
   const packFiles: RepoFile[] = [];
   const failed = [...scan.failed];
   let total = 0;
   let truncated = false;
+  let cancelled = false;
   let read = 0;
   for (const item of candidates) {
+    // Asked per file: the person may have moved to another space, and the
+    // rest of a few thousand files is then read for nothing.
+    if (options?.isCancelled?.()) {
+      cancelled = true;
+      break;
+    }
     // Reported at the top so every `continue` below is counted too.
     options?.onRead?.(read, candidates.length);
     read += 1;
-    const reason = capReason(packFiles.length, total, item.file.size);
+    const reason = capReason(packFiles.length, total, item.file.size, limits);
     if (reason) {
       truncated = true;
       skipLabels.add(reason);
@@ -684,13 +750,13 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     total += item.file.size;
     packFiles.push({ path: item.path, language: langOf(item.path), content });
   }
-  options?.onRead?.(candidates.length, candidates.length);
+  if (!cancelled) options?.onRead?.(candidates.length, candidates.length);
 
   // Which of the loaded files recent commits changed. Optional in every way:
   // no `.git`, or one that cannot be read, leaves this empty.
   let recentChanges: FileChange[] = [];
   const git = scan.git ?? options?.git;
-  if (git && packFiles.length > 0) {
+  if (git && packFiles.length > 0 && !cancelled) {
     const loaded = new Set(packFiles.map((file) => file.path));
     try {
       recentChanges = (await readRecentChanges(git)).filter((change) => loaded.has(change.path));
@@ -714,6 +780,7 @@ export async function packFromScan(scan: FolderScan, options?: FolderLoadOptions
     skipLabels: [...skipLabels],
     skippedFiles,
     recentChanges,
+    ...(cancelled ? { cancelled: true } : {}),
   };
 }
 

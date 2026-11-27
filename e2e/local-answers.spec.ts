@@ -174,13 +174,18 @@ test("a two-part question is answered from two cited passages, shown on demand, 
     /Retries a failed export up to three times with exponential backoff\.$/,
     /After the last attempt the export job is moved to the dead letter queue\.$/,
   ]);
-  // Each passage is the file's own text, and the marked words are in the spoken line.
+  // Each passage is the file's own text, and what is marked in it is in the spoken line.
   const file = FILES["src/export/retry.ts"];
   const passages = await why.getByTestId("card-why-text").allInnerTexts();
   expect(passages).toHaveLength(2);
   for (const passage of passages) expect(file).toContain(passage.trim());
   const marks = (await why.getByTestId("card-why-mark").allInnerTexts()).map((mark) => mark.toLowerCase());
-  expect(marks.length).toBeGreaterThan(4);
+  // One exact span per passage: the sentence that was read out from it.
+  expect(marks).toEqual([
+    "retries a failed export up to three times with exponential backoff",
+    "after the last attempt the export job is moved to the dead letter queue",
+  ]);
+  await expect(why.locator('[data-testid="card-why-mark"][data-exact="true"]')).toHaveCount(2);
   const spoken = answered.card!.say!.toLowerCase();
   for (const mark of marks) expect(spoken).toContain(mark);
   await expect(why.getByTestId("card-why-where").first()).toContainText("src/export/retry.ts");

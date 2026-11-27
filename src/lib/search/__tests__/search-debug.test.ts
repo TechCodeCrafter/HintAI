@@ -5,7 +5,10 @@ import { demoAnswer } from "../../demo/answer.ts";
 import { isSearchDebug } from "../../debug.ts";
 import { NORTHSTAR } from "../../repo/northstar.ts";
 import type { Chunk, Hit } from "../../repo/types.ts";
-import { buildChunks, retrieve } from "../retrieve.ts";
+import { bagEmbedding384, setEmbedderForTests } from "../embedding.ts";
+import { buildChunks, hybridRetrieve, retrieve } from "../retrieve.ts";
+import { RETRIEVAL_WEIGHTS } from "../retrieval-weights.ts";
+import { createMemoryVectorStore } from "../vector-store.ts";
 import {
   buildSearchDebug,
   buildSearchDetails,
@@ -15,6 +18,7 @@ import {
   SEARCH_DEBUG_TOP,
   SEARCH_DETAILS_TOP,
   searchDebugLog,
+  scoreParts,
   snippetOf,
   stageLabel,
   stageOfTier,
@@ -23,6 +27,7 @@ import {
 const QUESTION = "Why does that retry three times?";
 
 afterEach(() => {
+  setEmbedderForTests(null);
   delete process.env.DEBUG_SEARCH;
   clearSearchDebugLog();
 });
@@ -255,4 +260,80 @@ test("file text stays out of the console record, and details are never logged or
   for (const hit of record.topHits) assert.equal("snippet" in hit, false);
   assert.doesNotMatch(text, /doubling delay|SINK_TIMEOUT_MS/);
   assert.doesNotMatch(JSON.stringify(record), /doubling delay|SINK_TIMEOUT_MS/);
+});
+
+const sumOf = (parts: { lexical: number; semantic: number; structural: number; symbol: number }) =>
+  parts.lexical + parts.semantic + parts.structural + parts.symbol;
+
+test("the four score parts add up to the score, on words only and with every channel", async () => {
+  const chunks = buildChunks(NORTHSTAR);
+  const questions = [QUESTION, "What does withRetry do?", "Where is flow.ts used?", "What does rotateCookie do?"];
+
+  // Words only: what a search does while the space has no vectors.
+  for (const question of questions) {
+    const hits = await hybridRetrieve(question, chunks, createMemoryVectorStore(), 6, undefined, { semantic: false });
+    assert.ok(hits.length > 0, question);
+    for (const hit of hits) {
+      const parts = scoreParts(hit);
+      assert.ok(Math.abs(sumOf(parts) - hit.score) < 1e-9, `${question} ${hit.path}: ${JSON.stringify(parts)} vs ${hit.score}`);
+      assert.equal(parts.semantic, 0);
+    }
+  }
+  // A question that writes a symbol out has its declaration scored as symbol.
+  const named = await hybridRetrieve("What does withRetry do?", chunks, createMemoryVectorStore(), 6, undefined, { semantic: false });
+  assert.equal(named[0]!.path, "src/exporter/retry.ts");
+  assert.ok(scoreParts(named[0]!).symbol > 0, JSON.stringify(scoreParts(named[0]!)));
+  // One that names a file has it scored as structural.
+  const file = await hybridRetrieve("Where is flow.ts used?", chunks, createMemoryVectorStore(), 6, undefined, { semantic: false });
+  assert.ok(file.some((hit) => hit.path === "src/auth/flow.ts" && scoreParts(hit).structural > 0));
+
+  // Every channel: vectors for each chunk.
+  setEmbedderForTests(async (text) => bagEmbedding384(text));
+  const store = createMemoryVectorStore();
+  await store.set(chunks.map((c) => ({ chunkId: c.id, embedding: bagEmbedding384(c.text), contentHash: c.id })));
+  let semantic = 0;
+  for (const question of questions) {
+    for (const hit of await hybridRetrieve(question, chunks, store, 6)) {
+      const parts = scoreParts(hit);
+      assert.ok(Math.abs(sumOf(parts) - hit.score) < 1e-9, `${question} ${hit.path}: ${JSON.stringify(parts)} vs ${hit.score}`);
+      assert.ok(Math.abs(parts.semantic - RETRIEVAL_WEIGHTS.semantic * (hit.semanticScore ?? 0)) < 1e-9);
+      if (parts.semantic > 0) semantic += 1;
+    }
+  }
+  assert.ok(semantic > 0, "no hit scored in the semantic channel");
+
+  // The plain lexical ranking has no channels: the score is lexical plus symbol.
+  for (const hit of retrieve(QUESTION, chunks)) {
+    const parts = scoreParts(hit);
+    assert.ok(Math.abs(sumOf(parts) - hit.score) < 1e-9);
+    assert.equal(parts.semantic + parts.structural, 0);
+  }
+});
+
+test("what a chunk gets for a symbol the question names is shown as symbol, not as lexical or structural", () => {
+  const declares: Hit = {
+    ...chunk("a", "src/exporter/retry.ts"),
+    score: 1.0 * 40 + 0.6 * 16,
+    lexicalScore: 40,
+    semanticScore: 0,
+    structuralScore: 16,
+    boosts: { body: 6, symbolLift: 18, symbolDefinition: 12, declares: 4 },
+    structuralBoosts: { fileName: 4, symbolDefinition: 12 },
+  };
+  const parts = scoreParts(declares);
+  assert.deepEqual(parts, { lexical: 6, semantic: 0, structural: 0.6 * 4, symbol: 34 + 0.6 * 12 });
+  assert.ok(Math.abs(sumOf(parts) - declares.score) < 1e-9);
+
+  const meaning: Hit = { ...chunk("b", "docs/a.md"), score: 0.8 * 0.5, lexicalScore: 0, semanticScore: 0.5, structuralScore: 0 };
+  assert.deepEqual(scoreParts(meaning), { lexical: 0, semantic: 0.4, structural: 0, symbol: 0 });
+});
+
+test("search details carry the breakdown for each of the top hits, rounded like the score", () => {
+  const details = buildSearchDetails(detailsInput());
+  for (const hit of details.topHits) {
+    assert.deepEqual(Object.keys(hit.parts), ["lexical", "semantic", "structural", "symbol"]);
+    assert.ok(Math.abs(sumOf(hit.parts) - hit.score) <= 0.02, `${hit.path}: ${JSON.stringify(hit.parts)} vs ${hit.score}`);
+  }
+  // The console record is unchanged: it lists the addends, not the parts.
+  assert.ok(buildSearchDebug(detailsInput()).topHits.every((hit) => !("parts" in hit)));
 });

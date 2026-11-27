@@ -22,7 +22,9 @@ import { recordBetaEventOnce } from "@/lib/instrumentation/beta-telemetry";
 import { useMeetHint } from "@/lib/store";
 import { cleanCaption } from "@/lib/search/question";
 import { modelFallbackNote } from "@/lib/search/silence";
+import { EvidenceCard } from "@/components/evidence-view";
 import { WhyAnswer } from "@/components/why-answer";
+import { LexicalOnlyNote } from "@/components/lexical-only-note";
 
 export function AskPanel({ spaceId }: { spaceId: string }) {
   const { ready: vaultReady } = useAccountVaultReady();
@@ -143,7 +145,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
         </form>
 
         {card?.query ? (
-          <article className="mh-panel space-y-4 p-5" data-testid="ask-card">
+          <EvidenceCard card={card} role="article" className="mh-panel space-y-4 p-5" data-testid="ask-card">
             <p className="text-xs text-muted">{card.query}</p>
             {card.say ? (
               <>
@@ -181,6 +183,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             {card.answerMode ? (
               <AnswerModeBadge mode={card.answerMode} usedEvidence={cardUsedEvidence(card)} />
             ) : null}
+            <LexicalOnlyNote card={card} className="ml-2" />
             <VerifiedCitations
               citations={card.citations}
               loadedPaths={ready ? loadedPaths : undefined}
@@ -193,7 +196,7 @@ export function AskPanel({ spaceId }: { spaceId: string }) {
             {/* This page has no file viewer, so the list states the files and offers no dead click. */}
             {/* A silent Card's reason already opens to these files. */}
             {!card.say && card.silence ? null : <ConsideredSources sources={considered} silent={!card.say} />}
-          </article>
+          </EvidenceCard>
         ) : null}
       </main>
     </ContextShell>

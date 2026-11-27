@@ -31,7 +31,7 @@ import {
   STORED_CHUNK_SCHEMA,
   USE_HYBRID_RETRIEVAL,
 } from "./index-versions.ts";
-import { ContextNotFoundError, type ContextRepository } from "./repository.ts";
+import { ContextNotFoundError, type ContextRepository, type IndexedWrite } from "./repository.ts";
 import { isPdfSource, isTextSource, type PdfStoredSource, type StoredSource, type TextStoredSource } from "./types.ts";
 
 /**
@@ -85,6 +85,12 @@ export type IndexProgress = {
 };
 
 export type IndexedRuntime = HydratedRuntime & {
+  /**
+   * The stored sources this pass read, when they are still what storage
+   * holds. Unset when the pass changed a source row (a PDF it marked as
+   * chunked), so the caller reads them again.
+   */
+  sources?: StoredSource[];
   report: IndexReport;
   /** Files and chunks actually searchable, and every stored file that is not. */
   summary: IndexSummary;
@@ -260,14 +266,13 @@ function orderDocumentChunks(chunks: IndexedChunk[]): IndexedChunk[] {
   );
 }
 
-/** Write freshly built chunks and the ledger row that says they are current. */
-async function persistRebuilt(
-  repo: ContextRepository,
+/** Freshly built chunks and the ledger row that says they are current. */
+function rebuiltWrite(
   source: TextStoredSource,
   chunks: Chunk[],
   chunkerVersion: number,
   indexVersion: number,
-): Promise<Chunk[]> {
+): IndexedWrite {
   const record: IndexedSourceRecord = {
     id: indexedSourceKey(source.contextId, source.id),
     workspaceId: source.workspaceId ?? defaultWorkspaceId(),
@@ -279,8 +284,36 @@ async function persistRebuilt(
     indexedAt: Date.now(),
     chunkCount: chunks.length,
   };
-  await repo.writeIndexed(record, chunks);
-  return chunks;
+  return { record, chunks };
+}
+
+/**
+ * Files handled between two writes to storage.
+ *
+ * A file at a time is one transaction per file, and on a few thousand files
+ * the transactions were most of the indexing time. A batch is one write. It
+ * is also the unit of progress and of cancellation: the count on screen moves
+ * once per batch, and a pass that is cancelled or interrupted keeps every
+ * batch it finished, so the next pass rebuilds only what is left.
+ */
+export const INDEX_BATCH_FILES = 40;
+
+async function readCachedChunks(
+  repo: ContextRepository,
+  contextId: string,
+  sourceIds: string[],
+): Promise<Map<string, IndexedChunk[] | null>> {
+  if (sourceIds.length === 0) return new Map();
+  if (repo.readIndexedChunksMany) return repo.readIndexedChunksMany(contextId, sourceIds);
+  const out = new Map<string, IndexedChunk[] | null>();
+  for (const sourceId of sourceIds) out.set(sourceId, await repo.readIndexedChunks(contextId, sourceId));
+  return out;
+}
+
+async function writeRebuilt(repo: ContextRepository, writes: IndexedWrite[]): Promise<void> {
+  if (writes.length === 0) return;
+  if (repo.writeIndexedBatch) return repo.writeIndexedBatch(writes);
+  for (const { record, chunks } of writes) await repo.writeIndexed(record, chunks);
 }
 
 async function persistDocumentChunks(
@@ -390,45 +423,61 @@ export async function indexContext(
   let filesDone = 0;
   const tick = () => options.onProgress?.({ filesDone, filesTotal, chunks: assembled.length });
   tick();
-  for (const { file, source } of active) {
+  for (let from = 0; from < active.length; from += INDEX_BATCH_FILES) {
     if (options.isCancelled?.()) break;
-    const ledger = ledgerBySource.get(source.id);
-    const known = Boolean(ledger);
-    if (ledger && ledgerValid(ledger, source, chunkerVersion, indexVersion) && !staleEmptyLedger(ledger, source)) {
-      const readStart = nowMs();
-      const cached = await repo.readIndexedChunks(contextId, source.id);
-      timings.cacheReadMs += nowMs() - readStart;
-      if (cacheChunksValid(cached, ledger.chunkCount)) {
-        assembled.push(...orderFileChunks(cached));
+    const batch = active.slice(from, from + INDEX_BATCH_FILES);
+    // Files whose ledger says the stored chunks are current: read them together.
+    const current = batch.filter(({ source }) => {
+      const ledger = ledgerBySource.get(source.id);
+      return Boolean(ledger && ledgerValid(ledger, source, chunkerVersion, indexVersion) && !staleEmptyLedger(ledger, source));
+    });
+    const readStart = nowMs();
+    const cachedBySource = await readCachedChunks(
+      repo,
+      contextId,
+      current.map(({ source }) => source.id),
+    );
+    timings.cacheReadMs += nowMs() - readStart;
+
+    const buildStart = nowMs();
+    const writes: IndexedWrite[] = [];
+    const batchChunks: IndexedChunk[] = [];
+    let handled = 0;
+    for (const { file, source } of batch) {
+      // Asked per file, so a cancelled pass stops chunking at once. What this
+      // batch has built so far is still written below.
+      if (options.isCancelled?.()) break;
+      handled += 1;
+      const ledger = ledgerBySource.get(source.id);
+      const cached = cachedBySource.get(source.id);
+      if (ledger && cached !== undefined && cacheChunksValid(cached, ledger.chunkCount)) {
+        batchChunks.push(...orderFileChunks(cached));
         stats.reusedSourceCount += 1;
         stats.reusedChunkCount += cached.length;
-        filesDone += 1;
-        tick();
         continue;
       }
-    }
-    const buildStart = nowMs();
-    let chunks: Chunk[];
-    try {
-      chunks = chunksFromFile(file, source, { structured: options.structured });
-    } catch (error) {
-      // One file the chunker cannot handle must not take the other files down
-      // with it. It gets no ledger row, so the next pass tries it again, and
-      // the summary names it as a file with no chunks.
-      console.warn(`Could not index ${file.path}`, error);
-      timings.chunkBuildMs += nowMs() - buildStart;
-      filesDone += 1;
-      tick();
-      continue;
+      let chunks: Chunk[];
+      try {
+        chunks = chunksFromFile(file, source, { structured: options.structured });
+      } catch (error) {
+        // One file the chunker cannot handle must not take the other files down
+        // with it. It gets no ledger row, so the next pass tries it again, and
+        // the summary names it as a file with no chunks.
+        console.warn(`Could not index ${file.path}`, error);
+        continue;
+      }
+      writes.push(rebuiltWrite(source, chunks, chunkerVersion, indexVersion));
+      batchChunks.push(...chunks);
+      stats.rebuiltSourceCount += 1;
+      stats.rebuiltChunkCount += chunks.length;
+      if (!ledger) stats.newSourceCount += 1;
     }
     // A failed write is not caught: storage that cannot be written fails the pass.
-    const built = await persistRebuilt(repo, source, chunks, chunkerVersion, indexVersion);
+    await writeRebuilt(repo, writes);
     timings.chunkBuildMs += nowMs() - buildStart;
-    assembled.push(...built);
-    stats.rebuiltSourceCount += 1;
-    stats.rebuiltChunkCount += built.length;
-    if (!known) stats.newSourceCount += 1;
-    filesDone += 1;
+    assembled.push(...batchChunks);
+    // Counted after the write, so the number on screen is work that is kept.
+    filesDone += handled;
     tick();
   }
 
@@ -493,6 +542,7 @@ export async function indexContext(
     report,
     summary: summarizeIndex(sources, scopedChunks, exclude),
     cancelled,
+    ...(pdfs.length === 0 ? { sources } : {}),
   };
 }
 

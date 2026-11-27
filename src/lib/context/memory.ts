@@ -239,6 +239,22 @@ export function createMemoryRepository(): MemoryRepository {
       chunkRows.set(key, next);
     },
 
+    async readIndexedChunksMany(contextId, sourceIds) {
+      const out = new Map<string, IndexedChunk[] | null>();
+      for (const sourceId of sourceIds) {
+        out.set(sourceId, chunkRows.get(indexedSourceKey(contextId, sourceId)) ?? null);
+      }
+      return out;
+    },
+
+    async writeIndexedBatch(entries) {
+      for (const { record, chunks: next } of entries) {
+        const key = ledgerKey(record);
+        indexed.set(key, record);
+        chunkRows.set(key, next);
+      }
+    },
+
     async deleteIndexed(contextId, sourceIds) {
       dropIndexed(contextId, sourceIds);
     },
