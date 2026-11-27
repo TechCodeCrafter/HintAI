@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { setFolderLimitsForTests } from "../limits.ts";
 import {
   emptySelectionMessage,
   packFromFiles,
@@ -262,18 +263,48 @@ test("invalid XLSX files are reported as unreadable, not indexed as CSV text", a
   assert.deepEqual(loaded.failed, ["broken.xlsx"]);
 });
 
+const LOW_LIMITS = { maxFiles: 500, maxTotalBytes: 8 * 1024 * 1024 };
+
 test("review agrees with the pack at both count and byte limits", async () => {
-  for (const [files, expectedReason] of [
-    [Array.from({ length: 501 }, (_, i) => fileAt(`src/notes-${i}.txt`, "notes")), SKIP_LABEL.cap],
-    [Array.from({ length: 55 }, (_, i) => fileAt(`src/notes-${i}.txt`, "x".repeat(150_000))), SKIP_LABEL.total],
-  ] as const) {
+  setFolderLimitsForTests(LOW_LIMITS);
+  try {
+    for (const [files, expectedReason] of [
+      [Array.from({ length: 501 }, (_, i) => fileAt(`src/notes-${i}.txt`, "notes")), "over the 500-file limit"],
+      [
+        Array.from({ length: 60 }, (_, i) => fileAt(`src/notes-${i}.txt`, "x".repeat(150_000))),
+        "over the 8 MB total size limit",
+      ],
+    ] as const) {
+      assert.ok([SKIP_LABEL.cap, SKIP_LABEL.total].includes(expectedReason));
+      const scan = scanFileList(files);
+      const preview = previewScan(scan);
+      const loaded = await packFromScan(scan);
+      assert.equal(preview.keep, loaded.pack.files.length);
+      assert.equal(preview.skipped, loaded.skipped);
+      assert.deepEqual(preview.skipLabels, [expectedReason]);
+      assert.deepEqual(loaded.skipLabels, preview.skipLabels);
+      assert.equal(preview.overLimit, loaded.skippedFiles.length);
+      assert.ok(preview.overLimit > 0);
+      assert.deepEqual(preview.limits, LOW_LIMITS);
+    }
+  } finally {
+    setFolderLimitsForTests(null);
+  }
+});
+
+test("the same selections load whole under the default limits", async () => {
+  for (const files of [
+    Array.from({ length: 501 }, (_, i) => fileAt(`src/notes-${i}.txt`, "notes")),
+    Array.from({ length: 55 }, (_, i) => fileAt(`src/notes-${i}.txt`, "x".repeat(150_000))),
+  ]) {
     const scan = scanFileList(files);
     const preview = previewScan(scan);
     const loaded = await packFromScan(scan);
-    assert.equal(preview.keep, loaded.pack.files.length);
-    assert.equal(preview.skipped, loaded.skipped);
-    assert.deepEqual(preview.skipLabels, [expectedReason]);
-    assert.deepEqual(loaded.skipLabels, preview.skipLabels);
+    assert.equal(preview.keep, files.length);
+    assert.equal(preview.truncated, false);
+    assert.equal(preview.overLimit, 0);
+    assert.equal(loaded.pack.files.length, files.length);
+    assert.deepEqual(loaded.skippedFiles, []);
   }
 });
 

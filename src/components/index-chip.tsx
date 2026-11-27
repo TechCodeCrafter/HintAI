@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { SkippedGroups } from "@/components/index-summary-note";
 import { useIndexSkipped } from "@/components/use-index-skipped";
 import { cn } from "@/lib/cn";
-import { indexChipView } from "@/lib/context/index-status";
+import { indexChipView, indexWorking } from "@/lib/context/index-status";
 import { useMeetHint } from "@/lib/store";
 
 function files(count: number): string {
@@ -22,6 +22,10 @@ function files(count: number): string {
  * step in progress instead: a file not reached yet has no chunks either, and
  * calling it skipped would be wrong.
  *
+ * After the load it follows the warm-up the same way ("Indexing words…",
+ * "Warming vectors…") and says "Ready" only when a question can be answered
+ * at full speed. Listen is off until it does.
+ *
  * Clicking opens the list of files search cannot reach, with the reason for
  * each. Files that failed are listed apart from files skipped by a rule.
  */
@@ -31,6 +35,7 @@ export function IndexChip({ className }: { className?: string }) {
   const contextUpdating = useMeetHint((s) => s.contextUpdating);
   const activity = useMeetHint((s) => s.indexActivity);
   const ingest = useMeetHint((s) => s.ingestProgress);
+  const warmth = useMeetHint((s) => s.warm);
   const { summary, failedGroups, leftGroups, failedCount, leftCount } = useIndexSkipped();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -38,12 +43,7 @@ export function IndexChip({ className }: { className?: string }) {
   const panelId = useId();
 
   const booting = contextStatus === "booting";
-  const working =
-    booting ||
-    contextStatus === "hydrating" ||
-    loadingFolder ||
-    contextUpdating ||
-    Boolean(ingest && ingest.phase !== "ready");
+  const working = indexWorking({ status: contextStatus, loadingFolder, contextUpdating, pdf: ingest });
   const view = indexChipView({
     working,
     booting,
@@ -53,7 +53,14 @@ export function IndexChip({ className }: { className?: string }) {
     summary,
     skipped: failedCount + leftCount,
     failed: failedCount,
+    warmth,
   });
+  // What the panel says about Listen, beside the list of files.
+  const readiness = view.ready
+    ? (view.detail ?? "Ready. The word index and the vectors are in memory.")
+    : view.state === "working" && view.settled
+      ? `${view.text} Listen turns on when this finishes.`
+      : null;
 
   useEffect(() => {
     if (!open) return;
@@ -81,13 +88,20 @@ export function IndexChip({ className }: { className?: string }) {
         className="index-chip"
         data-testid="index-chip"
         data-state={view.state}
+        data-phase={view.phase}
+        data-ready={view.ready ? "true" : undefined}
         data-attention={view.attention ? "true" : undefined}
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        title={view.settled ? "Show the files search cannot reach" : "Indexing is still running"}
+        title={view.detail ?? (view.settled ? "Show the files search cannot reach" : "Indexing is still running")}
         onClick={() => setOpen((value) => !value)}
       >
         <span className="index-chip-dot" aria-hidden="true" />
+        {view.label ? (
+          <span className="index-chip-phase" data-testid="index-chip-phase">
+            {view.label}
+          </span>
+        ) : null}
         <span className="index-chip-text tabular-nums" data-testid="index-chip-text">
           {view.text}
         </span>
@@ -97,6 +111,11 @@ export function IndexChip({ className }: { className?: string }) {
         <div id={panelId} className="index-chip-panel" role="group" aria-label="Index status" data-testid="index-chip-panel">
           {view.settled ? (
             <>
+              {readiness ? (
+                <p className="index-chip-note" data-testid="index-chip-readiness">
+                  {readiness}
+                </p>
+              ) : null}
               <p className="index-chip-lead" data-testid="index-chip-stored">
                 {files(summary.filesStored)} stored, {files(summary.filesIndexed)} searchable.
               </p>
@@ -121,9 +140,21 @@ export function IndexChip({ className }: { className?: string }) {
               ) : null}
             </>
           ) : (
-            <p className="index-chip-note" data-testid="index-chip-working">
-              {view.text} The list of skipped files is final once this finishes.
-            </p>
+            <>
+              <p className="index-chip-note" data-testid="index-chip-working">
+                {view.text} The list of skipped files is final once this finishes.
+              </p>
+              {loadingFolder && (activity === null || activity.phase === "reading") ? (
+                <button
+                  type="button"
+                  className="index-status-all self-start"
+                  data-testid="index-chip-stop"
+                  onClick={() => useMeetHint.getState().cancelFolderLoad()}
+                >
+                  Stop. Nothing has been added yet.
+                </button>
+              ) : null}
+            </>
           )}
         </div>
       ) : null}

@@ -13,6 +13,7 @@ import {
   type FolderLoad,
   type FsEntry,
 } from "../../repo/folder.ts";
+import { isLimitReason } from "../../repo/limits.ts";
 import type { RepoPack } from "../../repo/types.ts";
 import { buildChunks, retrieve } from "../../search/retrieve.ts";
 import { indexContext } from "../chunk-index.ts";
@@ -126,7 +127,8 @@ test("every selected file is either indexed or named with a reason", async () =>
     [...load.skippedFiles].sort((a, b) => a.path.localeCompare(b.path)),
     [
       { path: "assets/logo.png", reason: SKIP_LABEL.binaries },
-      { path: "generated/client.ts", reason: SKIP_LABEL.vendor },
+      // A folder left out whole is one entry that counts its files.
+      { path: "generated/", reason: SKIP_LABEL.vendor, count: 1 },
       { path: "notes.xyz", reason: SKIP_LABEL.types },
       { path: "src/empty.ts", reason: SKIP_LABEL.empty },
     ],
@@ -137,7 +139,7 @@ test("every selected file is either indexed or named with a reason", async () =>
   ]);
   // Nothing falls between the two lists.
   assert.equal(
-    runtime.summary.filesIndexed + runtime.summary.skipped.length + load.skippedFiles.length,
+    runtime.summary.filesIndexed + runtime.summary.skipped.length + skippedFileCount(load.skippedFiles),
     Object.keys(REPO).length,
   );
   assert.equal(load.selected, Object.keys(REPO).length);
@@ -229,15 +231,50 @@ test("a file left out at any load step is listed with its reason", async () => {
   assert.equal(load.skipped, load.skippedFiles.length);
 });
 
-test("files past the 500-file cap are listed, not just counted", async () => {
+test("a folder past the old 500-file limit loads whole", async () => {
   const files = Array.from({ length: 503 }, (_, i) => fileAt(`src/f${String(i).padStart(3, "0")}.ts`, `export const v${i} = ${i}\n`, "repo"));
   const load: FolderLoad = await packFromFiles(files);
+  assert.equal(load.pack.files.length, 503);
+  assert.equal(load.truncated, false);
+  assert.deepEqual(load.skippedFiles, []);
+});
+
+test("files past the file limit are listed with the limit they ran into", async () => {
+  const files = Array.from({ length: 503 }, (_, i) => fileAt(`src/f${String(i).padStart(3, "0")}.ts`, `export const v${i} = ${i}\n`, "repo"));
+  const limits = { maxFiles: 500 };
+  const load: FolderLoad = await packFromFiles(files, { limits });
   assert.equal(load.pack.files.length, 500);
   assert.equal(load.truncated, true);
   assert.deepEqual(
     load.skippedFiles,
-    ["src/f500.ts", "src/f501.ts", "src/f502.ts"].map((path) => ({ path, reason: SKIP_LABEL.cap })),
+    ["src/f500.ts", "src/f501.ts", "src/f502.ts"].map((path) => ({ path, reason: "over the 500-file limit" })),
   );
+  assert.ok(load.skippedFiles.every((item) => isLimitReason(item.reason)));
+});
+
+test("a load stops reading at the file where it is cancelled", async () => {
+  const files = Array.from({ length: 60 }, (_, i) => fileAt(`src/f${String(i).padStart(2, "0")}.ts`, `export const v${i} = ${i}\n`, "repo"));
+  let opened = 0;
+  for (const file of files) {
+    const read = file.arrayBuffer.bind(file);
+    Object.defineProperty(file, "arrayBuffer", {
+      value: () => {
+        opened += 1;
+        return read();
+      },
+    });
+  }
+  const reported: number[] = [];
+  const load = await packFromFiles(files, {
+    onRead: (done) => reported.push(done),
+    isCancelled: () => opened >= 10,
+  });
+  assert.equal(load.cancelled, true);
+  // Ten files were opened before the question was asked again; no eleventh.
+  assert.equal(opened, 10);
+  assert.equal(load.pack.files.length, 10);
+  // A cancelled load never reports itself finished.
+  assert.equal(reported.includes(60), false);
 });
 
 test("a file that cannot be read is listed as failed", async () => {

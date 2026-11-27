@@ -40,6 +40,8 @@ export type AnswerHistoryItem = {
    */
   evidence?: Evidence[];
   parts?: Card["parts"];
+  /** The question was ranked without vectors. Kept so a restored Card still says so. */
+  lexicalOnly?: boolean;
   timestamp: number;
 };
 
@@ -94,6 +96,7 @@ export function historyItemFromCard(
     ...(card.considered?.length ? { considered: card.considered } : {}),
     ...(card.say && card.evidence?.length ? { evidence: card.evidence } : {}),
     ...(card.say && card.parts?.length ? { parts: card.parts } : {}),
+    ...(card.lexicalOnly ? { lexicalOnly: true } : {}),
     timestamp: at,
   };
 }
@@ -116,6 +119,7 @@ export function cardFromHistory(item: AnswerHistoryItem): Card {
     ...(item.considered?.length ? { considered: item.considered } : {}),
     ...(item.say && item.evidence?.length ? { evidence: item.evidence } : {}),
     ...(item.say && item.parts?.length ? { parts: item.parts } : {}),
+    ...(item.lexicalOnly ? { lexicalOnly: true } : {}),
     query: item.query,
     latencyMs: 0,
     source: item.badge ?? "local",

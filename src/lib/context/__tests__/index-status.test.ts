@@ -4,7 +4,7 @@ import { test } from "node:test";
 import { packFromFiles, SKIP_LABEL } from "../../repo/folder.ts";
 import type { RepoPack } from "../../repo/types.ts";
 import { retrieve } from "../../search/retrieve.ts";
-import type { IndexProgress } from "../chunk-index.ts";
+import { INDEX_BATCH_FILES, type IndexProgress } from "../chunk-index.ts";
 import {
   activityFraction,
   indexStatusView,
@@ -83,12 +83,11 @@ test("the indexer reports its own counts, from zero up to exactly what it built"
   const last = seen.at(-1);
   assert.ok(first && last);
   assert.deepEqual(first, { filesDone: 0, filesTotal: first.filesTotal, chunks: 0 });
-  // Every stored file the pass handles is counted, one step each.
+  // Every stored file the pass handles is counted. The count moves once per
+  // batch written to storage, so it never names work that was not kept.
   assert.equal(first.filesTotal, runtime.summary.filesStored);
-  assert.deepEqual(
-    seen.map((p) => p.filesDone),
-    Array.from({ length: (first.filesTotal ?? 0) + 1 }, (_, index) => index),
-  );
+  assert.ok(seen.every((p, index) => index === 0 || p.filesDone >= seen[index - 1].filesDone));
+  assert.ok(seen.every((p, index) => index === 0 || p.filesDone - seen[index - 1].filesDone <= INDEX_BATCH_FILES));
   assert.ok(seen.every((p, index) => index === 0 || p.chunks >= seen[index - 1].chunks));
   assert.equal(last.filesDone, last.filesTotal);
   // The running chunk count ends on the number search really has.

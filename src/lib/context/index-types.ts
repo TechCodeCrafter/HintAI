@@ -29,6 +29,17 @@ export type StoredChunkRow = {
   chunk: IndexedChunk;
 };
 
+/** Every chunk of one text file, in file order. */
+export type SourceChunksRow = {
+  /** `${contextId}:${sourceId}` */
+  id: string;
+  workspaceId?: string;
+  contextId: string;
+  sourceId: string;
+  schemaVersion: number;
+  chunks: IndexedChunk[];
+};
+
 export type IndexStats = {
   reusedSourceCount: number;
   rebuiltSourceCount: number;

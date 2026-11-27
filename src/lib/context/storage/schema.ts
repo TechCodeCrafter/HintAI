@@ -3,7 +3,7 @@ import { SPACE_SCHEMA_VERSION, type SpaceRecord } from "../space-types.ts";
 import { CONTEXT_SCHEMA_VERSION, type ContextRecord, type StoredSource } from "../types.ts";
 
 export const DATABASE_NAME = "meethint";
-export const DATABASE_VERSION = 6;
+export const DATABASE_VERSION = 7;
 
 export type ContextRow = ContextRecord;
 export type SourceRow = StoredSource;
@@ -13,6 +13,16 @@ export const SPACE_INDEXES = "id, workspaceId, updatedAt";
 export const SOURCE_INDEXES = "id, contextId, [contextId+path], contentHash";
 export const INDEXED_SOURCE_INDEXES = "id, contextId, sourceId, [contextId+sourceId]";
 export const STORED_CHUNK_INDEXES = "id, contextId, sourceId, [contextId+sourceId]";
+/**
+ * One row per text file, holding that file's chunks in order. Version 7.
+ *
+ * `storedChunks` keeps one row per chunk under three indexes, and the browser
+ * takes longer over each write the more rows are already there: 9,000 chunks
+ * took about nine seconds to store, and twice the chunks took four times as
+ * long. A row per file is a sixth of the rows and one index entry each.
+ * PDF chunks stay in `storedChunks`, where they are kept per content hash.
+ */
+export const SOURCE_CHUNK_INDEXES = "id, contextId";
 export const SOURCE_BLOB_INDEXES = "id, contextId, sourceId, contentHash, [sourceId+contentHash], [contextId+sourceId]";
 export const NORMALIZED_DOCUMENT_INDEXES = "id, contextId, sourceId, contentHash, [sourceId+contentHash]";
 export const MEETING_INDEXES = "id, startedAt, endedAt, name";

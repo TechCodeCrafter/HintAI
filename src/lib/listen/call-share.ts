@@ -29,7 +29,7 @@ import { gateFor, observeFrame } from "@/lib/listen/vad";
 import { mark, markClip, probeOn } from "@/lib/listen/onset-probe";
 import { encodeWavFromStreamChunk, pcm16kFromFrames, wavBytesMono } from "@/lib/listen/wav";
 import { cleanCaption } from "@/lib/search/question";
-import { useMeetHint } from "@/lib/store";
+import { listenGateOf, useMeetHint } from "@/lib/store";
 
 const FIRST_MS = 1400;
 /** Only the live draft reads a trailing window; a committed clip is never trimmed. */
@@ -915,6 +915,13 @@ export function toggleHear() {
   if (running || (state.armed && !state.listenError)) {
     stopHear();
     state.disarm();
+    return;
+  }
+  // Starting waits for the index: the button is off until the chip reports
+  // Ready, and the L key goes through here too. Stopping, above, always works.
+  const gate = listenGateOf(state);
+  if (!gate.ready) {
+    state.setAsrNote(gate.reason ?? "The index is not ready yet.");
     return;
   }
   void startHear().catch((err) => {

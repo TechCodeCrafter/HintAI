@@ -32,6 +32,7 @@ import { getContextRepository } from "@/lib/context/service";
 import type { ContextKind } from "@/lib/context/types";
 import { cn } from "@/lib/cn";
 import type { FolderLoadOptions } from "@/lib/repo/folder";
+import { warmPhase } from "@/lib/search/readiness";
 import { useMeetHint } from "@/lib/store";
 
 type Step = "identity" | "material" | "indexing";
@@ -90,7 +91,10 @@ export function CreateContextFlow() {
   // is stored as a source with nothing to search. Judged from the flow's own
   // work, so the screen cannot sit on "Indexing…" once that work is over.
   const view = indexingView({ adding, outcome, onTarget: activeContextId === workingId });
-  const indexingDone = step === "indexing" && view === "ready";
+  // "Ready" here means what it means on the cockpit's chip: the material is
+  // indexed and search is warm for it, so Done leads to a Listen that is on.
+  const warm = useMeetHint((s) => warmPhase(s.warm) === "ready");
+  const indexingDone = step === "indexing" && view === "ready" && warm;
   const indexingFailed = step === "indexing" && view === "failed";
   const failureNote =
     (outcome?.tone === "error" ? (outcome.reason ?? outcome.text) : null) ??
@@ -119,7 +123,10 @@ export function CreateContextFlow() {
   const measured = working ? activityFraction(indexActivity) : null;
   const progress = indexingDone
     ? 100
-    : measured !== null
+    : view === "ready"
+      ? // Indexed, and search is being warmed for it: the bar holds near the end.
+        99
+      : measured !== null
       ? Math.min(99, Math.round(measured * 100))
       : ingestProgress && ingestProgress.total > 0
       ? Math.min(99, Math.round((ingestProgress.current / ingestProgress.total) * 100))

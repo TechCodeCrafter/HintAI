@@ -1,6 +1,6 @@
 import { ScanSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { stageLabel, type SearchDetails, type SearchDetailsHit } from "@/lib/search/search-debug";
+import { SCORE_PARTS, stageLabel, type SearchDetails, type SearchDetailsHit } from "@/lib/search/search-debug";
 import { useMeetHint } from "@/lib/store";
 import { cn } from "@/lib/cn";
 
@@ -35,7 +35,8 @@ export function SearchDetailsToggle() {
 /**
  * Why the last question got the card it got: how much was searched, which
  * stage answered or what kind of silence it was, and the three chunks that
- * ranked highest with one line of each.
+ * ranked highest, each with its score split into lexical, semantic, structural
+ * and symbol and one line of its text.
  *
  * Mount it only while the switch is on. It reads the record straight from the
  * store so the Answer pane does not re-render when a record lands.
@@ -110,6 +111,7 @@ function Details({ details }: { details: SearchDetails }) {
                   {hit.score.toFixed(2)}
                 </span>
               </div>
+              <ScoreBreakdown hit={hit} />
               {hit.snippet ? <p className="search-details-snippet">{hit.snippet}</p> : null}
             </li>
           ))}
@@ -120,6 +122,44 @@ function Details({ details }: { details: SearchDetails }) {
         </p>
       )}
     </>
+  );
+}
+
+const PART_MEANS: Record<(typeof SCORE_PARTS)[number], string> = {
+  lexical: "The question's words in the chunk's text, heading and path",
+  semantic: "Closeness of meaning, from the vectors. 0 when the search ran on words only",
+  structural: "File names and headings the question names",
+  symbol: "The chunk declares, or is the file of, a symbol the question names",
+};
+
+/**
+ * The hit's score as the four amounts that add up to it. Each is already
+ * weighted, so the row reads as a sum. See `ScoreParts`.
+ */
+function ScoreBreakdown({ hit }: { hit: SearchDetailsHit }) {
+  if (!hit.parts) return null;
+  return (
+    <dl
+      className="search-details-parts"
+      data-testid="search-details-breakdown"
+      aria-label={`Score ${hit.score.toFixed(2)}, by part`}
+    >
+      {SCORE_PARTS.map((part) => {
+        const value = hit.parts[part];
+        return (
+          <div
+            key={part}
+            data-testid="search-details-part"
+            data-part={part}
+            data-zero={value === 0 ? "true" : undefined}
+            title={PART_MEANS[part]}
+          >
+            <dt>{part}</dt>
+            <dd className="tabular-nums">{value.toFixed(2)}</dd>
+          </div>
+        );
+      })}
+    </dl>
   );
 }
 

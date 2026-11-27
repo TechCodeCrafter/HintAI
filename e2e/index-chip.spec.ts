@@ -129,7 +129,8 @@ test("after a folder load the chip counts skipped files, lists them, and keeps u
   await expect(skipped).toContainText("1 × binaries and media");
   await expect(skipped).toContainText(`${root}/logo.png`);
   await expect(skipped).toContainText("1 × vendor and build folders");
-  await expect(skipped).toContainText(`${root}/node_modules/pkg/index.js`);
+  // A folder left out whole is one line that says how many files it held.
+  await expect(skipped).toContainText(`${root}/node_modules/ (1 file)`);
   // Neither indexed file is listed as skipped.
   await expect(skipped).not.toContainText("README.md");
   await expect(skipped).not.toContainText("src/retry.ts");

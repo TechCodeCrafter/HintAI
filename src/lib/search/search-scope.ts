@@ -77,6 +77,8 @@ export async function runSpaceScopedRetrieval(input: {
   vectorStore?: VectorStore | null;
   limit?: number;
   hybrid?: boolean;
+  /** False ranks on words and structure only: no vector is read, the question is not embedded. */
+  semantic?: boolean;
   /** Recent-commit recency by chunk path, when the space's folders had history. */
   recency?: ReadonlyMap<string, number>;
 }): Promise<Hit[]> {
@@ -92,6 +94,7 @@ export async function runSpaceScopedRetrieval(input: {
         recency: input.recency,
       }),
       hybrid: input.hybrid,
+      semantic: input.semantic,
     },
   );
 }

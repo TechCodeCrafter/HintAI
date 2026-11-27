@@ -1,5 +1,4 @@
 import { assertWorkspaceMatch, defaultWorkspaceId } from "../auth/workspace.ts";
-import { packFromSources } from "./hydrate.ts";
 import { indexContext, type IndexedRuntime, type IndexOptions, type IndexProgress } from "./chunk-index.ts";
 import { tagChunksForScope } from "../search/retrieval-scope.ts";
 import { packVocabulary } from "../search/retrieve.ts";
@@ -114,7 +113,9 @@ export async function indexSpace(
       };
     }
     allChunks.push(...runtime.chunks);
-    const memberSources = await repo.listSources(contextId);
+    // Read once by the pass above. A few thousand files with their text are
+    // not read from storage a second time to learn what was just read.
+    const memberSources = runtime.sources ?? (await repo.listSources(contextId));
     allSources.push(...memberSources);
     if (memberSources.length > 0) notLoaded.push(...(context.notLoaded ?? []));
     if (memberSources.length > 0 && context.recentChanges?.length) {
@@ -130,16 +131,6 @@ export async function indexSpace(
   }
 
   const primary = await repo.getContext(space.primaryContextId);
-  const primarySources = primary ? await repo.listSources(primary.id) : allSources;
-  const primaryPack = primary
-    ? packFromSources(primary, primarySources)
-    : {
-        id: space.id,
-        name: space.name,
-        description: "",
-        files: [],
-        commits: [],
-      };
 
   const unionPack: RepoPack = {
     id: space.id,
@@ -147,7 +138,7 @@ export async function indexSpace(
     description: `Knowledge space · ${files.length} files across ${members.length} context(s)`,
     files,
     commits: [],
-    excludePatterns: excludePatterns ?? primaryPack.excludePatterns,
+    excludePatterns: excludePatterns ?? primary?.excludePatterns,
   };
   const prefixByPath = new Map(allSources.map((source) => [source.path, source.pathPrefix]));
   const { pack: pruned, weak: pruneWeak } = prunePack(unionPack, (path) => prefixByPath.get(path) ?? "");

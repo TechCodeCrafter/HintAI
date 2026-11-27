@@ -527,6 +527,20 @@ function indexOf(chunk: IndexedChunk): Indexed {
 /** One warm-up at a time: starting another ends the one before it. */
 let warmRun = 0;
 
+export type WarmIndexOptions = {
+  sliceMs?: number;
+  isCancelled?: () => boolean;
+  pause?: () => Promise<void>;
+  /** Called with how many chunks are indexed so far, before each pause and once at the end. */
+  onProgress?: (done: number, total: number) => void;
+  /**
+   * False for a warm-up that runs beside another: the chunks of a re-index
+   * being prepared while the chunks in use are still warming. It neither ends
+   * an earlier run nor is ended by a later one; only `isCancelled` stops it.
+   */
+  exclusive?: boolean;
+};
+
 /**
  * Builds the word index for `chunks` ahead of the first question.
  *
@@ -539,11 +553,9 @@ let warmRun = 0;
  * Returns how many chunks it indexed. Starting it again, or `isCancelled`
  * turning true, ends an earlier run.
  */
-export async function warmSearchIndex(
-  chunks: IndexedChunk[],
-  options: { sliceMs?: number; isCancelled?: () => boolean; pause?: () => Promise<void> } = {},
-): Promise<number> {
-  const run = ++warmRun;
+export async function warmSearchIndex(chunks: IndexedChunk[], options: WarmIndexOptions = {}): Promise<number> {
+  const exclusive = options.exclusive ?? true;
+  const run = exclusive ? ++warmRun : warmRun;
   const sliceMs = options.sliceMs ?? 12;
   const pause = options.pause ?? (() => new Promise<void>((resolve) => setTimeout(resolve, 0)));
   const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
@@ -553,11 +565,26 @@ export async function warmSearchIndex(
     indexOf(chunk);
     done += 1;
     if (now() - sliceStart < sliceMs) continue;
+    options.onProgress?.(done, chunks.length);
     await pause();
-    if (run !== warmRun || options.isCancelled?.()) return done;
+    if ((exclusive && run !== warmRun) || options.isCancelled?.()) return done;
     sliceStart = now();
   }
+  options.onProgress?.(done, chunks.length);
   return done;
+}
+
+/**
+ * True when every chunk already has its words indexed, so a search over them
+ * pays for ranking only. A re-index hands search new chunk objects, which
+ * start with nothing indexed even when their text has not changed.
+ */
+export function searchIndexWarm(chunks: IndexedChunk[]): boolean {
+  const generation = vocabularyGeneration();
+  for (const chunk of chunks) {
+    if (INDEX.get(chunk)?.generation !== generation) return false;
+  }
+  return true;
 }
 
 /** Bounded term frequency: repetition helps, but cannot run away. */
@@ -1103,6 +1130,12 @@ export type RetrieveHitsOptions = {
   limit?: number;
   vectorStore?: VectorStore | null;
   hybrid?: boolean;
+  /**
+   * False leaves the vector channel out: no vector is read and the question
+   * is not embedded. The word and structure channels rank on their own, which
+   * is what a question asked before the vectors are ready gets.
+   */
+  semantic?: boolean;
   /** Recent-commit recency by chunk path, when the loaded folder had history. */
   recency?: RankSignals["recency"];
   /** Tenant filter applied before ranking — required on every retrieveHits call. */
@@ -1160,7 +1193,7 @@ export async function retrieveHits(
   const signals: RankSignals | undefined = options.recency?.size ? { recency: options.recency } : undefined;
   const hits =
     hybrid && vectorStore
-      ? await hybridRetrieve(query, usable, vectorStore, limit, signals)
+      ? await hybridRetrieve(query, usable, vectorStore, limit, signals, { semantic: options.semantic })
       : retrieve(query, usable, limit, signals);
   logRetrieval(hits, chunks.length, excludedCount);
   return hits;
@@ -1177,9 +1210,16 @@ export async function hybridRetrieve(
   vectorStore: VectorStore,
   limit = 6,
   signals?: RankSignals,
+  options: { semantic?: boolean } = {},
 ): Promise<Hit[]> {
-  const { vectorCacheKey } = await import("./retrieval-scope.ts");
-  const cached = await vectorStore.get(chunks.map((chunk) => vectorCacheKey(chunk)));
+  // With the vector channel left out, the store is not read at all: reading a
+  // space's vectors is the wait this path exists to avoid.
+  const semantic = options.semantic ?? true;
+  let vectorsHeld = 0;
+  if (semantic) {
+    const { vectorCacheKey } = await import("./retrieval-scope.ts");
+    vectorsHeld = (await vectorStore.get(chunks.map((chunk) => vectorCacheKey(chunk)))).size;
+  }
   const lexicalHits = retrieve(query, chunks, limit * 2, signals);
   const { candidatesForCap, capPerFile, retrieveStructural } = await import("./hybrid.ts");
   // These two channels rank chunks, not files, so each is asked for everything
@@ -1187,7 +1227,9 @@ export async function hybridRetrieve(
   // before, plus the chunks from other files the per-file cap would promote.
   const structuralHits = candidatesForCap(retrieveStructural(query, chunks, chunks.length), limit * 2);
   let semanticHits: Hit[] = [];
-  if (cached.size > 0) {
+  if (!semantic) {
+    llmDebug("[retrieve] semantic skipped: vectors not ready");
+  } else if (vectorsHeld > 0) {
     try {
       semanticHits = candidatesForCap(await semanticRetrieve(query, chunks, vectorStore, chunks.length), limit * 2);
     } catch {

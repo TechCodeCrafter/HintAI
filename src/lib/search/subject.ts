@@ -1,4 +1,5 @@
 import type { RepoPack } from "@/lib/repo/types";
+import { filesHolding, haystackOf } from "./file-words.ts";
 
 /**
  * Which part of a question a piece of evidence actually speaks to.
@@ -27,23 +28,59 @@ export function mentions(haystack: string, term: string): boolean {
   return haystack.includes(term.slice(0, Math.max(5, term.length - 3)));
 }
 
-/** Files that mention each term, the document frequency admission reasons over. */
-const DF_CACHE = new WeakMap<RepoPack, Map<string, number>>();
+/**
+ * What `mentions` looks for, as one search. A haystack that holds the term
+ * also holds every prefix of it, so for a term of six letters or more the
+ * shortened form alone decides; a shorter term has no shortened form.
+ */
+function needleOf(term: string): string {
+  return term.length < 6 ? term : term.slice(0, Math.max(5, term.length - 3));
+}
 
-export function fileFrequency(term: string, pack: RepoPack): number {
-  let cache = DF_CACHE.get(pack);
+/**
+ * Files that mention each term, the document frequency admission reasons over.
+ * Kept per array of files: a pack copied to change its settings keeps the
+ * array, and with it the counts.
+ */
+const DF_CACHE = new WeakMap<RepoPack["files"], Map<string, number>>();
+
+/**
+ * Counts, for every term not counted yet, the files that mention it.
+ *
+ * Once the files' words are indexed (`file-words.ts`) each count is a lookup.
+ * Until then, and for a term the index cannot answer, it is one pass over the
+ * files for all of those terms together: each file's text is lowered once and
+ * searched once per term. Both give the same number.
+ */
+function countFiles(terms: string[], pack: RepoPack): Map<string, number> {
+  let cache = DF_CACHE.get(pack.files);
   if (!cache) {
     cache = new Map();
-    DF_CACHE.set(pack, cache);
+    DF_CACHE.set(pack.files, cache);
   }
-  const hit = cache.get(term);
-  if (hit !== undefined) return hit;
-  let df = 0;
+  const fresh = [...new Set(terms)].filter((term) => !cache.has(term));
+  if (fresh.length === 0) return cache;
+  const unread: string[] = [];
+  for (const term of fresh) {
+    const held = filesHolding(pack.files, needleOf(term));
+    if (held === null) unread.push(term);
+    else cache.set(term, held);
+  }
+  if (unread.length === 0) return cache;
+  const needles = unread.map(needleOf);
+  const counts = new Array<number>(unread.length).fill(0);
   for (const file of pack.files) {
-    if (mentions(`${file.path}\n${file.content}`.toLowerCase(), term)) df += 1;
+    const haystack = haystackOf(file);
+    for (let i = 0; i < needles.length; i += 1) {
+      if (haystack.includes(needles[i])) counts[i] += 1;
+    }
   }
-  cache.set(term, df);
-  return df;
+  for (let i = 0; i < unread.length; i += 1) cache.set(unread[i], counts[i]);
+  return cache;
+}
+
+export function fileFrequency(term: string, pack: RepoPack): number {
+  return countFiles([term], pack).get(term) ?? 0;
 }
 
 /**
@@ -61,7 +98,8 @@ export function subjectTerms(terms: string[], pack: RepoPack): string[] {
   // it. Left in, it would be the rarest term of every question that contains it
   // and would make silence unconditional — "how does the export work?" in a repo
   // that says "workbook" is a question about the export, not about a missing word.
-  const scored = terms.map((term) => ({ term, df: fileFrequency(term, pack) }));
+  const counted = countFiles(terms, pack);
+  const scored = terms.map((term) => ({ term, df: counted.get(term) ?? 0 }));
   // A term more than half the material contains cannot indicate which part of it
   // answers. Dropping those first matters because the median below is taken over
   // whatever survives, and conversational filler is exactly what a relative

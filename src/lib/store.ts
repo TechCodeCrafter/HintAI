@@ -33,7 +33,16 @@ import {
   toggleExcludePath,
 } from "@/lib/context/exclusions";
 import { getVectorStore } from "@/lib/search/vector-access";
-import { vectorCacheKey } from "@/lib/search/retrieval-scope";
+import {
+  addKeepsSession,
+  listenGate,
+  markLexicalOnly,
+  pendingWarmth,
+  searchModeFor,
+  type ListenGate,
+  type SearchWarmth,
+} from "@/lib/search/readiness";
+import { warmSearch, warmWords } from "@/lib/search/warm";
 import { getContextRepository, listSpaceSummaries, listStoredContexts, persistPackAsContext } from "@/lib/context/service";
 import type { CreateContextInput } from "@/lib/context/repository";
 import { evidenceForOpenTarget, resolveDocumentOpen } from "@/lib/document/viewer/resolve";
@@ -101,8 +110,9 @@ import {
   type SkippedFile,
 } from "@/lib/repo/folder";
 import { recencyByPath, type FileChange } from "@/lib/repo/git-history";
+import { isLimitReason } from "@/lib/repo/limits";
 import { reportIndexSummary, type IndexSummary } from "@/lib/context/index-summary";
-import type { IndexActivity } from "@/lib/context/index-status";
+import { indexWorking, type IndexActivity } from "@/lib/context/index-status";
 import type { IndexOptions } from "@/lib/context/chunk-index";
 import { DESIGN_REVIEW } from "@/lib/meeting/script";
 import type { Gate } from "@/lib/search/question";
@@ -119,7 +129,6 @@ import {
   buildChunks,
   formatFlightRetrievalSummary,
   packVocabulary,
-  warmSearchIndex,
 } from "@/lib/search/retrieve";
 import { shapeOf, type Shape } from "@/lib/search/intent";
 import {
@@ -129,6 +138,7 @@ import {
   previousRetrievalQuestion,
 } from "@/lib/search/spoken";
 import { subjectTerms } from "@/lib/search/subject";
+import { fileWordsReady, warmFileWords } from "@/lib/search/file-words";
 import { threadAlive, threadFrom, type ThreadContext } from "@/lib/search/thread";
 import {
   type MemoryTurn,
@@ -174,7 +184,7 @@ function endFolderLoad(token: number, patch: Partial<MeetHintState> = {}) {
   useMeetHint.setState({ loadingFolder: false, indexActivity: null, ...patch });
 }
 
-/** At most one status update per interval, so a 500-file load does not render 500 times. */
+/** At most one status update per interval, so a 5,000-file load does not render 5,000 times. */
 const ACTIVITY_INTERVAL_MS = 60;
 
 /**
@@ -233,6 +243,8 @@ function noticesFromFolderLoad(args: {
   failed: string[];
   skipped: number;
   truncated: boolean;
+  /** Files left out because the selection was over the file or size limit. */
+  overLimit?: number;
   weak: boolean;
   fileCount: number;
 }): { folderError: string | null; packNotice: string | null } {
@@ -245,7 +257,7 @@ function noticesFromFolderLoad(args: {
         : args.skipped && !args.truncated
           ? `Skipped ${args.skipped} ${args.skipped === 1 ? "file that is" : "files that are"} not source or text.`
           : null),
-    packNotice: args.truncated ? truncationNotice(args.fileCount) : null,
+    packNotice: args.truncated ? truncationNotice(args.fileCount, args.overLimit) : null,
   };
 }
 
@@ -285,6 +297,12 @@ type MeetHintState = {
    * "Indexed X files, Y chunks": that is counted from the chunks.
    */
   indexActivity: IndexActivity | null;
+  /**
+   * How far search has been prepared for `chunks`: the word index built, the
+   * vectors read in. Written only by the warm-up that `chunks` started, so it
+   * always describes the chunks in use. The chip shows it and Listen waits on it.
+   */
+  warm: SearchWarmth;
   /** Words the loaded material contains. Drives the question gate. */
   vocab: Set<string>;
   armed: boolean;
@@ -398,6 +416,13 @@ type MeetHintState = {
   clearThem: () => void;
   lastWindow: (ms?: number) => string;
   loadFolder: (list: FileList | File[], options?: FolderLoadOptions) => Promise<IngestResult>;
+  /**
+   * Stops a folder load that is still reading files. Nothing has been stored
+   * at that point, so nothing is left behind. False once the files are being
+   * saved or indexed: from there the load ends by finishing, or by opening
+   * another space, which keeps what was indexed so far.
+   */
+  cancelFolderLoad: () => boolean;
   /** `newSpace` puts the PDFs in a space of their own instead of the active one. */
   addPdfFiles: (list: FileList | File[], options?: { newSpace?: boolean }) => Promise<void>;
   /**
@@ -458,6 +483,66 @@ function bumpSpaceCatalog() {
 
 function searchIsLive(): boolean {
   return useMeetHint.getState().contextStatus === "ready";
+}
+
+/** The chunks `warm` describes. A search over any other array has no report to go by. */
+let warmedChunks: IndexedChunk[] | null = null;
+let warmRun = 0;
+
+/**
+ * Prepares search for the chunks now in use and keeps `warm` current while it
+ * does. One run at a time: new chunks end the run for the ones they replaced.
+ */
+function startSearchWarm(chunks: IndexedChunk[]) {
+  const run = ++warmRun;
+  warmedChunks = chunks;
+  const current = () => run === warmRun;
+  // Read after the chunks are set: a load replaces the pack in the same update.
+  const files = useMeetHint.getState().pack.files;
+  void warmSearch(chunks, {
+    vectorStore: getVectorStore(),
+    isCancelled: () => !current(),
+    prepare: fileWordsReady(files) ? undefined : () => warmFileWords(files, { isCancelled: () => !current() }),
+    onChange: (warm) => {
+      if (current()) useMeetHint.setState({ warm });
+    },
+  }).catch((error) => {
+    // Warming is an optimisation. If it breaks, Listen must not stay off for
+    // good: search still works, it only pays for what was not prepared.
+    console.warn("[search] warm-up failed:", error);
+    if (!current()) return;
+    const { warm } = useMeetHint.getState();
+    useMeetHint.setState({
+      warm: {
+        words: { ...warm.words, ready: true },
+        vectors: { ...warm.vectors, state: warm.vectors.state === "warming" ? "lexical" : warm.vectors.state },
+      },
+    });
+  });
+}
+
+/** Whether the index chip reports Ready right now, which is when Listen may start. */
+export function listenGateOf(
+  state: Pick<
+    MeetHintState,
+    "contextStatus" | "loadingFolder" | "contextUpdating" | "ingestProgress" | "chunks" | "pack" | "warm"
+  >,
+): ListenGate {
+  const patterns = state.pack.excludePatterns;
+  return listenGate({
+    working: indexWorking({
+      status: state.contextStatus,
+      loadingFolder: state.loadingFolder,
+      contextUpdating: state.contextUpdating,
+      pdf: state.ingestProgress,
+    }),
+    errored: state.contextStatus === "error",
+    // The chip counts the chunks search runs over: the ones no exclusion hides.
+    searchable: patterns?.length
+      ? state.chunks.some((chunk) => !pathExcluded(chunk.path, patterns))
+      : state.chunks.length > 0,
+    warmth: state.warm,
+  });
 }
 
 function clearSessionOnSwitch(): Pick<
@@ -641,15 +726,8 @@ function patchFromSpaceRuntime(
   // the one place the "Indexed X files, Y chunks" debug line is written, and
   // the one place a finished pass stops reporting progress.
   if (runtime.summary) reportIndexSummary(space.name, runtime.summary, notLoaded);
-  // Build the word index for these chunks now, a few milliseconds at a time,
-  // so the first question does not pay for it in one block. A question asked
-  // before this finishes indexes whatever is left itself.
-  void warmSearchIndex(runtime.chunks).catch(() => undefined);
-  // The same for the vectors: read from this device's database now, in
-  // batches, so the first question after a reload does not wait for them.
-  void getVectorStore()
-    ?.get(runtime.chunks.map((chunk) => vectorCacheKey(chunk)))
-    .catch(() => undefined);
+  // Putting new chunks in the store is what starts the warm-up for them (the
+  // word index, the vectors, the embedding model): see `startSearchWarm`.
   return {
     indexActivity: null,
     activeSpaceId: space.id,
@@ -684,6 +762,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
   contextUpdating: false,
   ingestProgress: null,
   indexActivity: null,
+  warm: pendingWarmth(NORTHSTAR_CHUNKS.length, false),
   vocab: packVocabulary(NORTHSTAR_CHUNKS),
   armed: false,
   listening: false,
@@ -831,9 +910,23 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       listening: text ? false : get().listening,
     }),
   boot: async (preferredId) => {
+    // The space asked for can be the one already open: a folder was loaded
+    // into a new space and the route followed it there. Its files are in
+    // memory and search is warm, so it is left as it is. Reading it all back
+    // from storage took the chip off Ready, and Listen with it, for seconds
+    // on a large folder. Everything around the space is still refreshed, and
+    // `activateSpace` below returns at once for a space that is open and ready.
+    const open = get();
+    const alreadyOpen =
+      Boolean(preferredId) &&
+      open.activeSpaceId === preferredId &&
+      open.contextStatus === "ready" &&
+      !open.loadingFolder &&
+      !open.contextUpdating &&
+      !open.ingestProgress;
     const epoch = nextHydrationEpoch();
     set({
-      contextStatus: "booting",
+      ...(alreadyOpen ? {} : { contextStatus: "booting" as const }),
       contextError: null,
       hydrationEpoch: epoch,
     });
@@ -959,6 +1052,9 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       load = await packFromFiles(list, {
         ...options,
         onRead: (done, total) => report({ phase: "reading", done, total }, done === 0 || done === total),
+        // Opening another space, or starting another load, stops this one at
+        // the next file instead of after the last.
+        isCancelled: () => startedAt !== hydrationEpoch || token !== folderLoadSeq,
       });
     } catch {
       endFolderLoad(token, { folderError: "Could not read those files. Nothing was added." });
@@ -966,31 +1062,47 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     }
     // Another space, or another account, was opened while the files were
     // being read. That request wins; this one is dropped without a trace.
-    if (startedAt !== hydrationEpoch) {
+    if (startedAt !== hydrationEpoch || load.cancelled) {
       endFolderLoad(token);
       return none;
     }
     const { pack: raw, skipped, truncated, failed } = load;
+    const overLimit = load.skippedFiles.filter((item) => isLimitReason(item.reason)).length;
     if (raw.files.length === 0) {
       endFolderLoad(token, { folderError: emptyLoadError(load), packNotice: null });
       return none;
     }
     const before = get();
     const sameSpace = before.activeContextId === contextId;
-    const keepsMaterial = sameSpace && before.contextStatus === "ready" && before.sources.length > 0;
-    const epoch = nextHydrationEpoch();
-    searchEpoch += 1;
-    set({
-      contextStatus: "hydrating",
-      contextError: null,
-      hydrationEpoch: epoch,
-      activeContextId: contextId,
-      activeSpaceId: contextId,
-      // Adding to the space already in use keeps the answer on screen and
-      // the history; only moving to another space starts a clean session.
-      ...(sameSpace ? { ingestProgress: null } : clearSessionOnSwitch()),
+    const keepsMaterial = addKeepsSession({
+      sameSpace,
+      status: before.contextStatus,
+      sourceCount: before.sources.length,
     });
-    persistActiveSpaceId(contextId);
+    const epoch = nextHydrationEpoch();
+    // A superseded add gives up its own flags and no one else's.
+    const dropped = () => endFolderLoad(token, keepsMaterial ? { contextUpdating: false } : {});
+    if (keepsMaterial) {
+      // Files joining the space in use are indexed behind it. The material
+      // already loaded stays in place and stays searchable, so a listen
+      // session carries on and a question asked meanwhile is answered from
+      // it. The new index replaces it in one step once it is warm. No search
+      // in flight is dropped and the space never reads as "hydrating".
+      set({ contextUpdating: true, contextError: null, hydrationEpoch: epoch, ingestProgress: null });
+    } else {
+      searchEpoch += 1;
+      set({
+        contextStatus: "hydrating",
+        contextError: null,
+        hydrationEpoch: epoch,
+        activeContextId: contextId,
+        activeSpaceId: contextId,
+        // Adding to the space already in use keeps the answer on screen and
+        // the history; only moving to another space starts a clean session.
+        ...(sameSpace ? { ingestProgress: null } : clearSessionOnSwitch()),
+      });
+      persistActiveSpaceId(contextId);
+    }
     try {
       report({ phase: "saving", total: raw.files.length }, true);
       const repo = getContextRepository();
@@ -1000,7 +1112,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         recentChanges: load.recentChanges,
       });
       if (epoch !== hydrationEpoch) {
-        endFolderLoad(token);
+        dropped();
         return none;
       }
       const space = await resolveSpaceForActivation(repo, context.id);
@@ -1008,18 +1120,37 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         isCancelled: () => epoch !== hydrationEpoch,
       });
       if (epoch !== hydrationEpoch || hydrated.cancelled) {
-        endFolderLoad(token);
+        dropped();
         return none;
+      }
+      if (keepsMaterial) {
+        // A re-index hands search new chunk objects with no words indexed.
+        // Index them before they replace the ones in use, so the question
+        // after the swap is as fast as the one before it.
+        await warmWords(hydrated.chunks, {
+          vectorStore: getVectorStore(),
+          isCancelled: () => epoch !== hydrationEpoch,
+        });
+        if (epoch !== hydrationEpoch) {
+          dropped();
+          return none;
+        }
       }
       persistActiveSpaceId(space.id);
       const contexts = await listStoredContexts();
       if (epoch !== hydrationEpoch) {
-        endFolderLoad(token);
+        dropped();
         return none;
       }
+      const shown = get();
+      // The file being read stays open across a background re-index.
+      const keepOpen =
+        keepsMaterial &&
+        (shown.openDocument !== null || hydrated.pack.files.some((file) => file.path === shown.openFile));
       set({
         contexts,
         ...patchFromSpaceRuntime(space, hydrated, load.skippedFiles),
+        ...(keepOpen ? { openFile: shown.openFile } : {}),
         loadingFolder: false,
         contextStatus: "ready",
         contextUpdating: false,
@@ -1029,6 +1160,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           failed,
           skipped,
           truncated,
+          overLimit,
           weak: hydrated.weak,
           fileCount: hydrated.pack.files.length,
         }),
@@ -1041,13 +1173,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       return { ok: true, contextId: context.id };
     } catch {
       if (epoch !== hydrationEpoch) {
-        endFolderLoad(token);
+        dropped();
         return none;
       }
       // Material that was already loaded and searchable still is.
       set({
         loadingFolder: false,
         indexActivity: null,
+        contextUpdating: false,
         contextStatus: keepsMaterial ? "ready" : "error",
         contextError: keepsMaterial ? null : "Could not save that material.",
         folderError: keepsMaterial
@@ -1421,6 +1554,14 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       utterances: s.utterances.filter((u) => u.role !== "them"),
     })),
   lastWindow: (ms = 15000) => windowText(get().utterances, ms),
+  cancelFolderLoad: () => {
+    const { loadingFolder, indexActivity } = get();
+    if (!loadingFolder || (indexActivity !== null && indexActivity.phase !== "reading")) return false;
+    // The reader checks this before every file and returns without a result.
+    folderLoadSeq += 1;
+    set({ loadingFolder: false, indexActivity: null, packNotice: "Stopped. Nothing was added." });
+    return true;
+  },
   loadFolder: async (list, options) => {
     // Same order as attachFolderToContext: read first, switch only when
     // there is something to index.
@@ -1434,16 +1575,20 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
       load = await packFromFiles(list, {
         ...options,
         onRead: (done, total) => report({ phase: "reading", done, total }, done === 0 || done === total),
+        // Opening another space, or starting another load, stops this one at
+        // the next file instead of after the last.
+        isCancelled: () => startedAt !== hydrationEpoch || token !== folderLoadSeq,
       });
     } catch {
       endFolderLoad(token, { folderError: "Could not read that folder. Nothing was added." });
       return none;
     }
-    if (startedAt !== hydrationEpoch) {
+    if (startedAt !== hydrationEpoch || load.cancelled) {
       endFolderLoad(token);
       return none;
     }
     const { pack: raw, skipped, truncated, failed } = load;
+    const overLimit = load.skippedFiles.filter((item) => isLimitReason(item.reason)).length;
     if (raw.files.length === 0) {
       endFolderLoad(token, { folderError: emptyLoadError(load), packNotice: null });
       return none;
@@ -1497,6 +1642,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           failed,
           skipped,
           truncated,
+          overLimit,
           weak: hydrated.weak,
           fileCount: hydrated.pack.files.length,
         }),
@@ -1508,7 +1654,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         text: hydrated.weak
           ? `Loaded ${hydrated.pack.name}, but these look like CI files. Open the src folder, then Search.`
           : truncated
-            ? truncationNotice(hydrated.pack.files.length)
+            ? truncationNotice(hydrated.pack.files.length, overLimit)
             : `Loaded ${hydrated.pack.name} — ${hydrated.pack.files.length} files${skipped ? `, skipped ${skipped}` : ""}. ${sample ? `Keeping ${sample}. ` : ""}Share the call or type a question — the Card is what you say.`,
       });
       return { ok: true, contextId: context.id };
@@ -2171,6 +2317,11 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const threadTurns = memoryForPrompt(state.memory);
     const selectedModel = getModelById(get().selectedModelId) ?? getDefaultModel();
     let threadExpanded = false;
+    // Hybrid when the vectors for these chunks are in memory. Until then the
+    // question is ranked on words and structure alone, with no vector read
+    // and no model call, and its Card says so. Decided per question, so the
+    // first one asked after the vectors finish is hybrid.
+    const mode = searchModeFor(warmedChunks === state.chunks ? state.warm : null);
     // Recent-commit recency for this space's files, when its folders had history.
     const recency = state.recency && state.recency.spaceId === state.activeSpaceId ? state.recency.byPath : undefined;
     const retrieveT0 = performance.now();
@@ -2193,6 +2344,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
             spaceState: state,
             workspaceId,
             vectorStore: getVectorStore(),
+            semantic: mode.semantic,
             limit: 6,
             recency,
           }),
@@ -2239,6 +2391,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
           spaceState: state,
           workspaceId,
           vectorStore: getVectorStore(),
+          semantic: mode.semantic,
           limit: 6,
           recency,
         });
@@ -2351,12 +2504,15 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
     const traceId = isFlightRecorder() || isBetaTelemetryEnabled() ? newTraceId() : null;
     const uiApplyT0 = performance.now();
     finish(
-      {
-        ...routed.card,
-        answerId: traceId ?? undefined,
-        flightTier: routed.tier,
-        flightLatencyMs: latency.totalMs,
-      },
+      markLexicalOnly(
+        {
+          ...routed.card,
+          answerId: traceId ?? undefined,
+          flightTier: routed.tier,
+          flightLatencyMs: latency.totalMs,
+        },
+        mode,
+      ),
       remaining,
     );
     const uiApplyMs = Math.round(performance.now() - uiApplyT0);
@@ -2442,6 +2598,7 @@ export const useMeetHint = create<MeetHintState>((set, get) => ({
         spaceState: state,
         workspaceId,
         vectorStore: getVectorStore(),
+        semantic: mode.semantic,
         limit: SEARCH_DEBUG_TOP,
         recency,
       })
@@ -2499,6 +2656,14 @@ function writeSearchDetailsOn(value: boolean): void {
 }
 
 if (typeof window !== "undefined") {
+  // Whatever puts chunks in the store (a space opening, a folder load, a
+  // re-index, an exclusion) starts the warm-up for them here, so no path can
+  // forget to. The first report is written before this returns: a reader never
+  // sees new chunks beside the old chunks' report.
+  useMeetHint.subscribe((state, previous) => {
+    if (state.chunks !== previous.chunks) startSearchWarm(state.chunks);
+  });
+  startSearchWarm(useMeetHint.getState().chunks);
   window.useMeetHint = useMeetHint as unknown as Window["useMeetHint"];
   window.__meethintSwitchAccount = async (accountId) => {
     const { switchAccount } = await import("@/lib/auth/account-session");

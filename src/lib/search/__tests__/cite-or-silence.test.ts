@@ -38,7 +38,7 @@ test("search() auto-routes grounded then localCard and burns quota only after su
   assert.match(searchFn, /spaceState: state/);
   assert.match(cockpit, /excludedCount/);
   assert.match(cockpit, /\$\{excludedCount\} excluded/);
-  assert.match(cockpit, /data-excluded/);
+  assert.match(readFileSync(join(root, "src/components/source-file-list.tsx"), "utf8"), /data-excluded/);
   assert.match(store, /routeSearchAnswer/);
   assert.match(store, /consumeExtractQuestion/);
   assert.match(store, /You've reached your daily limit/);

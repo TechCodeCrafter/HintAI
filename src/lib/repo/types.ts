@@ -199,6 +199,12 @@ export type Card = {
    * offline composer answered instead. Holds why, as one sentence.
    */
   modelFallback?: string;
+  /**
+   * Set when the question was ranked on words and structure only, because the
+   * space's vectors were not ready yet. The answer is cited or silent exactly
+   * as any other; the Card says so because the ranking was narrower.
+   */
+  lexicalOnly?: boolean;
   citations: Citation[];
   /**
    * Up to three other loaded files retrieval ranked for this question and the

@@ -2,7 +2,7 @@ import { useEffect, useId } from "react";
 import { createPortal } from "react-dom";
 import type { FolderPickerState } from "@/components/use-folder-picker";
 import { useClientMounted } from "@/lib/use-client-mounted";
-import { emptySelectionMessage, SKIP_LABEL, type FolderLoadOptions, type FolderPreview } from "@/lib/repo/folder";
+import { describeLimits, emptySelectionMessage, SKIP_LABEL, type FolderLoadOptions, type FolderPreview } from "@/lib/repo/folder";
 
 export function ReviewPackDialog({
   preview,
@@ -91,8 +91,9 @@ export function ReviewPackDialog({
         ) : null}
         {preview.truncated ? (
           <p className="mt-4 text-sm text-warn">
-            Some files are over this folder's size or file-count limit. For best results, load a
-            service folder (src/) rather than the repo root.
+            {preview.overLimit.toLocaleString("en-US")} {preview.overLimit === 1 ? "file is" : "files are"} over
+            the limit for one selection ({describeLimits(preview.limits)}) and will be listed under the
+            index chip. For best results, load a service folder (src/) rather than the repo root.
           </p>
         ) : null}
         {capped ? (

@@ -3,7 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import type { Card } from "@/lib/repo/types";
 import { citationText } from "@/lib/search/cite";
 import { OverlayPrefsControl, useOverlayPrefs } from "@/components/overlay-prefs-control";
+import { EvidenceCard } from "@/components/evidence-view";
 import { WhyAnswer } from "@/components/why-answer";
+import { LexicalOnlyNote } from "@/components/lexical-only-note";
 import { type SessionWire, watchSessionWire } from "@/lib/store/session-wire";
 
 export const Route = createFileRoute("/relay")({ component: RelayPage });
@@ -48,7 +50,8 @@ function RelayPage() {
       {/* Announced politely and never focused: a card arriving must not take
           the keyboard away from the meeting. */}
       <div className="relay-dock" data-position={prefs.position} data-testid="relay-dock">
-        <div
+        <EvidenceCard
+          card={card}
           className="relay-card"
           style={{ opacity: prefs.opacity }}
           aria-live="polite"
@@ -71,6 +74,7 @@ function RelayPage() {
                 ))}
               </ul>
               <WhyAnswer card={card} />
+              <LexicalOnlyNote card={card} />
             </div>
           ) : card?.reason ? (
             <div className="space-y-3">
@@ -78,13 +82,14 @@ function RelayPage() {
               <p className="text-lg text-body" data-testid="relay-reason">
                 {card.reason}
               </p>
+              <LexicalOnlyNote card={card} />
             </div>
           ) : (
             <p className="text-lg text-muted" data-testid="relay-empty">
               No card. Search from the cockpit and this screen follows.
             </p>
           )}
-        </div>
+        </EvidenceCard>
       </div>
       <footer className="mt-8 flex flex-wrap items-center justify-between gap-4">
         <OverlayPrefsControl prefs={prefs} onChange={setPrefs} />

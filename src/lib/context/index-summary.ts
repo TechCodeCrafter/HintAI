@@ -1,6 +1,7 @@
 import { isSearchDebug } from "../debug.ts";
 import { userFacingPdfNote } from "../document/pdf/source-status.ts";
 import { inSkippedFolder, SKIP_LABEL, storedPathForRules, type SkippedFile } from "../repo/folder.ts";
+import { isLimitReason } from "../repo/limits.ts";
 import type { IndexedChunk } from "../repo/types.ts";
 import { isEvidencePath } from "../search/retrieve.ts";
 import { pathExcluded } from "./exclusions.ts";
@@ -156,8 +157,13 @@ export function mergeIndexSummaries(parts: IndexSummary[]): IndexSummary {
   return merged;
 }
 
-/** How many paths one reason keeps by name in the list stored with a space. */
-export const NOT_LOADED_NAMED = 200;
+/**
+ * How many paths one reason keeps by name in the list stored with a space.
+ * As many as one drop reads, so a folder has to be larger than that before
+ * any file is counted instead of named. Files left out by the file or size
+ * limit are not bounded at all: each one is kept by name.
+ */
+export const NOT_LOADED_NAMED = 20_000;
 /** The entry that counts the files of one reason that are not kept by name. */
 export const NOT_LOADED_REST = "other files";
 
@@ -181,7 +187,8 @@ function reasonKey(item: SkippedFile): string {
  * folder since stays listed, as its stored copy would stay stored.
  *
  * Each reason names at most `NOT_LOADED_NAMED` paths; the rest are counted in
- * one entry so the record stays small. Counted files have no path to match,
+ * one entry so the record stays bounded. Files over the file or size limit
+ * are the exception: every one of them is named. Counted files have no path to match,
  * so when the same folder is loaded again and overflows the same reason, the
  * new count replaces the old one instead of being added to it.
  */
@@ -223,7 +230,7 @@ export function mergeNotLoaded(
   for (const item of named.values()) {
     const key = reasonKey(item);
     const used = perReason.get(key) ?? 0;
-    if (used < NOT_LOADED_NAMED) {
+    if (used < NOT_LOADED_NAMED || isLimitReason(item.reason)) {
       perReason.set(key, used + 1);
       kept.push(item);
     } else {
