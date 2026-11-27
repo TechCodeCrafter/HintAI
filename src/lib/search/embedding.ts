@@ -6,7 +6,13 @@
  *
  * The installed package is `@huggingface/transformers` (the current name for
  * what the Xenova package used to be). The MiniLM checkpoint is unchanged.
+ *
+ * In a browser the model runs in a worker (`embed-worker.ts`), reached
+ * through a queue that puts a question ahead of the chunks being indexed
+ * (`embed-queue.ts`). Where there is no worker to run it in, it is loaded
+ * here, as before.
  */
+import { createEmbedClient, type EmbedClient, type EmbedReply } from "./embed-queue.ts";
 
 export const MODEL_NAME = "Xenova/all-MiniLM-L6-v2";
 /** MiniLM-L6-v2 output width. Tests and the bag fallback use this size. */
@@ -32,6 +38,27 @@ export function setEmbedderForTests(next: EmbedderFn | null): void {
   loading = null;
 }
 
+let client: EmbedClient | null = null;
+
+/** The worker that runs the model, or null where there is none to start (a server, a test in node). */
+function workerClient(): EmbedClient | null {
+  if (testEmbedder || typeof window === "undefined" || typeof Worker === "undefined") return null;
+  if (window.__mockEmbedder) return null;
+  client ??= createEmbedClient(() => {
+    const worker = new Worker(new URL("./embed-worker.ts", import.meta.url), { type: "module" });
+    return {
+      post: (request) => worker.postMessage(request),
+      listen: (onReply, onCrash) => {
+        worker.onmessage = (event: MessageEvent<EmbedReply>) => onReply(event.data);
+        worker.onerror = (event) => onCrash(event.message || "The embedding worker stopped.");
+        worker.onmessageerror = () => onCrash("The embedding worker sent something unreadable.");
+      },
+      close: () => worker.terminate(),
+    };
+  });
+  return client;
+}
+
 export async function getEmbedder(): Promise<FeaturePipe | EmbedderFn> {
   if (typeof window !== "undefined" && window.__mockEmbedder) return window.__mockEmbedder;
   if (embedder) return embedder;
@@ -49,6 +76,12 @@ async function loadPipeline(): Promise<FeaturePipe> {
   const { pipeline, env } = await import("@huggingface/transformers");
   env.allowLocalModels = true;
   env.useBrowserCache = true;
+  // transformers.js fetches the ONNX Runtime engine from cdn.jsdelivr.net by
+  // default, which the app's Content-Security-Policy blocks on purpose. The
+  // same files are served from this origin at /vad/ (vite.config.ts
+  // vadAssetsPlugin), where the captions worker already loads them from.
+  const wasm = env.backends?.onnx?.wasm;
+  if (wasm && typeof location !== "undefined") wasm.wasmPaths = `${location.origin}/vad/`;
   return (await pipeline("feature-extraction", MODEL_NAME)) as FeaturePipe;
 }
 
@@ -73,6 +106,9 @@ export async function embedText(text: string): Promise<number[]> {
   if (typeof window !== "undefined" && window.__mockEmbedder) {
     return window.__mockEmbedder(text);
   }
+  // One text is a question (or the warm-up's probe): it goes ahead of chunks.
+  const worker = workerClient();
+  if (worker) return (await worker.embed([text], "query"))[0] ?? [];
   const pipe = await getEmbedder();
   if (testEmbedder) return (pipe as EmbedderFn)(text);
   const result = await (pipe as FeaturePipe)(text, { pooling: "mean", normalize: true });
@@ -83,6 +119,9 @@ export async function embedText(text: string): Promise<number[]> {
 export async function embedBatch(texts: string[]): Promise<number[][]> {
   if (texts.length === 0) return [];
   if (testEmbedder) return Promise.all(texts.map((text) => embedText(text)));
+  // A list is chunks being indexed: behind any question that is waiting.
+  const worker = workerClient();
+  if (worker) return worker.embed(texts, "bulk");
   try {
     const pipe = await getEmbedder();
     const result = await (pipe as FeaturePipe)(texts as unknown as string, { pooling: "mean", normalize: true });

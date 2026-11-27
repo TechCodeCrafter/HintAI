@@ -134,6 +134,24 @@ test("app CSP allows only documented third-party connect targets", () => {
   assertCspNotPermissive(csp);
 });
 
+test("every model loads its ONNX runtime from this origin, since the CSP refuses the CDN default", () => {
+  // transformers.js fetches the runtime from cdn.jsdelivr.net unless told
+  // otherwise. The CSP above refuses that host, so a file that forgets
+  // `wasmPaths` ships a model that never loads, and no test with a stand-in
+  // model notices.
+  const loaders = ["src/lib/search/embed-worker.ts", "src/lib/search/embedding.ts", "src/lib/listen/asr-worker.ts"];
+  for (const path of loaders) {
+    const source = read(path);
+    assert.match(source, /import\("@huggingface\/transformers"\)/, `${path} loads the runtime`);
+    assert.match(source, /wasmPaths = `\$\{(self\.)?location\.origin\}\/vad\/`/, `${path} points the runtime at /vad/`);
+  }
+  // The embedder runs in a worker, which the CSP allows from this origin only.
+  assert.match(read("src/lib/search/embedding.ts"), /new Worker\(new URL\("\.\/embed-worker\.ts", import\.meta\.url\)/);
+  assert.match(buildAppCsp(), /worker-src 'self' blob:/);
+  // The runtime files are copied to /vad/ for the dev server and the build.
+  assert.match(read("vite.config.ts"), /public\/vad/);
+});
+
 test("contact and trust pages do not advertise inactive mailboxes", () => {
   for (const file of ["src/routes/contact.tsx", "src/routes/privacy.tsx", "src/routes/security.tsx"]) {
     const text = read(file);
